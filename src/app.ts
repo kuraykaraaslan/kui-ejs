@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import crypto from 'crypto';
 import fs from 'fs';
 import express from 'express';
@@ -8,19 +9,16 @@ import helmet from 'helmet';
 import indexRouter from './routes/index';
 import themesRouter from './routes/themes';
 import { errorHandler } from './middleware/error';
+import { SITE_LOCALS, buildShowcaseColorCss } from './config/showcase.config';
 
 const app = express();
 
 // Site-wide config — available as `site` in every view/partial
-app.locals.site = {
-  name:        'KUIejs',
-  title:       'KUIejs — Composable UI System for Real Products',
-  description: 'KUIejs is a production-ready UI system built with Express and EJS. A composable design system and component architecture for real-world applications.',
-  url:         process.env.SITE_URL ?? 'https://ejs-components.kuray.dev',
-  keywords:    'EJS UI components, Express design system, component library, UI kit, frontend system, design system, EJS UI',
-  author:      'Kuray Karaaslan',
-  authorUrl:   'https://kuray.dev',
-};
+app.locals.site = SITE_LOCALS;
+
+// CSS variable overrides injected via <style> in the layout/head;
+// empty string when no env-driven overrides are present.
+app.locals.colorOverrideCss = buildShowcaseColorCss();
 
 // Asset versioning — MD5 hash of compiled CSS for cache-busting
 try {

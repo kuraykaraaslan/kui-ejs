@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import NAV_GROUPS from '../data/showcase.menu';
 import { SHOWCASE_DATA_MAP } from '../data/showcase.data';
+import { SITE_LOCALS } from '../config/showcase.config';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.get('/', (_req, res) => {
 
   res.render('showcase/index', {
     layout: false,
-    title: 'KUIejs — Composable UI System for Real Products',
+    title: SITE_LOCALS.title,
     navGroups,
     selectedId: null,
     selected: null,
@@ -37,7 +38,7 @@ router.get('/:slug', (req, res) => {
 
   res.render('showcase/index', {
     layout: false,
-    title: selected ? `${selected.title} | KUIejs` : 'KUIejs — Composable UI System for Real Products',
+    title: selected ? `${selected.title} | ${SITE_LOCALS.name}` : SITE_LOCALS.title,
     navGroups,
     selectedId,
     selected,

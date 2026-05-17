@@ -14,6 +14,9 @@
 
   <!-- App CSS (Tailwind output) -->
   <link rel="stylesheet" href="/assets/css/app.css?v=<%= assetVersion %>" />
+  <% if (locals.colorOverrideCss) { %>
+  <style id="showcase-color-overrides"><%- colorOverrideCss %></style>
+  <% } %>
 
   <!-- SEO -->
   <meta name="description" content="<%= locals.description || site.description %>" />
@@ -38,7 +41,7 @@
   <meta name="twitter:title" content="<%= locals.title || site.title %>" />
   <meta name="twitter:description" content="<%= locals.description || site.description %>" />
   <meta name="twitter:image" content="<%= site.url %>/og-image.png" />
-  <meta name="twitter:creator" content="@kuraykaraaslan" />
+  <meta name="twitter:creator" content="<%= site.twitterHandle %>" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">

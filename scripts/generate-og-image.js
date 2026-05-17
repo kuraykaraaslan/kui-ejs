@@ -1,14 +1,15 @@
 // Usage: node scripts/generate-og-image.js
 
+require('dotenv/config');
 const puppeteer = require('puppeteer');
 const path = require('path');
 const fs   = require('fs');
 
 const OUT_PATH = path.resolve(__dirname, '../public/assets/img/og-image.png');
 
-const NAME     = 'KUIejs';
-const SUBTITLE = 'Server-Rendered UI System';
-const ACCENT   = '#8b5cf6';
+const NAME     = process.env.BRAND_NAME     || 'KUIejs';
+const SUBTITLE = process.env.BRAND_TAGLINE  || 'Server-Rendered UI System';
+const ACCENT   = process.env.COLOR_PRIMARY  || '#8b5cf6';
 
 function buildHtml() {
   return `<!DOCTYPE html>
