@@ -14,6 +14,8 @@
     "lint:spacing": "bash scripts/lint-spacing.sh",
     "dead-partials": "bash scripts/find-dead-partials.sh",
     "screenshots": "node scripts/take-screenshots.js",
+    "registry:snapshot": "node scripts/build-registry-snapshot.mjs",
+    "mcp:server": "node scripts/mcp-server.mjs",
     "ci": "npm run build && npm run audit:tokens && npm run audit:raw && npm run lint:spacing && npm run dead-partials"
   },
   "dependencies": {

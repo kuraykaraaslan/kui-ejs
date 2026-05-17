@@ -46,6 +46,20 @@ export type ShowcaseVariant = {
   layout?: 'side' | 'stack';
 };
 
+export type WcagLevel = 'A' | 'AA' | 'AAA';
+
+export type KeyboardInteraction = {
+  keys: string;
+  action: string;
+};
+
+export type A11yMetadata = {
+  wcagLevel?: WcagLevel;
+  ariaPatterns?: string[];
+  keyboardInteractions?: KeyboardInteraction[];
+  notes?: string;
+};
+
 export type ShowcaseItem = {
   id: string;
   title: string;
@@ -55,4 +69,19 @@ export type ShowcaseItem = {
   filePath: string;
   sourceCode: string;
   variants: ShowcaseVariant[];
+
+  // Status + version — previously only on NavItem; now also on the item for
+  // direct consumption by the registry without a menu lookup.
+  status?: ComponentStatus;
+  since?: string;
+
+  // Optional AI-discoverability metadata. All optional so existing entries
+  // remain backward compatible. Surfaced via /api/registry and /llms-full.txt.
+  whenToUse?: string;
+  whenNotToUse?: string;
+  composes?: string[];        // component IDs this depends on
+  relatedTo?: string[];       // sibling component IDs
+  a11y?: A11yMetadata;
+  designTokens?: string[];    // CSS variable names consumed
+  dependencies?: string[];    // npm packages required at runtime
 };

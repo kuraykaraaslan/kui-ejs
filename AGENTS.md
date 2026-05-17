@@ -6,6 +6,42 @@ Server-rendered multi-page website themes built with Node.js, Express, EJS, and 
 
 ---
 
+## AI agent quick reference
+
+If you are an AI assistant working in this repo, **read these first**:
+
+| Resource | Path | Purpose |
+|---|---|---|
+| Machine-readable catalog (JSON) | `GET /api/registry` | Every partial, theme, design token, and convention. Full EJS source inlined. |
+| Lightweight index (JSON) | `GET /api/registry?index=1` | Same shape, no `source` field — ~5x smaller, fast for search. |
+| JSON Schema | `public/schemas/registry-v1.json` (served at `/schemas/registry-v1.json`) | Validate the registry shape or codegen typed clients. |
+| Offline snapshot (JSON) | `public/registry/components.json` (served at `/registry/components.json`) | Pre-built static catalog — works without a dev server. Refresh via `npm run registry:snapshot`. |
+| Per-partial markdown | `public/components/<id>.md` (served at `/components/<id>.md`) | One file per partial for chunk-friendly retrieval. Index at `/components/_index.json`. |
+| Concise overview | `public/llms.txt` (served at `/llms.txt`) | One-page TL;DR pointing here. |
+| Long-form markdown dump | `GET /llms-full.txt` | Flattened markdown of the entire catalog — paste into a context window. |
+| MCP server | `.mcp.json` + `scripts/mcp-server.mjs` | Zero-dep stdio MCP server exposing the registry to Claude Desktop, Cursor, Cline, Windsurf, Zed. Run with `npm run mcp:server`. |
+| Editor rule mirrors | `.cursor/rules/kui-ejs.mdc`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`, `.clinerules` | Per-tool views of this file so AI assistants behave consistently. AGENTS.md remains canonical when they drift. |
+| Registry source of truth | [src/registry/registry.ts](src/registry/registry.ts) | Derives the catalog from showcase data + menu. |
+| Type definitions | [src/registry/registry.types.ts](src/registry/registry.types.ts) | TypeScript types for the registry JSON. |
+| Raw-output audit | [docs/raw-output-allowlist.md](docs/raw-output-allowlist.md) | Every `<%- %>` site enumerated and justified. |
+
+**Search recipe:**
+```ts
+// "Find me every Card-like partial in the common domain"
+const reg = await fetch('/api/registry?index=1').then(r => r.json());
+const matches = reg.components.filter(c =>
+  c.layer === 'domain' &&
+  c.filePath.includes('/common/') &&
+  c.name.toLowerCase().includes('card')
+);
+```
+
+**Dependency resolution:** the registry's `composes[]` lists every component ID a given entry depends on; `usedBy[]` is the inverse. Follow `composes[]` recursively to know what other partials to include when porting.
+
+**Convention check before writing code:** every partial must follow the rules in `## EJS Conventions` and `## Design Tokens` below — keep raw output justified, prefer `<%= %>` for user data, use token names (never raw hex), include `aria-hidden="true"` on decorative icons.
+
+---
+
 ## Stack
 
 | Layer | Technology |
@@ -159,7 +195,7 @@ A view can override the default layout by setting `layout` in locals (done in th
 
 ## Design Tokens
 
-CSS variables defined in `public/css/input.css`. Map 1:1 with `01_NextJS_Components` tokens.
+CSS variables defined in `public/assets/css/input.css`. Map 1:1 with `01_NextJS_Components` tokens. For the full and always-up-to-date list, fetch `/api/registry` and inspect `designTokens[]`.
 
 | Token | Value (light) | Purpose |
 |-------|--------------|---------|

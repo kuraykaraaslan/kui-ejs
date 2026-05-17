@@ -1,0 +1,147 @@
+# DetailHeader
+
+- **id:** `detail-header`
+- **layer:** app
+- **category:** App
+- **filePath:** `modules/app/DetailHeader.ejs`
+- **status:** stable
+- **since:** 0.1
+
+Detay/kayıt sayfaları için sayfa başlığı. title, subtitle, status badge, aksiyon butonları ve opsiyonel sekme navigasyonu.
+
+## Design tokens consumed
+
+- `--border`
+- `--border-focus`
+- `--border-strong`
+- `--error`
+- `--error-fg`
+- `--error-subtle`
+- `--info`
+- `--info-fg`
+- `--info-subtle`
+- `--primary`
+- `--primary-subtle`
+- `--secondary`
+- `--success`
+- `--success-fg`
+- `--success-subtle`
+- `--surface-raised`
+- `--surface-sunken`
+- `--text-primary`
+- `--text-secondary`
+- `--warning`
+- `--warning-fg`
+- `--warning-subtle`
+
+## Variants
+
+### With actions, no tabs
+
+```ejs
+<%- include('modules/app/DetailHeader', {
+  title:         'Invoice #1042',
+  subtitle:      'Created 3 days ago · Due Jan 15, 2026',
+  status:        'PAID',
+  statusVariant: 'success',
+  actionsContent: `
+    <%- include('modules/ui/Button', { variant: 'outline', iconLeft: '<i class="fa-solid fa-pencil"></i>', children: 'Edit' }) %>
+    <%- include('modules/ui/Button', { variant: 'danger',  iconLeft: '<i class="fa-solid fa-trash"></i>',  children: 'Delete' }) %>
+  `
+}) %>
+```
+
+### With tabs
+
+```ejs
+<%- include('modules/app/DetailHeader', {
+  title:    'Project Alpha',
+  subtitle: 'Started Jan 2026 · 5 members',
+  status:   'ACTIVE',
+  statusVariant: 'success',
+  tabs: [
+    { value: 'overview', label: 'Overview' },
+    { value: 'tasks',    label: 'Tasks'    },
+    { value: 'members',  label: 'Members'  },
+    { value: 'settings', label: 'Settings' },
+  ],
+  activeTab: req.query.tab || 'overview',
+  actionsContent: `<%- include('modules/ui/Button', { variant: 'outline', iconLeft: '<i class="fa-solid fa-gear"></i>', children: 'Settings' }) %>`
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _id            = locals.id || ('dh-' + Math.random().toString(36).substr(2,6));
+  var _statusVariant = locals.statusVariant || 'neutral';
+  var _tabs          = locals.tabs || [];
+  var _activeTab     = locals.activeTab || (_tabs.length ? _tabs[0].value : '');
+  var variantBadge = {
+    success: 'bg-success-subtle text-success-fg',
+    error:   'bg-error-subtle text-error-fg',
+    warning: 'bg-warning-subtle text-warning-fg',
+    info:    'bg-info-subtle text-info-fg',
+    neutral: 'bg-surface-sunken text-text-secondary',
+    primary: 'bg-primary-subtle text-primary'
+  };
+  var _badgeCls = variantBadge[_statusVariant] || variantBadge.neutral;
+%>
+<div id="<%= _id %>" class="border-b border-border bg-surface-raised<%= locals.className ? ' '+locals.className : '' %>">
+  <div class="px-6 pt-6 pb-0">
+    <div class="flex items-start justify-between gap-4 pb-4">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h1 class="text-2xl font-bold text-text-primary leading-tight"><%= locals.title %></h1>
+          <% if (locals.status) { %>
+          <span class="inline-flex items-center rounded-full font-medium <%= _badgeCls %> px-2 py-0.5 text-xs"><%= locals.status %></span>
+          <% } %>
+          <% if (locals.badgeContent) { %><%- locals.badgeContent %><% } %>
+        </div>
+        <% if (locals.subtitle) { %><p class="text-sm text-text-secondary mt-0.5"><%= locals.subtitle %></p><% } %>
+      </div>
+      <% if (locals.actionsContent) { %>
+      <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end"><%- locals.actionsContent %></div>
+      <% } %>
+    </div>
+
+    <% if (_tabs.length) { %>
+    <div role="tablist" aria-label="Detail navigation" class="flex -mb-px">
+      <% _tabs.forEach(function(tab) {
+        var isActive = tab.value === _activeTab;
+      %>
+      <button
+        role="tab"
+        aria-selected="<%= isActive %>"
+        <% if (tab.disabled) { %>aria-disabled="true"<% } %>
+        onclick="<% if (!tab.disabled) { %>activateDetailTab('<%= _id %>','<%= tab.value %>')<% } %>"
+        data-tab="<%= tab.value %>"
+        class="px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= isActive ? ' border-primary text-primary' : ' border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong' %><%= tab.disabled ? ' opacity-40 cursor-not-allowed pointer-events-none' : '' %>">
+        <%= tab.label %>
+      </button>
+      <% }); %>
+    </div>
+    <% } %>
+  </div>
+</div>
+<% if (_tabs.length) { %>
+<script>
+(function(){
+  function activateDetailTab(id,val){
+    var el=document.getElementById(id);if(!el)return;
+    el.querySelectorAll('[role=tab]').forEach(function(btn){
+      var active=btn.dataset.tab===val;
+      btn.setAttribute('aria-selected',String(active));
+      btn.className=btn.className
+        .replace(' border-primary text-primary','')
+        .replace(' border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong','');
+      btn.className+=active?' border-primary text-primary':' border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong';
+    });
+  }
+  window.activateDetailTab=window.activateDetailTab||activateDetailTab;
+})();
+</script>
+<% } %>
+
+```

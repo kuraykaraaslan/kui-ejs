@@ -1,0 +1,76 @@
+# SplashScreen
+
+- **id:** `splash-screen`
+- **layer:** app
+- **category:** App
+- **filePath:** `modules/app/SplashScreen.ejs`
+- **status:** stable
+- **since:** 0.1
+
+Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.
+
+## Design tokens consumed
+
+- `--primary`
+- `--secondary`
+- `--surface-base`
+- `--surface-sunken`
+- `--text-secondary`
+
+## Variants
+
+### Logo + progress + message
+
+```ejs
+<%- include('modules/app/SplashScreen', {
+  logoContent: '<span class="text-4xl font-black text-primary">Acme</span>',
+  message:  'Loading your workspace…',
+  progress: loadProgress
+}) %>
+```
+
+### Spinner only
+
+```ejs
+<%- include('modules/app/SplashScreen') %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _visible  = locals.visible !== false;
+  var _progress = (locals.progress !== undefined && locals.progress !== null) ? locals.progress : null;
+%>
+<div
+  role="status"
+  aria-live="polite"
+  aria-label="<%= locals.message || 'Loading' %>"
+  aria-busy="<%= _visible %>"
+  class="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-6 bg-surface-base transition-opacity duration-500<%= _visible ? ' opacity-100 pointer-events-auto' : ' opacity-0 pointer-events-none' %><%= locals.className ? ' '+locals.className : '' %>"
+>
+  <% if (locals.logoContent) { %>
+  <div class="flex items-center justify-center"><%- locals.logoContent %></div>
+  <%- include('../ui/Spinner', { size: 'lg' }) %>
+  <% } else { %>
+  <%- include('../ui/Spinner', { size: 'xl' }) %>
+  <% } %>
+
+  <% if (_progress !== null) { %>
+  <div class="w-48 h-1 rounded-full bg-surface-sunken overflow-hidden">
+    <div class="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+      style="width:<%= Math.min(100,Math.max(0,_progress)) %>%"
+      role="progressbar"
+      aria-valuenow="<%= _progress %>"
+      aria-valuemin="0"
+      aria-valuemax="100">
+    </div>
+  </div>
+  <% } %>
+
+  <% if (locals.message) { %>
+  <p class="text-sm text-text-secondary animate-pulse"><%= locals.message %></p>
+  <% } %>
+</div>
+
+```

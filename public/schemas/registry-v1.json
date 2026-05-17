@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kui-ejs.dev/schemas/registry-v1.json",
+  "title": "kui-ejs component registry",
+  "description": "Machine-readable catalog of every EJS partial, theme, design token and convention in the kui-ejs boilerplate. Served at /api/registry.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "name",
+    "version",
+    "registryVersion",
+    "generatedAt",
+    "description",
+    "layers",
+    "conventions",
+    "designTokens",
+    "components",
+    "themes"
+  ],
+  "properties": {
+    "$schema":         { "type": "string", "format": "uri" },
+    "name":            { "type": "string" },
+    "version":         { "type": "string" },
+    "registryVersion": { "type": "string" },
+    "generatedAt":     { "type": "string", "format": "date-time" },
+    "description":     { "type": "string" },
+    "layers": {
+      "type": "object",
+      "required": ["ui", "app", "domain", "theme"],
+      "properties": {
+        "ui":     { "type": "string" },
+        "app":    { "type": "string" },
+        "domain": { "type": "string" },
+        "theme":  { "type": "string" }
+      }
+    },
+    "conventions": {
+      "type": "object",
+      "required": ["templating", "icons", "styling", "includes", "accessibility", "rawOutput", "fileNaming"],
+      "properties": {
+        "templating":    { "type": "string" },
+        "icons":         { "type": "string" },
+        "styling":       { "type": "string" },
+        "includes":      { "type": "string" },
+        "accessibility": { "type": "string" },
+        "rawOutput":     { "type": "string" },
+        "fileNaming":    { "type": "string" }
+      }
+    },
+    "designTokens": { "type": "array", "items": { "$ref": "#/definitions/DesignToken" } },
+    "components":   { "type": "array", "items": { "$ref": "#/definitions/Component" } },
+    "themes":       { "type": "array", "items": { "$ref": "#/definitions/Theme" } }
+  },
+  "definitions": {
+    "DesignToken": {
+      "type": "object",
+      "required": ["name", "light", "purpose"],
+      "properties": {
+        "name":    { "type": "string", "pattern": "^--[a-z0-9-]+$" },
+        "light":   { "type": "string" },
+        "dark":    { "type": "string" },
+        "purpose": { "type": "string" }
+      }
+    },
+    "Component": {
+      "type": "object",
+      "required": ["id", "name", "layer", "category", "filePath", "abbr", "description", "variants", "status"],
+      "properties": {
+        "id":          { "type": "string" },
+        "name":        { "type": "string" },
+        "layer":       { "type": "string", "enum": ["ui", "app", "domain", "theme"] },
+        "category":    { "type": "string" },
+        "filePath":    { "type": "string", "description": "Repository-relative path to the .ejs partial." },
+        "abbr":        { "type": "string", "minLength": 1, "maxLength": 3 },
+        "description": { "type": "string" },
+        "source":      { "type": "string", "description": "Inlined EJS source. Omitted in /api/registry?index=1." },
+        "variantCount": { "type": "integer", "description": "Present in index-only mode in place of variants[]." },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "code"],
+            "properties": {
+              "title": { "type": "string" },
+              "code":  { "type": "string" }
+            }
+          }
+        },
+        "status":       { "type": "string", "enum": ["stable", "beta", "deprecated"] },
+        "since":        { "type": "string" },
+        "whenToUse":    { "type": "string" },
+        "whenNotToUse": { "type": "string" },
+        "composes":     { "type": "array", "items": { "type": "string" } },
+        "relatedTo":    { "type": "array", "items": { "type": "string" } },
+        "usedBy":       { "type": "array", "items": { "type": "string" } },
+        "a11y": {
+          "type": "object",
+          "properties": {
+            "wcagLevel":    { "type": "string", "enum": ["A", "AA", "AAA"] },
+            "ariaPatterns": { "type": "array", "items": { "type": "string" } },
+            "keyboardInteractions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["keys", "action"],
+                "properties": {
+                  "keys":   { "type": "string" },
+                  "action": { "type": "string" }
+                }
+              }
+            },
+            "notes": { "type": "string" }
+          }
+        },
+        "designTokens": { "type": "array", "items": { "type": "string", "pattern": "^--[a-z0-9-]+$" } },
+        "dependencies": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Theme": {
+      "type": "object",
+      "required": ["id", "title", "route", "status"],
+      "properties": {
+        "id":     { "type": "string" },
+        "title":  { "type": "string" },
+        "route":  { "type": "string", "pattern": "^/" },
+        "since":  { "type": "string" },
+        "status": { "type": "string", "enum": ["stable", "beta", "deprecated"] }
+      }
+    }
+  }
+}

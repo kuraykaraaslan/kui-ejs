@@ -1,0 +1,99 @@
+# ProcessingStatusIndicator
+
+- **id:** `processing-status-indicator`
+- **layer:** domain
+- **category:** Domain
+- **filePath:** `modules/domain/common/status/ProcessingStatusIndicator.ejs`
+- **status:** stable
+- **since:** 0.1
+
+UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.
+
+## Design tokens consumed
+
+- `--error`
+- `--info`
+- `--primary`
+- `--secondary`
+- `--success`
+- `--surface-sunken`
+- `--text-primary`
+- `--text-secondary`
+- `--warning`
+
+## Variants
+
+### All states
+
+```ejs
+<%- include('modules/domain/common/status/ProcessingStatusIndicator', { status: 'UPLOADING',  progress: 30 }) %>
+<%- include('modules/domain/common/status/ProcessingStatusIndicator', { status: 'PROCESSING', progress: 65 }) %>
+<%- include('modules/domain/common/status/ProcessingStatusIndicator', { status: 'READY',      progress: 100 }) %>
+<%- include('modules/domain/common/status/ProcessingStatusIndicator', { status: 'FAILED' }) %>
+```
+
+### Custom label + sizes
+
+```ejs
+<%- include('modules/domain/common/status/ProcessingStatusIndicator', {
+  status: 'PROCESSING', label: 'Encoding video…', progress: 45, size: 'lg'
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _status   = (locals.status   || '').toUpperCase();
+  var _label    = locals.label     || null;
+  var _progress = locals.progress  !== undefined ? locals.progress : null;
+  var _size     = locals.size      || 'md';
+
+  var statusMeta = {
+    UPLOADING:  { label: 'Uploading',  icon: 'fa-solid fa-cloud-arrow-up', color: 'text-info',    pulse: true  },
+    PROCESSING: { label: 'Processing', icon: 'fa-solid fa-gear',            color: 'text-warning', pulse: true  },
+    READY:      { label: 'Ready',      icon: 'fa-solid fa-check',           color: 'text-success', pulse: false },
+    FAILED:     { label: 'Failed',     icon: 'fa-solid fa-xmark',           color: 'text-error',   pulse: false },
+  };
+  var meta = statusMeta[_status] || { label: _status, icon: 'fa-solid fa-circle', color: 'text-text-secondary', pulse: false };
+
+  var sizeMap = {
+    sm: { text: 'text-xs', icon: 'text-sm', bar: 'h-1' },
+    md: { text: 'text-sm', icon: 'text-base', bar: 'h-1.5' },
+    lg: { text: 'text-base', icon: 'text-lg', bar: 'h-2' },
+  };
+  var s = sizeMap[_size] || sizeMap.md;
+
+  var displayLabel = _label || meta.label;
+
+  var barColor = {
+    UPLOADING:  'bg-info',
+    PROCESSING: 'bg-warning',
+    READY:      'bg-success',
+    FAILED:     'bg-error',
+  }[_status] || 'bg-primary';
+
+  var pct = _progress !== null ? Math.min(100, Math.max(0, _progress)) : 0;
+%>
+<div class="space-y-1.5<%= locals.className ? ' ' + locals.className : '' %>" role="status" aria-label="<%= displayLabel %>" aria-live="polite">
+  <div class="flex items-center gap-2">
+    <span class="<%= s.icon %> <%= meta.color %><%= meta.pulse ? ' animate-pulse' : '' %>" aria-hidden="true">
+      <i class="<%= meta.icon %>"></i>
+    </span>
+    <span class="<%= s.text %> font-medium text-text-primary"><%= displayLabel %></span>
+    <% if (_progress !== null) { %>
+    <span class="<%= s.text %> text-text-secondary ml-auto tabular-nums"><%= Math.round(_progress) %>%</span>
+    <% } %>
+  </div>
+
+  <% if (_progress !== null) { %>
+  <div class="w-full rounded-full bg-surface-sunken overflow-hidden <%= s.bar %>">
+    <div role="progressbar" aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100"
+      class="h-full rounded-full transition-all duration-300 <%= barColor %>"
+      style="width:<%= pct %>%">
+    </div>
+  </div>
+  <% } %>
+</div>
+
+```

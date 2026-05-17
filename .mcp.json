@@ -1,0 +1,10 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/v1/mcp.json",
+  "mcpServers": {
+    "kui-ejs-registry": {
+      "command": "node",
+      "args": ["scripts/mcp-server.mjs"],
+      "description": "Exposes the kui-ejs partial registry (partials, themes, design tokens, conventions, EJS source) as MCP tools. Reads from public/registry/components.json — rebuild via `npm run registry:snapshot`."
+    }
+  }
+}

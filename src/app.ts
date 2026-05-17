@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import indexRouter from './routes/index';
 import themesRouter from './routes/themes';
+import apiRouter from './routes/api';
 import { errorHandler } from './middleware/error';
 import { SITE_LOCALS, buildShowcaseColorCss } from './config/showcase.config';
 
@@ -66,8 +67,11 @@ app.get('/health', (_req, res) => {
 });
 
 // ── Routes ──────────────────────────────────────────────────
-app.use('/', indexRouter);
+// AI-discoverability endpoints must be registered before indexRouter so the
+// catch-all /:slug handler doesn't swallow /api/registry or /llms-full.txt.
+app.use('/', apiRouter);
 app.use('/theme', themesRouter);
+app.use('/', indexRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

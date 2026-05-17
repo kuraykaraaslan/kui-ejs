@@ -1,0 +1,90 @@
+# SeoPreview
+
+- **id:** `seo-preview`
+- **layer:** domain
+- **category:** Domain
+- **filePath:** `modules/domain/common/seo/SeoPreview.ejs`
+- **status:** stable
+- **since:** 0.1
+
+Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.
+
+## Design tokens consumed
+
+- `--border`
+- `--error`
+- `--primary`
+- `--secondary`
+- `--success`
+- `--success-fg`
+- `--surface-raised`
+- `--text-disabled`
+- `--text-primary`
+- `--text-secondary`
+
+## Variants
+
+### Filled
+
+```ejs
+<%- include('modules/domain/common/seo/SeoPreview', {
+  seo: { seoTitle: 'My Page Title', seoDescription: 'A clear meta description.', keywords: ['next', 'react'] },
+  url: 'https://example.com/page'
+}) %>
+```
+
+### Empty (placeholders)
+
+```ejs
+<%- include('modules/domain/common/seo/SeoPreview', {
+  seo: {},
+  url: 'https://example.com/page'
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _seo      = locals.seo      || {};
+  var _url      = locals.url      || 'https://example.com/page';
+  var _siteName = locals.siteName || null;
+
+  var TITLE_PLACEHOLDER = 'Page title will appear here';
+  var DESC_PLACEHOLDER  = 'Meta description will appear here. Keep it between 120–160 characters for best results in search engines.';
+
+  var title    = (_seo.seoTitle    || '').trim() || TITLE_PLACEHOLDER;
+  var desc     = (_seo.seoDescription || '').trim() || DESC_PLACEHOLDER;
+  var hasTitle = !!(_seo.seoTitle || '').trim();
+  var hasDesc  = !!(_seo.seoDescription || '').trim();
+  var titleLen = (_seo.seoTitle    || '').length;
+  var descLen  = (_seo.seoDescription || '').length;
+  var kwCount  = Array.isArray(_seo.keywords) ? _seo.keywords.length : 0;
+%>
+<div class="rounded-xl border border-border bg-surface-raised p-4 space-y-3<%= locals.className ? ' ' + locals.className : '' %>">
+  <p class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Google Preview</p>
+
+  <div class="max-w-lg space-y-1">
+    <% if (_siteName) { %><p class="text-xs text-text-secondary truncate"><%= _siteName %></p><% } %>
+    <p class="text-xs text-success-fg truncate"><%= _url %></p>
+    <p class="text-base font-medium leading-snug truncate <%= hasTitle ? 'text-blue-700' : 'text-text-disabled italic' %>"><%= title %></p>
+    <p class="text-sm leading-relaxed line-clamp-2 <%= hasDesc ? 'text-text-secondary' : 'text-text-disabled italic' %>"><%= desc %></p>
+  </div>
+
+  <div class="flex gap-4 pt-1 border-t border-border">
+    <div class="text-center">
+      <p class="text-sm font-semibold tabular-nums <%= titleLen > 60 ? 'text-error' : 'text-text-primary' %>"><%= titleLen %><span class="text-text-secondary font-normal">/60</span></p>
+      <p class="text-xs text-text-secondary">Title</p>
+    </div>
+    <div class="text-center">
+      <p class="text-sm font-semibold tabular-nums <%= descLen > 160 ? 'text-error' : 'text-text-primary' %>"><%= descLen %><span class="text-text-secondary font-normal">/160</span></p>
+      <p class="text-xs text-text-secondary">Description</p>
+    </div>
+    <div class="text-center">
+      <p class="text-sm font-semibold text-text-primary tabular-nums"><%= kwCount %></p>
+      <p class="text-xs text-text-secondary">Keywords</p>
+    </div>
+  </div>
+</div>
+
+```

@@ -1,0 +1,117 @@
+# kui-ejs
+
+> A server-rendered EJS / Express / Tailwind 4 component library organised
+> the same way as its React sibling kui-react — atoms → molecules → organisms
+> → app patterns → industry-vertical domain partials → full-page theme demos.
+> Every partial is **copy-paste-ready** from the live showcase; nothing is
+> installed from npm.
+
+This file follows the llms.txt convention so AI agents can quickly understand
+what exists in this library without grepping the codebase. A full,
+machine-readable catalog of every partial + variant + design token + theme is
+served at the registry endpoint below.
+
+## Machine-readable catalog
+
+- **Full registry (JSON):** `/api/registry`
+- **Lightweight index (JSON, no source code):** `/api/registry?index=1`
+- **Long-form markdown dump:** `/llms-full.txt`
+- **JSON Schema for validation:** `/schemas/registry-v1.json`
+- **Offline static snapshot:** `/registry/components.json` (rebuild via `npm run registry:snapshot`)
+- **Per-partial markdown chunks:** `/components/<id>.md` (one file per
+  partial — fetch just what you need without bundling the full registry)
+- **Markdown chunk index:** `/components/_index.json`
+
+The registry JSON includes for every partial: `id`, `name`, `layer`,
+`category`, `filePath`, `description`, `source` (full inline EJS), every
+`variant` with its code, `status`, `since`, design tokens consumed,
+accessibility metadata, and (where authored) `whenToUse` / `whenNotToUse` /
+`composes` / `relatedTo` / `usedBy`.
+
+## MCP server (Claude Desktop / Cursor / Cline / Windsurf / Zed)
+
+Zero-dependency stdio MCP server. Config in `.mcp.json` at the repo root.
+
+Tools:
+
+- `list_components` — filter by layer (`ui` | `app` | `domain` | `theme`) or category
+- `get_component` — by id, returns full EJS source + variants + composes + a11y
+- `search_components` — substring search over name + description + filePath
+- `list_themes` — every full-page theme demo
+- `get_conventions` — boilerplate-wide authoring rules
+- `list_design_tokens` — every CSS variable token with light/dark/purpose
+- `read_file` — read any repo file (sandboxed to the repository root)
+
+Reads from `public/registry/components.json`. Refresh with `npm run registry:snapshot`.
+
+## Editor-native rule files (mirror of AGENTS.md)
+
+- `.cursor/rules/kui-ejs.mdc` — Cursor (modern)
+- `.cursorrules` — Cursor (legacy)
+- `.windsurfrules` — Windsurf
+- `.github/copilot-instructions.md` — GitHub Copilot
+- `.clinerules` — Cline / Continue.dev
+
+## Module layers
+
+- `modules/ui/` — Primitive EJS partials (atoms + molecules). ~29 partials.
+  Stateless presentational HTML, no business logic.
+- `modules/app/` — Application-level patterns: shells, navigation, drawers,
+  search, state placeholders. ~16 partials.
+- `modules/domain/<vertical>/` — Industry-vertical partials. Verticals: common
+  (with sub-domains: auth, user, payment, address, cart, discount, location,
+  money, seo, status, charts, i18n, chat), modem, invoice, ups, api-doc.
+- `views/theme/<vertical>/` — Full multi-page theme demos: common, modem,
+  invoice, ups, api-doc. Each has its own Express router under
+  `src/routes/themes/<vertical>.ts`.
+
+## Includes
+
+Always include partials via path:
+
+```ejs
+<%- include('modules/ui/Avatar', { name: 'A', size: 'md' }) %>
+<%- include('modules/domain/common/auth/LoginForm', { ...locals }) %>
+<%- include('../../partials/_head') %>
+```
+
+## Conventions (must follow)
+
+- **EJS:** Pass all data via `res.render(view, locals)`. Use `<%= value %>`
+  (escaped) by default. `<%- html %>` (raw) only for trusted EJS includes —
+  every site is enumerated in `docs/raw-output-allowlist.md` and validated
+  by `scripts/audit-raw-output.sh`.
+- **Icons:** Font Awesome 6 Free via CDN. `aria-hidden="true"` on decorative
+  icons. No inline SVG. No other icon libraries.
+- **Styling:** Tailwind 4 + CSS-variable tokens (`bg-primary`,
+  `text-text-secondary`, `border-border-focus`). Never raw hex.
+  `scripts/audit-tokens.sh` enforces this.
+- **Accessibility:** `focus-visible:ring-2 focus-visible:ring-border-focus` on
+  interactive elements. ARIA attributes per pattern.
+
+## Where to put new code
+
+- Single-purpose primitive → `modules/ui/`
+- Composed app pattern → `modules/app/`
+- Industry-specific partial → `modules/domain/<vertical>/`
+- New industry vertical → new `modules/domain/<vertical>/` + matching
+  `src/data/sections/domain-<vertical>.showcase.ts` + entries in
+  `src/data/showcase.menu.ts`.
+- Full-page demo → `views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts`.
+
+## How to use this library from an AI agent
+
+1. Fetch `/api/registry?index=1` for a fast scan of every partial.
+2. Filter `components[]` by `layer` / `category` / `name` to find what you need.
+3. Fetch `/api/registry` (or read the matching `filePath`) for the full EJS source.
+4. Copy the relevant variant code from the entry's `variants[].code` field.
+5. Follow `composes[]` to discover the dependency tree you also need to copy.
+
+## More
+
+- `AGENTS.md` — detailed authoring rules, design tokens, file naming.
+- `CLAUDE.md` — alias of AGENTS.md.
+- `ROADMAP.md` — long-form roadmap with EJS ↔ Next.js parity mapping.
+- `docs/raw-output-allowlist.md` — every `<%- %>` site enumerated.
+- `/llms-full.txt` — every partial flattened into a single markdown file.
+- Live showcase site — interactive playground with copy buttons.
