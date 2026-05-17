@@ -1,0 +1,33 @@
+# kui-ejs — Cline / Continue.dev rules
+# Canonical source: AGENTS.md
+
+## Discover before generating
+
+Fetch the AI-facing catalog:
+- `GET /api/registry?index=1` — full catalog (no source) — ~5x smaller
+- `GET /api/registry` — full catalog with inline EJS source per partial + variants
+- `GET /llms-full.txt` — markdown dump
+- Offline fallback: `public/registry/components.json`
+- Per-partial markdown chunks: `public/components/<id>.md`
+
+Filter `components[]` by `layer` (`ui` | `app` | `domain` | `theme`), `category`, `name`, or `filePath`. Follow `composes[]` recursively when porting a partial; `usedBy[]` is the inverse.
+
+## Hard rules
+
+1. Server-rendered Express + EJS only — no React/Vue/htmx/Alpine/SPA bundling.
+2. `<%= value %>` for user data (escaped). `<%- html %>` only for trusted EJS / pre-built HTML; document in `docs/raw-output-allowlist.md`.
+3. `<%- include('partials/foo', locals) %>` for partial includes.
+4. Token-only styling: `bg-primary`, `text-text-secondary`, `border-border-focus`. No raw hex.
+5. Font Awesome via CDN only. `<i class="fa-solid fa-x" aria-hidden="true"></i>`.
+6. Accessibility: `aria-hidden="true"` on decorative icons, `aria-label` on icon-only buttons, semantic HTML, `focus-visible:ring-2 focus-visible:ring-border-focus`.
+7. Sample data in `src/data/<vertical>.data.ts`. Static data only.
+8. No business logic in views — keep them presentational.
+
+## Where new code goes
+
+- `modules/ui/` — primitive + composed EJS partials
+- `modules/app/` — shells, navigation, drawers, state placeholders
+- `modules/domain/<vertical>/` — industry-specific partials
+- `views/theme/<vertical>/` — multi-page demos
+- `src/routes/themes/<vertical>.ts` — Express router per theme
+- New theme → also register in `src/routes/themes.ts` and `src/data/showcase.menu.ts`

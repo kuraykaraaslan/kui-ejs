@@ -1,0 +1,37 @@
+# kui-ejs — Cursor rules (legacy single-file format)
+# Canonical source: AGENTS.md
+# Modern rules: .cursor/rules/kui-ejs.mdc
+
+Before writing code, fetch the catalog so you know what already exists:
+  GET /api/registry?index=1   (full list, ~5x smaller — no source)
+  GET /api/registry           (full registry incl. EJS source per partial)
+  GET /llms-full.txt          (markdown dump)
+Offline fallback: public/registry/components.json
+Per-partial markdown chunks: public/components/<id>.md
+
+Hard rules (see AGENTS.md for full detail):
+1. Server-rendered Express + EJS. No React, no SPA bundling.
+2. Use <%= value %> for user data (HTML-escaped). Use <%- html %> only for trusted EJS includes
+   or pre-built HTML; every site MUST be in docs/raw-output-allowlist.md.
+3. <%- include('partials/foo', locals) %> for partial includes. Paths are relative to current view.
+4. Token-only styling: bg-primary, text-text-secondary, border-border-focus. No raw hex / rgb / hsl.
+5. Icons: Font Awesome via CDN only. <i class="fa-solid fa-x" aria-hidden="true"></i>. No inline SVG,
+   no other icon libraries.
+6. Accessibility: aria-hidden="true" on decorative icons; aria-label on icon-only buttons;
+   semantic HTML; focus-visible:ring-2 focus-visible:ring-border-focus.
+7. All sample data in src/data/<vertical>.data.ts — never inside route files or views.
+8. Static data only — no real API or database calls in themes.
+
+Where new code goes:
+  modules/ui/                              — atoms & molecules (EJS partials)
+  modules/app/                             — shells, navigation, drawers, state placeholders
+  modules/domain/<vertical>/               — industry-specific partials
+  views/theme/<vertical>/                  — full multi-page demos
+  src/routes/themes/<vertical>.ts          — Express router per theme
+
+When adding a theme, also:
+  - register router in src/routes/themes.ts
+  - add metadata to src/data/showcase.menu.ts
+  - rebuild snapshot: npm run registry:snapshot
+
+When porting a partial, follow composes[] for the include chain. usedBy[] is the inverse.

@@ -1,0 +1,70 @@
+---
+description: Project-wide rules for the kui-ejs boilerplate (Express + EJS + Tailwind). Always-on.
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# kui-ejs — Cursor rules
+
+Canonical source: [AGENTS.md](mdc:AGENTS.md). When Cursor and AGENTS.md disagree, AGENTS.md wins.
+
+## Before writing code, fetch the catalog
+
+1. `GET /api/registry?index=1` — every partial, theme, design token, and convention. ~5x smaller than full.
+2. `GET /api/registry` — same shape with full inline EJS source per partial + variants.
+3. `GET /llms-full.txt` — markdown dump of the full registry.
+4. Offline fallback: `public/registry/components.json` (built by `npm run registry:snapshot`).
+5. Per-partial markdown chunks: `public/components/<id>.md`.
+
+Search recipe:
+
+```ts
+const reg = await fetch('/api/registry?index=1').then(r => r.json());
+const matches = reg.components.filter(c =>
+  c.layer === 'domain' && c.filePath.includes('/common/') && /card/i.test(c.name)
+);
+```
+
+Follow `composes[]` to know what other partials to include when porting.
+
+## Hard rules
+
+1. **EJS templating only.** Server-rendered Express + EJS. No client-side React, no SPA bundling.
+2. **`<%= value %>` for user data** (HTML-escaped). Use `<%- html %>` only for trusted EJS includes or pre-built HTML; document every site in [docs/raw-output-allowlist.md](mdc:docs/raw-output-allowlist.md).
+3. **`<%- include('partials/foo', locals) %>`** to include partials. Paths are relative to the current view.
+4. **Token-only styling.** Tailwind utilities mapped to CSS variables: `bg-primary`, `text-text-secondary`, `border-border-focus`. Never raw hex / rgb / hsl in partials.
+5. **Icons: Font Awesome via CDN.** `<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>`. No inline SVG, no other icon libraries.
+6. **Accessibility:**
+   - `aria-hidden="true"` on decorative icons
+   - `aria-label` on icon-only interactive elements
+   - Semantic HTML (`<button>`, `<a>`, correct `<input type>`)
+   - Focus states via tokenized utilities (`focus-visible:ring-2 focus-visible:ring-border-focus`)
+7. **All sample data in `src/data/<vertical>.data.ts`** — never inside route files or views. Routes import data and pass it as locals.
+8. **Static data only.** No real API or database calls in themes — boilerplate uses static TypeScript data.
+
+## Where new code goes
+
+| What you're building | Where |
+| --- | --- |
+| Primitive partial (button, input) | `modules/ui/` |
+| Composed UI partial (card, modal) | `modules/ui/` |
+| App shell / nav / search / state placeholder | `modules/app/` |
+| Industry-specific partial | `modules/domain/<vertical>/` |
+| Full multi-page theme | `views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts` + `src/data/<vertical>.data.ts` + showcase + register in `src/routes/themes.ts` |
+
+## Adding a new theme — required order
+
+1. Create views under `views/theme/<vertical>/`
+2. Create `src/data/<vertical>.data.ts`
+3. Create router at `src/routes/themes/<vertical>.ts`
+4. Register the router in `src/routes/themes.ts`
+5. Register metadata in `src/data/showcase.menu.ts`
+6. Rebuild snapshot: `npm run registry:snapshot`
+
+## Don't
+
+- Don't use `<%- %>` for user-provided strings (XSS).
+- Don't install client-side UI frameworks (React, Vue, htmx, Alpine) — this is pure EJS.
+- Don't bypass the design tokens.
+- Don't put business logic in views — keep them presentational.

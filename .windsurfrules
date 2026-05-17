@@ -1,0 +1,48 @@
+# kui-ejs — Windsurf rules
+# Canonical source: AGENTS.md
+
+## Discovery first
+
+Before generating EJS, fetch the AI-facing catalog:
+
+- `GET /api/registry?index=1` — every partial, theme, design token, convention (no source, ~5x smaller)
+- `GET /api/registry` — same plus full inline EJS per partial + variants
+- `GET /llms-full.txt` — markdown dump for paste-into-context
+- Offline fallback: `public/registry/components.json`
+- Per-partial markdown chunks: `public/components/<id>.md`
+
+Filter `components[]` by `layer` (ui | app | domain | theme), `category`, `name`, or `filePath`. Follow `composes[]` recursively when porting; `usedBy[]` is the inverse index.
+
+## Hard rules
+
+1. Server-rendered Express + EJS — no React, no SPA bundling, no client-side framework.
+2. `<%= value %>` for user data (escaped). `<%- html %>` only for trusted EJS includes / pre-built HTML; every site must be enumerated in `docs/raw-output-allowlist.md`.
+3. `<%- include('partials/foo', locals) %>` for partial includes (paths relative to current view).
+4. Tailwind 4 + CSS-variable tokens (`bg-primary`, `text-text-secondary`, `border-border-focus`). Never raw hex / rgb / hsl.
+5. Icons: Font Awesome via CDN only. `<i class="fa-solid fa-x" aria-hidden="true"></i>`. No inline SVG, no other icon libraries.
+6. Accessibility:
+   - `aria-hidden="true"` on decorative icons
+   - `aria-label` on icon-only interactive elements
+   - Semantic HTML (`<button>`, `<a>`, correct `<input type>`)
+   - `focus-visible:ring-2 focus-visible:ring-border-focus` on interactive elements
+7. All sample data in `src/data/<vertical>.data.ts` — never inside routes or views.
+8. Static data only — no real API or DB calls in themes.
+
+## Where new code goes
+
+| Building | Location |
+| --- | --- |
+| Primitive partial | `modules/ui/` |
+| Composed UI partial | `modules/ui/` |
+| App shell / nav / state placeholder | `modules/app/` |
+| Industry-specific partial | `modules/domain/<vertical>/` |
+| Full multi-page theme | `views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts` + `src/data/<vertical>.data.ts` |
+
+## Adding a theme — required order
+
+1. Views under `views/theme/<vertical>/`
+2. Data file `src/data/<vertical>.data.ts`
+3. Router `src/routes/themes/<vertical>.ts`
+4. Register router in `src/routes/themes.ts`
+5. Register metadata in `src/data/showcase.menu.ts`
+6. Rebuild snapshot: `npm run registry:snapshot`
