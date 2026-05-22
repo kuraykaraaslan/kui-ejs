@@ -1,9 +1,7 @@
 <%
-  var _v           = locals.variant     || 'success';
-  var _message     = locals.message     || '';
-  var _dismissible = !!locals.dismissible;
-  var _className   = locals.className   || '';
-  var _id          = locals.id          || ('inline-alert-' + Math.random().toString(36).substr(2, 9));
+  var _v         = locals.variant   || 'success';
+  var _message   = locals.message   || '';
+  var _className = locals.className || '';
 
   var variantMap = {
     success: { container: 'bg-success-subtle border-success text-success-fg',   icon: 'fa-check' },
@@ -13,21 +11,7 @@
   };
   var vm = variantMap[_v] || variantMap.success;
 %>
-<div
-  id="<%= _id %>"
-  role="alert"
-  class="rounded-lg border px-4 py-2.5 text-sm font-medium flex items-center gap-1.5 <%= vm.container %><%= _className ? ' ' + _className : '' %>"
->
+<div class="rounded-lg border px-4 py-2.5 text-sm font-medium flex items-center gap-1.5 <%= vm.container %><%= _className ? ' ' + _className : '' %>">
   <i class="fa-solid <%= vm.icon %> shrink-0" style="width:0.875rem;height:0.875rem" aria-hidden="true"></i>
-  <span class="flex-1 min-w-0"><%- _message %></span>
-  <% if (_dismissible) { %>
-  <button
-    type="button"
-    aria-label="Dismiss"
-    onclick="this.closest('[role=alert]').style.display='none'"
-    class="shrink-0 hover:opacity-70 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
-  >
-    <i class="fa-solid fa-xmark" style="width:0.875rem;height:0.875rem" aria-hidden="true"></i>
-  </button>
-  <% } %>
+  <span><%- _message %></span>
 </div>

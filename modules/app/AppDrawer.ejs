@@ -14,16 +14,16 @@
   var panelTranslate = _open ? 'translate-x-0' : (_side === 'right' ? 'translate-x-full' : '-translate-x-full');
 %>
 
-<%# Trigger %>
+<%# Trigger — fallback matches <Button variant="outline" size="sm" iconLeft={faBars}> %>
 <% if (locals.triggerContent) { %>
 <div role="none" onclick="openDrawer('<%= _id %>')"><%- locals.triggerContent %></div>
 <% } else { %>
 <button
   type="button"
   onclick="openDrawer('<%= _id %>')"
-  class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-raised px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+  class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm"
 >
-  <i class="fa-solid fa-bars" style="width:0.875rem;height:0.875rem" aria-hidden="true"></i>
+  <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-bars" style="width:0.875rem;height:0.875rem"></i></span>
   <%= _triggerLabel %>
 </button>
 <% } %>
@@ -66,18 +66,29 @@
       <% } %>
 
       <% if (_searchable) { %>
-      <div class="mb-4">
-        <label class="relative block">
-          <span class="sr-only">Search navigation</span>
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-text-disabled" style="width:0.875rem;height:0.875rem" aria-hidden="true"></i>
-          <input
-            id="<%= _id %>-search"
-            type="search"
-            placeholder="Search navigation…"
-            oninput="filterAppDrawer('<%= _id %>', this.value)"
-            class="w-full pl-9 pr-3 py-2 rounded-md border border-border bg-surface-base text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
-          />
-        </label>
+      <div class="relative flex items-center mb-4">
+        <span aria-hidden="true" class="absolute left-3 text-text-disabled pointer-events-none">
+          <i class="fa-solid fa-magnifying-glass" style="width:0.875rem;height:0.875rem"></i>
+        </span>
+        <input
+          id="<%= _id %>-search"
+          type="text"
+          role="searchbox"
+          autocomplete="off"
+          data-testid="searchbar-<%= _id %>-search"
+          placeholder="Search navigation…"
+          oninput="filterAppDrawer('<%= _id %>', this.value); (function(inp){var btn=document.getElementById('<%= _id %>-search-clear'); if(btn) btn.classList.toggle('hidden', !inp.value);})(this)"
+          class="block w-full rounded-md border border-border bg-surface-base px-3 py-2 pl-8 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus transition-colors"
+        />
+        <button
+          id="<%= _id %>-search-clear"
+          type="button"
+          aria-label="Clear search"
+          onclick="(function(){var i=document.getElementById('<%= _id %>-search'); if(!i) return; i.value=''; filterAppDrawer('<%= _id %>',''); var b=document.getElementById('<%= _id %>-search-clear'); if(b) b.classList.add('hidden'); i.focus();})()"
+          class="hidden absolute right-2 text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
+        >
+          <i class="fa-solid fa-xmark" style="width:0.75rem;height:0.75rem" aria-hidden="true"></i>
+        </button>
       </div>
       <% } %>
 
@@ -95,17 +106,19 @@
               type="button"
               data-item-label="<%= (item.label || '').toLowerCase() %>"
               <% if (isActive) { %>aria-current="page"<% } %>
-              <% if (item.href) { %>onclick="window.location.href='<%= item.href %>'"<% } %>
+              onclick="(function(){ <% if (item.href) { %>window.location.href='<%= item.href %>';<% } %> closeDrawer('<%= _id %>'); })()"
               class="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary-subtle text-primary font-semibold' : 'text-text-primary hover:bg-surface-overlay' %>"
             >
               <span class="flex items-center gap-2">
                 <% if (item.iconClass) { %>
                 <span aria-hidden="true"><i class="fa-solid <%= item.iconClass %>" style="width:0.875rem;height:0.875rem"></i></span>
+                <% } else if (item.icon) { %>
+                <span aria-hidden="true"><%- item.icon %></span>
                 <% } %>
                 <%= item.label %>
               </span>
               <% if (item.badge != null && Number(item.badge) > 0) { %>
-              <span class="inline-flex items-center justify-center rounded-full bg-surface-sunken text-text-secondary text-xs font-medium px-2 py-0.5"><%= item.badge %></span>
+              <span class="inline-flex items-center justify-center rounded-md bg-surface-overlay text-text-secondary text-xs font-medium px-1.5 py-0.5"><%= item.badge %></span>
               <% } %>
             </button>
             <% }); %>
@@ -117,11 +130,11 @@
           No results
         </p>
       </div>
-    </div>
 
-    <% if (locals.footerContent) { %>
-    <div class="px-4 py-4 border-t border-border shrink-0"><%- locals.footerContent %></div>
-    <% } %>
+      <% if (locals.footerContent) { %>
+      <div class="mt-4 pt-4 border-t border-border"><%- locals.footerContent %></div>
+      <% } %>
+    </div>
   </div>
 </div>
 

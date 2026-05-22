@@ -20,7 +20,7 @@
   var errorId = _error ? (_id + '-error') : '';
   var describedBy = [hintId, errorId].filter(Boolean).join(' ');
 
-  var triggerClass = 'inline-flex items-center justify-between gap-2 w-full rounded-md border bg-surface-raised text-text-primary px-3 py-1.5 text-sm font-medium transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed ' +
+  var triggerClass = 'inline-flex items-center justify-between gap-2 w-full rounded-md border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed ' +
                     (_error ? 'border-error ring-1 ring-error' : 'border-border');
 %>
 <div id="<%= _id %>-wrap" class="space-y-1<%= _className ? ' ' + _className : '' %>" data-country-selector>

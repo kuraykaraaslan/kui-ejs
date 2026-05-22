@@ -30,7 +30,7 @@
     onclick="toggleNotifMenu('<%= _id %>')"
     class="relative flex items-center justify-center w-8 h-8 rounded-md text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
   >
-    <i class="fa-solid fa-bell" style="width:1rem;height:1rem" aria-hidden="true"></i>
+    <i class="fa-solid fa-bell w-4 h-4" aria-hidden="true"></i>
     <% if (unreadCount > 0) { %>
       <span class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-error text-primary-fg text-[10px] font-bold leading-none pointer-events-none">
         <%= unreadCount > 9 ? '9+' : unreadCount %>
@@ -72,7 +72,7 @@
     <div class="max-h-80 overflow-y-auto divide-y divide-border">
       <% if (_items.length === 0) { %>
         <div class="flex flex-col items-center justify-center py-10 gap-2 text-text-disabled">
-          <i class="fa-solid fa-bell" style="width:1.5rem;height:1.5rem" aria-hidden="true"></i>
+          <i class="fa-solid fa-bell w-6 h-6" aria-hidden="true"></i>
           <p class="text-sm">No notifications</p>
         </div>
       <% } else { %>

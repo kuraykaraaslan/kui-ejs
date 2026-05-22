@@ -1,3 +1,19 @@
+<%
+  // Synthetic home group + showcase groups (mirrors ShowcaseShell.tsx navGroups)
+  var allGroups = [
+    {
+      label: null,
+      collapsible: false,
+      items: [{
+        id: 'home',
+        title: 'Home',
+        href: '/',
+        active: selectedId === null,
+        iconClass: 'fa-house',
+      }],
+    },
+  ].concat(navGroups || []);
+%>
 <!-- ── DESKTOP SIDEBAR ──────────────────────────────────── -->
 <aside
   id="sidebar"
@@ -8,121 +24,102 @@
   <div id="sidebar-logo" class="flex items-center border-b border-border shrink-0 h-14 px-5">
     <div class="sidebar-full-only">
       <p class="text-sm font-semibold text-text-primary whitespace-nowrap">UI Showcase</p>
-      <p class="text-xs text-text-secondary whitespace-nowrap">EJS templates</p>
+      <p class="text-xs text-text-secondary whitespace-nowrap">Component library</p>
     </div>
     <div class="sidebar-compact-only hidden w-full justify-center">
-      <span class="text-sm font-bold text-text-primary select-none">UI</span>
+      <span class="text-sm font-black text-primary select-none">UI</span>
     </div>
   </div>
 
   <!-- Collapse button -->
-  <div id="sidebar-collapse-row" class="flex items-center justify-end px-2 py-2 border-b border-border shrink-0">
+  <div id="sidebar-collapse-row" class="hidden lg:flex items-center px-2 py-2 border-b border-border shrink-0 justify-end">
     <button
       id="sidebar-collapse-btn"
+      type="button"
       aria-label="Collapse sidebar"
       class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
     >
-      <i id="collapse-icon" class="fa-solid fa-chevron-left" style="width:1rem;height:1rem;transition:transform 200ms" aria-hidden="true"></i>
+      <i id="collapse-icon" class="fa-solid fa-chevron-left w-4 h-4 transition-transform" aria-hidden="true"></i>
     </button>
   </div>
 
   <!-- Search -->
-  <div class="sidebar-full-only px-3 py-2 border-b border-border">
+  <div class="sidebar-full-only px-3 py-2 border-b border-border shrink-0">
     <div class="relative">
-      <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-text-disabled text-xs" aria-hidden="true"></i>
+      <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-disabled" aria-hidden="true"></i>
       <input
         id="sidebar-search"
         type="search"
-        placeholder="Search components…"
+        placeholder="Search…"
         autocomplete="off"
-        class="w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-xs
-               text-text-primary placeholder:text-text-disabled
-               focus:outline-none focus:ring-2 focus:ring-border-focus"
-        aria-label="Search components"
+        class="w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-border-focus"
+        aria-label="Search navigation"
       />
     </div>
   </div>
 
   <!-- Nav -->
-  <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-1" aria-label="Component navigation">
+  <nav class="flex-1 min-h-0 overflow-y-auto px-2 py-3 space-y-4 sidebar-scrollbar-hover" aria-label="Sidebar navigation">
 
-    <!-- Home link -->
-    <% var isHome = selectedId === null; %>
-    <a
-      href="/"
-      aria-current="<%= isHome ? 'page' : 'false' %>"
-      title="Home"
-      class="sidebar-item flex items-center gap-2.5 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 mb-2 <%= isHome ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-    >
-      <span class="sidebar-item-icon flex items-center justify-center w-6 h-6 rounded-md text-xs font-bold shrink-0 <%= isHome ? 'bg-primary text-primary-fg' : 'bg-surface-sunken text-text-secondary' %>">
-        <i class="fa-solid fa-house text-[10px]" aria-hidden="true"></i>
-      </span>
-      <span class="sidebar-full-only flex-1 truncate text-sm">Home</span>
-    </a>
+    <!-- No-results state (toggled by search JS) -->
+    <div id="sidebar-no-results" class="sidebar-full-only hidden flex-col items-center gap-2 py-8 text-text-secondary">
+      <i class="fa-solid fa-magnifying-glass text-xl opacity-40" aria-hidden="true"></i>
+      <p class="text-sm">No results for "<span id="sidebar-no-results-q"></span>"</p>
+    </div>
 
-    <% if (navGroups.length === 0) { %>
-      <div class="sidebar-full-only px-3 py-6 text-center">
-        <p class="text-xs text-text-disabled">No items yet.</p>
-        <p class="text-[10px] text-text-disabled mt-1">Add entries to showcase.menu.ts</p>
-      </div>
-    <% } %>
-
-    <% navGroups.forEach(function(group, gi) { %>
-      <div class="nav-group" data-group-section>
-
-        <% if (group.sectionStart) { %>
-          <div class="sidebar-full-only flex items-center gap-2 px-3 pt-3 pb-1">
-            <div class="flex-1 h-px bg-border"></div>
-            <span class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled shrink-0"><%= group.sectionStart %></span>
-            <div class="flex-1 h-px bg-border"></div>
-          </div>
-          <div class="sidebar-compact-only hidden px-2 py-1.5">
-            <div class="h-px bg-border"></div>
-          </div>
-        <% } %>
-
+    <% allGroups.forEach(function(group, gi) {
+      var groupKey = group.label || ('g' + gi);
+      var hasActive = group.items.some(function(i){ return i.active || i.id === selectedId; });
+      var isExpanded = group.collapsible ? hasActive : true;
+    %>
+    <div data-group-section>
+      <% if (group.label) { %>
         <% if (group.collapsible) { %>
           <button
             type="button"
             data-group="<%= gi %>"
-            aria-expanded="true"
-            class="group-toggle-btn sidebar-full-only w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= group.items.some(function(i){ return i.active; }) ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
+            aria-expanded="<%= isExpanded ? 'true' : 'false' %>"
+            class="group-toggle-btn sidebar-full-only w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActive ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
           >
             <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>
-            <i class="fa-solid fa-chevron-down" style="width:.75rem;height:.75rem;transition:transform 200ms" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-down w-3 h-3 transition-transform duration-200" style="<%= isExpanded ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
           </button>
         <% } else { %>
-          <p class="sidebar-full-only text-xs font-medium uppercase tracking-wider text-text-secondary px-3 mb-0.5"><%= group.label %></p>
+          <p class="sidebar-full-only text-[10px] font-semibold uppercase tracking-widest text-text-disabled px-3 mb-1"><%= group.label %></p>
         <% } %>
+      <% } %>
 
-        <ul class="group-items space-y-0.5 mb-2 list-none p-0" role="list" data-group="<%= gi %>">
-          <% group.items.forEach(function(item) { %>
-            <%
-              var isActive = item.active || item.id === selectedId;
-              var href = item.href ? item.href : '/' + item.id;
-              var isExternal = !!(item.href && !item.href.startsWith('/'));
-            %>
-            <li data-nav-item data-search-title="<%= item.title.toLowerCase() %>">
-              <a
-                href="<%= href %>"
-                <% if (isExternal) { %>target="_blank" rel="noopener noreferrer"<% } %>
-                aria-current="<%= isActive ? 'page' : 'false' %>"
-                title="<%= item.title %>"
-                class="sidebar-item flex items-center gap-2.5 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 <%= isActive ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-              >
-                <span class="sidebar-item-icon flex items-center justify-center w-6 h-6 rounded-md text-xs font-bold shrink-0 <%= isActive ? 'bg-primary text-primary-fg' : 'bg-surface-sunken text-text-secondary' %>"><%= item.abbr %></span>
-                <span class="sidebar-full-only flex-1 truncate text-sm"><%= item.title %></span>
-                <% if (item.status === 'beta') { %>
-                  <span class="ml-auto shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium leading-none bg-warning-subtle text-warning-fg sidebar-full-only" aria-label="Beta">β</span>
-                <% } else if (item.status === 'deprecated') { %>
-                  <span class="ml-auto shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium leading-none bg-error-subtle text-error-fg line-through sidebar-full-only" aria-label="Deprecated">dep</span>
-                <% } %>
-              </a>
-            </li>
-          <% }); %>
-        </ul>
-
+      <div class="group-items space-y-0.5 <%= isExpanded ? '' : 'hidden' %>" data-group="<%= gi %>">
+        <% group.items.forEach(function(item) { %>
+          <%
+            var isActive = item.active || item.id === selectedId;
+            var href = item.href ? item.href : '/' + item.id;
+            var isExternal = !!(item.href && !item.href.startsWith('/'));
+          %>
+          <a
+            href="<%= href %>"
+            <% if (isExternal) { %>target="_blank" rel="noopener noreferrer"<% } %>
+            <% if (isActive) { %>aria-current="page"<% } %>
+            data-nav-item
+            data-search-title="<%= (item.title || item.label || '').toLowerCase() %>"
+            title="<%= item.title || item.label %>"
+            class="sidebar-item w-full flex items-center gap-2.5 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 text-left <%= isActive ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
+          >
+            <span aria-hidden="true" class="shrink-0 w-5 text-center text-[15px] leading-none">
+              <% if (item.iconClass) { %>
+                <i class="fa-solid <%= item.iconClass %>" aria-hidden="true"></i>
+              <% } else if (item.abbr) { %>
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded text-[11px] font-bold bg-surface-sunken text-text-secondary"><%= item.abbr %></span>
+              <% } %>
+            </span>
+            <span class="sidebar-full-only flex-1 truncate"><%= item.title || item.label %></span>
+            <% if (item.badge != null && Number(item.badge) > 0) { %>
+              <span class="sidebar-full-only inline-flex items-center justify-center px-1.5 min-w-[1.25rem] h-5 rounded-full text-[10px] font-semibold bg-primary text-primary-fg"><%= item.badge %></span>
+            <% } %>
+          </a>
+        <% }); %>
       </div>
+    </div>
     <% }); %>
 
   </nav>
@@ -133,7 +130,7 @@
       <span class="w-7 h-7 rounded-full bg-primary-subtle flex items-center justify-center text-xs font-bold text-primary shrink-0" aria-hidden="true">D</span>
       <div class="min-w-0">
         <p class="text-xs font-semibold text-text-primary truncate">Developer</p>
-        <p class="text-[10px] text-text-secondary truncate">EJS Templates</p>
+        <p class="text-[10px] text-text-secondary truncate">Component Library</p>
       </div>
     </div>
     <div class="sidebar-compact-only hidden p-3 justify-center">
@@ -153,90 +150,98 @@
 
   <aside
     id="mobile-sidebar"
-    class="absolute left-0 top-0 h-full w-72 bg-surface-raised flex flex-col shadow-xl transition-transform duration-200 -translate-x-full overflow-hidden"
+    class="absolute left-0 top-0 h-full w-56 bg-surface-raised flex flex-col shadow-xl transition-transform duration-200 -translate-x-full overflow-hidden"
   >
-    <!-- Header: title + close -->
-    <div class="flex items-center justify-between h-14 border-b border-border px-4 shrink-0">
-      <h2 class="text-base font-semibold text-text-primary">Navigation</h2>
+    <!-- Logo -->
+    <div class="relative flex items-center border-b border-border shrink-0 h-14 px-5">
+      <div>
+        <p class="text-sm font-semibold text-text-primary whitespace-nowrap">UI Showcase</p>
+        <p class="text-xs text-text-secondary whitespace-nowrap">Component library</p>
+      </div>
       <button
+        type="button"
         onclick="closeMobileSidebar()"
-        class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+        class="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
         aria-label="Close sidebar"
       >
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        <i class="fa-solid fa-xmark w-4 h-4" aria-hidden="true"></i>
       </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-4" aria-label="Component navigation (mobile)">
+    <!-- Search -->
+    <div class="px-3 py-2 border-b border-border shrink-0">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-disabled" aria-hidden="true"></i>
+        <input
+          id="mobile-sidebar-search"
+          type="search"
+          placeholder="Search…"
+          autocomplete="off"
+          class="w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-border-focus"
+          aria-label="Search navigation"
+        />
+      </div>
+    </div>
 
-      <!-- Home link -->
-      <a
-        href="/"
-        aria-current="<%= isHome ? 'page' : 'false' %>"
-        onclick="closeMobileSidebar()"
-        class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus mb-1 <%= isHome ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-      >
-        <span class="flex items-center justify-center w-6 h-6 rounded-md text-xs font-bold shrink-0 <%= isHome ? 'bg-primary text-primary-fg' : 'bg-surface-sunken text-text-secondary' %>">
-          <i class="fa-solid fa-house text-[10px]" aria-hidden="true"></i>
-        </span>
-        <span class="flex-1 truncate">Home</span>
-      </a>
+    <nav class="flex-1 min-h-0 overflow-y-auto px-2 py-3 space-y-4 sidebar-scrollbar-hover" aria-label="Sidebar navigation (mobile)">
 
-      <% if (navGroups.length === 0) { %>
-        <div class="px-3 py-6 text-center">
-          <p class="text-xs text-text-disabled">No items yet</p>
-        </div>
-      <% } %>
+      <!-- No-results state -->
+      <div id="mobile-sidebar-no-results" class="hidden flex-col items-center gap-2 py-8 text-text-secondary">
+        <i class="fa-solid fa-magnifying-glass text-xl opacity-40" aria-hidden="true"></i>
+        <p class="text-sm">No results for "<span id="mobile-sidebar-no-results-q"></span>"</p>
+      </div>
 
-      <% navGroups.forEach(function(group, gi) { %>
-        <div data-group-section>
-          <% if (group.sectionStart) { %>
-            <div class="flex items-center gap-2 px-3 pt-3 pb-1">
-              <div class="flex-1 h-px bg-border"></div>
-              <span class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled shrink-0"><%= group.sectionStart %></span>
-              <div class="flex-1 h-px bg-border"></div>
-            </div>
-          <% } %>
-
+      <% allGroups.forEach(function(group, gi) {
+        var hasActiveM = group.items.some(function(i){ return i.active || i.id === selectedId; });
+        var isExpandedM = group.collapsible ? hasActiveM : true;
+      %>
+      <div data-group-section>
+        <% if (group.label) { %>
           <% if (group.collapsible) { %>
             <button
               type="button"
               data-group="m<%= gi %>"
-              aria-expanded="true"
-              class="group-toggle-btn w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= group.items.some(function(i){ return i.active; }) ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
+              aria-expanded="<%= isExpandedM ? 'true' : 'false' %>"
+              class="group-toggle-btn w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActiveM ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
             >
               <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>
-              <i class="fa-solid fa-chevron-down" style="width:.75rem;height:.75rem;transition:transform 200ms" aria-hidden="true"></i>
+              <i class="fa-solid fa-chevron-down w-3 h-3 transition-transform duration-200" style="<%= isExpandedM ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
             </button>
           <% } else { %>
             <p class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled px-3 mb-1"><%= group.label %></p>
           <% } %>
+        <% } %>
 
-          <ul class="group-items space-y-0.5 mb-2 list-none p-0" role="list" data-group="m<%= gi %>">
-            <% group.items.forEach(function(item) { %>
-              <%
-                var isActive = item.active || item.id === selectedId;
-                var href = item.href ? item.href : '/' + item.id;
-              %>
-              <li data-nav-item data-search-title="<%= item.title.toLowerCase() %>">
-                <a
-                  href="<%= href %>"
-                  aria-current="<%= isActive ? 'page' : 'false' %>"
-                  onclick="closeMobileSidebar()"
-                  class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-                >
-                  <span class="flex items-center justify-center w-6 h-6 rounded-md text-xs font-bold shrink-0 <%= isActive ? 'bg-primary text-primary-fg' : 'bg-surface-sunken text-text-secondary' %>"><%= item.abbr %></span>
-                  <span class="flex-1 truncate"><%= item.title %></span>
-                  <% if (item.status === 'beta') { %>
-                    <span class="ml-auto shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium leading-none bg-warning-subtle text-warning-fg" aria-label="Beta">β</span>
-                  <% } else if (item.status === 'deprecated') { %>
-                    <span class="ml-auto shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium leading-none bg-error-subtle text-error-fg line-through" aria-label="Deprecated">dep</span>
-                  <% } %>
-                </a>
-              </li>
-            <% }); %>
-          </ul>
+        <div class="group-items space-y-0.5 <%= isExpandedM ? '' : 'hidden' %>" data-group="m<%= gi %>">
+          <% group.items.forEach(function(item) { %>
+            <%
+              var isActive = item.active || item.id === selectedId;
+              var href = item.href ? item.href : '/' + item.id;
+            %>
+            <a
+              href="<%= href %>"
+              <% if (isActive) { %>aria-current="page"<% } %>
+              onclick="closeMobileSidebar()"
+              data-nav-item
+              data-search-title="<%= (item.title || item.label || '').toLowerCase() %>"
+              title="<%= item.title || item.label %>"
+              class="w-full flex items-center gap-2.5 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 text-left <%= isActive ? 'bg-primary-subtle text-primary font-medium' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
+            >
+              <span aria-hidden="true" class="shrink-0 w-5 text-center text-[15px] leading-none">
+                <% if (item.iconClass) { %>
+                  <i class="fa-solid <%= item.iconClass %>" aria-hidden="true"></i>
+                <% } else if (item.abbr) { %>
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded text-[11px] font-bold bg-surface-sunken text-text-secondary"><%= item.abbr %></span>
+                <% } %>
+              </span>
+              <span class="flex-1 truncate"><%= item.title || item.label %></span>
+              <% if (item.badge != null && Number(item.badge) > 0) { %>
+                <span class="inline-flex items-center justify-center px-1.5 min-w-[1.25rem] h-5 rounded-full text-[10px] font-semibold bg-primary text-primary-fg"><%= item.badge %></span>
+              <% } %>
+            </a>
+          <% }); %>
         </div>
+      </div>
       <% }); %>
     </nav>
 
@@ -244,7 +249,7 @@
       <span class="w-7 h-7 rounded-full bg-primary-subtle flex items-center justify-center text-xs font-bold text-primary shrink-0" aria-hidden="true">D</span>
       <div class="min-w-0">
         <p class="text-xs font-semibold text-text-primary truncate">Developer</p>
-        <p class="text-[10px] text-text-secondary truncate">EJS Templates</p>
+        <p class="text-[10px] text-text-secondary truncate">Component Library</p>
       </div>
     </div>
   </aside>

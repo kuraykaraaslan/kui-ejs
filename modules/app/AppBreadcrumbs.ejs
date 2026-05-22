@@ -26,19 +26,30 @@
       <% _items.forEach(function(item, i) {
         var isLast = i === _items.length - 1;
         var fullPath = _items.slice(0, i + 1).map(function(b){ return b.label; }).join(' › ');
+        var _tipId = _id + '-tip-' + i;
       %>
       <span class="flex items-center gap-1">
-        <span title="<%= fullPath %>" aria-label="<%= fullPath %>">
-          <% if (isLast) { %>
-            <span class="text-text-primary font-medium px-1"><%= item.label %></span>
-          <% } else if (item.href) { %>
-            <a
-              href="<%= item.href %>"
-              class="text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded px-1"
-            ><%= item.label %></a>
-          <% } else { %>
-            <span class="text-text-secondary px-1"><%= item.label %></span>
-          <% } %>
+        <span class="relative inline-flex items-center" data-tooltip-host="<%= _tipId %>" data-tooltip-delay="0">
+          <span aria-describedby="<%= _tipId %>">
+            <% if (isLast) { %>
+              <span class="text-text-primary font-medium px-1" aria-current="page"><%= item.label %></span>
+            <% } else if (item.href) { %>
+              <a
+                href="<%= item.href %>"
+                class="text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded px-1"
+              ><%= item.label %></a>
+            <% } else { %>
+              <span class="text-text-secondary px-1"><%= item.label %></span>
+            <% } %>
+          </span>
+          <span
+            id="<%= _tipId %>"
+            role="tooltip"
+            class="absolute z-[80] whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium shadow-md transition-opacity duration-150 pointer-events-none opacity-0 bg-surface-overlay text-text-primary border border-border top-full left-1/2 -translate-x-1/2 mt-2"
+          >
+            <%= fullPath %>
+            <span aria-hidden="true" class="absolute w-2 h-2 rotate-45 border border-border top-[-5px] left-1/2 -translate-x-1/2 border-b-0 border-r-0 bg-surface-overlay"></span>
+          </span>
         </span>
         <% if (!isLast) { %>
         <i class="fa-solid fa-chevron-right text-text-disabled" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
@@ -101,3 +112,55 @@
   </div>
   <% } %>
 </div>
+
+<script>
+(function () {
+  if (window.__a11yTooltipInit) return;
+  window.__a11yTooltipInit = true;
+  var timers = {};
+  function show(host) {
+    var id = host.getAttribute('data-tooltip-host');
+    var delay = Number(host.getAttribute('data-tooltip-delay') || 0);
+    var tip = document.getElementById(id);
+    if (!tip) return;
+    if (delay > 0) {
+      timers[id] = setTimeout(function () { tip.classList.remove('opacity-0'); tip.classList.add('opacity-100'); }, delay);
+    } else {
+      tip.classList.remove('opacity-0'); tip.classList.add('opacity-100');
+    }
+  }
+  function hide(host) {
+    var id = host.getAttribute('data-tooltip-host');
+    var tip = document.getElementById(id);
+    if (timers[id]) { clearTimeout(timers[id]); delete timers[id]; }
+    if (tip) { tip.classList.add('opacity-0'); tip.classList.remove('opacity-100'); }
+  }
+  document.addEventListener('mouseover', function (e) {
+    var host = e.target && e.target.closest && e.target.closest('[data-tooltip-host]');
+    if (host) show(host);
+  });
+  document.addEventListener('mouseout', function (e) {
+    var host = e.target && e.target.closest && e.target.closest('[data-tooltip-host]');
+    if (host && !host.contains(e.relatedTarget)) hide(host);
+  });
+  document.addEventListener('focusin', function (e) {
+    var host = e.target && e.target.closest && e.target.closest('[data-tooltip-host]');
+    if (host) show(host);
+  });
+  document.addEventListener('focusout', function (e) {
+    var host = e.target && e.target.closest && e.target.closest('[data-tooltip-host]');
+    if (host && !host.contains(e.relatedTarget)) hide(host);
+  });
+  // Close mobile "Full path" dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    document.querySelectorAll('[aria-haspopup="menu"][aria-expanded="true"]').forEach(function (btn) {
+      if (!btn.parentElement.contains(t)) {
+        var menu = btn.nextElementSibling;
+        if (menu) menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+})();
+</script>

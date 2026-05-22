@@ -1,0 +1,305 @@
+<%
+// PropsEditor — interactive form for tweaking component props live.
+// Ports NextJS modules/showcase/ui/PropsEditor.tsx.
+//
+// Approach (b): Full client-side form rendered via vanilla JS.
+// Because the NextJS version takes a `render(values)` callback that is
+// impossible to serialize across the SSR boundary, the EJS port renders
+// the controls server-side but dispatches a `props-editor:change` CustomEvent
+// on the host element (and a top-level `propsEditorChange` event) whenever
+// values change, so the parent page/script can re-render its preview.
+// Generated code is shown in a <pre> and copied via the existing .copy-btn handler.
+//
+// Usage:
+//   <%- include('partials/props-editor', {
+//         id: 'btn-playground',
+//         controls: [
+//           { key: 'variant', label: 'Variant', type: 'select',
+//             options: ['primary','secondary'], default: 'primary' },
+//           { key: 'disabled', label: 'Disabled', type: 'boolean', default: false },
+//           { key: 'label',    label: 'Label',    type: 'text',    default: 'Click me' },
+//           { key: 'size',     label: 'Size',     type: 'number',
+//             min: 1, max: 10, step: 1, default: 4 }
+//         ],
+//         // Optional: a JS expression string that builds code from `props`
+//         // (defaults to JSON.stringify). Example:
+//         //   "`<Button variant=\"${props.variant}\">${props.label}</Button>`"
+//         generateCode: null,
+//         // Optional: dot-grid styling for the preview pane
+//         previewHTML: '<div data-preview-placeholder>Live preview</div>'
+//       }) %>
+
+var _id         = locals.id || 'props-editor-' + Math.random().toString(36).substr(2, 6);
+var _controls   = Array.isArray(locals.controls) ? locals.controls : [];
+var _genCode    = locals.generateCode || null;
+var _previewHTML = locals.previewHTML || '<span class="text-text-secondary text-sm">Live preview target</span>';
+var _className   = locals.className || '';
+
+// Build initial values map (server-side) so the SSR view shows real defaults.
+var _initialValues = {};
+for (var i = 0; i < _controls.length; i++) {
+  _initialValues[_controls[i].key] = _controls[i].default;
+}
+
+// Serialize for client bootstrap. base64 keeps the JSON safe inside an HTML attribute.
+var _ctrlJson = JSON.stringify(_controls);
+var _valsJson = JSON.stringify(_initialValues);
+var _ctrlB64  = Buffer.from(_ctrlJson, 'utf8').toString('base64');
+var _valsB64  = Buffer.from(_valsJson, 'utf8').toString('base64');
+
+function _esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+%>
+<div
+  id="<%= _id %>"
+  class="props-editor bg-surface-raised border border-border rounded-xl overflow-hidden<%= _className ? ' ' + _className : '' %>"
+  data-controls="<%= _ctrlB64 %>"
+  data-values="<%= _valsB64 %>"
+  <% if (_genCode) { %>data-generate-code="<%- encodeURIComponent(_genCode) %>"<% } %>
+>
+  <!-- header -->
+  <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-surface-overlay">
+    <div class="flex items-center gap-2">
+      <span class="text-text-disabled text-xs select-none" aria-hidden="true">⠿</span>
+      <span class="text-sm font-semibold text-text-primary">Props Editor</span>
+      <span class="text-xs bg-primary-subtle text-primary px-2 py-0.5 rounded-full font-medium">
+        Interactive
+      </span>
+    </div>
+    <button
+      type="button"
+      data-pe-reset
+      class="px-2.5 py-1 text-xs rounded-md font-medium transition-colors bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+    >Reset</button>
+  </div>
+
+  <!-- body: preview + controls -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-border">
+    <!-- preview pane -->
+    <div
+      class="lg:col-span-2 flex items-center justify-center p-10 min-h-48"
+      style="background-image: radial-gradient(circle, var(--border) 1px, transparent 1px); background-size: 16px 16px;"
+      data-pe-preview
+    >
+      <div class="flex flex-wrap items-center justify-center gap-2" data-pe-preview-slot>
+        <%- _previewHTML %>
+      </div>
+    </div>
+
+    <!-- controls pane -->
+    <div class="p-4 space-y-4 overflow-y-auto max-h-80 lg:max-h-none" data-pe-controls>
+      <% _controls.forEach(function (control) { %>
+        <div class="flex flex-col gap-1.5" data-pe-field data-key="<%= control.key %>" data-type="<%= control.type %>">
+          <label class="text-xs font-medium text-text-secondary select-none" for="<%= _id %>-<%= control.key %>">
+            <%= control.label %>
+          </label>
+
+          <% if (control.type === 'select') { %>
+            <select
+              id="<%= _id %>-<%= control.key %>"
+              data-pe-input
+              class="w-full rounded-md border border-border bg-surface-base px-2.5 py-1.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+            >
+              <% (control.options || []).forEach(function (o) { %>
+                <option value="<%= o %>"<%= o === control.default ? ' selected' : '' %>><%= o %></option>
+              <% }) %>
+            </select>
+
+          <% } else if (control.type === 'boolean') { %>
+            <button
+              type="button"
+              role="switch"
+              aria-checked="<%= control.default ? 'true' : 'false' %>"
+              data-pe-input
+              data-value="<%= control.default ? 'true' : 'false' %>"
+              class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= control.default ? 'bg-primary' : 'bg-surface-sunken' %>"
+            >
+              <span
+                class="pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform <%= control.default ? 'translate-x-4' : 'translate-x-0' %>"
+                data-pe-thumb
+                aria-hidden="true"
+              ></span>
+            </button>
+
+          <% } else if (control.type === 'text') { %>
+            <input
+              id="<%= _id %>-<%= control.key %>"
+              type="text"
+              data-pe-input
+              value="<%= control.default %>"
+              class="w-full rounded-md border border-border bg-surface-base px-2.5 py-1.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+            />
+
+          <% } else if (control.type === 'number') { %>
+            <div class="flex items-center gap-2">
+              <input
+                id="<%= _id %>-<%= control.key %>"
+                type="range"
+                data-pe-input
+                min="<%= control.min != null ? control.min : 0 %>"
+                max="<%= control.max != null ? control.max : 100 %>"
+                step="<%= control.step != null ? control.step : 1 %>"
+                value="<%= control.default %>"
+                class="flex-1 accent-primary"
+              />
+              <span class="text-xs font-mono text-text-secondary w-8 text-right tabular-nums" data-pe-num-display>
+                <%= control.default %>
+              </span>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <!-- code bar -->
+  <div class="flex items-center gap-4 border-t border-border bg-surface-sunken px-4 py-3">
+    <pre class="flex-1 text-sm font-mono text-text-primary overflow-x-auto whitespace-pre"><code data-pe-code><%= _genCode ? '' : JSON.stringify(_initialValues, null, 2) %></code></pre>
+    <button
+      type="button"
+      class="copy-btn px-2.5 py-1 text-xs rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken"
+      data-code=""
+      data-pe-copy
+      aria-label="Copy code"
+    >Copy</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('<%- _id %>');
+  if (!root || root.__peInit) return;
+  root.__peInit = true;
+
+  function b64decode(s) {
+    try { return decodeURIComponent(escape(atob(s))); } catch (e) { return atob(s); }
+  }
+
+  var controls = [];
+  var values = {};
+  try { controls = JSON.parse(b64decode(root.getAttribute('data-controls') || '')); } catch (e) { controls = []; }
+  try { values   = JSON.parse(b64decode(root.getAttribute('data-values')   || '')); } catch (e) { values = {}; }
+
+  var genCodeRaw = root.getAttribute('data-generate-code');
+  var genCodeFn = null;
+  if (genCodeRaw) {
+    try {
+      // Expression-style: takes `props`, returns a string.
+      genCodeFn = new Function('props', 'return (' + decodeURIComponent(genCodeRaw) + ');');
+    } catch (e) {
+      console.warn('[props-editor] failed to compile generateCode', e);
+    }
+  }
+
+  var codeEl = root.querySelector('[data-pe-code]');
+  var copyEl = root.querySelector('[data-pe-copy]');
+
+  function renderCode() {
+    var out;
+    if (genCodeFn) {
+      try { out = String(genCodeFn(values)); }
+      catch (e) { out = '/* generateCode error: ' + (e && e.message ? e.message : e) + ' */'; }
+    } else {
+      out = JSON.stringify(values, null, 2);
+    }
+    if (codeEl) codeEl.textContent = out;
+    if (copyEl) copyEl.setAttribute('data-code', encodeURIComponent(out));
+  }
+
+  function notify() {
+    // Snapshot for listeners.
+    var detail = { id: root.id, values: Object.assign({}, values) };
+    root.dispatchEvent(new CustomEvent('props-editor:change', { detail: detail, bubbles: true }));
+    // Convenience top-level event.
+    try {
+      window.dispatchEvent(new CustomEvent('propsEditorChange', { detail: detail }));
+    } catch (e) { /* ignore */ }
+  }
+
+  function setValue(key, v) {
+    values[key] = v;
+    renderCode();
+    notify();
+  }
+
+  // Wire each field.
+  var fields = root.querySelectorAll('[data-pe-field]');
+  fields.forEach(function (field) {
+    var key = field.getAttribute('data-key');
+    var type = field.getAttribute('data-type');
+    var input = field.querySelector('[data-pe-input]');
+    if (!input) return;
+
+    if (type === 'select') {
+      input.addEventListener('change', function () { setValue(key, input.value); });
+    } else if (type === 'text') {
+      input.addEventListener('input', function () { setValue(key, input.value); });
+    } else if (type === 'number') {
+      var display = field.querySelector('[data-pe-num-display]');
+      input.addEventListener('input', function () {
+        var n = Number(input.value);
+        if (display) display.textContent = String(n);
+        setValue(key, n);
+      });
+    } else if (type === 'boolean') {
+      input.addEventListener('click', function () {
+        var next = input.getAttribute('data-value') !== 'true';
+        input.setAttribute('data-value', next ? 'true' : 'false');
+        input.setAttribute('aria-checked', next ? 'true' : 'false');
+        input.classList.toggle('bg-primary', next);
+        input.classList.toggle('bg-surface-sunken', !next);
+        var thumb = input.querySelector('[data-pe-thumb]');
+        if (thumb) {
+          thumb.classList.toggle('translate-x-4', next);
+          thumb.classList.toggle('translate-x-0', !next);
+        }
+        setValue(key, next);
+      });
+    }
+  });
+
+  // Reset button: restore defaults.
+  var resetBtn = root.querySelector('[data-pe-reset]');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      controls.forEach(function (c) {
+        var field = root.querySelector('[data-pe-field][data-key="' + c.key + '"]');
+        if (!field) return;
+        var input = field.querySelector('[data-pe-input]');
+        if (!input) return;
+
+        if (c.type === 'select' || c.type === 'text') {
+          input.value = c.default;
+        } else if (c.type === 'number') {
+          input.value = c.default;
+          var d = field.querySelector('[data-pe-num-display]');
+          if (d) d.textContent = String(c.default);
+        } else if (c.type === 'boolean') {
+          var on = !!c.default;
+          input.setAttribute('data-value', on ? 'true' : 'false');
+          input.setAttribute('aria-checked', on ? 'true' : 'false');
+          input.classList.toggle('bg-primary', on);
+          input.classList.toggle('bg-surface-sunken', !on);
+          var thumb = input.querySelector('[data-pe-thumb]');
+          if (thumb) {
+            thumb.classList.toggle('translate-x-4', on);
+            thumb.classList.toggle('translate-x-0', !on);
+          }
+        }
+        values[c.key] = c.default;
+      });
+      renderCode();
+      notify();
+    });
+  }
+
+  // Initial code render + announce.
+  renderCode();
+  notify();
+})();
+</script>

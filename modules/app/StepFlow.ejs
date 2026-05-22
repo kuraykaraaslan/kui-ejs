@@ -37,10 +37,10 @@
   </div>
 
   <% if (_stepError) { %>
-  <div role="alert" aria-live="assertive" class="rounded-xl border bg-error-subtle border-error">
-    <div class="flex items-start gap-3 px-4 py-3">
-      <i class="fa-solid fa-circle-exclamation mt-0.5 shrink-0 text-error" aria-hidden="true"></i>
-      <p class="text-sm text-text-secondary leading-snug"><%= _stepError %></p>
+  <div role="alert" class="flex items-start gap-3 rounded-lg border p-4 bg-error-subtle border-error text-error-fg">
+    <i class="fa-solid fa-circle-xmark mt-0.5 shrink-0 text-base" aria-hidden="true"></i>
+    <div class="flex-1 text-sm min-w-0">
+      <p><%= _stepError %></p>
     </div>
   </div>
   <% } %>
@@ -49,11 +49,11 @@
     <div>
       <% if (_showCancel && _current === 0) { %>
         <% if (_onCancelHref) { %>
-        <a href="<%= _onCancelHref %>" class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+        <a href="<%= _onCancelHref %>" class="inline-flex items-center justify-center rounded-md bg-transparent px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
           <%= _cancelLabel %>
         </a>
         <% } else { %>
-        <button type="button" data-stepflow-cancel class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+        <button type="button" data-stepflow-cancel class="inline-flex items-center justify-center rounded-md bg-transparent px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
           <%= _cancelLabel %>
         </button>
         <% } %>

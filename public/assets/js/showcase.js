@@ -68,12 +68,22 @@ function applySidebarCollapse(animated) {
   }
   if (sidebarCollapsed) {
     html.classList.add('sidebar-collapsed');
-    if (collapseIcon) collapseIcon.style.transform = 'rotate(180deg)';
+    if (collapseIcon) collapseIcon.classList.add('rotate-180');
     if (collapseBtn) collapseBtn.setAttribute('aria-label', 'Expand sidebar');
+    var sidebarCollapseRow = document.getElementById('sidebar-collapse-row');
+    if (sidebarCollapseRow) {
+      sidebarCollapseRow.classList.remove('justify-end');
+      sidebarCollapseRow.classList.add('justify-center');
+    }
   } else {
     html.classList.remove('sidebar-collapsed');
-    if (collapseIcon) collapseIcon.style.transform = '';
+    if (collapseIcon) collapseIcon.classList.remove('rotate-180');
     if (collapseBtn) collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
+    var sidebarCollapseRow2 = document.getElementById('sidebar-collapse-row');
+    if (sidebarCollapseRow2) {
+      sidebarCollapseRow2.classList.add('justify-end');
+      sidebarCollapseRow2.classList.remove('justify-center');
+    }
   }
 }
 
@@ -89,26 +99,30 @@ if (collapseBtn) {
 }
 
 // ── Group accordion ───────────────────────────────────────
+// SSR default: groups collapsed unless they contain the active item.
+// sessionStorage stores explicit user toggles ('open' | 'closed') and
+// takes precedence over the SSR default.
 document.querySelectorAll('.group-toggle-btn').forEach((btn) => {
   const groupIndex = btn.getAttribute('data-group');
   const itemsEl = document.querySelector(`.group-items[data-group="${groupIndex}"]`);
   const chevron = btn.querySelector('i');
 
-  // Restore collapsed state from sessionStorage
+  function setExpanded(next) {
+    btn.setAttribute('aria-expanded', String(next));
+    if (itemsEl) itemsEl.classList.toggle('hidden', !next);
+    if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+  }
+
   try {
-    if (sessionStorage.getItem(`group-${groupIndex}`) === 'closed') {
-      btn.setAttribute('aria-expanded', 'false');
-      if (itemsEl) itemsEl.classList.add('hidden');
-      if (chevron) chevron.style.transform = 'rotate(-90deg)';
-    }
+    const stored = sessionStorage.getItem(`group-${groupIndex}`);
+    if (stored === 'open')   setExpanded(true);
+    if (stored === 'closed') setExpanded(false);
   } catch (e) {}
 
   btn.addEventListener('click', () => {
     const expanded = btn.getAttribute('aria-expanded') === 'true';
     const next = !expanded;
-    btn.setAttribute('aria-expanded', String(next));
-    if (itemsEl) itemsEl.classList.toggle('hidden', !next);
-    if (chevron) chevron.style.transform = next ? '' : 'rotate(-90deg)';
+    setExpanded(next);
     try { sessionStorage.setItem(`group-${groupIndex}`, next ? 'open' : 'closed'); } catch (e) {}
   });
 });
@@ -195,31 +209,56 @@ if (sourceToggleBtn && sourceContent) {
   sourceToggleBtn.addEventListener('click', () => {
     const expanded = sourceToggleBtn.getAttribute('aria-expanded') === 'true';
     sourceToggleBtn.setAttribute('aria-expanded', String(!expanded));
+    sourceToggleBtn.setAttribute('aria-label', !expanded ? 'Collapse source' : 'Expand source');
     sourceToggleBtn.textContent = !expanded ? 'Collapse' : 'Expand';
     sourceContent.classList.toggle('hidden', expanded);
   });
 }
 
-// ── Sidebar search ────────────────────────────────────────
+// ── Sidebar search (desktop + mobile, mirrored) ───────────
 (function SidebarSearchModule() {
-  var input = document.getElementById('sidebar-search');
-  if (!input) return;
+  var inputs = [
+    document.getElementById('sidebar-search'),
+    document.getElementById('mobile-sidebar-search'),
+  ].filter(Boolean);
+  if (inputs.length === 0) return;
+
+  var noResultsContainers = [
+    {
+      root: document.getElementById('sidebar-no-results'),
+      q:    document.getElementById('sidebar-no-results-q'),
+    },
+    {
+      root: document.getElementById('mobile-sidebar-no-results'),
+      q:    document.getElementById('mobile-sidebar-no-results-q'),
+    },
+  ].filter(function(x) { return x.root; });
 
   var debounceTimer = null;
+
+  function setNoResults(value, anyVisible) {
+    var show = !!value && !anyVisible;
+    noResultsContainers.forEach(function(nr) {
+      nr.root.classList.toggle('hidden', !show);
+      nr.root.classList.toggle('flex', show);
+      if (nr.q) nr.q.textContent = value;
+    });
+  }
 
   function filterSidebar(query) {
     var q = query.trim().toLowerCase();
     var groups = document.querySelectorAll('[data-group-section]');
 
     if (!q) {
-      // Show everything
       document.querySelectorAll('[data-nav-item]').forEach(function(el) {
         el.style.display = '';
       });
       groups.forEach(function(g) { g.style.display = ''; });
+      setNoResults('', true);
       return;
     }
 
+    var anyVisible = false;
     groups.forEach(function(groupEl) {
       var items = groupEl.querySelectorAll('[data-nav-item]');
       var hasVisible = false;
@@ -227,23 +266,32 @@ if (sourceToggleBtn && sourceContent) {
         var title = (item.getAttribute('data-search-title') || '').toLowerCase();
         var matches = title.includes(q);
         item.style.display = matches ? '' : 'none';
-        if (matches) hasVisible = true;
+        if (matches) { hasVisible = true; anyVisible = true; }
       });
       groupEl.style.display = hasVisible ? '' : 'none';
     });
+    setNoResults(query, anyVisible);
   }
 
-  input.addEventListener('input', function() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(function() {
-      filterSidebar(input.value);
-    }, 150);
-  });
+  function syncInputs(value, source) {
+    inputs.forEach(function(el) { if (el !== source) el.value = value; });
+  }
 
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      input.value = '';
-      filterSidebar('');
-    }
+  inputs.forEach(function(input) {
+    input.addEventListener('input', function() {
+      syncInputs(input.value, input);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() {
+        filterSidebar(input.value);
+      }, 150);
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        input.value = '';
+        syncInputs('', input);
+        filterSidebar('');
+      }
+    });
   });
 })();

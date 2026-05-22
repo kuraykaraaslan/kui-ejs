@@ -31,9 +31,9 @@
     <h2 class="flex-1 text-sm font-semibold <%= titleClass %>"><%- _title %></h2>
     <% if (_done && _hasEdit) { %>
       <% if (_onEditHref) { %>
-      <a href="<%= _onEditHref %>" class="inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-surface-overlay transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">Edit</a>
+      <a href="<%= _onEditHref %>" class="inline-flex items-center justify-center gap-2 rounded-md bg-transparent px-2 py-1 text-xs font-medium text-primary hover:bg-surface-overlay transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed">Edit</a>
       <% } else { %>
-      <button type="button" data-stepshell-edit class="inline-flex items-center justify-center rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-surface-overlay transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">Edit</button>
+      <button type="button" data-stepshell-edit class="inline-flex items-center justify-center gap-2 rounded-md bg-transparent px-2 py-1 text-xs font-medium text-primary hover:bg-surface-overlay transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed">Edit</button>
       <% } %>
     <% } %>
   </div>

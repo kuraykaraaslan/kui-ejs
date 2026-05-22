@@ -8,9 +8,14 @@
 
   var _currency = _payment.currency || 'TRY';
   var _amount   = _payment.amount   || 0;
-  var amountFormatted = (Number(_amount)).toLocaleString(_locale, {
-    style: 'currency', currency: _currency, minimumFractionDigits: 2, maximumFractionDigits: 2,
-  });
+  var amountFormatted;
+  try {
+    amountFormatted = new Intl.NumberFormat(_locale, {
+      style: 'currency', currency: _currency,
+    }).format(Number(_amount));
+  } catch (e) {
+    amountFormatted = Number(_amount).toFixed(2) + ' ' + _currency;
+  }
 %>
 <div class="flex flex-col items-center justify-center py-16 space-y-6 text-center max-w-md mx-auto<%= _className ? ' ' + _className : '' %>">
   <span class="flex h-20 w-20 items-center justify-center rounded-full bg-success-subtle">

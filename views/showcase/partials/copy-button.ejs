@@ -1,0 +1,21 @@
+<%
+// CopyButton — small button with copy-to-clipboard behavior.
+// Mirrors NextJS modules/showcase/ui/CopyButton.tsx.
+// Reuses the global `.copy-btn` handler in public/assets/js/showcase.js,
+// which listens for clicks on [data-code] and swaps the label + tone for ~2s.
+//
+// Usage:
+//   <%- include('partials/copy-button', { code: someString }) %>
+//   <%- include('partials/copy-button', { code: someString, label: 'Copy code', className: 'ml-2' }) %>
+
+var _code      = locals.code != null ? String(locals.code) : (locals.text != null ? String(locals.text) : '');
+var _label     = locals.label || 'Copy';
+var _ariaLabel = locals.ariaLabel || 'Copy code';
+var _className = locals.className || '';
+%>
+<button
+  type="button"
+  class="copy-btn px-2.5 py-1 text-xs rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken<%= _className ? ' ' + _className : '' %>"
+  data-code="<%- encodeURIComponent(_code) %>"
+  aria-label="<%= _ariaLabel %>"
+><%= _label %></button>
