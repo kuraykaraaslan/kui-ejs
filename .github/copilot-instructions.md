@@ -16,6 +16,16 @@ This is a **server-rendered Express + EJS** boilerplate, not a SPA. Conventions 
 
 Filter `components[]` by `layer` (`ui` \| `app` \| `domain` \| `theme`), `category`, `name`, or `filePath`. Use `composes[]` recursively to find include dependencies; `usedBy[]` is the inverse index.
 
+## ⚠️ Catalog sync — REQUIRED
+
+**Any time you add, rename, or remove a partial (`modules/ui/`, `modules/app/`, `modules/domain/<vertical>/`), a theme (`views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts`), a data file (`src/data/<vertical>.data.ts`), or a `showcase.menu.ts` entry, run:**
+
+```bash
+npm run registry:snapshot
+```
+
+**before committing.** This regenerates `public/registry/components.json` + `public/registry/components.index.json` + `public/components/*.md` from the showcase data. The same script runs automatically via the `prebuild` npm hook before `npm run build`, but you must still commit the regenerated files so the catalog stays in lockstep with the code. A stale catalog misleads every AI agent that reads it — treat it as broken-build severity.
+
 ## Hard rules
 
 1. **Server-rendered Express + EJS only.** No React, no Vue, no htmx, no Alpine, no SPA bundling.

@@ -6,6 +6,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:css\"",
     "dev:server": "nodemon --watch src --watch views --watch modules --ext ts,ejs --exec tsx src/server.ts",
     "dev:css": "postcss public/assets/css/input.css -o public/assets/css/app.css --watch",
+    "prebuild": "npm run registry:snapshot",
     "build": "npm run build:css && tsc",
     "build:css": "postcss public/assets/css/input.css -o public/assets/css/app.css",
     "start": "node dist/server.js",

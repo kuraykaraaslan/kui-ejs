@@ -25,6 +25,14 @@ If you are an AI assistant working in this repo, **read these first**:
 | Type definitions | [src/registry/registry.types.ts](src/registry/registry.types.ts) | TypeScript types for the registry JSON. |
 | Raw-output audit | [docs/raw-output-allowlist.md](docs/raw-output-allowlist.md) | Every `<%- %>` site enumerated and justified. |
 
+> ⚠️ **Keep the catalog in sync (REQUIRED).** Any time you **add, rename, or remove** a partial (`modules/ui/`, `modules/app/`, `modules/domain/<vertical>/`), a theme (`views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts`), a data file (`src/data/<vertical>.data.ts`), or a `showcase.menu.ts` entry, you **must** rebuild the catalog before committing:
+>
+> ```bash
+> npm run registry:snapshot
+> ```
+>
+> This regenerates `public/registry/components.json` + `public/registry/components.index.json` + `public/components/*.md` from the showcase data. The script also runs automatically via the `prebuild` npm hook before `npm run build`, but commit the regenerated files so the catalog stays in lockstep with the code. A stale catalog is worse than no catalog — it misleads every AI agent that reads it.
+
 **Search recipe:**
 ```ts
 // "Find me every Card-like partial in the common domain"

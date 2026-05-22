@@ -102,6 +102,7 @@ var _defaultQualityLabel = (function() {
 var _subtitles       = locals.subtitles       || [];
 var _audioTracks     = locals.audioTracks     || [];
 var _autoHideControls = (locals.autoHideControls !== undefined) ? locals.autoHideControls : true;
+var _enableCast      = (locals.enableCast      !== undefined) ? locals.enableCast      : true;
 var _className       = locals.className       || '';
 
 var _src = locals.src || '';
@@ -166,6 +167,19 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     </div>
   </div>
 
+  <%/* ── Casting overlay ── */%>
+  <% if (_enableCast) { %>
+  <div id="<%= _id %>-cast-overlay"
+    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 gap-3 text-center px-6 hidden"
+    style="background:linear-gradient(to bottom,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.75) 55%,rgba(0,0,0,0) 100%)">
+    <i class="fa-brands fa-chromecast text-white text-5xl drop-shadow-lg" aria-hidden="true"></i>
+    <p id="<%= _id %>-cast-device" class="text-white/90 text-sm font-medium">Cihaza yayınlanıyor</p>
+    <% if (_title) { %>
+    <p class="text-white/60 text-xs max-w-[90%] truncate"><%= _title %></p>
+    <% } %>
+  </div>
+  <% } %>
+
   <%/* ── Subtitle overlay ── */%>
   <div id="<%= _id %>-subtitle-overlay"
     class="absolute left-0 right-0 flex justify-center px-6 pointer-events-none z-10 transition-all duration-300 hidden"
@@ -177,7 +191,7 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
   <%/* ── Controls layer ── */%>
   <div id="<%= _id %>-controls"
-    class="absolute inset-0 flex flex-col justify-end transition-opacity duration-300 opacity-100"
+    class="absolute inset-0 flex flex-col justify-end transition-opacity duration-300 opacity-100 z-20"
     onclick="window.__vp['<%= _id %>'].onBgClick(event)">
 
     <%/* Vignette */%>
@@ -461,6 +475,15 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
           <i id="<%= _id %>-gear-icon" class="fa-solid fa-gear text-sm transition-transform duration-300" aria-hidden="true"></i>
         </button>
 
+        <%/* Cast */%>
+        <% if (_enableCast) { %>
+        <button type="button" id="<%= _id %>-cast-btn" aria-label="Cast to device" aria-pressed="false"
+          onclick="window.__vp['<%= _id %>'].toggleCast()"
+          class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white hidden">
+          <i id="<%= _id %>-cast-icon" class="fa-brands fa-chromecast text-sm" aria-hidden="true"></i>
+        </button>
+        <% } %>
+
         <%/* Fullscreen */%>
         <button type="button" id="<%= _id %>-fs-btn" aria-label="Enter fullscreen"
           onclick="window.__vp['<%= _id %>'].toggleFullscreen()"
@@ -476,8 +499,12 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
 <script>
 (function () {
-  var id        = '<%= _id %>';
-  var autoHide  = <%- JSON.stringify(_autoHideControls) %>;
+  var id          = '<%= _id %>';
+  var autoHide    = <%- JSON.stringify(_autoHideControls) %>;
+  var enableCast  = <%- JSON.stringify(_enableCast) %>;
+  var castTitle   = <%- JSON.stringify(_title) %>;
+  var castPoster  = <%- JSON.stringify(_poster) %>;
+  var castFirstSrc = <%- JSON.stringify(_sources[0] || '') %>;
 
   window.__vp = window.__vp || {};
 
@@ -505,11 +532,25 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
   var gearIcon    = document.getElementById(id + '-gear-icon');
   var fsIcon      = document.getElementById(id + '-fs-icon');
   var settings    = document.getElementById(id + '-settings');
+  var castOverlay = document.getElementById(id + '-cast-overlay');
+  var castDeviceEl = document.getElementById(id + '-cast-device');
+  var castBtn     = document.getElementById(id + '-cast-btn');
+  var castIcon    = document.getElementById(id + '-cast-icon');
 
   // ── Internal state ──────────────────────────────────────────────────────────
   var hideTimer       = null;
   var cueListener     = null;
   var selectedSubIdx  = null;
+
+  // ── Cast state ──────────────────────────────────────────────────────────────
+  var castState       = 'unavailable';
+  var castDeviceName  = null;
+  var castContext     = null;
+  var castFramework   = null;
+  var chromeCast      = null;
+  var remotePlayer    = null;
+  var remoteController = null;
+  function isCasting() { return castState === 'connected'; }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
   function fmt(s) {
@@ -533,6 +574,7 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
   function scheduleHide(playing) {
     if (hideTimer) clearTimeout(hideTimer);
     setControlsVisible(true);
+    if (isCasting()) return; // pin controls while casting
     if (playing && autoHide)
       hideTimer = setTimeout(function () { setControlsVisible(false); }, 3000);
   }
@@ -591,7 +633,7 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
   video.addEventListener('ended',    function () { setPlayState(false); setControlsVisible(true); });
 
   container.addEventListener('mousemove',  function () { scheduleHide(!video.paused); });
-  container.addEventListener('mouseleave', function () { if (!video.paused && autoHide) setControlsVisible(false); });
+  container.addEventListener('mouseleave', function () { if (!isCasting() && !video.paused && autoHide) setControlsVisible(false); });
 
   // Keyboard
   container.addEventListener('keydown', function (e) {
@@ -624,16 +666,127 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     document.getElementById(id + '-fs-btn').setAttribute('aria-label', fs ? 'Exit fullscreen' : 'Enter fullscreen');
   });
 
+  // ── Cast helpers ────────────────────────────────────────────────────────────
+  function ensureCastSdk() {
+    if (!window.__vp_cast) window.__vp_cast = {};
+    if (window.__vp_cast.promise) return window.__vp_cast.promise;
+    window.__vp_cast.promise = new Promise(function (resolve) {
+      function done() {
+        if (window.cast && window.cast.framework && window.chrome && window.chrome.cast) {
+          resolve({ framework: window.cast.framework, chromeCast: window.chrome.cast });
+          return true;
+        }
+        return false;
+      }
+      if (done()) return;
+      var prev = window.__onGCastApiAvailable;
+      window.__onGCastApiAvailable = function (available) {
+        if (typeof prev === 'function') { try { prev(available); } catch (e) {} }
+        if (available) done();
+      };
+      if (!document.getElementById('google-cast-sdk')) {
+        var s = document.createElement('script');
+        s.id   = 'google-cast-sdk';
+        s.src  = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
+        s.async = true;
+        document.head.appendChild(s);
+      }
+    });
+    return window.__vp_cast.promise;
+  }
+
+  function mapCastState(s) {
+    if (s === 'CONNECTED')             return 'connected';
+    if (s === 'CONNECTING')            return 'connecting';
+    if (s === 'NO_DEVICES_AVAILABLE')  return 'unavailable';
+    return 'available';
+  }
+
+  function updateCastUi() {
+    if (castBtn) {
+      castBtn.classList.toggle('hidden', castState === 'unavailable');
+      castBtn.setAttribute('aria-pressed', isCasting() ? 'true' : 'false');
+      castBtn.setAttribute('aria-label', isCasting() ? 'Stop casting' : 'Cast to device');
+      var active = castState === 'connected' || castState === 'connecting';
+      castBtn.classList.toggle('text-primary', active);
+      castBtn.classList.toggle('text-white/80', !active);
+      if (castIcon) castIcon.classList.toggle('animate-pulse', castState === 'connecting');
+    }
+    if (castOverlay) castOverlay.classList.toggle('hidden', !isCasting());
+    if (castDeviceEl) castDeviceEl.textContent = castDeviceName
+      ? (castDeviceName + ' cihazına yayınlanıyor')
+      : 'Cihaza yayınlanıyor';
+    if (isCasting()) {
+      if (hideTimer) clearTimeout(hideTimer);
+      setControlsVisible(true);
+    }
+  }
+
+  function syncRemote() {
+    if (!remotePlayer || !remotePlayer.isConnected) return;
+    setPlayState(!remotePlayer.isPaused);
+    var dur = remotePlayer.duration;
+    if (dur > 0) durEl.textContent = fmt(dur);
+    if (isFinite(remotePlayer.currentTime)) {
+      curTimeEl.textContent = fmt(remotePlayer.currentTime);
+      if (dur > 0) {
+        var pct = (remotePlayer.currentTime / dur) * 100;
+        playedEl.style.width = pct + '%';
+        thumbEl.style.left   = 'calc(' + pct + '% - 7px)';
+        progressEl.setAttribute('aria-valuenow', Math.round(pct));
+      }
+    }
+    if (volInput) volInput.value = remotePlayer.isMuted ? 0 : remotePlayer.volumeLevel;
+    updateVolumeIcon(remotePlayer.volumeLevel, remotePlayer.isMuted);
+  }
+
+  if (enableCast) {
+    ensureCastSdk().then(function (res) {
+      castFramework = res.framework;
+      chromeCast    = res.chromeCast;
+      castContext   = castFramework.CastContext.getInstance();
+      try {
+        castContext.setOptions({
+          receiverApplicationId: chromeCast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+          autoJoinPolicy:        chromeCast.AutoJoinPolicy.ORIGIN_SCOPED,
+        });
+      } catch (e) {}
+
+      function syncCastState() {
+        castState = mapCastState(castContext.getCastState());
+        var session = isCasting() ? castContext.getCurrentSession() : null;
+        var device  = session && session.getCastDevice ? session.getCastDevice() : null;
+        castDeviceName = device ? device.friendlyName : null;
+        updateCastUi();
+      }
+      castContext.addEventListener(castFramework.CastContextEventType.CAST_STATE_CHANGED, syncCastState);
+      syncCastState();
+
+      remotePlayer     = new castFramework.RemotePlayer();
+      remoteController = new castFramework.RemotePlayerController(remotePlayer);
+      remoteController.addEventListener(castFramework.RemotePlayerEventType.ANY_CHANGE, syncRemote);
+    });
+  }
+
   // ── Public API ───────────────────────────────────────────────────────────────
   window.__vp[id] = {
 
-    togglePlay: function () { if (video.paused) video.play(); else video.pause(); },
+    togglePlay: function () {
+      if (isCasting() && remoteController) { remoteController.playOrPause(); return; }
+      if (video.paused) video.play(); else video.pause();
+    },
 
     seekBy: function (delta) {
+      if (isCasting() && remotePlayer && remoteController) {
+        remotePlayer.currentTime = Math.max(0, Math.min(remotePlayer.duration || 0, remotePlayer.currentTime + delta));
+        remoteController.seek();
+        return;
+      }
       video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + delta));
     },
 
     toggleMute: function () {
+      if (isCasting() && remoteController) { remoteController.muteOrUnmute(); return; }
       video.muted = !video.muted;
       updateVolumeIcon(video.volume, video.muted);
       if (volInput) volInput.value = video.muted ? 0 : video.volume;
@@ -641,6 +794,13 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
     setVolume: function (val) {
       var v = Math.max(0, Math.min(1, parseFloat(val)));
+      if (isCasting() && remotePlayer && remoteController) {
+        remotePlayer.volumeLevel = v;
+        remoteController.setVolumeLevel();
+        if (volInput) volInput.value = v;
+        updateVolumeIcon(v, v === 0);
+        return;
+      }
       video.volume = v; video.muted = v === 0;
       if (volInput) volInput.value = v;
       updateVolumeIcon(v, v === 0);
@@ -654,6 +814,12 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     seek: function (e) {
       var rect = progressEl.getBoundingClientRect();
       var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      if (isCasting() && remotePlayer && remoteController) {
+        if (!remotePlayer.duration) return;
+        remotePlayer.currentTime = ratio * remotePlayer.duration;
+        remoteController.seek();
+        return;
+      }
       if (video.duration) video.currentTime = ratio * video.duration;
     },
 
@@ -757,7 +923,28 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
     },
 
     onBgClick: function (e) {
-      if (e.target === controls) this.togglePlay();
+      if (e.target === controls && !isCasting()) this.togglePlay();
+    },
+
+    toggleCast: function () {
+      if (!castContext || !chromeCast) return;
+      if (isCasting()) { castContext.endCurrentSession(true); return; }
+      castContext.requestSession().then(function () {
+        var session = castContext.getCurrentSession();
+        if (!session) return;
+        var first = castFirstSrc;
+        var src = video.currentSrc || (typeof first === 'string' ? first : (first && first.src) || '');
+        if (!src) return;
+        var contentType = (first && typeof first === 'object' && first.type) ? first.type : 'video/mp4';
+        var mediaInfo = new chromeCast.media.MediaInfo(src, contentType);
+        var metadata  = new chromeCast.media.GenericMediaMetadata();
+        if (castTitle)  metadata.title  = castTitle;
+        if (castPoster) metadata.images = [new chromeCast.Image(castPoster)];
+        mediaInfo.metadata = metadata;
+        var request = new chromeCast.media.LoadRequest(mediaInfo);
+        request.currentTime = video.currentTime || 0;
+        session.loadMedia(request).then(function () { video.pause(); }).catch(function () {});
+      }).catch(function () {});
     },
   };
 
