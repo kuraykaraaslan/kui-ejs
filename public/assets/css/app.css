@@ -888,12 +888,6 @@
   .min-h-\[60vh\] {
     min-height: 60vh;
   }
-  .min-h-\[160px\] {
-    min-height: 160px;
-  }
-  .min-h-\[320px\] {
-    min-height: 320px;
-  }
   .min-h-screen {
     min-height: 100vh;
   }
