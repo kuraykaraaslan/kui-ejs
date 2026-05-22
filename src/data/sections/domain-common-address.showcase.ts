@@ -65,7 +65,7 @@ export function buildDomainCommonAddressData(): ShowcaseItem[] {
       title: 'AddressForm',
       category: 'Domain',
       abbr: 'Af',
-      description: 'Ad, telefon, adres satırları, şehir, bölge, posta kodu ve ülke alanlarından oluşan adres formu. initial prop ile önceden doldurulabilir.',
+      description: 'Full address form with full name, phone, address lines, city, state/district, postal code, and country. Pre-fillable via the initial prop.',
       filePath: 'modules/domain/common/address/AddressForm.ejs',
       sourceCode: addressFormSource,
       variants: [
@@ -140,7 +140,7 @@ export function buildDomainCommonAddressData(): ShowcaseItem[] {
       title: 'AddressCard',
       category: 'Domain',
       abbr: 'Ac',
-      description: 'Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta kodu ve ülge. Seçili durum ve edit/delete butonları.',
+      description: 'Read-only address display card with full name, phone, address lines, city, state, postal code, and country. Supports selected state and optional Edit/Delete actions.',
       filePath: 'modules/domain/common/address/AddressCard.ejs',
       sourceCode: addressCardSource,
       variants: [
@@ -173,7 +173,7 @@ export function buildDomainCommonAddressData(): ShowcaseItem[] {
       title: 'AddressSelector',
       category: 'Domain',
       abbr: 'As',
-      description: 'AddressCard üzerine kurulu seçilebilir adres listesi. Ekle, düzenle ve sil callback\'leri destekler.',
+      description: 'Selectable list of saved addresses built on AddressCard. Supports add, edit, and delete callbacks.',
       filePath: 'modules/domain/common/address/AddressSelector.ejs',
       sourceCode: addressSelectorSource,
       variants: [

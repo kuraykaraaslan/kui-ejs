@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-AddressCard üzerine kurulu seçilebilir adres listesi. Ekle, düzenle ve sil callback'leri destekler.
+Selectable list of saved addresses built on AddressCard. Supports add, edit, and delete callbacks.
 
 ## Design tokens consumed
 

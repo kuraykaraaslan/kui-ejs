@@ -14,7 +14,7 @@ export function buildAuthSchemeCardData(): ShowcaseItem[] {
       title:       'AuthSchemeCard',
       category:    'Domain · API Doc',
       abbr:        'AK',
-      description: 'Bir kimlik doğrulama şemasını kart olarak özetler. İkon, isim, SecuritySchemeBadge, opsiyonel Recommended rozeti, açıklama ve meta alanlar (clientId, scopes vb.) içerir; href / onSelect ile etkileşimli hâle gelir.',
+      description: 'Selectable card describing a single auth scheme (apiKey, http, oauth2, openIdConnect, mutualTLS).',
       filePath:    'modules/domain/api-doc/AuthSchemeCard.ejs',
       sourceCode,
       variants: [

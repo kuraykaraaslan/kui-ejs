@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Sipariş onayı makbuzu. Satır kalemleri, ara toplam/vergi/toplam ve kargo adresi.
+Order confirmation receipt. Line items, subtotal/tax/total, and shipping address.
 
 ## Design tokens consumed
 

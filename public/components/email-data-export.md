@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Veri dışa aktarma hazır bildirimi. Dosya boyutu, format, son kullanma tarihi ve indirme CTA.
+Data export ready notice. File size, format, expiration date, and download CTA.
 
 ## Design tokens consumed
 

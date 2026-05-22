@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Kupon kodu giriş + uygula/kaldır akışı. Sunucu taraflı doğrulama ile hata/başarı mesajları.
+Coupon code input with apply/remove flow. Calls onApply which returns success/error; shows applied state once a valid code is accepted.
 
 ## Design tokens consumed
 

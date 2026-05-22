@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Erişilebilir tab navigasyonu. ARIA rollerini, klavye gezintisini ve içerik panellerini içerir.
+Accessible tab navigation following the role="tablist" / role="tab" / role="tabpanel" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs.
 
 ## Design tokens consumed
 

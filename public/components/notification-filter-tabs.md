@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Bildirim listesi için pill-tarzı filtre sekmeleri. Sayaç rozeti, aktif/pasif renkler ve role="tab" / aria-selected ile erişilebilir.
+Pill-style filter tabs for a notification list. Includes count badges, active/inactive colors, and is accessible via role="tab" / aria-selected.
 
 ## Design tokens consumed
 

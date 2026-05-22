@@ -58,7 +58,7 @@ export function buildDateRangePickerData(): ShowcaseItem[] {
       title: 'DateRangePicker',
       category: 'Molecule',
       abbr: 'Dr',
-      description: 'fieldset tabanlı çift native date input. Start/end birbirini otomatik kısıtlar (min/max), erişilebilir sr-only labellarla gelir.',
+      description: 'fieldset-based dual native date inputs. Start/end auto-constrain each other (min/max) with accessible sr-only labels.',
       filePath: 'modules/ui/DateRangePicker.ejs',
       sourceCode,
       variants: [

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Çok fazla başarısız giriş sonrası kilit e-postası. Kilit açma süresi, sebep ve "Unlock" / "Support" butonları.
+Account lock email after too many failed sign-in attempts. Unlock time, reason, and "Unlock" / "Support" buttons.
 
 ## Design tokens consumed
 

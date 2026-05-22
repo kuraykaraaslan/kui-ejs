@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-SSID, band (2.4/5/6 GHz), güvenlik modu ve guest/disabled etiketleri. editHref prop'u ile düzenleme bağlantısı eklenir.
+SSID, band (2.4/5/6 GHz), security mode, and guest/disabled labels. An edit link is added via the editHref prop.
 
 ## Design tokens consumed
 

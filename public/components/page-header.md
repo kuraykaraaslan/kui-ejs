@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Sayfa başlığı + subtitle + opsiyonel badge + action butonları. 5 buton varyantı (primary/secondary/outline/danger/ghost); href ile link veya button olarak render edilir.
+Page title + subtitle + optional badge + action buttons. Supports 5 button variants (primary/secondary/outline/danger/ghost); rendered as a link with href or as a button.
 
 ## Design tokens consumed
 

@@ -26,7 +26,7 @@ export function buildSliderData(): ShowcaseItem[] {
       title:       'Slider',
       category:    'Organism',
       abbr:        'Sl',
-      description: 'Erişilebilir carousel. role="region" + aria-roledescription="carousel" + slide aria etiketleri dahildir. Otomatik oynatma, dot navigasyon ve loop kontrolleri desteklenir.',
+      description: 'Accessible carousel. Includes role="region" + aria-roledescription="carousel" and per-slide aria labels. Supports autoplay, arrow keys, and dot navigation.',
       filePath:    'modules/ui/Slider.ejs',
       sourceCode:  sliderSource,
       variants: [

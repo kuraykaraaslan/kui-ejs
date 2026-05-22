@@ -60,7 +60,7 @@ export function buildAppNotificationSystemData(): ShowcaseItem[] {
       title: 'NotificationSystem',
       category: 'App',
       abbr: 'NS',
-      description: 'Sayfa düzeyinde toast container ve global `window.notify` / `window.pushNotification` API\'leri. 6 konum, 5 variant (success/warning/error/info/loading), otomatik kapanma için ilerleme çubuğu, hover ile duraklatma, manuel dismiss.',
+      description: 'Page-level toast container with global `window.notify` / `window.pushNotification` API. 6 positions, 5 variants (success/warning/error/info/loading), auto-dismiss progress bar, hover to pause, manual dismiss.',
       filePath: 'modules/app/NotificationSystem.ejs',
       sourceCode,
       variants: [

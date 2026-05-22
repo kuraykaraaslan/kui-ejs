@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Native select ile dil seçici. en/tr/de/fr/ar varsayılan diller; autoSubmit ile form aracılığıyla otomatik gönderi.
+Language selector using a native select. Defaults to en/tr/de/fr/ar; with autoSubmit the form is submitted automatically on change.
 
 ## Design tokens consumed
 

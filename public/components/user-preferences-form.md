@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Tema (SYSTEM/LIGHT/DARK), dil seçimi, email/push/newsletter toggle'ları içeren tercihler formu.
+Preferences form with theme and language selects plus email/push notification and newsletter toggles.
 
 ## Design tokens consumed
 

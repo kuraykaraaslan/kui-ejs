@@ -46,7 +46,7 @@ const connectionStatusBadgeItem: ShowcaseItem = {
   title: 'ConnectionStatusBadge',
   category: 'Domain · Modem',
   abbr: 'CS',
-  description: 'Router/modem bağlantı durumları için renk kodlu rozet. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.',
+  description: 'Color-coded badge for router/modem connection states. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.',
   filePath: 'modules/domain/modem/ConnectionStatusBadge.ejs',
   sourceCode: connectionStatusBadgeSource,
   variants: [
@@ -97,7 +97,7 @@ const systemStatusCardItem: ShowcaseItem = {
   title: 'SystemStatusCard',
   category: 'Domain · Modem',
   abbr: 'SS',
-  description: 'Cihaz modeli, CPU/RAM ilerleme çubukları, sıcaklık, uptime ve firmware versiyonu. Sıcaklık eşiğine göre renk değişir (>55 warning, >70 error).',
+  description: 'Device model, CPU/RAM progress bars, temperature, uptime, and firmware version. Color changes based on temperature thresholds (>55 warning, >70 error).',
   filePath: 'modules/domain/modem/SystemStatusCard.ejs',
   sourceCode: systemStatusCardSource,
   variants: [
@@ -201,7 +201,7 @@ const wanStatusCardItem: ShowcaseItem = {
   title: 'WanStatusCard',
   category: 'Domain · Modem',
   abbr: 'WS',
-  description: 'WAN bağlantı tipi, IP/gateway/DNS bilgileri ve ISP hız göstergesi. Durum rozetine göre renk kodlaması.',
+  description: 'WAN connection type, IP/gateway/DNS information, and ISP speed indicator. Color-coded based on status badge.',
   filePath: 'modules/domain/modem/WanStatusCard.ejs',
   sourceCode: wanStatusCardSource,
   variants: [
@@ -305,7 +305,7 @@ const wifiNetworkCardItem: ShowcaseItem = {
   title: 'WifiNetworkCard',
   category: 'Domain · Modem',
   abbr: 'WN',
-  description: 'SSID, band (2.4/5/6 GHz), güvenlik modu ve guest/disabled etiketleri. editHref prop\'u ile düzenleme bağlantısı eklenir.',
+  description: 'SSID, band (2.4/5/6 GHz), security mode, and guest/disabled labels. An edit link is added via the editHref prop.',
   filePath: 'modules/domain/modem/WifiNetworkCard.ejs',
   sourceCode: wifiNetworkCardSource,
   variants: [
@@ -392,7 +392,7 @@ const connectedDeviceRowItem: ShowcaseItem = {
   title: 'ConnectedDeviceRow',
   category: 'Domain · Modem',
   abbr: 'CD',
-  description: 'Bağlı cihaz tablosu satırı. Cihaz ikonu, hostname/MAC, IP, bağlantı tipi (kablolu/wifi + dBm), trafik ve DHCP/Static/Blocked durumu.',
+  description: 'Connected device table row. Device icon, hostname/MAC, IP, connection type (wired/wifi + dBm), traffic, and DHCP/Static/Blocked status.',
   filePath: 'modules/domain/modem/ConnectedDeviceRow.ejs',
   sourceCode: connectedDeviceRowSource,
   variants: [
@@ -450,7 +450,7 @@ const portForwardRowItem: ShowcaseItem = {
   title: 'PortForwardRow',
   category: 'Domain · Modem',
   abbr: 'PF',
-  description: 'Port yönlendirme tablosu satırı. Kural adı, protokol, harici port, dahili IP:port ve etkin/devre dışı gösterimi.',
+  description: 'Port forwarding table row. Rule name, protocol, external port, internal IP:port, and enabled/disabled state.',
   filePath: 'modules/domain/modem/PortForwardRow.ejs',
   sourceCode: portForwardRowSource,
   variants: [
@@ -538,7 +538,7 @@ const alertItemItem: ShowcaseItem = {
   title: 'AlertItem',
   category: 'Domain · Modem',
   abbr: 'AI',
-  description: 'Router bildirimi satırı. INFO · WARNING · CRITICAL şiddet seviyeleri. Okunmamış uyarılar mavi nokta ile işaretlenir.',
+  description: 'Router notification row. INFO · WARNING · CRITICAL severity levels. Unread alerts are marked with a blue dot.',
   filePath: 'modules/domain/modem/AlertItem.ejs',
   sourceCode: alertItemSource,
   variants: [

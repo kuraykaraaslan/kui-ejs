@@ -31,7 +31,7 @@ export function buildEmptyStateData(): ShowcaseItem[] {
       title: 'EmptyState',
       category: 'Organism',
       abbr: 'Es',
-      description: 'Boş veri durumu için ikon, başlık, açıklama ve isteğe bağlı eylem düğmesi içeren merkezi yerleşim.',
+      description: 'Empty-state message shown when there is no data. Supports icon, title, description, and action slots.',
       filePath: 'modules/ui/EmptyState.ejs',
       sourceCode,
       variants: [

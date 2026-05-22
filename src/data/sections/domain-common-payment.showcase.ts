@@ -116,7 +116,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'PaymentStatusBadge',
       category: 'Domain',
       abbr: 'Ps',
-      description: 'PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED ödeme durumları için renk kodlu rozet.',
+      description: 'Color-coded badge for all PaymentStatus values: PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED.',
       filePath: 'modules/domain/common/payment/PaymentStatusBadge.ejs',
       sourceCode: paymentStatusBadgeSource,
       variants: [
@@ -149,7 +149,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'PaymentMethodSelector',
       category: 'Domain',
       abbr: 'Pm',
-      description: 'Radio-group kart seçici. Credit card, debit card, bank transfer ve wallet seçenekleri.',
+      description: 'Radio-group style card selector for payment methods. Shows icon, label, and description. Default set: credit card, debit card, bank transfer, wallet.',
       filePath: 'modules/domain/common/payment/PaymentMethodSelector.ejs',
       sourceCode: paymentMethodSelectorSource,
       variants: [
@@ -189,7 +189,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'PaymentSummaryCard',
       category: 'Domain',
       abbr: 'Sc',
-      description: 'Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum rozeti.',
+      description: 'Read-only payment summary card: amount, method, provider, provider reference, and status badge.',
       filePath: 'modules/domain/common/payment/PaymentSummaryCard.ejs',
       sourceCode: paymentSummaryCardSource,
       variants: [
@@ -244,7 +244,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'CreditCardVisual',
       category: 'Domain',
       abbr: 'Cv',
-      description: '3D flip kredi kartı görseli. Ön: numara, isim, son tarih. Arka: CVV şeridi. VISA, MC, AMEX, Discover destekli.',
+      description: 'Animated 3-D flip credit card. Front shows number, name, expiry; back shows CVV strip. Supports VISA, Mastercard, AMEX, Discover.',
       filePath: 'modules/domain/common/payment/CreditCardVisual.ejs',
       sourceCode: creditCardVisualSource,
       variants: [
@@ -279,7 +279,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'CreditCardForm',
       category: 'Domain',
       abbr: 'Cf',
-      description: 'Canlı kart görseli önizlemeli kredi kartı giriş formu. Marka tespiti, numara formatlaması ve geçerlilik doğrulaması.',
+      description: 'Full credit card entry form with live card visual preview. Auto-detects brand, formats number, flips card on CVV focus, validates expiry.',
       filePath: 'modules/domain/common/payment/CreditCardForm.ejs',
       sourceCode: creditCardFormSource,
       variants: [
@@ -336,7 +336,7 @@ export function buildDomainCommonPaymentData(): ShowcaseItem[] {
       title: 'SavedCardSelector',
       category: 'Domain',
       abbr: 'Sk',
-      description: 'Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve varsayılan göstergesi.',
+      description: 'Radio-group list of saved payment cards. Shows brand badge, masked number, expiry, and default indicator. Supports remove and add-new callbacks.',
       filePath: 'modules/domain/common/payment/SavedCardSelector.ejs',
       sourceCode: savedCardSelectorSource,
       variants: [

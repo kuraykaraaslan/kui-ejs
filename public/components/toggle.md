@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Boolean ayarlar için sürgü kontrolü. peer tabanlı CSS ile çalışır; label ve 3 boyut destekler.
+role="switch" toggle/switch with three sizes, description slot, and disabled support. Fully accessible via CSS transform without a native input.
 
 ## Design tokens consumed
 

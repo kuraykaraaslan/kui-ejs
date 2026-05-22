@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Hata durumu: uyarı banner'ı + merkezi boş durum kombinasyonu. retryHref ile yeniden deneme linki.
+Error state pairing an inline alert banner with a centered empty state. Optional retry action.
 
 ## Design tokens consumed
 

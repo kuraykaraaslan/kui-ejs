@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Samples bölümleri details/summary ile katlanabilir.
+Tabbed panel showing all details of an API operation — parameters, request body, responses, and code samples.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Detay/kayıt sayfaları için sayfa başlığı. title, subtitle, status badge, aksiyon butonları ve opsiyonel sekme navigasyonu.
+Page header for detail/record views: title, subtitle, status badge, action buttons, and optional tab navigation.
 
 ## Design tokens consumed
 

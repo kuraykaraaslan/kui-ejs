@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Yatay navigasyon çubuğu. Masaüstünde inline linkler, mobilde hamburger drawer açar. logoContent, navItems ve children slotları. sticky ve bordered seçenekleri.
+Horizontal navigation bar. Renders inline links on desktop and a hamburger that opens a NavDrawer on mobile. Provides logo, navItems and actions slots.
 
 ## Design tokens consumed
 

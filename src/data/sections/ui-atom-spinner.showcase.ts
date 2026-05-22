@@ -16,7 +16,7 @@ export function buildSpinnerData(): ShowcaseItem[] {
       title: 'Spinner',
       category: 'Atom',
       abbr: 'Sp',
-      description: 'CSS border tabanlı yükleme göstergesi. FontAwesome gerektirmez. 5 boyut, border-border / border-t-primary renk sistemi.',
+      description: 'CSS border-based loading indicator. Does not require FontAwesome. 5 sizes, border-border / border-t-primary colour system.',
       filePath: 'modules/ui/Spinner.ejs',
       sourceCode,
       variants: [

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-API sunucu listesini gösterir. Aktif sunucu URL ve ortam etiketi ile öne çıkar, diğerleri details/summary ile listelenir.
+Dropdown for selecting the active API server, with environment badges (production, staging, development, sandbox).
 
 ## Design tokens consumed
 

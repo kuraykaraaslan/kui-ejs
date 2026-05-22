@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-API anahtarı / kişisel erişim token kartı. Maskeli/gizli token gösterimi, göster-gizle, panoya kopyala, ortam rozeti, scope listesi ve isteğe bağlı revoke aksiyonu içerir.
+Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-used metadata.
 
 ## Design tokens consumed
 

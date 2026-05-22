@@ -26,7 +26,7 @@ export function buildAppBreadcrumbsData(): ShowcaseItem[] {
       title: 'AppBreadcrumbs',
       category: 'App',
       abbr: 'ABc',
-      description: 'Sayfa başlığı + açıklama + breadcrumb navigasyonu birleşik blok. Masaüstünde tam yol; mobilde ilk + son + … kısayolu ve "Full path" dropdown menüsü.',
+      description: 'Page header with breadcrumb trail, title, description, and optional status badge. Collapses to a Breadcrumb + dropdown menu on mobile for deep paths.',
       filePath: 'modules/app/AppBreadcrumbs.ejs',
       sourceCode,
       variants: [

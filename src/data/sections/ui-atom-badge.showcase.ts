@@ -16,7 +16,7 @@ export function buildBadgeData(): ShowcaseItem[] {
       title: 'Badge',
       category: 'Atom',
       abbr: 'Bg',
-      description: 'Durum, kategori veya etiket göstergesi. 6 semantik varyant, 3 boyut, dot ve dismissible desteği.',
+      description: 'Status, category or label indicator. 6 semantic variants, 3 sizes, dot and dismissible support.',
       filePath: 'modules/ui/Badge.ejs',
       sourceCode,
       variants: [

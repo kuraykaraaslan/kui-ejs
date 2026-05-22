@@ -39,7 +39,7 @@ export function buildToggleData(): ShowcaseItem[] {
       title: 'Toggle',
       category: 'Atom',
       abbr: 'Tg',
-      description: 'Boolean ayarlar için sürgü kontrolü. peer tabanlı CSS ile çalışır; label ve 3 boyut destekler.',
+      description: 'role="switch" toggle/switch with three sizes, description slot, and disabled support. Fully accessible via CSS transform without a native input.',
       filePath: 'modules/ui/Toggle.ejs',
       sourceCode,
       variants: [

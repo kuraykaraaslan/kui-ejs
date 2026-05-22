@@ -97,7 +97,7 @@ export function buildStepFlowData(): ShowcaseItem[] {
       title: 'StepFlow',
       category: 'App',
       abbr: 'SF',
-      description: 'Çok adımlı sihirbaz/akış: Stepper + adım içeriği + Back/Next/Cancel/Finish kontrolleri. Adım durumu (`complete` / `active` / `pending`), hata satırı (AlertBanner) ve `stepflow:next` / `stepflow:prev` / `stepflow:cancel` / `stepflow:complete` özel event\'leri ile sunucu veya kullanıcı tarafında ilerleme yönetilir.',
+      description: 'Multi-step wizard/flow: Stepper + step content + Back/Next/Cancel/Finish controls. Step state (`complete` / `active` / `pending`), inline error row (AlertBanner) and `stepflow:next` / `stepflow:prev` / `stepflow:cancel` / `stepflow:complete` custom events drive progress server- or client-side.',
       filePath: 'modules/app/StepFlow.ejs',
       sourceCode,
       variants: [

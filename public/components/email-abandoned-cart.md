@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Terk edilen sepet yeniden katılım e-postası. Kupon kodu, indirim teklifi ve sepet içeriği.
+Abandoned cart re-engagement email. Coupon code, discount offer, and cart contents.
 
 ## Design tokens consumed
 

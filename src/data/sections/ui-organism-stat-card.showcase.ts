@@ -18,7 +18,7 @@ export function buildStatCardData(): ShowcaseItem[] {
       title:       'StatCard',
       category:    'Organism',
       abbr:        'Sc',
-      description: 'Küçük metrik gösterim kartı; değer, etiket ve opsiyonel vurgu rengi (accent) ile.',
+      description: 'Compact metric display card with value, label, and optional accent color.',
       filePath:    'modules/ui/StatCard.ejs',
       sourceCode:  statCardSource,
       variants: [

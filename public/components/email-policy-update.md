@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Gizlilik politikası / kullanım şartları güncelleme. Madde madde özet ve yürürlük tarihi.
+Privacy policy / terms of service update. Point-by-point summary and effective date.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Drag-and-drop görünümlü dosya yükleme alanı. accept filtresi, multiple ve disabled desteği.
+Drag-and-drop file upload with validation, file list, and individual remove actions.
 
 ## Design tokens consumed
 

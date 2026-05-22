@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Light / Dark / System tema seçici dropdown. localStorage'a yazar; "system" seçildiğinde prefers-color-scheme medyasını dinler. DropdownMenu üzerine bina edilir; trigger içinde aktif moda göre ikon değişir.
+Tri-state theme selector (light / dark / system). Persists the choice to localStorage and toggles the .dark class on <html>. Mounts safely on the server with a placeholder until hydrated.
 
 ## Design tokens consumed
 

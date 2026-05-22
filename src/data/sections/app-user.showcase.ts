@@ -34,7 +34,7 @@ export function buildAppUserData(): ShowcaseItem[] {
       title: 'UserMenu',
       category: 'App',
       abbr: 'Um',
-      description: 'Avatar + isim + rol göstergen trigger\'a tıklayınca açılan kullanıcı dropdown\'ı. name, email, role, profileHref, settingsHref, signOutHref prop\'ları.',
+      description: 'User dropdown opened by a trigger showing avatar, name and role. Accepts a SafeUser prop; the dropdown header shows the name and email.',
       filePath: 'modules/domain/common/user/UserMenu.ejs',
       sourceCode: userMenuSource,
       variants: [
@@ -133,7 +133,7 @@ export function buildAppUserData(): ShowcaseItem[] {
       title: 'GlobalSearch',
       category: 'App',
       abbr: 'Gs',
-      description: 'Kategori bazlı arama sonuçları listesi ile global arama alanı. Statik önizlemede açık sonuç paneli görünür.',
+      description: 'Command-palette-style global search field. Supports a categorised result list, keyboard navigation and result selection.',
       filePath: 'modules/app/GlobalSearch.ejs',
       sourceCode: globalSearchSource,
       variants: [
@@ -191,7 +191,7 @@ export function buildAppUserData(): ShowcaseItem[] {
       title: 'AppCommandBar',
       category: 'App',
       abbr: 'Cb',
-      description: 'Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan Navigation/Actions/Recent grupları dahili. Klavye navigasyonu (↑↓ + Enter) destekler.',
+      description: 'Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.',
       filePath: 'modules/app/AppCommandBar.ejs',
       sourceCode: commandBarSource,
       variants: [

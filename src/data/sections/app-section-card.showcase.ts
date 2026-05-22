@@ -11,7 +11,7 @@ export function buildSectionCardData(): ShowcaseItem[] {
       title: 'SectionCard',
       category: 'App',
       abbr: 'SC',
-      description: 'Başlıklı içerik kartı. rounded-xl + border + bg-surface-raised + p-6 ile standart bölüm kabuğu sağlar; başlık alt çizgisi ile ayrılır ve children slotu serbest içerik kabul eder.',
+      description: 'Titled content card with rounded-xl + border + bg-surface-raised + p-6. Header is separated by an underline; children slot accepts arbitrary content.',
       filePath: 'modules/app/SectionCard.ejs',
       sourceCode,
       variants: [

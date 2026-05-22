@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-OAuth 2.0 akışını görsel olarak özetler: User → Your App → Auth Server hattı, akış türüne özel numaralı adım listesi, endpoint URL'leri (authorize / token / refresh) ve mevcut scope tanımları.
+Visual walkthrough of an OAuth 2.0 flow with actors, numbered steps, endpoints, and scopes.
 
 ## Design tokens consumed
 

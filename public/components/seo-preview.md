@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.
+Google search result preview card. Shows title, URL, and description with character count indicators. Empty fields render placeholder text.
 
 ## Design tokens consumed
 

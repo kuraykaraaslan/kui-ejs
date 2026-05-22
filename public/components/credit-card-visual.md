@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-05
 
-3D flip kredi kartı görseli. Ön: numara, isim, son tarih. Arka: CVV şeridi. VISA, MC, AMEX, Discover destekli.
+Animated 3-D flip credit card. Front shows number, name, expiry; back shows CVV strip. Supports VISA, Mastercard, AMEX, Discover.
 
 ## Variants
 

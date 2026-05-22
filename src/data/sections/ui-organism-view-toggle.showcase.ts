@@ -18,7 +18,7 @@ export function buildViewToggleData(): ShowcaseItem[] {
       title:       'ViewToggle',
       category:    'Organism',
       abbr:        'VT',
-      description: 'Yatay / dikey görünüm geçiş kontrolü; iki durumlu ikonlu seçici. viewtoggle:change CustomEvent yayar.',
+      description: 'Horizontal / vertical view toggle control; two-state icon selector. Emits a viewtoggle:change CustomEvent.',
       filePath:    'modules/ui/ViewToggle.ejs',
       sourceCode:  viewToggleSource,
       variants: [

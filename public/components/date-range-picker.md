@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-fieldset tabanlı çift native date input. Start/end birbirini otomatik kısıtlar (min/max), erişilebilir sr-only labellarla gelir.
+fieldset-based dual native date inputs. Start/end auto-constrain each other (min/max) with accessible sr-only labels.
 
 ## Design tokens consumed
 

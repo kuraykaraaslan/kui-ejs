@@ -21,7 +21,7 @@ export function buildButtonData(): ShowcaseItem[] {
       title: 'Button',
       category: 'Atom',
       abbr: 'Bt',
-      description: 'Temel interaktif element. 5 görsel stil (variant) ve 5 boyut (size) destekler. disabled, loading ve selected durumları yerleşiktir.',
+      description: 'Core interactive element. Supports 5 visual styles (variants) and 5 sizes. disabled, loading and selected states are built-in.',
       filePath: 'modules/ui/Button.ejs',
       sourceCode,
       variants: [

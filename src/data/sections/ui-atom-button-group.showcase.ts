@@ -43,7 +43,7 @@ export function buildButtonGroupData(): ShowcaseItem[] {
       title: 'ButtonGroup',
       category: 'Atom',
       abbr: 'BG',
-      description: 'Birbirini dışlayan seçenekler için segmentli buton grubu. 4 variant, 4 boyut ve disabled item desteği.',
+      description: 'Segmented button group for mutually-exclusive options. Supports 4 variants, 4 sizes and disabled items.',
       filePath: 'modules/ui/ButtonGroup.ejs',
       sourceCode,
       variants: [

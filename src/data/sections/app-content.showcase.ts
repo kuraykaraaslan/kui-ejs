@@ -46,7 +46,7 @@ export function buildAppContentData(): ShowcaseItem[] {
       title: 'DetailHeader',
       category: 'App',
       abbr: 'Dh',
-      description: 'Detay/kayıt sayfaları için sayfa başlığı. title, subtitle, status badge, aksiyon butonları ve opsiyonel sekme navigasyonu.',
+      description: 'Page header for detail/record views: title, subtitle, status badge, action buttons, and optional tab navigation.',
       filePath: 'modules/app/DetailHeader.ejs',
       sourceCode: detailHeaderSource,
       variants: [
@@ -131,7 +131,7 @@ export function buildAppContentData(): ShowcaseItem[] {
       title: 'ErrorState',
       category: 'App',
       abbr: 'Er',
-      description: 'Hata durumu: uyarı banner\'ı + merkezi boş durum kombinasyonu. retryHref ile yeniden deneme linki.',
+      description: 'Error state pairing an inline alert banner with a centered empty state. Optional retry action.',
       filePath: 'modules/app/ErrorState.ejs',
       sourceCode: errorStateSource,
       variants: [
@@ -202,7 +202,7 @@ export function buildAppContentData(): ShowcaseItem[] {
       title: 'NotFoundState',
       category: 'App',
       abbr: 'Ns',
-      description: 'Kayıt bulunamadı / içerik yok durumu. backHref ile geri dön linki.',
+      description: 'Not-found / empty record state with optional go-back action.',
       filePath: 'modules/app/NotFoundState.ejs',
       sourceCode: notFoundSource,
       variants: [
@@ -251,7 +251,7 @@ export function buildAppContentData(): ShowcaseItem[] {
       title: 'LoadingState',
       category: 'App',
       abbr: 'Lo',
-      description: 'İskelet yükleme animasyonları. spinner / table / cards / list / detail / form variant\'ları.',
+      description: 'Skeleton loading animations. Variants: spinner / table / cards / list / detail / form.',
       filePath: 'modules/app/LoadingState.ejs',
       sourceCode: loadingStateSource,
       variants: [
@@ -338,7 +338,7 @@ export function buildAppContentData(): ShowcaseItem[] {
       title: 'SplashScreen',
       category: 'App',
       abbr: 'Ss',
-      description: 'Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.',
+      description: 'Full-screen overlay shown during app initialisation. Accepts a logo slot, optional progress bar, and fades out when visible=false.',
       filePath: 'modules/app/SplashScreen.ejs',
       sourceCode: splashSource,
       variants: [

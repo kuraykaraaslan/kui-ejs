@@ -39,7 +39,7 @@ export function buildDomainCommonNotificationFilterTabsData(): ShowcaseItem[] {
       category: 'Domain',
       abbr: 'NF',
       description:
-        'Bildirim listesi için pill-tarzı filtre sekmeleri. Sayaç rozeti, aktif/pasif renkler ve role="tab" / aria-selected ile erişilebilir.',
+        'Pill-style filter tabs for a notification list. Includes count badges, active/inactive colors, and is accessible via role="tab" / aria-selected.',
       filePath: 'modules/domain/common/notification/NotificationFilterTabs.ejs',
       sourceCode,
       variants: [

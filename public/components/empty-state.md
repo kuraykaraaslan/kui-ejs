@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Boş veri durumu için ikon, başlık, açıklama ve isteğe bağlı eylem düğmesi içeren merkezi yerleşim.
+Empty-state message shown when there is no data. Supports icon, title, description, and action slots.
 
 ## Design tokens consumed
 

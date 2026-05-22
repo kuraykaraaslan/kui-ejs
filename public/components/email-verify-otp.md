@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-6 haneli OTP kodu. Büyük, mono font kod gösterimi ve süre uyarısı.
+6-digit OTP code. Large mono-font code display and expiry notice.
 
 ## Design tokens consumed
 

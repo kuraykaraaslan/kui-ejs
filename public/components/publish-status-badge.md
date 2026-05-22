@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-DRAFT / PUBLISHED / ARCHIVED içerik durumları için Font Awesome ikonlu rozet. showIcon=false ile ikon gizlenebilir.
+Badge for DRAFT / PUBLISHED / ARCHIVED content states with contextual Font Awesome icons. Icon can be hidden via showIcon={false}.
 
 ## Variants
 

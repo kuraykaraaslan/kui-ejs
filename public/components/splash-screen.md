@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-05
 
-Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.
+Full-screen overlay shown during app initialisation. Accepts a logo slot, optional progress bar, and fades out when visible=false.
 
 ## Design tokens consumed
 

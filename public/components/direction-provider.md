@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Dil koduna göre dir="rtl"/"ltr" atayan wrapper div. RTL dilleri: ar, he, fa, ur, yi, ku, ps, sd.
+Wrapper div that sets dir="rtl"/"ltr" based on the language code. RTL languages: ar, he, fa, ur, yi, ku, ps, sd.
 
 ## Variants
 

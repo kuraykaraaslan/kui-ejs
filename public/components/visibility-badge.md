@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-PUBLIC / PRIVATE / UNLISTED görünürlük durumları için ikon-rozet. PUBLIC yeşil, PRIVATE kırmızı, UNLISTED nötr.
+Badge for PUBLIC / PRIVATE / UNLISTED visibility states with eye/lock icons. PUBLIC is green, PRIVATE is red, UNLISTED is neutral.
 
 ## Variants
 

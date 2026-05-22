@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Şifre sıfırlama linki gönderim formu. sent=true olduğunda onay mesajı gösterir.
+Email input that triggers a password reset link. Shows an inline success state after submission instead of a redirect.
 
 ## Design tokens consumed
 

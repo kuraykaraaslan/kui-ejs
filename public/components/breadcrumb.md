@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current="page" son öğede.
+Hierarchical navigation trail wrapped in nav aria-label="Breadcrumb". Last item marked with aria-current="page" and aria-hidden separators.
 
 ## Design tokens consumed
 

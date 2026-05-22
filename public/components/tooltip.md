@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Hover/focus üzerine açılan kısa açıklayıcı katman. 4 yerleşim, 3 tema, isteğe bağlı ok ve gecikme süresi.
+Short hint shown on hover and focus. Accessible via role="tooltip" + aria-describedby. Supports 4 placements, 3 themes, optional arrow, and configurable delay.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Sayfa başlığı + açıklama + breadcrumb navigasyonu birleşik blok. Masaüstünde tam yol; mobilde ilk + son + … kısayolu ve "Full path" dropdown menüsü.
+Page header with breadcrumb trail, title, description, and optional status badge. Collapses to a Breadcrumb + dropdown menu on mobile for deep paths.
 
 ## Design tokens consumed
 

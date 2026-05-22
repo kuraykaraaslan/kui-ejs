@@ -65,7 +65,7 @@ export function buildTooltipData(): ShowcaseItem[] {
       title: 'Tooltip',
       category: 'Organism',
       abbr: 'Tt',
-      description: 'Hover/focus üzerine açılan kısa açıklayıcı katman. 4 yerleşim, 3 tema, isteğe bağlı ok ve gecikme süresi.',
+      description: 'Short hint shown on hover and focus. Accessible via role="tooltip" + aria-describedby. Supports 4 placements, 3 themes, optional arrow, and configurable delay.',
       filePath: 'modules/ui/Tooltip.ejs',
       sourceCode,
       variants: [

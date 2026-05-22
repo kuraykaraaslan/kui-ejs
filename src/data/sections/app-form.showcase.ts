@@ -52,7 +52,7 @@ export function buildAppFormData(): ShowcaseItem[] {
       title: 'Form',
       category: 'App',
       abbr: 'Fm',
-      description: 'Form layout wrapper. title, description, error ve actionsContent slot\'ları. columns prop ile 1 veya 2 kolonlu grid düzeni.',
+      description: 'Form layout wrapper with title, description, error and actions slots. `columns` prop renders fields in a 1 or 2 column grid.',
       filePath: 'modules/app/Form.ejs',
       sourceCode: formSource,
       variants: [
@@ -125,7 +125,7 @@ export function buildAppFormData(): ShowcaseItem[] {
       title: 'FilterBar',
       category: 'App',
       abbr: 'Fb',
-      description: 'Select, multiselect, daterange ve text tabanlı filtre paneli. GET form submit ile URL tabanlı filtre desteği.',
+      description: 'Select, multiselect, daterange and text-based filter panel. Supports URL-based filtering via GET form submit.',
       filePath: 'modules/app/FilterBar.ejs',
       sourceCode: filterBarSource,
       variants: [

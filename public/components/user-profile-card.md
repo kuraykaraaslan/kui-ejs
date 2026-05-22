@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Profil kartı: kapak banner, avatar, görünen ad, kullanıcı adı, biyografi, rol ve durum rozetleri ve isteğe bağlı actions slotu.
+Profile card with cover banner, avatar, display name, username, bio, role and status badges, and an optional actions slot.
 
 ## Design tokens consumed
 

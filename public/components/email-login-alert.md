@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Yeni cihazdan giriş uyarısı. Cihaz, konum ve IP bilgisi; "Secure My Account" ve "This Was Me" CTA çifti.
+New device sign-in alert. Device, location, and IP info; "Secure My Account" and "This Was Me" CTA pair.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Süre sınırlı kampanya. Gradient başlık, fiyat karşılaştırma, kesik çizgili kupon kodu.
+Limited-time promotion. Gradient header, price comparison, dashed-border coupon code.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Sipariş iptali bildirimi. İptal sebebi, üstü çizili kalemler ve iade süresi.
+Order cancellation notice. Cancellation reason, struck-through items, and refund window.
 
 ## Design tokens consumed
 

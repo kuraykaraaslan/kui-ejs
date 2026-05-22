@@ -96,7 +96,7 @@ export function buildTreeViewData(): ShowcaseItem[] {
       title: 'TreeView',
       category: 'Organism',
       abbr: 'Tv',
-      description: 'Yinelemeli ağaç yapısı. role="tree"/treeitem/group, klavye gezinmesi (Enter/Space/ArrowLeft/ArrowRight) ve seçim için inline script. Çocuksuz düğümler seçilebilir, çocuklu düğümler açılır/kapanır.',
+      description: 'Collapsible tree with keyboard navigation, selection, and aria-tree roles.',
       filePath: 'modules/ui/TreeView.ejs',
       sourceCode,
       variants: [

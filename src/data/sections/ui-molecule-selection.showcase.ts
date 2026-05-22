@@ -109,7 +109,7 @@ export function buildMoleculeSelectionData(): ShowcaseItem[] {
       title: 'Select',
       category: 'Molecule',
       abbr: 'Sl',
-      description: 'Label + select + hint + error anatomy. appearance-none ile native dropdown stilini override eder, chevron ikonu ile.',
+      description: 'Label + select + hint + error anatomy. appearance-none overrides the native dropdown style and renders a chevron icon.',
       filePath: 'modules/ui/Select.ejs',
       sourceCode: selectSource,
       variants: [
@@ -159,7 +159,7 @@ export function buildMoleculeSelectionData(): ShowcaseItem[] {
       title: 'RadioGroup',
       category: 'Molecule',
       abbr: 'Rg',
-      description: 'fieldset + legend tabanlı radio grubu. WCAG uyumlu klavye navigasyonu, cardStyle varyantı ile görsel plan seçimi.',
+      description: 'fieldset + legend based radio group. WCAG-compliant keyboard navigation with an optional card-style variant.',
       filePath: 'modules/ui/RadioGroup.ejs',
       sourceCode: radioGroupSource,
       variants: [
@@ -213,7 +213,7 @@ export function buildMoleculeSelectionData(): ShowcaseItem[] {
       title: 'CheckboxGroup',
       category: 'Molecule',
       abbr: 'Cg',
-      description: 'Chip görünümlü çoklu seçim grubu. Seçili chip bg-primary-subtle / border-primary renk tokenları ile işaretlenir.',
+      description: 'Chip-style multi-select group. Selected chips use bg-primary-subtle / border-primary tokens. Keyboard accessible.',
       filePath: 'modules/ui/CheckboxGroup.ejs',
       sourceCode: checkboxGroupSource,
       variants: [

@@ -64,7 +64,7 @@ export function buildPopoverData(): ShowcaseItem[] {
       title: 'Popover',
       category: 'Organism',
       abbr: 'Po',
-      description: 'Tıklamayla açılan, role="dialog" tabanlı küçük overlay. 4 yerleşim, ESC ve dış-tık ile kapanma.',
+      description: 'Anchor-based contextual panel. Closes on outside click and Escape key. Supports top/bottom/left/right placement.',
       filePath: 'modules/ui/Popover.ejs',
       sourceCode,
       variants: [

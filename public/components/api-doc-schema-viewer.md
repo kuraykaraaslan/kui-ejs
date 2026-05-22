@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-JSON Schema nesnesini hiyerarşik olarak görselleştirir. İç içe nesneler details/summary ile genişletilebilir.
+Interactive JSON Schema tree viewer with type coloring, constraint display, and collapsible nodes.
 
 ## Design tokens consumed
 

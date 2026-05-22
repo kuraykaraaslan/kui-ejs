@@ -103,7 +103,7 @@ export function buildDomainCommonCheckoutSuccessStateData(): ShowcaseItem[] {
       category: 'Domain',
       abbr: 'CK',
       description:
-        'Ödeme tamamlama sonrası başarı ekranı; onay ikonu, ödeme özeti ve opsiyonel teslimat adresi.',
+        'Success screen shown after checkout completion; includes a confirmation icon, payment summary, and optional delivery address.',
       filePath: 'modules/domain/common/payment/CheckoutSuccessState.ejs',
       sourceCode,
       variants: [

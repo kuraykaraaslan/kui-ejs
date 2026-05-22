@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Yatay / dikey görünüm geçiş kontrolü; iki durumlu ikonlu seçici. viewtoggle:change CustomEvent yayar.
+Horizontal / vertical view toggle control; two-state icon selector. Emits a viewtoggle:change CustomEvent.
 
 ## Design tokens consumed
 

@@ -78,7 +78,7 @@ const languageSwitcherItem: ShowcaseItem = {
   title: 'LanguageSwitcher',
   category: 'Domain',
   abbr: 'Ls',
-  description: 'Native select ile dil seçici. en/tr/de/fr/ar varsayılan diller; autoSubmit ile form aracılığıyla otomatik gönderi.',
+  description: 'Language selector using a native select. Defaults to en/tr/de/fr/ar; with autoSubmit the form is submitted automatically on change.',
   filePath: 'modules/domain/common/i18n/LanguageSwitcher.ejs',
   sourceCode: languageSwitcherSource,
   variants: [
@@ -115,7 +115,7 @@ const directionProviderItem: ShowcaseItem = {
   title: 'DirectionProvider',
   category: 'Domain',
   abbr: 'Dp',
-  description: 'Dil koduna göre dir="rtl"/"ltr" atayan wrapper div. RTL dilleri: ar, he, fa, ur, yi, ku, ps, sd.',
+  description: 'Wrapper div that sets dir="rtl"/"ltr" based on the language code. RTL languages: ar, he, fa, ur, yi, ku, ps, sd.',
   filePath: 'modules/domain/common/i18n/DirectionProvider.ejs',
   sourceCode: directionProviderSource,
   variants: [
@@ -159,7 +159,7 @@ const notFoundPageItem: ShowcaseItem = {
   title: 'NotFoundPage',
   category: 'Domain',
   abbr: 'Nf',
-  description: 'Tam sayfa 404 bileşeni. Gradient 404 yazısı, ikon, başlık, açıklama ve "Go Home" / "Go Back" butonları.',
+  description: 'Full-page 404 screen with a gradient "404" heading, icon slot, title, description, and home/back action buttons.',
   filePath: 'modules/domain/common/NotFoundPage.ejs',
   sourceCode: notFoundPageSource,
   variants: [

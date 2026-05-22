@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Oturum süresi dolduğunda gösterilen uyarı banner'ı. "Sign in again" CTA butonu içerir.
+Warning banner shown when the user session has expired. Includes a "Sign in again" action button.
 
 ## Design tokens consumed
 

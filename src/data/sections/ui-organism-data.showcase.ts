@@ -140,7 +140,7 @@ export function buildOrganismDataData(): ShowcaseItem[] {
       title: 'Table',
       category: 'Organism',
       abbr: 'Tl',
-      description: 'Semantik HTML tablosu. thead/tbody, sütun hizalaması ve boş durum mesajı desteği.',
+      description: 'Responsive table. scope="col" headers, hover row highlight, empty-state message, and custom cell render support.',
       filePath: 'modules/ui/Table.ejs',
       sourceCode: tableSource,
       variants: [
@@ -203,7 +203,7 @@ export function buildOrganismDataData(): ShowcaseItem[] {
       title: 'DataTable',
       category: 'Organism',
       abbr: 'DT',
-      description: 'Server-side paginated data table. Card wrapper, başlık slotu, toolbar slotu, tıklanabilir satır ve her zaman görünür pagination desteği.',
+      description: 'Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.',
       filePath: 'modules/ui/DataTable.ejs',
       sourceCode: dataTableSource,
       variants: [

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-ISO2 kodlu ülke listesi üzerinden aranabilir, klavye erişilebilir özel select. Form gönderimi için gizli input, hata/hint/required durumları ve fixed pozisyonlu açılır panel içerir.
+Country dropdown built from countries-list. Shows flag + full name + ISO2 code. Supports search by name or code, error/hint states.
 
 ## Design tokens consumed
 

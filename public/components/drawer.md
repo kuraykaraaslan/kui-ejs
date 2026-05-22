@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Kenar paneli. left/right açılım, backdrop, ESC ve tabindex=-1 odak yönetimi ile birlikte gelir.
+Side panel sliding in from the screen edge. Left / right placement with focus management and Escape close.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Fiyatlandırma sayfaları için abonelik plan kartı. Popüler/aktif rozetleri, Intl.NumberFormat ile yerelleştirilmiş para birimi, özellik listesi ve POST aksiyonlu seçim formu içerir.
+Subscription plan card displaying name, price with currency formatting, billing interval, and feature list with checkmarks. Highlights the popular and current plans. Accepts onSelect callback for plan switching.
 
 ## Design tokens consumed
 

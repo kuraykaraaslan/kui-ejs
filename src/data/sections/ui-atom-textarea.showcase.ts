@@ -41,7 +41,7 @@ export function buildTextareaData(): ShowcaseItem[] {
       title: 'Textarea',
       category: 'Atom',
       abbr: 'Ta',
-      description: 'Çok satırlı metin giriş alanı. Label, hint, error ve disabled durumları; resize kontrolü destekler.',
+      description: 'Label + textarea + hint + error anatomy. Vertical resizing is enabled via resize-y and the parts are linked through aria-describedby.',
       filePath: 'modules/ui/Textarea.ejs',
       sourceCode,
       variants: [

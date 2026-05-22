@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Server-side paginated data table. Card wrapper, başlık slotu, toolbar slotu, tıklanabilir satır ve her zaman görünür pagination desteği.
+Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.
 
 ## Design tokens consumed
 

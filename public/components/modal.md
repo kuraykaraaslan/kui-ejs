@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Odak kapanı dialog. Backdrop, ESC tuşu ile kapatma, ARIA labelledby/describedby ve sm/md/lg boyutu.
+Focus-trapped dialog. Closes on Escape and backdrop click. Requires role="dialog" + aria-modal + aria-labelledby; supports sm/md/lg sizes.
 
 ## Design tokens consumed
 

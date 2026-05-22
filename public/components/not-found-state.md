@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Kayıt bulunamadı / içerik yok durumu. backHref ile geri dön linki.
+Not-found / empty record state with optional go-back action.
 
 ## Design tokens consumed
 

@@ -53,7 +53,7 @@ export function buildAppDrawerData(): ShowcaseItem[] {
       title: 'AppDrawer',
       category: 'App',
       abbr: 'AD',
-      description: 'Sayfa kenarından açılan modal navigasyon panel: tetik butonu, arka plan, kapanış, focus trap, Escape ile kapanma. `navGroups` ile gruplanmış öğeler, opsiyonel arama kutusu (filterAppDrawer) ve `appdrawer:select` custom event.',
+      description: 'Modal navigation panel that slides in from the page edge: trigger button, backdrop, dismiss, focus trap and Escape-to-close. Renders grouped items via `navGroups`, an optional search box (filterAppDrawer) and emits an `appdrawer:select` custom event.',
       filePath: 'modules/app/AppDrawer.ejs',
       sourceCode,
       variants: [

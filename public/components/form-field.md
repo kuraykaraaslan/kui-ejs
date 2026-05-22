@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Form alanı wrapper'ı: label + slot + hint + error. Computed `id`, `aria-describedby` ve `aria-invalid` değerlerini sarmalayan `data-form-field` üzerinden expose eder. NextJS'deki react-hook-form karşıtının statik EJS muadili.
+Form field wrapper: label + slot + hint + error. Exposes computed `id`, `aria-describedby` and `aria-invalid` via the `data-form-field` container — the static EJS counterpart of the NextJS react-hook-form binding.
 
 ## Design tokens consumed
 

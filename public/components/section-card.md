@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Başlıklı içerik kartı. rounded-xl + border + bg-surface-raised + p-6 ile standart bölüm kabuğu sağlar; başlık alt çizgisi ile ayrılır ve children slotu serbest içerik kabul eder.
+Titled content card with rounded-xl + border + bg-surface-raised + p-6. Header is separated by an underline; children slot accepts arbitrary content.
 
 ## Design tokens consumed
 

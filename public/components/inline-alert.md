@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Form alanlarının yanında veya kart içlerinde kullanılan kısa uyarı şeridi. success / error / warning / info variant'ları; ikon + tek satır mesaj.
+Compact inline alert strip used next to form fields or inside cards. success / error / warning / info variants; icon + single-line message.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-OpenAPI güvenlik şeması türünü gösteren rozet. apiKey, http (Bearer), oauth2, openIdConnect, mutualTLS.
+Inline badge representing an API security scheme type with a matching icon and color.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Tek bir API yanıtını katlanabilir kart içinde gösterir. Durum kodu rozeti, açıklama ve şema içerir.
+Collapsible card for a single API response showing the status code, description, and response body schema.
 
 ## Design tokens consumed
 

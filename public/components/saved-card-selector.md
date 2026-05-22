@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-05
 
-Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve varsayılan göstergesi.
+Radio-group list of saved payment cards. Shows brand badge, masked number, expiry, and default indicator. Supports remove and add-new callbacks.
 
 ## Design tokens consumed
 

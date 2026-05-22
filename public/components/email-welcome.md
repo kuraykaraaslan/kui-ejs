@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Kayıt sonrası gönderilen hoş geldin e-postası. E-posta doğrulama CTA ve "next steps" listesi içerir.
+Welcome email sent after registration. Includes an email verification CTA and a "next steps" list.
 
 ## Design tokens consumed
 

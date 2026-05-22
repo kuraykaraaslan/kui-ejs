@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Destek talebi çözüldü bildirimi. Çözüm özeti, emoji derecelendirme ve yeniden açma seçeneği.
+Support ticket resolved notice. Resolution summary, emoji rating, and a reopen option.
 
 ## Design tokens consumed
 

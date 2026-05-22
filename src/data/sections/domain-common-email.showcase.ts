@@ -90,7 +90,7 @@ export function buildDomainCommonEmailData(): ShowcaseItem[] {
       title: 'WelcomeEmail',
       category: 'Email',
       abbr: 'We',
-      description: 'Kayıt sonrası gönderilen hoş geldin e-postası. E-posta doğrulama CTA ve "next steps" listesi içerir.',
+      description: 'Welcome email sent after registration. Includes an email verification CTA and a "next steps" list.',
       filePath: 'views/theme/common/email/auth/welcome.ejs',
       sourceCode: welcomeSrc,
       variants: [
@@ -129,7 +129,7 @@ res.render('theme/common/email/auth/welcome', {
       title: 'VerifyEmailOTP',
       category: 'Email',
       abbr: 'Vo',
-      description: '6 haneli OTP kodu. Büyük, mono font kod gösterimi ve süre uyarısı.',
+      description: '6-digit OTP code. Large mono-font code display and expiry notice.',
       filePath: 'views/theme/common/email/auth/verify-email.ejs',
       sourceCode: verifyEmailSrc,
       variants: [
@@ -172,7 +172,7 @@ res.render('theme/common/email/auth/verify-email', {
       title: 'PasswordResetEmail',
       category: 'Email',
       abbr: 'Pr',
-      description: 'Şifre sıfırlama linki e-postası. Süre uyarısı ve güvenlik notu içerir.',
+      description: 'Password reset link email. Includes an expiry notice and a security note.',
       filePath: 'views/theme/common/email/auth/password-reset.ejs',
       sourceCode: passwordResetSrc,
       variants: [
@@ -213,7 +213,7 @@ res.render('theme/common/email/auth/password-reset', {
       title: 'PasswordChangedEmail',
       category: 'Email',
       abbr: 'Pc',
-      description: 'Şifre değişikliği onay e-postası. Cihaz, IP ve konum bilgisi ile "Benim değildi" uyarısı.',
+      description: 'Password change confirmation email. Device, IP, and location info with a "Wasn\'t me" alert.',
       filePath: 'views/theme/common/email/auth/password-changed.ejs',
       sourceCode: passwordChangedSrc,
       variants: [
@@ -260,7 +260,7 @@ res.render('theme/common/email/auth/password-changed', {
       title: 'LoginAlertEmail',
       category: 'Email',
       abbr: 'La',
-      description: 'Yeni cihazdan giriş uyarısı. Cihaz, konum ve IP bilgisi; "Secure My Account" ve "This Was Me" CTA çifti.',
+      description: 'New device sign-in alert. Device, location, and IP info; "Secure My Account" and "This Was Me" CTA pair.',
       filePath: 'views/theme/common/email/auth/login-alert.ejs',
       sourceCode: loginAlertSrc,
       variants: [
@@ -307,7 +307,7 @@ res.render('theme/common/email/auth/login-alert', {
       title: 'AccountLockedEmail',
       category: 'Email',
       abbr: 'Al',
-      description: 'Çok fazla başarısız giriş sonrası kilit e-postası. Kilit açma süresi, sebep ve "Unlock" / "Support" butonları.',
+      description: 'Account lock email after too many failed sign-in attempts. Unlock time, reason, and "Unlock" / "Support" buttons.',
       filePath: 'views/theme/common/email/auth/account-locked.ejs',
       sourceCode: accountLockedSrc,
       variants: [
@@ -352,7 +352,7 @@ res.render('theme/common/email/auth/account-locked', {
       title: 'OrderConfirmationEmail',
       category: 'Email',
       abbr: 'Oc',
-      description: 'Sipariş onayı makbuzu. Satır kalemleri, ara toplam/vergi/toplam ve kargo adresi.',
+      description: 'Order confirmation receipt. Line items, subtotal/tax/total, and shipping address.',
       filePath: 'views/theme/common/email/order/confirmation.ejs',
       sourceCode: orderConfirmationSrc,
       variants: [
@@ -401,7 +401,7 @@ res.render('theme/common/email/order/confirmation', {
       title: 'OrderShippedEmail',
       category: 'Email',
       abbr: 'Os',
-      description: 'Kargo bildirimi. Taşıyıcı, takip numarası, tahmini teslimat tarihi ve "Track My Package" CTA.',
+      description: 'Shipping notification. Carrier, tracking number, estimated delivery date, and a "Track My Package" CTA.',
       filePath: 'views/theme/common/email/order/shipped.ejs',
       sourceCode: orderShippedSrc,
       variants: [
@@ -450,7 +450,7 @@ res.render('theme/common/email/order/shipped', {
       title: 'OrderDeliveredEmail',
       category: 'Email',
       abbr: 'Od',
-      description: 'Teslimat onayı. Yıldız derecelendirme butonları ile yorum isteği CTA.',
+      description: 'Delivery confirmation. Star-rating buttons with a review request CTA.',
       filePath: 'views/theme/common/email/order/delivered.ejs',
       sourceCode: orderDeliveredSrc,
       variants: [
@@ -501,7 +501,7 @@ res.render('theme/common/email/order/delivered', {
       title: 'OrderCancelledEmail',
       category: 'Email',
       abbr: 'Ox',
-      description: 'Sipariş iptali bildirimi. İptal sebebi, üstü çizili kalemler ve iade süresi.',
+      description: 'Order cancellation notice. Cancellation reason, struck-through items, and refund window.',
       filePath: 'views/theme/common/email/order/cancelled.ejs',
       sourceCode: orderCancelledSrc,
       variants: [
@@ -556,7 +556,7 @@ res.render('theme/common/email/order/cancelled', {
       title: 'RefundEmail',
       category: 'Email',
       abbr: 'Rf',
-      description: 'İade işlendi bildirimi. Tutar hero, iade yöntemi ve tahmini varış süresi.',
+      description: 'Refund processed notice. Amount hero, refund method, and estimated arrival window.',
       filePath: 'views/theme/common/email/order/refund.ejs',
       sourceCode: refundSrc,
       variants: [
@@ -607,7 +607,7 @@ res.render('theme/common/email/order/refund', {
       title: 'AbandonedCartEmail',
       category: 'Email',
       abbr: 'Ac',
-      description: 'Terk edilen sepet yeniden katılım e-postası. Kupon kodu, indirim teklifi ve sepet içeriği.',
+      description: 'Abandoned cart re-engagement email. Coupon code, discount offer, and cart contents.',
       filePath: 'views/theme/common/email/order/abandoned-cart.ejs',
       sourceCode: abandonedCartSrc,
       variants: [
@@ -659,7 +659,7 @@ res.render('theme/common/email/order/abandoned-cart', {
       title: 'InvoiceEmail',
       category: 'Email',
       abbr: 'Iv',
-      description: 'Kalemli fatura. Durum badge, tüm kalemler ve toplamlar, PDF indirme CTA.',
+      description: 'Itemized invoice. Status badge, all line items and totals, PDF download CTA.',
       filePath: 'views/theme/common/email/billing/invoice.ejs',
       sourceCode: invoiceSrc,
       variants: [
@@ -719,7 +719,7 @@ res.render('theme/common/email/billing/invoice', {
       title: 'SubscriptionActivatedEmail',
       category: 'Email',
       abbr: 'Sa',
-      description: 'Plan aktivasyon onayı. Özellik listesi, fiyat ve bir sonraki faturalandırma tarihi.',
+      description: 'Plan activation confirmation. Feature list, price, and next billing date.',
       filePath: 'views/theme/common/email/billing/subscription-activated.ejs',
       sourceCode: subActivatedSrc,
       variants: [
@@ -773,7 +773,7 @@ res.render('theme/common/email/billing/subscription-activated', {
       title: 'RenewalReminderEmail',
       category: 'Email',
       abbr: 'Rr',
-      description: '7 gün önceden yenileme hatırlatıcısı. Ödeme yöntemi, tutar ve manage/cancel linkleri.',
+      description: '7-day advance renewal reminder. Payment method, amount, and manage/cancel links.',
       filePath: 'views/theme/common/email/billing/renewal-reminder.ejs',
       sourceCode: renewalReminderSrc,
       variants: [
@@ -827,7 +827,7 @@ res.render('theme/common/email/billing/renewal-reminder', {
       title: 'SubscriptionCancelledEmail',
       category: 'Email',
       abbr: 'Sc',
-      description: 'Abonelik iptali. Erişim sona erme tarihi, yeniden aktivasyon CTA ve geri bildirim linki.',
+      description: 'Subscription cancellation. Access end date, reactivation CTA, and feedback link.',
       filePath: 'views/theme/common/email/billing/subscription-cancelled.ejs',
       sourceCode: subCancelledSrc,
       variants: [
@@ -877,7 +877,7 @@ res.render('theme/common/email/billing/subscription-cancelled', {
       title: 'PaymentFailedEmail',
       category: 'Email',
       abbr: 'Pf',
-      description: 'Ödeme başarısız bildirimi. Hata sebebi, yeniden deneme tarihi ve ödeme yöntemi güncelleme CTA.',
+      description: 'Payment failed notice. Failure reason, retry date, and an update-payment-method CTA.',
       filePath: 'views/theme/common/email/billing/payment-failed.ejs',
       sourceCode: paymentFailedSrc,
       variants: [
@@ -928,7 +928,7 @@ res.render('theme/common/email/billing/payment-failed', {
       title: 'CardExpiringEmail',
       category: 'Email',
       abbr: 'Ce',
-      description: 'Kart son kullanma uyarısı. Kart görseli, plan/faturalandırma bilgisi ve güncelleme CTA.',
+      description: 'Card expiration warning. Card visual, plan/billing info, and an update CTA.',
       filePath: 'views/theme/common/email/billing/card-expiring.ejs',
       sourceCode: cardExpiringSrc,
       variants: [
@@ -984,7 +984,7 @@ res.render('theme/common/email/billing/card-expiring', {
       title: 'CommentReplyEmail',
       category: 'Email',
       abbr: 'Cr',
-      description: 'Yorum cevabı bildirimi. Orijinal yorum + yeni cevap thread görünümü.',
+      description: 'Comment reply notification. Original comment + new reply in a thread view.',
       filePath: 'views/theme/common/email/notification/comment-reply.ejs',
       sourceCode: commentReplySrc,
       variants: [
@@ -1032,7 +1032,7 @@ res.render('theme/common/email/notification/comment-reply', {
       title: 'MentionEmail',
       category: 'Email',
       abbr: 'Mn',
-      description: '@mention bildirimi. Bahseden kişi, bağlam ve alıntı excerpt gösterimi.',
+      description: '@mention notification. Mentioner, context, and quoted excerpt display.',
       filePath: 'views/theme/common/email/notification/mention.ejs',
       sourceCode: mentionSrc,
       variants: [
@@ -1080,7 +1080,7 @@ res.render('theme/common/email/notification/mention', {
       title: 'NewMessageEmail',
       category: 'Email',
       abbr: 'Nm',
-      description: 'Gelen kutusu mesaj bildirimi. Gönderici, mesaj önizlemesi ve Reply/Inbox CTA çifti.',
+      description: 'Inbox message notification. Sender, message preview, and Reply/Inbox CTA pair.',
       filePath: 'views/theme/common/email/notification/new-message.ejs',
       sourceCode: newMessageSrc,
       variants: [
@@ -1133,7 +1133,7 @@ res.render('theme/common/email/notification/new-message', {
       title: 'NewsletterEmail',
       category: 'Email',
       abbr: 'Nl',
-      description: 'Haftalık bülten. Makale kartları, etiket renkleri ve okuma süresi.',
+      description: 'Weekly newsletter. Article cards, tag colors, and reading time.',
       filePath: 'views/theme/common/email/marketing/newsletter.ejs',
       sourceCode: newsletterSrc,
       variants: [
@@ -1193,7 +1193,7 @@ res.render('theme/common/email/marketing/newsletter', {
       title: 'PromotionalEmail',
       category: 'Email',
       abbr: 'Ep',
-      description: 'Süre sınırlı kampanya. Gradient başlık, fiyat karşılaştırma, kesik çizgili kupon kodu.',
+      description: 'Limited-time promotion. Gradient header, price comparison, dashed-border coupon code.',
       filePath: 'views/theme/common/email/marketing/promotional.ejs',
       sourceCode: promotionalSrc,
       variants: [
@@ -1256,7 +1256,7 @@ res.render('theme/common/email/marketing/promotional', {
       title: 'ProductUpdateEmail',
       category: 'Email',
       abbr: 'Pu',
-      description: 'Ürün sürüm duyurusu. Versiyon badge, öne çıkan değişiklik kartları ve changelog linki.',
+      description: 'Product release announcement. Version badge, highlighted change cards, and changelog link.',
       filePath: 'views/theme/common/email/marketing/product-update.ejs',
       sourceCode: productUpdateSrc,
       variants: [
@@ -1317,7 +1317,7 @@ res.render('theme/common/email/marketing/product-update', {
       title: 'MaintenanceEmail',
       category: 'Email',
       abbr: 'Me',
-      description: 'Planlı bakım öncesi uyarı. Zaman penceresi, etkilenen servisler ve status page linki.',
+      description: 'Advance notice before scheduled maintenance. Time window, affected services, and status page link.',
       filePath: 'views/theme/common/email/system/maintenance.ejs',
       sourceCode: maintenanceSrc,
       variants: [
@@ -1368,7 +1368,7 @@ res.render('theme/common/email/system/maintenance', {
       title: 'PolicyUpdateEmail',
       category: 'Email',
       abbr: 'Pl',
-      description: 'Gizlilik politikası / kullanım şartları güncelleme. Madde madde özet ve yürürlük tarihi.',
+      description: 'Privacy policy / terms of service update. Point-by-point summary and effective date.',
       filePath: 'views/theme/common/email/system/policy-update.ejs',
       sourceCode: policyUpdateSrc,
       variants: [
@@ -1417,7 +1417,7 @@ res.render('theme/common/email/system/policy-update', {
       title: 'DataExportEmail',
       category: 'Email',
       abbr: 'De',
-      description: 'Veri dışa aktarma hazır bildirimi. Dosya boyutu, format, son kullanma tarihi ve indirme CTA.',
+      description: 'Data export ready notice. File size, format, expiration date, and download CTA.',
       filePath: 'views/theme/common/email/system/data-export.ejs',
       sourceCode: dataExportSrc,
       variants: [
@@ -1465,7 +1465,7 @@ res.render('theme/common/email/system/data-export', {
       title: 'AccountDeletionEmail',
       category: 'Email',
       abbr: 'Ad',
-      description: 'Hesap silme zamanlama bildirimi. Grace period, kalıcı silme uyarısı ve iptal CTA.',
+      description: 'Account deletion scheduled notice. Grace period, permanent deletion warning, and a cancel CTA.',
       filePath: 'views/theme/common/email/system/account-deletion.ejs',
       sourceCode: accountDeletionSrc,
       variants: [
@@ -1514,7 +1514,7 @@ res.render('theme/common/email/system/account-deletion', {
       title: 'TicketOpenedEmail',
       category: 'Email',
       abbr: 'To',
-      description: 'Destek talebi alındı otomatik yanıtı. Ticket ID, konu, durum badge ve mesaj önizlemesi.',
+      description: 'Support request received auto-reply. Ticket ID, subject, status badge, and message preview.',
       filePath: 'views/theme/common/email/support/ticket-opened.ejs',
       sourceCode: ticketOpenedSrc,
       variants: [
@@ -1565,7 +1565,7 @@ res.render('theme/common/email/support/ticket-opened', {
       title: 'TicketReplyEmail',
       category: 'Email',
       abbr: 'Tr',
-      description: 'Destek ekibinden gelen yanıt. Ajan avatar, tam cevap metni, Reply ve View CTA çifti.',
+      description: 'Reply from the support team. Agent avatar, full reply text, and Reply and View CTA pair.',
       filePath: 'views/theme/common/email/support/ticket-reply.ejs',
       sourceCode: ticketReplySrc,
       variants: [
@@ -1621,7 +1621,7 @@ res.render('theme/common/email/support/ticket-reply', {
       title: 'TicketResolvedEmail',
       category: 'Email',
       abbr: 'Ts',
-      description: 'Destek talebi çözüldü bildirimi. Çözüm özeti, emoji derecelendirme ve yeniden açma seçeneği.',
+      description: 'Support ticket resolved notice. Resolution summary, emoji rating, and a reopen option.',
       filePath: 'views/theme/common/email/support/ticket-resolved.ejs',
       sourceCode: ticketResolvedSrc,
       variants: [

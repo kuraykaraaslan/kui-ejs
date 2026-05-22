@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Kısa süreli bildirim kartı. success/warning/error/info/loading varyantları; title, message ve action desteği.
+Notification system with success/warning/error/info/loading variants. Hover-to-freeze, progress bar, title, actions, and promise support.
 
 ## Design tokens consumed
 

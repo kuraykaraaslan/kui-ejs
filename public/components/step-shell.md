@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Çok adımlı akışlarda tek bir adımı sarmalayan kart. active / done / inactive durumlarına göre kenarlık ve numara dairesi değişir; done + onEdit kombinasyonunda özet altında Edit butonu çıkar.
+Wrapper card for a single step in a multi-step flow. Border and number circle change based on active / done / inactive state; the done + onEdit combination shows an Edit button alongside the summary.
 
 ## Design tokens consumed
 

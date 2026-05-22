@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-22T15:35:31.214Z",
+  "generatedAt": "2026-05-22T16:12:10.431Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -195,7 +195,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Button.ejs",
       "abbr": "Bt",
-      "description": "Temel interaktif element. 5 görsel stil (variant) ve 5 boyut (size) destekler. disabled, loading ve selected durumları yerleşiktir.",
+      "description": "Core interactive element. Supports 5 visual styles (variants) and 5 sizes. disabled, loading and selected states are built-in.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -221,7 +221,7 @@
       "category": "Atom",
       "filePath": "modules/ui/ButtonGroup.ejs",
       "abbr": "BG",
-      "description": "Birbirini dışlayan seçenekler için segmentli buton grubu. 4 variant, 4 boyut ve disabled item desteği.",
+      "description": "Segmented button group for mutually-exclusive options. Supports 4 variants, 4 sizes and disabled items.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -244,7 +244,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Badge.ejs",
       "abbr": "Bg",
-      "description": "Durum, kategori veya etiket göstergesi. 6 semantik varyant, 3 boyut, dot ve dismissible desteği.",
+      "description": "Status, category or label indicator. 6 semantic variants, 3 sizes, dot and dismissible support.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -276,7 +276,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Avatar.ejs",
       "abbr": "Av",
-      "description": "Kullanıcı profil fotoğrafı veya baş harfleri gösterici. 5 boyut, opsiyonel status dot.",
+      "description": "User profile photo or initials indicator. 5 sizes with optional status dot. When no image is provided, initials render on a bg-primary-subtle / text-primary tile.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -301,7 +301,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Spinner.ejs",
       "abbr": "Sp",
-      "description": "CSS border tabanlı yükleme göstergesi. FontAwesome gerektirmez. 5 boyut, border-border / border-t-primary renk sistemi.",
+      "description": "CSS border-based loading indicator. Does not require FontAwesome. 5 sizes, border-border / border-t-primary colour system.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -316,7 +316,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Skeleton.ejs",
       "abbr": "Sk",
-      "description": "İçerik yüklenmeden önce yer tutan animasyonlu placeholder. animate-pulse bg-surface-sunken kullanır. aria-busy=\"true\" ile erişilebilirlik sağlanır.",
+      "description": "Animated placeholder shown before content loads. Uses animate-pulse bg-surface-sunken. aria-busy=\"true\" ensures accessibility.",
       "status": "stable",
       "since": "2025-01",
       "designTokens": [
@@ -367,7 +367,7 @@
       "category": "Atom",
       "filePath": "modules/ui/StarRating.ejs",
       "abbr": "SR",
-      "description": "Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly: false` for interactive whole-star selection.",
+      "description": "Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly={false}` + `onChange` for interactive whole-star selection.",
       "status": "stable",
       "since": "2026-05",
       "whenToUse": "Surface a 0–5 star score (e.g. product / hotel / restaurant ratings) or let users submit a new rating.",
@@ -394,7 +394,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Toggle.ejs",
       "abbr": "Tg",
-      "description": "Boolean ayarlar için sürgü kontrolü. peer tabanlı CSS ile çalışır; label ve 3 boyut destekler.",
+      "description": "role=\"switch\" toggle/switch with three sizes, description slot, and disabled support. Fully accessible via CSS transform without a native input.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -414,7 +414,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Checkbox.ejs",
       "abbr": "Cb",
-      "description": "Tekil boolean seçim kontrolü. Label, hint ve disabled durumları; 3 boyut destekler.",
+      "description": "Label + checkbox + optional hint / error message. aria-describedby is wired up and border-error is applied on the error state.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -436,7 +436,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Input.ejs",
       "abbr": "In",
-      "description": "Metin giriş alanı. Label, hint, error, prefix icon, password toggle ve 3 boyut destekler.",
+      "description": "Text input field with label, hint, error, prefix icon, password toggle, and 3 size variants.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -465,7 +465,7 @@
       "category": "Atom",
       "filePath": "modules/ui/Textarea.ejs",
       "abbr": "Ta",
-      "description": "Çok satırlı metin giriş alanı. Label, hint, error ve disabled durumları; resize kontrolü destekler.",
+      "description": "Label + textarea + hint + error anatomy. Vertical resizing is enabled via resize-y and the parts are linked through aria-describedby.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -490,7 +490,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/SearchBar.ejs",
       "abbr": "Sb",
-      "description": "role=\"searchbox\" + arama ikonu + temizle butonu. Controlled veya uncontrolled modda kullanılabilir.",
+      "description": "role=\"searchbox\" with search icon and clear button. Works in controlled and uncontrolled modes.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -510,7 +510,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/Select.ejs",
       "abbr": "Sl",
-      "description": "Label + select + hint + error anatomy. appearance-none ile native dropdown stilini override eder, chevron ikonu ile.",
+      "description": "Label + select + hint + error anatomy. appearance-none overrides the native dropdown style and renders a chevron icon.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -537,7 +537,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/RadioGroup.ejs",
       "abbr": "Rg",
-      "description": "fieldset + legend tabanlı radio grubu. WCAG uyumlu klavye navigasyonu, cardStyle varyantı ile görsel plan seçimi.",
+      "description": "fieldset + legend based radio group. WCAG-compliant keyboard navigation with an optional card-style variant.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -559,7 +559,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/CheckboxGroup.ejs",
       "abbr": "Cg",
-      "description": "Chip görünümlü çoklu seçim grubu. Seçili chip bg-primary-subtle / border-primary renk tokenları ile işaretlenir.",
+      "description": "Chip-style multi-select group. Selected chips use bg-primary-subtle / border-primary tokens. Keyboard accessible.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -581,7 +581,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/MultiSelect.ejs",
       "abbr": "Ms",
-      "description": "Chip tabanlı çoklu seçim popover. Searchable filtre, klavye navigasyonu ve disabled option desteği ile birlikte gelir.",
+      "description": "Chip-based multi-select popover with searchable filter, keyboard navigation, and disabled-option support.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -610,7 +610,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/ComboBox.ejs",
       "abbr": "Cm",
-      "description": "Searchable autocomplete + tek seçim. Klavye navigasyonu, açıklamalı option ve clearable buton desteği.",
+      "description": "Searchable autocomplete single-select with keyboard navigation, described options, and a clearable button.",
       "status": "beta",
       "since": "2026-05",
       "designTokens": [
@@ -637,7 +637,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/DateRangePicker.ejs",
       "abbr": "Dr",
-      "description": "fieldset tabanlı çift native date input. Start/end birbirini otomatik kısıtlar (min/max), erişilebilir sr-only labellarla gelir.",
+      "description": "fieldset-based dual native date inputs. Start/end auto-constrain each other (min/max) with accessible sr-only labels.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -662,7 +662,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/TagInput.ejs",
       "abbr": "Ti",
-      "description": "Chip oluşturan free-text input. Enter veya virgül ile yeni etiket, çift tıkla düzenleme ve Backspace ile silme desteği.",
+      "description": "Free-text input that creates chips. Add tags with Enter or comma, double-click to edit, Backspace to delete. Duplicates are ignored.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -688,7 +688,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/DatePicker.ejs",
       "abbr": "Dp",
-      "description": "Native date input ile label + hint + error anatomy. min/max kısıtlaması ve disabled desteği ile birlikte gelir.",
+      "description": "Native date input with label + hint + error anatomy. Supports min/max constraints and a disabled state.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -712,7 +712,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/FileInput.ejs",
       "abbr": "Fi",
-      "description": "Drag-and-drop görünümlü dosya yükleme alanı. accept filtresi, multiple ve disabled desteği.",
+      "description": "Drag-and-drop file upload with validation, file list, and individual remove actions.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -745,7 +745,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Card.ejs",
       "abbr": "Cd",
-      "description": "İçerik kartı. raised/flat/outline varyantları; title, subtitle, headerRight, footer ve loading skeleton desteği.",
+      "description": "Content container with raised / flat / outline variants. Supports title, subtitle, headerRight, footer slots and loading skeleton state.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -768,7 +768,7 @@
       "category": "Organism",
       "filePath": "modules/ui/AlertBanner.ejs",
       "abbr": "Al",
-      "description": "Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible ve action desteği.",
+      "description": "Page-level info, success, warning or error message. Announced via role=\"alert\" for screen readers with optional dismissible and action support.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -796,7 +796,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Toast.ejs",
       "abbr": "Ts",
-      "description": "Kısa süreli bildirim kartı. success/warning/error/info/loading varyantları; title, message ve action desteği.",
+      "description": "Notification system with success/warning/error/info/loading variants. Hover-to-freeze, progress bar, title, actions, and promise support.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -826,7 +826,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Pagination.ejs",
       "abbr": "Pg",
-      "description": "Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonları ve boyut varyantları.",
+      "description": "Page navigation control. Collapses large page counts with ellipsis; accessible via aria-label and aria-current=\"page\".",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -850,7 +850,7 @@
       "category": "Organism",
       "filePath": "modules/ui/TabGroup.ejs",
       "abbr": "Tb",
-      "description": "Erişilebilir tab navigasyonu. ARIA rollerini, klavye gezintisini ve içerik panellerini içerir.",
+      "description": "Accessible tab navigation following the role=\"tablist\" / role=\"tab\" / role=\"tabpanel\" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -870,7 +870,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Breadcrumb.ejs",
       "abbr": "Bc",
-      "description": "Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current=\"page\" son öğede.",
+      "description": "Hierarchical navigation trail wrapped in nav aria-label=\"Breadcrumb\". Last item marked with aria-current=\"page\" and aria-hidden separators.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -891,7 +891,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Stepper.ejs",
       "abbr": "Sr",
-      "description": "Çok adımlı ilerleme göstergesi. complete/active/error/pending durumları; horizontal ve vertical yönelim.",
+      "description": "Multi-step progress indicator with complete, active, error, and pending states. Supports horizontal and vertical orientations.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -917,7 +917,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Modal.ejs",
       "abbr": "Md",
-      "description": "Odak kapanı dialog. Backdrop, ESC tuşu ile kapatma, ARIA labelledby/describedby ve sm/md/lg boyutu.",
+      "description": "Focus-trapped dialog. Closes on Escape and backdrop click. Requires role=\"dialog\" + aria-modal + aria-labelledby; supports sm/md/lg sizes.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -939,7 +939,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Drawer.ejs",
       "abbr": "Dr",
-      "description": "Kenar paneli. left/right açılım, backdrop, ESC ve tabindex=-1 odak yönetimi ile birlikte gelir.",
+      "description": "Side panel sliding in from the screen edge. Left / right placement with focus management and Escape close.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -959,7 +959,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Table.ejs",
       "abbr": "Tl",
-      "description": "Semantik HTML tablosu. thead/tbody, sütun hizalaması ve boş durum mesajı desteği.",
+      "description": "Responsive table. scope=\"col\" headers, hover row highlight, empty-state message, and custom cell render support.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -981,7 +981,7 @@
       "category": "Organism",
       "filePath": "modules/ui/DataTable.ejs",
       "abbr": "DT",
-      "description": "Server-side paginated data table. Card wrapper, başlık slotu, toolbar slotu, tıklanabilir satır ve her zaman görünür pagination desteği.",
+      "description": "Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1007,7 +1007,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/MapView.ejs",
       "abbr": "Mp",
-      "description": "Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined zone'lar (polygon), rota çizgisi (polyline) ve tıkla-ekle işaretçi modu.",
+      "description": "Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygon), route lines (polyline), and click-to-add marker mode.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -1029,7 +1029,7 @@
       "category": "Organism",
       "filePath": "modules/ui/VideoPlayer.ejs",
       "abbr": "Vp",
-      "description": "HTML5 video oynatıcı. Kalite, altyazı, ses kanalı, oynatma hızı seçimi; özel WebVTT altyazı overlay; otomatik gizlenen kontroller; geliştirici kontrolü.",
+      "description": "Custom HTML5 video player. Quality, subtitle, audio track, and playback rate selection; custom WebVTT subtitle overlay; auto-hiding controls; programmatic API. Keyboard shortcuts: Space/K=play, ←→=±10s, ↑↓=volume, M=mute, F=fullscreen.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -1046,7 +1046,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Slider.ejs",
       "abbr": "Sl",
-      "description": "Erişilebilir carousel. role=\"region\" + aria-roledescription=\"carousel\" + slide aria etiketleri dahildir. Otomatik oynatma, dot navigasyon ve loop kontrolleri desteklenir.",
+      "description": "Accessible carousel. Includes role=\"region\" + aria-roledescription=\"carousel\" and per-slide aria labels. Supports autoplay, arrow keys, and dot navigation.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [],
@@ -1059,7 +1059,7 @@
       "category": "Organism",
       "filePath": "modules/ui/StatCard.ejs",
       "abbr": "Sc",
-      "description": "Küçük metrik gösterim kartı; değer, etiket ve opsiyonel vurgu rengi (accent) ile.",
+      "description": "Compact metric display card with value, label, and optional accent color.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1079,7 +1079,7 @@
       "category": "Organism",
       "filePath": "modules/ui/TabButton.ejs",
       "abbr": "TB",
-      "description": "Pill tarzı sekme butonu; aktif/pasif renklendirme ve opsiyonel sayaç rozeti ile.",
+      "description": "Pill-style tab button with active/inactive coloring and an optional count badge.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1103,7 +1103,7 @@
       "category": "Organism",
       "filePath": "modules/ui/ViewToggle.ejs",
       "abbr": "VT",
-      "description": "Yatay / dikey görünüm geçiş kontrolü; iki durumlu ikonlu seçici. viewtoggle:change CustomEvent yayar.",
+      "description": "Horizontal / vertical view toggle control; two-state icon selector. Emits a viewtoggle:change CustomEvent.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1125,7 +1125,7 @@
       "category": "Organism",
       "filePath": "modules/ui/EmptyState.ejs",
       "abbr": "Es",
-      "description": "Boş veri durumu için ikon, başlık, açıklama ve isteğe bağlı eylem düğmesi içeren merkezi yerleşim.",
+      "description": "Empty-state message shown when there is no data. Supports icon, title, description, and action slots.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1145,7 +1145,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Tooltip.ejs",
       "abbr": "Tt",
-      "description": "Hover/focus üzerine açılan kısa açıklayıcı katman. 4 yerleşim, 3 tema, isteğe bağlı ok ve gecikme süresi.",
+      "description": "Short hint shown on hover and focus. Accessible via role=\"tooltip\" + aria-describedby. Supports 4 placements, 3 themes, optional arrow, and configurable delay.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1163,7 +1163,7 @@
       "category": "Organism",
       "filePath": "modules/ui/DropdownMenu.ejs",
       "abbr": "Dm",
-      "description": "role=\"menu\" + ARIA durumlu açılır menü. Sol/sağ hizalama, ikon, ayraç, danger ve disabled öğeleri ile ok-tuşu navigasyonu.",
+      "description": "Accessible dropdown using role=\"menu\" + role=\"menuitem\". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1184,7 +1184,7 @@
       "category": "Organism",
       "filePath": "modules/ui/Popover.ejs",
       "abbr": "Po",
-      "description": "Tıklamayla açılan, role=\"dialog\" tabanlı küçük overlay. 4 yerleşim, ESC ve dış-tık ile kapanma.",
+      "description": "Anchor-based contextual panel. Closes on outside click and Escape key. Supports top/bottom/left/right placement.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1200,7 +1200,7 @@
       "category": "Organism",
       "filePath": "modules/ui/AdvancedDataTable.ejs",
       "abbr": "At",
-      "description": "DataTable üzerinde satır seçimi, \"select all\" indeterminate state, genişleyebilir satırlar ve sticky header ekleyen geliştirilmiş tablo.",
+      "description": "Enhanced table with row selection (with indeterminate header), expandable rows, and optional sticky header.",
       "status": "beta",
       "since": "2026-05",
       "designTokens": [
@@ -1225,7 +1225,7 @@
       "category": "Organism",
       "filePath": "modules/ui/ServerDataTable.ejs",
       "abbr": "Sd",
-      "description": "Server-side paginated table. Express route üzerinden page/totalPages/total/pageSize alır, başlık + toolbar + tıklanabilir satır + boş/yükleniyor durumları destekler.",
+      "description": "Server-side paginated table. Reads page/totalPages/total/pageSize from the Express route; supports title, toolbar, clickable rows, and empty/loading states.",
       "status": "beta",
       "since": "2026-05",
       "designTokens": [
@@ -1248,7 +1248,7 @@
       "category": "Organism",
       "filePath": "modules/ui/TreeView.ejs",
       "abbr": "Tv",
-      "description": "Yinelemeli ağaç yapısı. role=\"tree\"/treeitem/group, klavye gezinmesi (Enter/Space/ArrowLeft/ArrowRight) ve seçim için inline script. Çocuksuz düğümler seçilebilir, çocuklu düğümler açılır/kapanır.",
+      "description": "Collapsible tree with keyboard navigation, selection, and aria-tree roles.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1268,7 +1268,7 @@
       "category": "Organism",
       "filePath": "modules/ui/ContentScoreBar.ejs",
       "abbr": "Cs",
-      "description": "Server-rendered içerik kalite skoru. Good ≥70 / Fair ≥40 / Poor <40 tier sistemi; her kural pass/fail chip ve geçen/kalan sayım gösterimi ile birlikte. role=\"progressbar\" + aria-valuenow.",
+      "description": "Rule-based content quality score with Good ≥70 / Fair ≥40 / Poor <40 tier system. Each rule shown as a chip with passed/total count. role=\"progressbar\" + aria-valuenow.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1296,7 +1296,7 @@
       "category": "Organism",
       "filePath": "modules/ui/PageHeader.ejs",
       "abbr": "Ph",
-      "description": "Sayfa başlığı + subtitle + opsiyonel badge + action butonları. 5 buton varyantı (primary/secondary/outline/danger/ghost); href ile link veya button olarak render edilir.",
+      "description": "Page title + subtitle + optional badge + action buttons. Supports 5 button variants (primary/secondary/outline/danger/ghost); rendered as a link with href or as a button.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1323,7 +1323,7 @@
       "category": "App",
       "filePath": "modules/app/AppShell.ejs",
       "abbr": "As",
-      "description": "Tam ekran layout wrapper. sidebarContent, topbarContent ve logoContent HTML slot'ları alır. Mobilde hamburger butonu NavDrawer açar.",
+      "description": "Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders as an aside on desktop and opens via a drawer on mobile.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1346,7 +1346,7 @@
       "category": "App",
       "filePath": "modules/app/AppSidebar.ejs",
       "abbr": "Sb",
-      "description": "Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle dahili. searchable prop ile yerleşik arama filtresi; footerContent slotu ile kullanıcı bilgisi gösterilebilir.",
+      "description": "Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter and a footer slot can host a user block or any content.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1370,7 +1370,7 @@
       "category": "App",
       "filePath": "modules/app/AppTopBar.ejs",
       "abbr": "At",
-      "description": "AppShell'in header slotuna geçilen üst çubuk wrapper'ı. logoContent slotu sol tarafa; children sağ tarafa flex satırda sıralanır.",
+      "description": "Top bar wrapper passed into AppShell's header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -1383,7 +1383,7 @@
       "category": "App",
       "filePath": "modules/app/AppNav.ejs",
       "abbr": "An",
-      "description": "Yatay navigasyon çubuğu. Masaüstünde inline linkler, mobilde hamburger drawer açar. logoContent, navItems ve children slotları. sticky ve bordered seçenekleri.",
+      "description": "Horizontal navigation bar. Renders inline links on desktop and a hamburger that opens a NavDrawer on mobile. Provides logo, navItems and actions slots.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1406,7 +1406,7 @@
       "category": "App",
       "filePath": "modules/app/NavDrawer.ejs",
       "abbr": "Nd",
-      "description": "Herhangi bir trigger + içeriği Drawer'a saran wrapper. Kendi açık/kapalı state'ini tutar. AppNav'ın mobil menüsü olarak kullanılır.",
+      "description": "Wrapper that wraps any trigger and children inside a drawer. Manages its own open/closed state. Used as AppNav's mobile menu and also works standalone.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1424,7 +1424,7 @@
       "category": "App",
       "filePath": "modules/domain/common/user/UserMenu.ejs",
       "abbr": "Um",
-      "description": "Avatar + isim + rol göstergen trigger'a tıklayınca açılan kullanıcı dropdown'ı. name, email, role, profileHref, settingsHref, signOutHref prop'ları.",
+      "description": "User dropdown opened by a trigger showing avatar, name and role. Accepts a SafeUser prop; the dropdown header shows the name and email.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1446,7 +1446,7 @@
       "category": "App",
       "filePath": "modules/app/GlobalSearch.ejs",
       "abbr": "Gs",
-      "description": "Kategori bazlı arama sonuçları listesi ile global arama alanı. Statik önizlemede açık sonuç paneli görünür.",
+      "description": "Command-palette-style global search field. Supports a categorised result list, keyboard navigation and result selection.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -1469,7 +1469,7 @@
       "category": "App",
       "filePath": "modules/app/AppCommandBar.ejs",
       "abbr": "Cb",
-      "description": "Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan Navigation/Actions/Recent grupları dahili. Klavye navigasyonu (↑↓ + Enter) destekler.",
+      "description": "Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -1497,7 +1497,7 @@
       "category": "App",
       "filePath": "modules/app/Form.ejs",
       "abbr": "Fm",
-      "description": "Form layout wrapper. title, description, error ve actionsContent slot'ları. columns prop ile 1 veya 2 kolonlu grid düzeni.",
+      "description": "Form layout wrapper with title, description, error and actions slots. `columns` prop renders fields in a 1 or 2 column grid.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1516,7 +1516,7 @@
       "category": "App",
       "filePath": "modules/app/FilterBar.ejs",
       "abbr": "Fb",
-      "description": "Select, multiselect, daterange ve text tabanlı filtre paneli. GET form submit ile URL tabanlı filtre desteği.",
+      "description": "Select, multiselect, daterange and text-based filter panel. Supports URL-based filtering via GET form submit.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1532,7 +1532,7 @@
       "category": "App",
       "filePath": "modules/app/DetailHeader.ejs",
       "abbr": "Dh",
-      "description": "Detay/kayıt sayfaları için sayfa başlığı. title, subtitle, status badge, aksiyon butonları ve opsiyonel sekme navigasyonu.",
+      "description": "Page header for detail/record views: title, subtitle, status badge, action buttons, and optional tab navigation.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1568,7 +1568,7 @@
       "category": "App",
       "filePath": "modules/app/ErrorState.ejs",
       "abbr": "Er",
-      "description": "Hata durumu: uyarı banner'ı + merkezi boş durum kombinasyonu. retryHref ile yeniden deneme linki.",
+      "description": "Error state pairing an inline alert banner with a centered empty state. Optional retry action.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1592,7 +1592,7 @@
       "category": "App",
       "filePath": "modules/app/NotFoundState.ejs",
       "abbr": "Ns",
-      "description": "Kayıt bulunamadı / içerik yok durumu. backHref ile geri dön linki.",
+      "description": "Not-found / empty record state with optional go-back action.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1615,7 +1615,7 @@
       "category": "App",
       "filePath": "modules/app/LoadingState.ejs",
       "abbr": "Lo",
-      "description": "İskelet yükleme animasyonları. spinner / table / cards / list / detail / form variant'ları.",
+      "description": "Skeleton loading animations. Variants: spinner / table / cards / list / detail / form.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1632,7 +1632,7 @@
       "category": "App",
       "filePath": "modules/app/SplashScreen.ejs",
       "abbr": "Ss",
-      "description": "Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.",
+      "description": "Full-screen overlay shown during app initialisation. Accepts a logo slot, optional progress bar, and fades out when visible=false.",
       "status": "beta",
       "since": "2025-05",
       "designTokens": [
@@ -1651,7 +1651,7 @@
       "category": "App",
       "filePath": "modules/app/AccessibilityKit.ejs",
       "abbr": "AK",
-      "description": "A11y yardımcıları paketi: SkipLink, LiveRegion (Announcer) ve Tooltip primitive'lerini tek partial üzerinden expose eder. `part` (skip|live|announcer|tooltip|all) ile parça seçilir; varsayılan kullanım sayfa başında SkipLink + LiveRegion'u kurar ve `window.announce` API'sini açar.",
+      "description": "A11y helpers bundle that exposes the SkipLink, LiveRegion (Announcer) and Tooltip primitives through a single partial. The `part` prop (skip|live|announcer|tooltip|all) picks which piece to render; the default usage mounts the SkipLink + LiveRegion at the top of the page and exposes the `window.announce` API.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1671,7 +1671,7 @@
       "category": "App",
       "filePath": "modules/app/AppDrawer.ejs",
       "abbr": "AD",
-      "description": "Sayfa kenarından açılan modal navigasyon panel: tetik butonu, arka plan, kapanış, focus trap, Escape ile kapanma. `navGroups` ile gruplanmış öğeler, opsiyonel arama kutusu (filterAppDrawer) ve `appdrawer:select` custom event.",
+      "description": "Modal navigation panel that slides in from the page edge: trigger button, backdrop, dismiss, focus trap and Escape-to-close. Renders grouped items via `navGroups`, an optional search box (filterAppDrawer) and emits an `appdrawer:select` custom event.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1696,7 +1696,7 @@
       "category": "App",
       "filePath": "modules/app/FormField.ejs",
       "abbr": "FF",
-      "description": "Form alanı wrapper'ı: label + slot + hint + error. Computed `id`, `aria-describedby` ve `aria-invalid` değerlerini sarmalayan `data-form-field` üzerinden expose eder. NextJS'deki react-hook-form karşıtının statik EJS muadili.",
+      "description": "Form field wrapper: label + slot + hint + error. Exposes computed `id`, `aria-describedby` and `aria-invalid` via the `data-form-field` container — the static EJS counterpart of the NextJS react-hook-form binding.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1715,7 +1715,7 @@
       "category": "App",
       "filePath": "modules/app/NotificationSystem.ejs",
       "abbr": "NS",
-      "description": "Sayfa düzeyinde toast container ve global `window.notify` / `window.pushNotification` API'leri. 6 konum, 5 variant (success/warning/error/info/loading), otomatik kapanma için ilerleme çubuğu, hover ile duraklatma, manuel dismiss.",
+      "description": "Page-level toast container with global `window.notify` / `window.pushNotification` API. 6 positions, 5 variants (success/warning/error/info/loading), auto-dismiss progress bar, hover to pause, manual dismiss.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1745,7 +1745,7 @@
       "category": "App",
       "filePath": "modules/app/SectionCard.ejs",
       "abbr": "SC",
-      "description": "Başlıklı içerik kartı. rounded-xl + border + bg-surface-raised + p-6 ile standart bölüm kabuğu sağlar; başlık alt çizgisi ile ayrılır ve children slotu serbest içerik kabul eder.",
+      "description": "Titled content card with rounded-xl + border + bg-surface-raised + p-6. Header is separated by an underline; children slot accepts arbitrary content.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1763,7 +1763,7 @@
       "category": "App",
       "filePath": "modules/app/InlineAlert.ejs",
       "abbr": "IA",
-      "description": "Form alanlarının yanında veya kart içlerinde kullanılan kısa uyarı şeridi. success / error / warning / info variant'ları; ikon + tek satır mesaj.",
+      "description": "Compact inline alert strip used next to form fields or inside cards. success / error / warning / info variants; icon + single-line message.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1788,7 +1788,7 @@
       "category": "App",
       "filePath": "modules/app/StepShell.ejs",
       "abbr": "Ss",
-      "description": "Çok adımlı akışlarda tek bir adımı sarmalayan kart. active / done / inactive durumlarına göre kenarlık ve numara dairesi değişir; done + onEdit kombinasyonunda özet altında Edit butonu çıkar.",
+      "description": "Wrapper card for a single step in a multi-step flow. Border and number circle change based on active / done / inactive state; the done + onEdit combination shows an Edit button alongside the summary.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1812,7 +1812,7 @@
       "category": "App",
       "filePath": "modules/app/AppBreadcrumbs.ejs",
       "abbr": "ABc",
-      "description": "Sayfa başlığı + açıklama + breadcrumb navigasyonu birleşik blok. Masaüstünde tam yol; mobilde ilk + son + … kısayolu ve \"Full path\" dropdown menüsü.",
+      "description": "Page header with breadcrumb trail, title, description, and optional status badge. Collapses to a Breadcrumb + dropdown menu on mobile for deep paths.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1835,7 +1835,7 @@
       "category": "App",
       "filePath": "modules/app/AppFooter.ejs",
       "abbr": "AFt",
-      "description": "Uygulama alt çubuğu. Üst satır: logo + sürüm + nav + status badge. Alt satır: copyright + sosyal medya. Tüm bölgeler slot olarak opsiyonel.",
+      "description": "Two-row application footer with logo, navigation links, system status badge, version, copyright, and social slot.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1866,7 +1866,7 @@
       "category": "App",
       "filePath": "modules/app/ThemeSwitcher.ejs",
       "abbr": "TS",
-      "description": "Light / Dark / System tema seçici dropdown. localStorage'a yazar; \"system\" seçildiğinde prefers-color-scheme medyasını dinler. DropdownMenu üzerine bina edilir; trigger içinde aktif moda göre ikon değişir.",
+      "description": "Tri-state theme selector (light / dark / system). Persists the choice to localStorage and toggles the .dark class on <html>. Mounts safely on the server with a placeholder until hydrated.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1881,7 +1881,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/LoginForm.ejs",
       "abbr": "Lf",
-      "description": "Email + şifre formu. Remember me checkbox, hata banner ve action/method desteği.",
+      "description": "Email + password sign-in form with inline validation, \"Remember me\" checkbox, and server-error banner.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1902,7 +1902,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/RegisterForm.ejs",
       "abbr": "Rf",
-      "description": "Email + şifre + şifre doğrulama formu. Alan bazlı hata mesajları.",
+      "description": "Registration form with email, password, and confirm-password fields. Real-time password match validation and server-error support.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1919,7 +1919,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/OAuthButtons.ejs",
       "abbr": "Ob",
-      "description": "Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi butonların gösterileceği seçilir.",
+      "description": "Social sign-in buttons for Google, GitHub, Discord, and Microsoft. Accepts a providers prop to show only a subset.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1935,7 +1935,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserAvatar.ejs",
       "abbr": "Ua",
-      "description": "Kullanıcı nesnesi (name/email/profilePicture) alarak Avatar'ı sarar. online/away/busy/offline statü noktası desteği.",
+      "description": "Avatar that consumes the SafeUser type. Falls back to initials when no profile picture is set; supports online/away/busy/offline status dots.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -1948,7 +1948,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserRoleBadge.ejs",
       "abbr": "Ur",
-      "description": "ADMIN → red, AUTHOR → primary, USER → neutral renk eşlemesi ile rol rozeti.",
+      "description": "Color-coded badge for ADMIN / AUTHOR / USER roles. ADMIN renders as error (red), AUTHOR as primary (blue), USER as neutral.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -1961,7 +1961,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserStatusBadge.ejs",
       "abbr": "Us",
-      "description": "ACTIVE → green, INACTIVE → neutral, BANNED → red. dot prop ile renkli nokta eklenir.",
+      "description": "Color-coded badge for ACTIVE / INACTIVE / BANNED user statuses. Optional dot prop adds a leading status indicator.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -1974,7 +1974,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserMenu.ejs",
       "abbr": "Um",
-      "description": "Avatar + isim + rol trigger. Profile, Settings ve Sign out öğeleri içeren dropdown. Dışarı tıklayınca kapanır.",
+      "description": "Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1996,7 +1996,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/money/PriceDisplay.ejs",
       "abbr": "Pd",
-      "description": "Intl.NumberFormat ile para birimi formatlama. Boyut, locale ve üstü çizili seçenekleri destekler.",
+      "description": "Currency formatter using Intl.NumberFormat. Supports any ISO 4217 code and locale. Strikethrough prop renders an original/crossed-out price.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2012,7 +2012,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/PaymentStatusBadge.ejs",
       "abbr": "Ps",
-      "description": "PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED ödeme durumları için renk kodlu rozet.",
+      "description": "Color-coded badge for all PaymentStatus values: PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -2025,7 +2025,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/address/AddressForm.ejs",
       "abbr": "Af",
-      "description": "Ad, telefon, adres satırları, şehir, bölge, posta kodu ve ülke alanlarından oluşan adres formu. initial prop ile önceden doldurulabilir.",
+      "description": "Full address form with full name, phone, address lines, city, state/district, postal code, and country. Pre-fillable via the initial prop.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2043,7 +2043,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/address/AddressCard.ejs",
       "abbr": "Ac",
-      "description": "Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta kodu ve ülge. Seçili durum ve edit/delete butonları.",
+      "description": "Read-only address display card with full name, phone, address lines, city, state, postal code, and country. Supports selected state and optional Edit/Delete actions.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2067,7 +2067,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/money/OrderTotalsCard.ejs",
       "abbr": "Ot",
-      "description": "Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satırı. Sıfır değerli satırlar gizlenir.",
+      "description": "Order summary card showing subtotal, discount, tax, service fee, shipping, and an emphasized total. Zero-value lines are hidden automatically.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2089,7 +2089,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/status/PublishStatusBadge.ejs",
       "abbr": "Pb",
-      "description": "DRAFT / PUBLISHED / ARCHIVED içerik durumları için Font Awesome ikonlu rozet. showIcon=false ile ikon gizlenebilir.",
+      "description": "Badge for DRAFT / PUBLISHED / ARCHIVED content states with contextual Font Awesome icons. Icon can be hidden via showIcon={false}.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -2102,7 +2102,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/status/VisibilityBadge.ejs",
       "abbr": "Vb",
-      "description": "PUBLIC / PRIVATE / UNLISTED görünürlük durumları için ikon-rozet. PUBLIC yeşil, PRIVATE kırmızı, UNLISTED nötr.",
+      "description": "Badge for PUBLIC / PRIVATE / UNLISTED visibility states with eye/lock icons. PUBLIC is green, PRIVATE is red, UNLISTED is neutral.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
@@ -2115,7 +2115,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/i18n/LanguageSwitcher.ejs",
       "abbr": "Ls",
-      "description": "Native select ile dil seçici. en/tr/de/fr/ar varsayılan diller; autoSubmit ile form aracılığıyla otomatik gönderi.",
+      "description": "Language selector using a native select. Defaults to en/tr/de/fr/ar; with autoSubmit the form is submitted automatically on change.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2130,7 +2130,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/ChangePasswordForm.ejs",
       "abbr": "Cp",
-      "description": "Mevcut şifre + yeni şifre + doğrulama formu. Alan bazlı hata mesajları.",
+      "description": "Current password + new password + confirm fields with match validation and server-error banner.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2149,7 +2149,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserProfileCard.ejs",
       "abbr": "Pc",
-      "description": "Profil kartı: kapak banner, avatar, görünen ad, kullanıcı adı, biyografi, rol ve durum rozetleri ve isteğe bağlı actions slotu.",
+      "description": "Profile card with cover banner, avatar, display name, username, bio, role and status badges, and an optional actions slot.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2170,7 +2170,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserProfileForm.ejs",
       "abbr": "Up",
-      "description": "Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref prop'u ile iptal butonu.",
+      "description": "Controlled form for editing display name, username, bio, and profile picture URL. Username validation: 3–32 chars, lowercase alphanumeric + underscore.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2192,7 +2192,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserPreferencesForm.ejs",
       "abbr": "Ue",
-      "description": "Tema (SYSTEM/LIGHT/DARK), dil seçimi, email/push/newsletter toggle'ları içeren tercihler formu.",
+      "description": "Preferences form with theme and language selects plus email/push notification and newsletter toggles.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2212,7 +2212,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/discount/CouponInput.ejs",
       "abbr": "Ci",
-      "description": "Kupon kodu giriş + uygula/kaldır akışı. Sunucu taraflı doğrulama ile hata/başarı mesajları.",
+      "description": "Coupon code input with apply/remove flow. Calls onApply which returns success/error; shows applied state once a valid code is accepted.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2230,7 +2230,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/discount/DiscountBadge.ejs",
       "abbr": "Db",
-      "description": "İndirim göstergesi: yüzde (\"20% off\"), sabit tutar (para birimi ile) veya ücretsiz kargo.",
+      "description": "Formats and displays a discount: percentage (e.g. \"20% off\"), fixed amount with currency, or free shipping.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2246,7 +2246,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/PaymentMethodSelector.ejs",
       "abbr": "Pm",
-      "description": "Radio-group kart seçici. Credit card, debit card, bank transfer ve wallet seçenekleri.",
+      "description": "Radio-group style card selector for payment methods. Shows icon, label, and description. Default set: credit card, debit card, bank transfer, wallet.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [],
@@ -2259,7 +2259,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/PaymentSummaryCard.ejs",
       "abbr": "Sc",
-      "description": "Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum rozeti.",
+      "description": "Read-only payment summary card: amount, method, provider, provider reference, and status badge.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2280,7 +2280,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/ForgotPasswordForm.ejs",
       "abbr": "Fp",
-      "description": "Şifre sıfırlama linki gönderim formu. sent=true olduğunda onay mesajı gösterir.",
+      "description": "Email input that triggers a password reset link. Shows an inline success state after submission instead of a redirect.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2300,7 +2300,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/auth/SessionExpiredBanner.ejs",
       "abbr": "Se",
-      "description": "Oturum süresi dolduğunda gösterilen uyarı banner'ı. \"Sign in again\" CTA butonu içerir.",
+      "description": "Warning banner shown when the user session has expired. Includes a \"Sign in again\" action button.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2320,7 +2320,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/seo/SeoForm.ejs",
       "abbr": "Sf",
-      "description": "SEO metadata formu: başlık (60 karakter sınırı), meta açıklaması (160 karakter) ve anahtar kelime etiket girişi.",
+      "description": "SEO metadata form: title (60 char limit), meta description (160 char limit), and keyword tag input with character counters.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2337,7 +2337,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/seo/SeoPreview.ejs",
       "abbr": "Sp",
-      "description": "Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.",
+      "description": "Google search result preview card. Shows title, URL, and description with character count indicators. Empty fields render placeholder text.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2361,7 +2361,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/address/AddressSelector.ejs",
       "abbr": "As",
-      "description": "AddressCard üzerine kurulu seçilebilir adres listesi. Ekle, düzenle ve sil callback'leri destekler.",
+      "description": "Selectable list of saved addresses built on AddressCard. Supports add, edit, and delete callbacks.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -2382,7 +2382,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/location/LocationPicker.ejs",
       "abbr": "Lp",
-      "description": "Ülke seçici (countries-list), şehir, bölge, posta kodu ve isteğe bağlı enlem/boylam alanları. 2 sütun grid.",
+      "description": "Location form with country selector (countries-list), city, state, postal code, and optional lat/lng. 2-column grid layout.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [],
@@ -2395,7 +2395,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/location/GeoPointDisplay.ejs",
       "abbr": "Gp",
-      "description": "Enlem/boylam koordinat gösterimi ve Google Maps bağlantısı. Hassasiyet ve etiket ayarlanabilir.",
+      "description": "Displays latitude/longitude coordinates with a Google Maps link. Configurable precision and optional label.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -2417,7 +2417,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/status/ProcessingStatusIndicator.ejs",
       "abbr": "Pi",
-      "description": "UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.",
+      "description": "Animated status indicator for UPLOADING / PROCESSING / READY / FAILED states. Optional progress bar with percentage.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2440,7 +2440,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/money/CurrencySelector.ejs",
       "abbr": "Cs",
-      "description": "ISO 4217 para birimi seçici. countries-list'ten derlenen, alfabetik sıralı native select.",
+      "description": "Currency dropdown built from countries-list. Deduped, alphabetically sorted ISO 4217 currency codes.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -2465,7 +2465,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/location/CountrySelector.ejs",
       "abbr": "Co",
-      "description": "ISO2 kodlu ülke listesi üzerinden aranabilir, klavye erişilebilir özel select. Form gönderimi için gizli input, hata/hint/required durumları ve fixed pozisyonlu açılır panel içerir.",
+      "description": "Country dropdown built from countries-list. Shows flag + full name + ISO2 code. Supports search by name or code, error/hint states.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -2491,7 +2491,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/i18n/DirectionProvider.ejs",
       "abbr": "Dp",
-      "description": "Dil koduna göre dir=\"rtl\"/\"ltr\" atayan wrapper div. RTL dilleri: ar, he, fa, ur, yi, ku, ps, sd.",
+      "description": "Wrapper div that sets dir=\"rtl\"/\"ltr\" based on the language code. RTL languages: ar, he, fa, ur, yi, ku, ps, sd.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [],
@@ -2504,7 +2504,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/CreditCardVisual.ejs",
       "abbr": "Cv",
-      "description": "3D flip kredi kartı görseli. Ön: numara, isim, son tarih. Arka: CVV şeridi. VISA, MC, AMEX, Discover destekli.",
+      "description": "Animated 3-D flip credit card. Front shows number, name, expiry; back shows CVV strip. Supports VISA, Mastercard, AMEX, Discover.",
       "status": "beta",
       "since": "2025-05",
       "designTokens": [],
@@ -2517,7 +2517,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/CreditCardForm.ejs",
       "abbr": "Cf",
-      "description": "Canlı kart görseli önizlemeli kredi kartı giriş formu. Marka tespiti, numara formatlaması ve geçerlilik doğrulaması.",
+      "description": "Full credit card entry form with live card visual preview. Auto-detects brand, formats number, flips card on CVV focus, validates expiry.",
       "status": "beta",
       "since": "2025-05",
       "designTokens": [
@@ -2534,7 +2534,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/SavedCardSelector.ejs",
       "abbr": "Sk",
-      "description": "Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve varsayılan göstergesi.",
+      "description": "Radio-group list of saved payment cards. Shows brand badge, masked number, expiry, and default indicator. Supports remove and add-new callbacks.",
       "status": "beta",
       "since": "2025-05",
       "designTokens": [
@@ -2558,7 +2558,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/NotFoundPage.ejs",
       "abbr": "Nf",
-      "description": "Tam sayfa 404 bileşeni. Gradient 404 yazısı, ikon, başlık, açıklama ve \"Go Home\" / \"Go Back\" butonları.",
+      "description": "Full-page 404 screen with a gradient \"404\" heading, icon slot, title, description, and home/back action buttons.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2580,7 +2580,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/chat/ChatBox.ejs",
       "abbr": "CB2",
-      "description": "Sayfanın sağ alt köşesine sabitlenen yüzen destek sohbet bileşeni. FAB toggle, header, mesaj balonları, otomatik yükselen textarea ve okunmamış mesaj rozeti içerir.",
+      "description": "Floating chat widget that anchors to the bottom-right of the screen. Includes a FAB toggle, collapsible panel, scrollable message list with typing indicator, and an auto-growing textarea input.",
       "status": "beta",
       "since": "2026-05",
       "designTokens": [
@@ -2608,7 +2608,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/welcome.ejs",
       "abbr": "We",
-      "description": "Kayıt sonrası gönderilen hoş geldin e-postası. E-posta doğrulama CTA ve \"next steps\" listesi içerir.",
+      "description": "Welcome email sent after registration. Includes an email verification CTA and a \"next steps\" list.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2630,7 +2630,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/verify-email.ejs",
       "abbr": "Vo",
-      "description": "6 haneli OTP kodu. Büyük, mono font kod gösterimi ve süre uyarısı.",
+      "description": "6-digit OTP code. Large mono-font code display and expiry notice.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2652,7 +2652,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/password-reset.ejs",
       "abbr": "Pr",
-      "description": "Şifre sıfırlama linki e-postası. Süre uyarısı ve güvenlik notu içerir.",
+      "description": "Password reset link email. Includes an expiry notice and a security note.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2674,7 +2674,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/password-changed.ejs",
       "abbr": "Pc",
-      "description": "Şifre değişikliği onay e-postası. Cihaz, IP ve konum bilgisi ile \"Benim değildi\" uyarısı.",
+      "description": "Password change confirmation email. Device, IP, and location info with a \"Wasn't me\" alert.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2697,7 +2697,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/login-alert.ejs",
       "abbr": "La",
-      "description": "Yeni cihazdan giriş uyarısı. Cihaz, konum ve IP bilgisi; \"Secure My Account\" ve \"This Was Me\" CTA çifti.",
+      "description": "New device sign-in alert. Device, location, and IP info; \"Secure My Account\" and \"This Was Me\" CTA pair.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2720,7 +2720,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/auth/account-locked.ejs",
       "abbr": "Al",
-      "description": "Çok fazla başarısız giriş sonrası kilit e-postası. Kilit açma süresi, sebep ve \"Unlock\" / \"Support\" butonları.",
+      "description": "Account lock email after too many failed sign-in attempts. Unlock time, reason, and \"Unlock\" / \"Support\" buttons.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2744,7 +2744,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/confirmation.ejs",
       "abbr": "Oc",
-      "description": "Sipariş onayı makbuzu. Satır kalemleri, ara toplam/vergi/toplam ve kargo adresi.",
+      "description": "Order confirmation receipt. Line items, subtotal/tax/total, and shipping address.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2767,7 +2767,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/shipped.ejs",
       "abbr": "Os",
-      "description": "Kargo bildirimi. Taşıyıcı, takip numarası, tahmini teslimat tarihi ve \"Track My Package\" CTA.",
+      "description": "Shipping notification. Carrier, tracking number, estimated delivery date, and a \"Track My Package\" CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2789,7 +2789,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/delivered.ejs",
       "abbr": "Od",
-      "description": "Teslimat onayı. Yıldız derecelendirme butonları ile yorum isteği CTA.",
+      "description": "Delivery confirmation. Star-rating buttons with a review request CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2813,7 +2813,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/cancelled.ejs",
       "abbr": "Ox",
-      "description": "Sipariş iptali bildirimi. İptal sebebi, üstü çizili kalemler ve iade süresi.",
+      "description": "Order cancellation notice. Cancellation reason, struck-through items, and refund window.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2837,7 +2837,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/refund.ejs",
       "abbr": "Rf",
-      "description": "İade işlendi bildirimi. Tutar hero, iade yöntemi ve tahmini varış süresi.",
+      "description": "Refund processed notice. Amount hero, refund method, and estimated arrival window.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2860,7 +2860,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/order/abandoned-cart.ejs",
       "abbr": "Ac",
-      "description": "Terk edilen sepet yeniden katılım e-postası. Kupon kodu, indirim teklifi ve sepet içeriği.",
+      "description": "Abandoned cart re-engagement email. Coupon code, discount offer, and cart contents.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2883,7 +2883,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/invoice.ejs",
       "abbr": "Iv",
-      "description": "Kalemli fatura. Durum badge, tüm kalemler ve toplamlar, PDF indirme CTA.",
+      "description": "Itemized invoice. Status badge, all line items and totals, PDF download CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2908,7 +2908,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/subscription-activated.ejs",
       "abbr": "Sa",
-      "description": "Plan aktivasyon onayı. Özellik listesi, fiyat ve bir sonraki faturalandırma tarihi.",
+      "description": "Plan activation confirmation. Feature list, price, and next billing date.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2930,7 +2930,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/renewal-reminder.ejs",
       "abbr": "Rr",
-      "description": "7 gün önceden yenileme hatırlatıcısı. Ödeme yöntemi, tutar ve manage/cancel linkleri.",
+      "description": "7-day advance renewal reminder. Payment method, amount, and manage/cancel links.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2954,7 +2954,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/subscription-cancelled.ejs",
       "abbr": "Sc",
-      "description": "Abonelik iptali. Erişim sona erme tarihi, yeniden aktivasyon CTA ve geri bildirim linki.",
+      "description": "Subscription cancellation. Access end date, reactivation CTA, and feedback link.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -2978,7 +2978,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/payment-failed.ejs",
       "abbr": "Pf",
-      "description": "Ödeme başarısız bildirimi. Hata sebebi, yeniden deneme tarihi ve ödeme yöntemi güncelleme CTA.",
+      "description": "Payment failed notice. Failure reason, retry date, and an update-payment-method CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3000,7 +3000,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/billing/card-expiring.ejs",
       "abbr": "Ce",
-      "description": "Kart son kullanma uyarısı. Kart görseli, plan/faturalandırma bilgisi ve güncelleme CTA.",
+      "description": "Card expiration warning. Card visual, plan/billing info, and an update CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3022,7 +3022,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/notification/comment-reply.ejs",
       "abbr": "Cr",
-      "description": "Yorum cevabı bildirimi. Orijinal yorum + yeni cevap thread görünümü.",
+      "description": "Comment reply notification. Original comment + new reply in a thread view.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3045,7 +3045,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/notification/mention.ejs",
       "abbr": "Mn",
-      "description": "@mention bildirimi. Bahseden kişi, bağlam ve alıntı excerpt gösterimi.",
+      "description": "@mention notification. Mentioner, context, and quoted excerpt display.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3067,7 +3067,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/notification/new-message.ejs",
       "abbr": "Nm",
-      "description": "Gelen kutusu mesaj bildirimi. Gönderici, mesaj önizlemesi ve Reply/Inbox CTA çifti.",
+      "description": "Inbox message notification. Sender, message preview, and Reply/Inbox CTA pair.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3090,7 +3090,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/marketing/newsletter.ejs",
       "abbr": "Nl",
-      "description": "Haftalık bülten. Makale kartları, etiket renkleri ve okuma süresi.",
+      "description": "Weekly newsletter. Article cards, tag colors, and reading time.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3112,7 +3112,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/marketing/promotional.ejs",
       "abbr": "Ep",
-      "description": "Süre sınırlı kampanya. Gradient başlık, fiyat karşılaştırma, kesik çizgili kupon kodu.",
+      "description": "Limited-time promotion. Gradient header, price comparison, dashed-border coupon code.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3134,7 +3134,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/marketing/product-update.ejs",
       "abbr": "Pu",
-      "description": "Ürün sürüm duyurusu. Versiyon badge, öne çıkan değişiklik kartları ve changelog linki.",
+      "description": "Product release announcement. Version badge, highlighted change cards, and changelog link.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3158,7 +3158,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/system/maintenance.ejs",
       "abbr": "Me",
-      "description": "Planlı bakım öncesi uyarı. Zaman penceresi, etkilenen servisler ve status page linki.",
+      "description": "Advance notice before scheduled maintenance. Time window, affected services, and status page link.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3178,7 +3178,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/system/policy-update.ejs",
       "abbr": "Pl",
-      "description": "Gizlilik politikası / kullanım şartları güncelleme. Madde madde özet ve yürürlük tarihi.",
+      "description": "Privacy policy / terms of service update. Point-by-point summary and effective date.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3201,7 +3201,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/system/data-export.ejs",
       "abbr": "De",
-      "description": "Veri dışa aktarma hazır bildirimi. Dosya boyutu, format, son kullanma tarihi ve indirme CTA.",
+      "description": "Data export ready notice. File size, format, expiration date, and download CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3225,7 +3225,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/system/account-deletion.ejs",
       "abbr": "Ad",
-      "description": "Hesap silme zamanlama bildirimi. Grace period, kalıcı silme uyarısı ve iptal CTA.",
+      "description": "Account deletion scheduled notice. Grace period, permanent deletion warning, and a cancel CTA.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3248,7 +3248,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/support/ticket-opened.ejs",
       "abbr": "To",
-      "description": "Destek talebi alındı otomatik yanıtı. Ticket ID, konu, durum badge ve mesaj önizlemesi.",
+      "description": "Support request received auto-reply. Ticket ID, subject, status badge, and message preview.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3272,7 +3272,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/support/ticket-reply.ejs",
       "abbr": "Tr",
-      "description": "Destek ekibinden gelen yanıt. Ajan avatar, tam cevap metni, Reply ve View CTA çifti.",
+      "description": "Reply from the support team. Agent avatar, full reply text, and Reply and View CTA pair.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3295,7 +3295,7 @@
       "category": "Email",
       "filePath": "views/theme/common/email/support/ticket-resolved.ejs",
       "abbr": "Ts",
-      "description": "Destek talebi çözüldü bildirimi. Çözüm özeti, emoji derecelendirme ve yeniden açma seçeneği.",
+      "description": "Support ticket resolved notice. Resolution summary, emoji rating, and a reopen option.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3318,7 +3318,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/charts/Charts.ejs",
       "abbr": "Ch",
-      "description": "Chart.js chart bileşenleri Card içinde: Bar, Line, Doughnut, Radar ve Polar Area.",
+      "description": "Chart.js chart components wrapped in Cards: Bar, Line, Doughnut, Radar, and Polar Area.",
       "status": "beta",
       "since": "2025-05",
       "designTokens": [
@@ -3338,7 +3338,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/notification/NotificationFilterTabs.ejs",
       "abbr": "NF",
-      "description": "Bildirim listesi için pill-tarzı filtre sekmeleri. Sayaç rozeti, aktif/pasif renkler ve role=\"tab\" / aria-selected ile erişilebilir.",
+      "description": "Pill-style filter tabs for a notification list. Includes count badges, active/inactive colors, and is accessible via role=\"tab\" / aria-selected.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3362,7 +3362,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/notification/NotificationListItem.ejs",
       "abbr": "NL",
-      "description": "Tek bildirim satırı. Tür ikon tonları (order/message/system/alert/success/social), okundu/okunmadı vurgusu, göreceli zaman ve isteğe bağlı \"Mark read\" butonu.",
+      "description": "Single notification row. Includes per-kind icon tones (order/message/system/alert/success/social), read/unread emphasis, relative time, and an optional \"Mark read\" button.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3390,7 +3390,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/notification/NotificationMenu.ejs",
       "abbr": "NM",
-      "description": "Header bildirim çanı + açılır panel. Okunmamış sayacı, başlık rozeti, \"Mark all read\", öğe listesi ve \"View all\" alt bağlantısı. Esc / dış tıklama ile kapanır.",
+      "description": "Bell icon button with unread count badge. Opens a dropdown panel showing notification items grouped by read/unread state with variant color dots, timestamps, and mark-all-read / view-all actions.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3419,7 +3419,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/subscription/SubscriptionPlanCard.ejs",
       "abbr": "SP",
-      "description": "Fiyatlandırma sayfaları için abonelik plan kartı. Popüler/aktif rozetleri, Intl.NumberFormat ile yerelleştirilmiş para birimi, özellik listesi ve POST aksiyonlu seçim formu içerir.",
+      "description": "Subscription plan card displaying name, price with currency formatting, billing interval, and feature list with checkmarks. Highlights the popular and current plans. Accepts onSelect callback for plan switching.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3444,7 +3444,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/payment/CheckoutSuccessState.ejs",
       "abbr": "CK",
-      "description": "Ödeme tamamlama sonrası başarı ekranı; onay ikonu, ödeme özeti ve opsiyonel teslimat adresi.",
+      "description": "Success screen shown after checkout completion; includes a confirmation icon, payment summary, and optional delivery address.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3468,7 +3468,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/cart/CartBadge.ejs",
       "abbr": "CB",
-      "description": "Header alanında sepetteki ürün adedini gösteren yuvarlak sepet butonu. 99 üstü adetler \"99+\" olarak rozet halinde gösterilir.",
+      "description": "Round cart button for the header that shows the number of items in the cart. Counts above 99 render as a \"99+\" badge.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3489,7 +3489,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/ConnectionStatusBadge.ejs",
       "abbr": "CS",
-      "description": "Router/modem bağlantı durumları için renk kodlu rozet. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.",
+      "description": "Color-coded badge for router/modem connection states. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3511,7 +3511,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/SystemStatusCard.ejs",
       "abbr": "SS",
-      "description": "Cihaz modeli, CPU/RAM ilerleme çubukları, sıcaklık, uptime ve firmware versiyonu. Sıcaklık eşiğine göre renk değişir (>55 warning, >70 error).",
+      "description": "Device model, CPU/RAM progress bars, temperature, uptime, and firmware version. Color changes based on temperature thresholds (>55 warning, >70 error).",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3535,7 +3535,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/WanStatusCard.ejs",
       "abbr": "WS",
-      "description": "WAN bağlantı tipi, IP/gateway/DNS bilgileri ve ISP hız göstergesi. Durum rozetine göre renk kodlaması.",
+      "description": "WAN connection type, IP/gateway/DNS information, and ISP speed indicator. Color-coded based on status badge.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3561,7 +3561,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/WifiNetworkCard.ejs",
       "abbr": "WN",
-      "description": "SSID, band (2.4/5/6 GHz), güvenlik modu ve guest/disabled etiketleri. editHref prop'u ile düzenleme bağlantısı eklenir.",
+      "description": "SSID, band (2.4/5/6 GHz), security mode, and guest/disabled labels. An edit link is added via the editHref prop.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3585,7 +3585,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/ConnectedDeviceRow.ejs",
       "abbr": "CD",
-      "description": "Bağlı cihaz tablosu satırı. Cihaz ikonu, hostname/MAC, IP, bağlantı tipi (kablolu/wifi + dBm), trafik ve DHCP/Static/Blocked durumu.",
+      "description": "Connected device table row. Device icon, hostname/MAC, IP, connection type (wired/wifi + dBm), traffic, and DHCP/Static/Blocked status.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3610,7 +3610,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/PortForwardRow.ejs",
       "abbr": "PF",
-      "description": "Port yönlendirme tablosu satırı. Kural adı, protokol, harici port, dahili IP:port ve etkin/devre dışı gösterimi.",
+      "description": "Port forwarding table row. Rule name, protocol, external port, internal IP:port, and enabled/disabled state.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3631,7 +3631,7 @@
       "category": "Domain · Modem",
       "filePath": "modules/domain/modem/AlertItem.ejs",
       "abbr": "AI",
-      "description": "Router bildirimi satırı. INFO · WARNING · CRITICAL şiddet seviyeleri. Okunmamış uyarılar mavi nokta ile işaretlenir.",
+      "description": "Router notification row. INFO · WARNING · CRITICAL severity levels. Unread alerts are marked with a blue dot.",
       "status": "stable",
       "since": "2025-05",
       "designTokens": [
@@ -3652,7 +3652,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/StatusCodeBadge.ejs",
       "abbr": "SC",
-      "description": "HTTP durum kodunu semantik renge göre renklendiren rozet. 2xx yeşil, 3xx mavi, 4xx sarı, 5xx kırmızı.",
+      "description": "Displays an HTTP status code with a semantic color and an optional human-readable label.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3682,7 +3682,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/HttpMethodBadge.ejs",
       "abbr": "HM",
-      "description": "HTTP metodunu renk kodlu rozet olarak gösterir. GET yeşil, POST mavi, DELETE kırmızı, vb.",
+      "description": "Color-coded badge for HTTP methods — GET, POST, PUT, PATCH, DELETE, and more.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3711,7 +3711,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/SecurityBadge.ejs",
       "abbr": "SB",
-      "description": "OpenAPI güvenlik şeması türünü gösteren rozet. apiKey, http (Bearer), oauth2, openIdConnect, mutualTLS.",
+      "description": "Inline badge representing an API security scheme type with a matching icon and color.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3740,7 +3740,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/SecuritySchemeBadge.ejs",
       "abbr": "SS",
-      "description": "Rounded-full pill varyantı güvenlik rozeti — sidebar ve üst bilgi alanları için.",
+      "description": "Badge variant of SecurityBadge that uses the design-system Badge component for consistent styling.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3771,7 +3771,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/ParameterTable.ejs",
       "abbr": "PT",
-      "description": "API parametrelerini tablo biçiminde listeler. Konum rozeti, tip, zorunluluk ve açıklama sütunları içerir.",
+      "description": "Table displaying API parameters with location (path/query/header/cookie), type, required flag, and description.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3794,7 +3794,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/SchemaViewer.ejs",
       "abbr": "SV",
-      "description": "JSON Schema nesnesini hiyerarşik olarak görselleştirir. İç içe nesneler details/summary ile genişletilebilir.",
+      "description": "Interactive JSON Schema tree viewer with type coloring, constraint display, and collapsible nodes.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3820,7 +3820,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/CodeSamplePanel.ejs",
       "abbr": "CS",
-      "description": "API kod örneklerini koyu arka planlı panel içinde gösterir. İlk örnek açık, diğerleri details/summary ile erişilebilir.",
+      "description": "Dark-themed panel showing code samples in multiple languages with tab switching and a one-click copy button.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3837,7 +3837,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/ServerSelector.ejs",
       "abbr": "SR",
-      "description": "API sunucu listesini gösterir. Aktif sunucu URL ve ortam etiketi ile öne çıkar, diğerleri details/summary ile listelenir.",
+      "description": "Dropdown for selecting the active API server, with environment badges (production, staging, development, sandbox).",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3862,7 +3862,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/ResponseCard.ejs",
       "abbr": "RC",
-      "description": "Tek bir API yanıtını katlanabilir kart içinde gösterir. Durum kodu rozeti, açıklama ve şema içerir.",
+      "description": "Collapsible card for a single API response showing the status code, description, and response body schema.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3885,7 +3885,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/OperationPanel.ejs",
       "abbr": "OP",
-      "description": "Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Samples bölümleri details/summary ile katlanabilir.",
+      "description": "Tabbed panel showing all details of an API operation — parameters, request body, responses, and code samples.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3909,7 +3909,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/EndpointRow.ejs",
       "abbr": "ER",
-      "description": "Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığında OperationPanel açılır.",
+      "description": "Collapsible row representing a single API endpoint — shows the method badge, path, summary, and expands to an OperationPanel.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3932,7 +3932,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/ApiTagSection.ejs",
       "abbr": "TS",
-      "description": "Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabilir bölüm olarak gösterir.",
+      "description": "Collapsible section grouping endpoints under a named tag — the primary navigation unit in API documentation.",
       "status": "stable",
       "since": "2025-04",
       "designTokens": [
@@ -3955,7 +3955,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/ApiKeyTokenCard.ejs",
       "abbr": "AT",
-      "description": "API anahtarı / kişisel erişim token kartı. Maskeli/gizli token gösterimi, göster-gizle, panoya kopyala, ortam rozeti, scope listesi ve isteğe bağlı revoke aksiyonu içerir.",
+      "description": "Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-used metadata.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -3985,7 +3985,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/AuthSchemeCard.ejs",
       "abbr": "AK",
-      "description": "Bir kimlik doğrulama şemasını kart olarak özetler. İkon, isim, SecuritySchemeBadge, opsiyonel Recommended rozeti, açıklama ve meta alanlar (clientId, scopes vb.) içerir; href / onSelect ile etkileşimli hâle gelir.",
+      "description": "Selectable card describing a single auth scheme (apiKey, http, oauth2, openIdConnect, mutualTLS).",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -4008,7 +4008,7 @@
       "category": "Domain · API Doc",
       "filePath": "modules/domain/api-doc/OAuthFlowDiagram.ejs",
       "abbr": "OF",
-      "description": "OAuth 2.0 akışını görsel olarak özetler: User → Your App → Auth Server hattı, akış türüne özel numaralı adım listesi, endpoint URL'leri (authorize / token / refresh) ve mevcut scope tanımları.",
+      "description": "Visual walkthrough of an OAuth 2.0 flow with actors, numbered steps, endpoints, and scopes.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [

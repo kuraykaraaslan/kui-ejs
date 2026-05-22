@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Rounded-full pill varyantı güvenlik rozeti — sidebar ve üst bilgi alanları için.
+Badge variant of SecurityBadge that uses the design-system Badge component for consistent styling.
 
 ## Design tokens consumed
 

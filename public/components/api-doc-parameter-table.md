@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-API parametrelerini tablo biçiminde listeler. Konum rozeti, tip, zorunluluk ve açıklama sütunları içerir.
+Table displaying API parameters with location (path/query/header/cookie), type, required flag, and description.
 
 ## Design tokens consumed
 

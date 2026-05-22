@@ -55,7 +55,7 @@ export function buildStarRatingData(): ShowcaseItem[] {
       category: 'Atom',
       abbr: 'SR',
       description:
-        'Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly: false` for interactive whole-star selection.',
+        'Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly={false}` + `onChange` for interactive whole-star selection.',
       filePath: 'modules/ui/StarRating.ejs',
       since: '2026-05',
       sourceCode,

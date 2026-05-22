@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan Navigation/Actions/Recent grupları dahili. Klavye navigasyonu (↑↓ + Enter) destekler.
+Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.
 
 ## Design tokens consumed
 

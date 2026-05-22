@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Email + şifre formu. Remember me checkbox, hata banner ve action/method desteği.
+Email + password sign-in form with inline validation, "Remember me" checkbox, and server-error banner.
 
 ## Design tokens consumed
 

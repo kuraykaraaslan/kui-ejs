@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Şifre sıfırlama linki e-postası. Süre uyarısı ve güvenlik notu içerir.
+Password reset link email. Includes an expiry notice and a security note.
 
 ## Design tokens consumed
 

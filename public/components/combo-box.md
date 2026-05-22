@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Searchable autocomplete + tek seçim. Klavye navigasyonu, açıklamalı option ve clearable buton desteği.
+Searchable autocomplete single-select with keyboard navigation, described options, and a clearable button.
 
 ## Design tokens consumed
 

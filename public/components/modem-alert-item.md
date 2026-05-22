@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Router bildirimi satırı. INFO · WARNING · CRITICAL şiddet seviyeleri. Okunmamış uyarılar mavi nokta ile işaretlenir.
+Router notification row. INFO · WARNING · CRITICAL severity levels. Unread alerts are marked with a blue dot.
 
 ## Design tokens consumed
 

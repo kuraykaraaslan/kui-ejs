@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Sayfanın sağ alt köşesine sabitlenen yüzen destek sohbet bileşeni. FAB toggle, header, mesaj balonları, otomatik yükselen textarea ve okunmamış mesaj rozeti içerir.
+Floating chat widget that anchors to the bottom-right of the screen. Includes a FAB toggle, collapsible panel, scrollable message list with typing indicator, and an auto-growing textarea input.
 
 ## Design tokens consumed
 

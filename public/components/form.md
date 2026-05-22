@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Form layout wrapper. title, description, error ve actionsContent slot'ları. columns prop ile 1 veya 2 kolonlu grid düzeni.
+Form layout wrapper with title, description, error and actions slots. `columns` prop renders fields in a 1 or 2 column grid.
 
 ## Design tokens consumed
 

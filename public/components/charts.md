@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-05
 
-Chart.js chart bileşenleri Card içinde: Bar, Line, Doughnut, Radar ve Polar Area.
+Chart.js chart components wrapped in Cards: Bar, Line, Doughnut, Radar, and Polar Area.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Native date input ile label + hint + error anatomy. min/max kısıtlaması ve disabled desteği ile birlikte gelir.
+Native date input with label + hint + error anatomy. Supports min/max constraints and a disabled state.
 
 ## Design tokens consumed
 

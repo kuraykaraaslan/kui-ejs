@@ -64,7 +64,7 @@ export function buildDropdownMenuData(): ShowcaseItem[] {
       title: 'DropdownMenu',
       category: 'Organism',
       abbr: 'Dm',
-      description: 'role="menu" + ARIA durumlu açılır menü. Sol/sağ hizalama, ikon, ayraç, danger ve disabled öğeleri ile ok-tuşu navigasyonu.',
+      description: 'Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation.',
       filePath: 'modules/ui/DropdownMenu.ejs',
       sourceCode,
       variants: [

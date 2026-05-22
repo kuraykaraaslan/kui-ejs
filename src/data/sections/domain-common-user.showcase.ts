@@ -91,7 +91,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserAvatar',
       category: 'Domain',
       abbr: 'Ua',
-      description: 'Kullanıcı nesnesi (name/email/profilePicture) alarak Avatar\'ı sarar. online/away/busy/offline statü noktası desteği.',
+      description: 'Avatar that consumes the SafeUser type. Falls back to initials when no profile picture is set; supports online/away/busy/offline status dots.',
       filePath: 'modules/domain/common/user/UserAvatar.ejs',
       sourceCode: userAvatarSource,
       variants: [
@@ -121,7 +121,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserMenu',
       category: 'Domain',
       abbr: 'Um',
-      description: 'Avatar + isim + rol trigger. Profile, Settings ve Sign out öğeleri içeren dropdown. Dışarı tıklayınca kapanır.',
+      description: 'Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.',
       filePath: 'modules/domain/common/user/UserMenu.ejs',
       sourceCode: userMenuSource,
       variants: [
@@ -176,7 +176,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserRoleBadge',
       category: 'Domain',
       abbr: 'Ur',
-      description: 'ADMIN → red, AUTHOR → primary, USER → neutral renk eşlemesi ile rol rozeti.',
+      description: 'Color-coded badge for ADMIN / AUTHOR / USER roles. ADMIN renders as error (red), AUTHOR as primary (blue), USER as neutral.',
       filePath: 'modules/domain/common/user/UserRoleBadge.ejs',
       sourceCode: userRoleBadgeSource,
       variants: [
@@ -200,7 +200,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserStatusBadge',
       category: 'Domain',
       abbr: 'Us',
-      description: 'ACTIVE → green, INACTIVE → neutral, BANNED → red. dot prop ile renkli nokta eklenir.',
+      description: 'Color-coded badge for ACTIVE / INACTIVE / BANNED user statuses. Optional dot prop adds a leading status indicator.',
       filePath: 'modules/domain/common/user/UserStatusBadge.ejs',
       sourceCode: userStatusBadgeSource,
       variants: [
@@ -233,7 +233,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserProfileForm',
       category: 'Domain',
       abbr: 'Up',
-      description: 'Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref prop\'u ile iptal butonu.',
+      description: 'Controlled form for editing display name, username, bio, and profile picture URL. Username validation: 3–32 chars, lowercase alphanumeric + underscore.',
       filePath: 'modules/domain/common/user/UserProfileForm.ejs',
       sourceCode: userProfileFormSource,
       variants: [
@@ -282,7 +282,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserProfileCard',
       category: 'Domain',
       abbr: 'Pc',
-      description: 'Profil kartı: kapak banner, avatar, görünen ad, kullanıcı adı, biyografi, rol ve durum rozetleri ve isteğe bağlı actions slotu.',
+      description: 'Profile card with cover banner, avatar, display name, username, bio, role and status badges, and an optional actions slot.',
       filePath: 'modules/domain/common/user/UserProfileCard.ejs',
       sourceCode: userProfileCardSource,
       variants: [
@@ -361,7 +361,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserPreferencesForm',
       category: 'Domain',
       abbr: 'Ue',
-      description: 'Tema (SYSTEM/LIGHT/DARK), dil seçimi, email/push/newsletter toggle\'ları içeren tercihler formu.',
+      description: 'Preferences form with theme and language selects plus email/push notification and newsletter toggles.',
       filePath: 'modules/domain/common/user/UserPreferencesForm.ejs',
       sourceCode: userPrefsFormSource,
       variants: [

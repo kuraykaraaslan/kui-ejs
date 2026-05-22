@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-SEO metadata formu: başlık (60 karakter sınırı), meta açıklaması (160 karakter) ve anahtar kelime etiket girişi.
+SEO metadata form: title (60 char limit), meta description (160 char limit), and keyword tag input with character counters.
 
 ## Design tokens consumed
 

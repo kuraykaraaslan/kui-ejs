@@ -64,7 +64,7 @@ export function buildDomainCommonSeoData(): ShowcaseItem[] {
       title: 'SeoForm',
       category: 'Domain',
       abbr: 'Sf',
-      description: 'SEO metadata formu: başlık (60 karakter sınırı), meta açıklaması (160 karakter) ve anahtar kelime etiket girişi.',
+      description: 'SEO metadata form: title (60 char limit), meta description (160 char limit), and keyword tag input with character counters.',
       filePath: 'modules/domain/common/seo/SeoForm.ejs',
       sourceCode: seoFormSource,
       variants: [
@@ -136,7 +136,7 @@ export function buildDomainCommonSeoData(): ShowcaseItem[] {
       title: 'SeoPreview',
       category: 'Domain',
       abbr: 'Sp',
-      description: 'Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.',
+      description: 'Google search result preview card. Shows title, URL, and description with character count indicators. Empty fields render placeholder text.',
       filePath: 'modules/domain/common/seo/SeoPreview.ejs',
       sourceCode: seoPreviewSource,
       variants: [

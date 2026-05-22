@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Yorum cevabı bildirimi. Orijinal yorum + yeni cevap thread görünümü.
+Comment reply notification. Original comment + new reply in a thread view.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Herhangi bir trigger + içeriği Drawer'a saran wrapper. Kendi açık/kapalı state'ini tutar. AppNav'ın mobil menüsü olarak kullanılır.
+Wrapper that wraps any trigger and children inside a drawer. Manages its own open/closed state. Used as AppNav's mobile menu and also works standalone.
 
 ## Design tokens consumed
 

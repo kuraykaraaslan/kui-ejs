@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-role="searchbox" + arama ikonu + temizle butonu. Controlled veya uncontrolled modda kullanılabilir.
+role="searchbox" with search icon and clear button. Works in controlled and uncontrolled modes.
 
 ## Design tokens consumed
 

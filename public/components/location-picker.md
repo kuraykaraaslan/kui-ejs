@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-Ülke seçici (countries-list), şehir, bölge, posta kodu ve isteğe bağlı enlem/boylam alanları. 2 sütun grid.
+Location form with country selector (countries-list), city, state, postal code, and optional lat/lng. 2-column grid layout.
 
 ## Variants
 

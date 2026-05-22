@@ -71,7 +71,7 @@ const statusCodeBadgeItem: ShowcaseItem = {
   title:       'StatusCodeBadge',
   category:    'Domain · API Doc',
   abbr:        'SC',
-  description: 'HTTP durum kodunu semantik renge göre renklendiren rozet. 2xx yeşil, 3xx mavi, 4xx sarı, 5xx kırmızı.',
+  description: 'Displays an HTTP status code with a semantic color and an optional human-readable label.',
   filePath:    'modules/domain/api-doc/StatusCodeBadge.ejs',
   sourceCode:  statusCodeBadgeSource,
   variants: [
@@ -100,7 +100,7 @@ const httpMethodBadgeItem: ShowcaseItem = {
   title:       'HttpMethodBadge',
   category:    'Domain · API Doc',
   abbr:        'HM',
-  description: 'HTTP metodunu renk kodlu rozet olarak gösterir. GET yeşil, POST mavi, DELETE kırmızı, vb.',
+  description: 'Color-coded badge for HTTP methods — GET, POST, PUT, PATCH, DELETE, and more.',
   filePath:    'modules/domain/api-doc/HttpMethodBadge.ejs',
   sourceCode:  httpMethodBadgeSource,
   variants: [
@@ -132,7 +132,7 @@ const securityBadgeItem: ShowcaseItem = {
   title:       'SecurityBadge',
   category:    'Domain · API Doc',
   abbr:        'SB',
-  description: 'OpenAPI güvenlik şeması türünü gösteren rozet. apiKey, http (Bearer), oauth2, openIdConnect, mutualTLS.',
+  description: 'Inline badge representing an API security scheme type with a matching icon and color.',
   filePath:    'modules/domain/api-doc/SecurityBadge.ejs',
   sourceCode:  securityBadgeSource,
   variants: [
@@ -159,7 +159,7 @@ const securitySchemeBadgeItem: ShowcaseItem = {
   title:       'SecuritySchemeBadge',
   category:    'Domain · API Doc',
   abbr:        'SS',
-  description: 'Rounded-full pill varyantı güvenlik rozeti — sidebar ve üst bilgi alanları için.',
+  description: 'Badge variant of SecurityBadge that uses the design-system Badge component for consistent styling.',
   filePath:    'modules/domain/api-doc/SecuritySchemeBadge.ejs',
   sourceCode:  securitySchemeBadgeSrc,
   variants: [
@@ -182,7 +182,7 @@ const parameterTableItem: ShowcaseItem = {
   title:       'ParameterTable',
   category:    'Domain · API Doc',
   abbr:        'PT',
-  description: 'API parametrelerini tablo biçiminde listeler. Konum rozeti, tip, zorunluluk ve açıklama sütunları içerir.',
+  description: 'Table displaying API parameters with location (path/query/header/cookie), type, required flag, and description.',
   filePath:    'modules/domain/api-doc/ParameterTable.ejs',
   sourceCode:  parameterTableSource,
   variants: [
@@ -219,7 +219,7 @@ const schemaViewerItem: ShowcaseItem = {
   title:       'SchemaViewer',
   category:    'Domain · API Doc',
   abbr:        'SV',
-  description: 'JSON Schema nesnesini hiyerarşik olarak görselleştirir. İç içe nesneler details/summary ile genişletilebilir.',
+  description: 'Interactive JSON Schema tree viewer with type coloring, constraint display, and collapsible nodes.',
   filePath:    'modules/domain/api-doc/SchemaViewer.ejs',
   sourceCode:  schemaViewerSource,
   variants: [
@@ -268,7 +268,7 @@ const codeSamplePanelItem: ShowcaseItem = {
   title:       'CodeSamplePanel',
   category:    'Domain · API Doc',
   abbr:        'CS',
-  description: 'API kod örneklerini koyu arka planlı panel içinde gösterir. İlk örnek açık, diğerleri details/summary ile erişilebilir.',
+  description: 'Dark-themed panel showing code samples in multiple languages with tab switching and a one-click copy button.',
   filePath:    'modules/domain/api-doc/CodeSamplePanel.ejs',
   sourceCode:  codeSamplePanelSource,
   variants: [
@@ -304,7 +304,7 @@ const serverSelectorItem: ShowcaseItem = {
   title:       'ServerSelector',
   category:    'Domain · API Doc',
   abbr:        'SR',
-  description: 'API sunucu listesini gösterir. Aktif sunucu URL ve ortam etiketi ile öne çıkar, diğerleri details/summary ile listelenir.',
+  description: 'Dropdown for selecting the active API server, with environment badges (production, staging, development, sandbox).',
   filePath:    'modules/domain/api-doc/ServerSelector.ejs',
   sourceCode:  serverSelectorSource,
   variants: [
@@ -337,7 +337,7 @@ const responseCardItem: ShowcaseItem = {
   title:       'ResponseCard',
   category:    'Domain · API Doc',
   abbr:        'RC',
-  description: 'Tek bir API yanıtını katlanabilir kart içinde gösterir. Durum kodu rozeti, açıklama ve şema içerir.',
+  description: 'Collapsible card for a single API response showing the status code, description, and response body schema.',
   filePath:    'modules/domain/api-doc/ResponseCard.ejs',
   sourceCode:  responseCardSource,
   variants: [
@@ -375,7 +375,7 @@ const operationPanelItem: ShowcaseItem = {
   title:       'OperationPanel',
   category:    'Domain · API Doc',
   abbr:        'OP',
-  description: 'Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Samples bölümleri details/summary ile katlanabilir.',
+  description: 'Tabbed panel showing all details of an API operation — parameters, request body, responses, and code samples.',
   filePath:    'modules/domain/api-doc/OperationPanel.ejs',
   sourceCode:  operationPanelSource,
   variants: [
@@ -428,7 +428,7 @@ const endpointRowItem: ShowcaseItem = {
   title:       'EndpointRow',
   category:    'Domain · API Doc',
   abbr:        'ER',
-  description: 'Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığında OperationPanel açılır.',
+  description: 'Collapsible row representing a single API endpoint — shows the method badge, path, summary, and expands to an OperationPanel.',
   filePath:    'modules/domain/api-doc/EndpointRow.ejs',
   sourceCode:  endpointRowSource,
   variants: [
@@ -477,7 +477,7 @@ const apiTagSectionItem: ShowcaseItem = {
   title:       'ApiTagSection',
   category:    'Domain · API Doc',
   abbr:        'TS',
-  description: 'Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabilir bölüm olarak gösterir.',
+  description: 'Collapsible section grouping endpoints under a named tag — the primary navigation unit in API documentation.',
   filePath:    'modules/domain/api-doc/ApiTagSection.ejs',
   sourceCode:  apiTagSectionSource,
   variants: [
@@ -522,7 +522,7 @@ const apiKeyTokenCardItem: ShowcaseItem = {
   title:       'ApiKeyTokenCard',
   category:    'Domain · API Doc',
   abbr:        'AT',
-  description: 'API anahtarı / kişisel erişim token kartı. Maskeli/gizli token gösterimi, göster-gizle, panoya kopyala, ortam rozeti, scope listesi ve isteğe bağlı revoke aksiyonu içerir.',
+  description: 'Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-used metadata.',
   filePath:    'modules/domain/api-doc/ApiKeyTokenCard.ejs',
   sourceCode:  apiKeyTokenCardSource,
   variants: [
@@ -611,7 +611,7 @@ const authSchemeCardItem: ShowcaseItem = {
   title:       'AuthSchemeCard',
   category:    'Domain · API Doc',
   abbr:        'AK',
-  description: 'Bir kimlik doğrulama şemasını kart olarak özetler. İkon, isim, SecuritySchemeBadge, opsiyonel Recommended rozeti, açıklama ve meta alanlar (clientId, scopes vb.) içerir; href / onSelect ile etkileşimli hâle gelir.',
+  description: 'Selectable card describing a single auth scheme (apiKey, http, oauth2, openIdConnect, mutualTLS).',
   filePath:    'modules/domain/api-doc/AuthSchemeCard.ejs',
   sourceCode:  authSchemeCardSource,
   variants: [
@@ -689,7 +689,7 @@ const oauthFlowDiagramItem: ShowcaseItem = {
   title:       'OAuthFlowDiagram',
   category:    'Domain · API Doc',
   abbr:        'OF',
-  description: 'OAuth 2.0 akışını görsel olarak özetler: User → Your App → Auth Server hattı, akış türüne özel numaralı adım listesi, endpoint URL\'leri (authorize / token / refresh) ve mevcut scope tanımları.',
+  description: 'Visual walkthrough of an OAuth 2.0 flow with actors, numbered steps, endpoints, and scopes.',
   filePath:    'modules/domain/api-doc/OAuthFlowDiagram.ejs',
   sourceCode:  oauthFlowDiagramSource,
   variants: [

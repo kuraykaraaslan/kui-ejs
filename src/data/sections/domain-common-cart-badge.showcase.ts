@@ -26,7 +26,7 @@ export function buildDomainCommonCartBadgeData(): ShowcaseItem[] {
       title: 'CartBadge',
       category: 'Domain',
       abbr: 'CB',
-      description: 'Header alanında sepetteki ürün adedini gösteren yuvarlak sepet butonu. 99 üstü adetler "99+" olarak rozet halinde gösterilir.',
+      description: 'Round cart button for the header that shows the number of items in the cart. Counts above 99 render as a "99+" badge.',
       filePath: 'modules/domain/common/cart/CartBadge.ejs',
       sourceCode,
       variants: [

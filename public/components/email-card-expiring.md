@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Kart son kullanma uyarısı. Kart görseli, plan/faturalandırma bilgisi ve güncelleme CTA.
+Card expiration warning. Card visual, plan/billing info, and an update CTA.
 
 ## Design tokens consumed
 

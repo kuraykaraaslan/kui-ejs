@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Chip tabanlı çoklu seçim popover. Searchable filtre, klavye navigasyonu ve disabled option desteği ile birlikte gelir.
+Chip-based multi-select popover with searchable filter, keyboard navigation, and disabled-option support.
 
 ## Design tokens consumed
 

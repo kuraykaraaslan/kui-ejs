@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Abonelik iptali. Erişim sona erme tarihi, yeniden aktivasyon CTA ve geri bildirim linki.
+Subscription cancellation. Access end date, reactivation CTA, and feedback link.
 
 ## Design tokens consumed
 

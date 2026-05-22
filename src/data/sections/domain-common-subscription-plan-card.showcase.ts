@@ -115,7 +115,7 @@ export function buildDomainCommonSubscriptionPlanCardData(): ShowcaseItem[] {
       title: 'SubscriptionPlanCard',
       category: 'Domain',
       abbr: 'SP',
-      description: 'Fiyatlandırma sayfaları için abonelik plan kartı. Popüler/aktif rozetleri, Intl.NumberFormat ile yerelleştirilmiş para birimi, özellik listesi ve POST aksiyonlu seçim formu içerir.',
+      description: 'Subscription plan card displaying name, price with currency formatting, billing interval, and feature list with checkmarks. Highlights the popular and current plans. Accepts onSelect callback for plan switching.',
       filePath: 'modules/domain/common/subscription/SubscriptionPlanCard.ejs',
       sourceCode,
       variants: [

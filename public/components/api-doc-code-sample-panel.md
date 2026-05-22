@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-API kod örneklerini koyu arka planlı panel içinde gösterir. İlk örnek açık, diğerleri details/summary ile erişilebilir.
+Dark-themed panel showing code samples in multiple languages with tab switching and a one-click copy button.
 
 ## Design tokens consumed
 

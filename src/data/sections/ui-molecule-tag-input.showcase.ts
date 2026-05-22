@@ -54,7 +54,7 @@ export function buildTagInputData(): ShowcaseItem[] {
       title: 'TagInput',
       category: 'Molecule',
       abbr: 'Ti',
-      description: 'Chip oluşturan free-text input. Enter veya virgül ile yeni etiket, çift tıkla düzenleme ve Backspace ile silme desteği.',
+      description: 'Free-text input that creates chips. Add tags with Enter or comma, double-click to edit, Backspace to delete. Duplicates are ignored.',
       filePath: 'modules/ui/TagInput.ejs',
       sourceCode,
       variants: [

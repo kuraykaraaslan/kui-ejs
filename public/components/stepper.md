@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Çok adımlı ilerleme göstergesi. complete/active/error/pending durumları; horizontal ve vertical yönelim.
+Multi-step progress indicator with complete, active, error, and pending states. Supports horizontal and vertical orientations.
 
 ## Design tokens consumed
 

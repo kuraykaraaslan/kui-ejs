@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Haftalık bülten. Makale kartları, etiket renkleri ve okuma süresi.
+Weekly newsletter. Article cards, tag colors, and reading time.
 
 ## Design tokens consumed
 

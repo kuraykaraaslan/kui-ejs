@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-Enlem/boylam koordinat gösterimi ve Google Maps bağlantısı. Hassasiyet ve etiket ayarlanabilir.
+Displays latitude/longitude coordinates with a Google Maps link. Configurable precision and optional label.
 
 ## Design tokens consumed
 

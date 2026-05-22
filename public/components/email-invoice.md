@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Kalemli fatura. Durum badge, tüm kalemler ve toplamlar, PDF indirme CTA.
+Itemized invoice. Status badge, all line items and totals, PDF download CTA.
 
 ## Design tokens consumed
 

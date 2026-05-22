@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Bir kimlik doğrulama şemasını kart olarak özetler. İkon, isim, SecuritySchemeBadge, opsiyonel Recommended rozeti, açıklama ve meta alanlar (clientId, scopes vb.) içerir; href / onSelect ile etkileşimli hâle gelir.
+Selectable card describing a single auth scheme (apiKey, http, oauth2, openIdConnect, mutualTLS).
 
 ## Design tokens consumed
 

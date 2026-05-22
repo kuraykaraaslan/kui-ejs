@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Kategori bazlı arama sonuçları listesi ile global arama alanı. Statik önizlemede açık sonuç paneli görünür.
+Command-palette-style global search field. Supports a categorised result list, keyboard navigation and result selection.
 
 ## Design tokens consumed
 

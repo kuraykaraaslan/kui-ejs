@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta kodu ve ülge. Seçili durum ve edit/delete butonları.
+Read-only address display card with full name, phone, address lines, city, state, postal code, and country. Supports selected state and optional Edit/Delete actions.
 
 ## Design tokens consumed
 

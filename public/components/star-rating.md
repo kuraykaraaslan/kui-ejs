@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly: false` for interactive whole-star selection.
+Five-star rating indicator. Read-only by default with decimal/half-star rendering; pass `readonly={false}` + `onChange` for interactive whole-star selection.
 
 ## When to use
 

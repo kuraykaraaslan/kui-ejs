@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum rozeti.
+Read-only payment summary card: amount, method, provider, provider reference, and status badge.
 
 ## Design tokens consumed
 

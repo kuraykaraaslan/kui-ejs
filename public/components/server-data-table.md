@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Server-side paginated table. Express route üzerinden page/totalPages/total/pageSize alır, başlık + toolbar + tıklanabilir satır + boş/yükleniyor durumları destekler.
+Server-side paginated table. Reads page/totalPages/total/pageSize from the Express route; supports title, toolbar, clickable rows, and empty/loading states.
 
 ## Design tokens consumed
 

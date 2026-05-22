@@ -47,7 +47,7 @@ export function buildInputData(): ShowcaseItem[] {
       title: 'Input',
       category: 'Atom',
       abbr: 'In',
-      description: 'Metin giriş alanı. Label, hint, error, prefix icon, password toggle ve 3 boyut destekler.',
+      description: 'Text input field with label, hint, error, prefix icon, password toggle, and 3 size variants.',
       filePath: 'modules/ui/Input.ejs',
       sourceCode,
       variants: [

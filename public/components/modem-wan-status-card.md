@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-WAN bağlantı tipi, IP/gateway/DNS bilgileri ve ISP hız göstergesi. Durum rozetine göre renk kodlaması.
+WAN connection type, IP/gateway/DNS information, and ISP speed indicator. Color-coded based on status badge.
 
 ## Design tokens consumed
 

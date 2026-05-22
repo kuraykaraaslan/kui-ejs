@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Header bildirim çanı + açılır panel. Okunmamış sayacı, başlık rozeti, "Mark all read", öğe listesi ve "View all" alt bağlantısı. Esc / dış tıklama ile kapanır.
+Bell icon button with unread count badge. Opens a dropdown panel showing notification items grouped by read/unread state with variant color dots, timestamps, and mark-all-read / view-all actions.
 
 ## Design tokens consumed
 

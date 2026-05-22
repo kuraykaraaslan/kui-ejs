@@ -103,7 +103,7 @@ export function buildAdvancedDataTableData(): ShowcaseItem[] {
       title: 'AdvancedDataTable',
       category: 'Organism',
       abbr: 'At',
-      description: 'DataTable üzerinde satır seçimi, "select all" indeterminate state, genişleyebilir satırlar ve sticky header ekleyen geliştirilmiş tablo.',
+      description: 'Enhanced table with row selection (with indeterminate header), expandable rows, and optional sticky header.',
       filePath: 'modules/ui/AdvancedDataTable.ejs',
       sourceCode,
       status: 'beta',

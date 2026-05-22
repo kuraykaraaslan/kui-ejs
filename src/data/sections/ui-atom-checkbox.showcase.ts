@@ -39,7 +39,7 @@ export function buildCheckboxData(): ShowcaseItem[] {
       title: 'Checkbox',
       category: 'Atom',
       abbr: 'Cb',
-      description: 'Tekil boolean seçim kontrolü. Label, hint ve disabled durumları; 3 boyut destekler.',
+      description: 'Label + checkbox + optional hint / error message. aria-describedby is wired up and border-error is applied on the error state.',
       filePath: 'modules/ui/Checkbox.ejs',
       sourceCode,
       variants: [

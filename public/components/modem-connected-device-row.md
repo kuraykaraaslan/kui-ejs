@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Bağlı cihaz tablosu satırı. Cihaz ikonu, hostname/MAC, IP, bağlantı tipi (kablolu/wifi + dBm), trafik ve DHCP/Static/Blocked durumu.
+Connected device table row. Device icon, hostname/MAC, IP, connection type (wired/wifi + dBm), traffic, and DHCP/Static/Blocked status.
 
 ## Design tokens consumed
 

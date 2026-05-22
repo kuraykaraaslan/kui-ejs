@@ -48,7 +48,7 @@ export function buildMoleculePickersData(): ShowcaseItem[] {
       title: 'DatePicker',
       category: 'Molecule',
       abbr: 'Dp',
-      description: 'Native date input ile label + hint + error anatomy. min/max kısıtlaması ve disabled desteği ile birlikte gelir.',
+      description: 'Native date input with label + hint + error anatomy. Supports min/max constraints and a disabled state.',
       filePath: 'modules/ui/DatePicker.ejs',
       sourceCode: datePickerSource,
       variants: [
@@ -103,7 +103,7 @@ export function buildMoleculePickersData(): ShowcaseItem[] {
       title: 'FileInput',
       category: 'Molecule',
       abbr: 'Fi',
-      description: 'Drag-and-drop görünümlü dosya yükleme alanı. accept filtresi, multiple ve disabled desteği.',
+      description: 'Drag-and-drop file upload with validation, file list, and individual remove actions.',
       filePath: 'modules/ui/FileInput.ejs',
       sourceCode: fileInputSource,
       variants: [

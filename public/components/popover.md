@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Tıklamayla açılan, role="dialog" tabanlı küçük overlay. 4 yerleşim, ESC ve dış-tık ile kapanma.
+Anchor-based contextual panel. Closes on outside click and Escape key. Supports top/bottom/left/right placement.
 
 ## Design tokens consumed
 

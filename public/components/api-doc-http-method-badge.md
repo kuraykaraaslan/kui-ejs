@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-HTTP metodunu renk kodlu rozet olarak gösterir. GET yeşil, POST mavi, DELETE kırmızı, vb.
+Color-coded badge for HTTP methods — GET, POST, PUT, PATCH, DELETE, and more.
 
 ## Design tokens consumed
 

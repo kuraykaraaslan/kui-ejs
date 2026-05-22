@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Radio-group kart seçici. Credit card, debit card, bank transfer ve wallet seçenekleri.
+Radio-group style card selector for payment methods. Shows icon, label, and description. Default set: credit card, debit card, bank transfer, wallet.
 
 ## Variants
 

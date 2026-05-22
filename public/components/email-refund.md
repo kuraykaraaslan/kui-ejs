@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-İade işlendi bildirimi. Tutar hero, iade yöntemi ve tahmini varış süresi.
+Refund processed notice. Amount hero, refund method, and estimated arrival window.
 
 ## Design tokens consumed
 

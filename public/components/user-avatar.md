@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Kullanıcı nesnesi (name/email/profilePicture) alarak Avatar'ı sarar. online/away/busy/offline statü noktası desteği.
+Avatar that consumes the SafeUser type. Falls back to initials when no profile picture is set; supports online/away/busy/offline status dots.
 
 ## Variants
 

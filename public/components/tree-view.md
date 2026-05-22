@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Yinelemeli ağaç yapısı. role="tree"/treeitem/group, klavye gezinmesi (Enter/Space/ArrowLeft/ArrowRight) ve seçim için inline script. Çocuksuz düğümler seçilebilir, çocuklu düğümler açılır/kapanır.
+Collapsible tree with keyboard navigation, selection, and aria-tree roles.
 
 ## Design tokens consumed
 

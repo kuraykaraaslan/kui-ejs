@@ -38,7 +38,7 @@ export function buildDomainCommonLocationData(): ShowcaseItem[] {
       title: 'LocationPicker',
       category: 'Domain',
       abbr: 'Lp',
-      description: 'Ülke seçici (countries-list), şehir, bölge, posta kodu ve isteğe bağlı enlem/boylam alanları. 2 sütun grid.',
+      description: 'Location form with country selector (countries-list), city, state, postal code, and optional lat/lng. 2-column grid layout.',
       filePath: 'modules/domain/common/location/LocationPicker.ejs',
       sourceCode: locationPickerSource,
       variants: [
@@ -120,7 +120,7 @@ export function buildDomainCommonLocationData(): ShowcaseItem[] {
       title: 'GeoPointDisplay',
       category: 'Domain',
       abbr: 'Gp',
-      description: 'Enlem/boylam koordinat gösterimi ve Google Maps bağlantısı. Hassasiyet ve etiket ayarlanabilir.',
+      description: 'Displays latitude/longitude coordinates with a Google Maps link. Configurable precision and optional label.',
       filePath: 'modules/domain/common/location/GeoPointDisplay.ejs',
       sourceCode: geoPointDisplaySource,
       variants: [

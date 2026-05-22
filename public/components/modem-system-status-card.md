@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Cihaz modeli, CPU/RAM ilerleme çubukları, sıcaklık, uptime ve firmware versiyonu. Sıcaklık eşiğine göre renk değişir (>55 warning, >70 error).
+Device model, CPU/RAM progress bars, temperature, uptime, and firmware version. Color changes based on temperature thresholds (>55 warning, >70 error).
 
 ## Design tokens consumed
 

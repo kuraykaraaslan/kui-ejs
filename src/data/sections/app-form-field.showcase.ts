@@ -20,7 +20,7 @@ export function buildAppFormFieldData(): ShowcaseItem[] {
       title: 'FormField',
       category: 'App',
       abbr: 'FF',
-      description: 'Form alanı wrapper\'ı: label + slot + hint + error. Computed `id`, `aria-describedby` ve `aria-invalid` değerlerini sarmalayan `data-form-field` üzerinden expose eder. NextJS\'deki react-hook-form karşıtının statik EJS muadili.',
+      description: 'Form field wrapper: label + slot + hint + error. Exposes computed `id`, `aria-describedby` and `aria-invalid` via the `data-form-field` container — the static EJS counterpart of the NextJS react-hook-form binding.',
       filePath: 'modules/app/FormField.ejs',
       sourceCode,
       variants: [

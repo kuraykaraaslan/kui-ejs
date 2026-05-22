@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible ve action desteği.
+Page-level info, success, warning or error message. Announced via role="alert" for screen readers with optional dismissible and action support.
 
 ## Design tokens consumed
 

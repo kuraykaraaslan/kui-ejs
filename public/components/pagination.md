@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonları ve boyut varyantları.
+Page navigation control. Collapses large page counts with ellipsis; accessible via aria-label and aria-current="page".
 
 ## Design tokens consumed
 

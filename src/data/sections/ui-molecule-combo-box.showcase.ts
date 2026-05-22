@@ -93,7 +93,7 @@ export function buildComboBoxData(): ShowcaseItem[] {
       title: 'ComboBox',
       category: 'Molecule',
       abbr: 'Cm',
-      description: 'Searchable autocomplete + tek seçim. Klavye navigasyonu, açıklamalı option ve clearable buton desteği.',
+      description: 'Searchable autocomplete single-select with keyboard navigation, described options, and a clearable button.',
       filePath: 'modules/ui/ComboBox.ejs',
       sourceCode,
       variants: [

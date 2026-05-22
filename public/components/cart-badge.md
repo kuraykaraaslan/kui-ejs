@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Header alanında sepetteki ürün adedini gösteren yuvarlak sepet butonu. 99 üstü adetler "99+" olarak rozet halinde gösterilir.
+Round cart button for the header that shows the number of items in the cart. Counts above 99 render as a "99+" badge.
 
 ## Design tokens consumed
 

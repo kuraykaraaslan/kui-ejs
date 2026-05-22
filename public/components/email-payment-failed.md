@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Ödeme başarısız bildirimi. Hata sebebi, yeniden deneme tarihi ve ödeme yöntemi güncelleme CTA.
+Payment failed notice. Failure reason, retry date, and an update-payment-method CTA.
 
 ## Design tokens consumed
 

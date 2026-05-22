@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Şifre değişikliği onay e-postası. Cihaz, IP ve konum bilgisi ile "Benim değildi" uyarısı.
+Password change confirmation email. Device, IP, and location info with a "Wasn't me" alert.
 
 ## Design tokens consumed
 

@@ -11,7 +11,7 @@ export function buildAppAccessibilityKitData(): ShowcaseItem[] {
       title: 'AccessibilityKit',
       category: 'App',
       abbr: 'AK',
-      description: 'A11y yardımcıları paketi: SkipLink, LiveRegion (Announcer) ve Tooltip primitive\'lerini tek partial üzerinden expose eder. `part` (skip|live|announcer|tooltip|all) ile parça seçilir; varsayılan kullanım sayfa başında SkipLink + LiveRegion\'u kurar ve `window.announce` API\'sini açar.',
+      description: 'A11y helpers bundle that exposes the SkipLink, LiveRegion (Announcer) and Tooltip primitives through a single partial. The `part` prop (skip|live|announcer|tooltip|all) picks which piece to render; the default usage mounts the SkipLink + LiveRegion at the top of the page and exposes the `window.announce` API.',
       filePath: 'modules/app/AccessibilityKit.ejs',
       sourceCode,
       variants: [

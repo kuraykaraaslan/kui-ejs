@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Tekil boolean seçim kontrolü. Label, hint ve disabled durumları; 3 boyut destekler.
+Label + checkbox + optional hint / error message. aria-describedby is wired up and border-error is applied on the error state.
 
 ## Design tokens consumed
 

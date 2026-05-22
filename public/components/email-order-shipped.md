@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Kargo bildirimi. Taşıyıcı, takip numarası, tahmini teslimat tarihi ve "Track My Package" CTA.
+Shipping notification. Carrier, tracking number, estimated delivery date, and a "Track My Package" CTA.
 
 ## Design tokens consumed
 

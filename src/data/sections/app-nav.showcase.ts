@@ -31,7 +31,7 @@ export function buildAppNavData(): ShowcaseItem[] {
       title: 'AppNav',
       category: 'App',
       abbr: 'An',
-      description: 'Yatay navigasyon çubuğu. Masaüstünde inline linkler, mobilde hamburger drawer açar. logoContent, navItems ve children slotları. sticky ve bordered seçenekleri.',
+      description: 'Horizontal navigation bar. Renders inline links on desktop and a hamburger that opens a NavDrawer on mobile. Provides logo, navItems and actions slots.',
       filePath: 'modules/app/AppNav.ejs',
       sourceCode: appNavSource,
       variants: [
@@ -101,7 +101,7 @@ export function buildAppNavData(): ShowcaseItem[] {
       title: 'NavDrawer',
       category: 'App',
       abbr: 'Nd',
-      description: 'Herhangi bir trigger + içeriği Drawer\'a saran wrapper. Kendi açık/kapalı state\'ini tutar. AppNav\'ın mobil menüsü olarak kullanılır.',
+      description: 'Wrapper that wraps any trigger and children inside a drawer. Manages its own open/closed state. Used as AppNav\'s mobile menu and also works standalone.',
       filePath: 'modules/app/NavDrawer.ejs',
       sourceCode: navDrawerSource,
       variants: [

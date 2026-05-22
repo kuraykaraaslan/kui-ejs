@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Intl.NumberFormat ile para birimi formatlama. Boyut, locale ve üstü çizili seçenekleri destekler.
+Currency formatter using Intl.NumberFormat. Supports any ISO 4217 code and locale. Strikethrough prop renders an original/crossed-out price.
 
 ## Design tokens consumed
 

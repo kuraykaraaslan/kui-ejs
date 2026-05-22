@@ -50,7 +50,7 @@ export function buildDomainCommonCountrySelectorData(): ShowcaseItem[] {
       title: 'CountrySelector',
       category: 'Domain',
       abbr: 'Co',
-      description: 'ISO2 kodlu ülke listesi üzerinden aranabilir, klavye erişilebilir özel select. Form gönderimi için gizli input, hata/hint/required durumları ve fixed pozisyonlu açılır panel içerir.',
+      description: 'Country dropdown built from countries-list. Shows flag + full name + ISO2 code. Supports search by name or code, error/hint states.',
       filePath: 'modules/domain/common/location/CountrySelector.ejs',
       sourceCode,
       variants: [

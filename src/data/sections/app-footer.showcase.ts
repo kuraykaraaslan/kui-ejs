@@ -30,7 +30,7 @@ export function buildAppFooterData(): ShowcaseItem[] {
       title: 'AppFooter',
       category: 'App',
       abbr: 'AFt',
-      description: 'Uygulama alt çubuğu. Üst satır: logo + sürüm + nav + status badge. Alt satır: copyright + sosyal medya. Tüm bölgeler slot olarak opsiyonel.',
+      description: 'Two-row application footer with logo, navigation links, system status badge, version, copyright, and social slot.',
       filePath: 'modules/app/AppFooter.ejs',
       sourceCode,
       variants: [

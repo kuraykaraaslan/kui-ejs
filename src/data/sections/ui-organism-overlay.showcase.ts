@@ -64,7 +64,7 @@ export function buildOrganismOverlayData(): ShowcaseItem[] {
       title: 'Modal',
       category: 'Organism',
       abbr: 'Md',
-      description: 'Odak kapanı dialog. Backdrop, ESC tuşu ile kapatma, ARIA labelledby/describedby ve sm/md/lg boyutu.',
+      description: 'Focus-trapped dialog. Closes on Escape and backdrop click. Requires role="dialog" + aria-modal + aria-labelledby; supports sm/md/lg sizes.',
       filePath: 'modules/ui/Modal.ejs',
       sourceCode: modalSource,
       variants: [
@@ -153,7 +153,7 @@ export function buildOrganismOverlayData(): ShowcaseItem[] {
       title: 'Drawer',
       category: 'Organism',
       abbr: 'Dr',
-      description: 'Kenar paneli. left/right açılım, backdrop, ESC ve tabindex=-1 odak yönetimi ile birlikte gelir.',
+      description: 'Side panel sliding in from the screen edge. Left / right placement with focus management and Escape close.',
       filePath: 'modules/ui/Drawer.ejs',
       sourceCode: drawerSource,
       variants: [

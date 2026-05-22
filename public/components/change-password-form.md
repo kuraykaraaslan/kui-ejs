@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Mevcut şifre + yeni şifre + doğrulama formu. Alan bazlı hata mesajları.
+Current password + new password + confirm fields with match validation and server-error banner.
 
 ## Design tokens consumed
 

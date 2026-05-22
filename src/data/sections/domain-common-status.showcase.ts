@@ -61,7 +61,7 @@ export function buildDomainCommonStatusData(): ShowcaseItem[] {
       title: 'PublishStatusBadge',
       category: 'Domain',
       abbr: 'Pb',
-      description: 'DRAFT / PUBLISHED / ARCHIVED içerik durumları için Font Awesome ikonlu rozet. showIcon=false ile ikon gizlenebilir.',
+      description: 'Badge for DRAFT / PUBLISHED / ARCHIVED content states with contextual Font Awesome icons. Icon can be hidden via showIcon={false}.',
       filePath: 'modules/domain/common/status/PublishStatusBadge.ejs',
       sourceCode: publishStatusSource,
       variants: [
@@ -94,7 +94,7 @@ export function buildDomainCommonStatusData(): ShowcaseItem[] {
       title: 'VisibilityBadge',
       category: 'Domain',
       abbr: 'Vb',
-      description: 'PUBLIC / PRIVATE / UNLISTED görünürlük durumları için ikon-rozet. PUBLIC yeşil, PRIVATE kırmızı, UNLISTED nötr.',
+      description: 'Badge for PUBLIC / PRIVATE / UNLISTED visibility states with eye/lock icons. PUBLIC is green, PRIVATE is red, UNLISTED is neutral.',
       filePath: 'modules/domain/common/status/VisibilityBadge.ejs',
       sourceCode: visibilityBadgeSource,
       variants: [
@@ -129,7 +129,7 @@ export function buildDomainCommonStatusData(): ShowcaseItem[] {
       title: 'ProcessingStatusIndicator',
       category: 'Domain',
       abbr: 'Pi',
-      description: 'UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.',
+      description: 'Animated status indicator for UPLOADING / PROCESSING / READY / FAILED states. Optional progress bar with percentage.',
       filePath: 'modules/domain/common/status/ProcessingStatusIndicator.ejs',
       sourceCode: processingStatusSource,
       variants: [

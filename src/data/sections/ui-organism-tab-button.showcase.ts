@@ -18,7 +18,7 @@ export function buildTabButtonData(): ShowcaseItem[] {
       title:       'TabButton',
       category:    'Organism',
       abbr:        'TB',
-      description: 'Pill tarzı sekme butonu; aktif/pasif renklendirme ve opsiyonel sayaç rozeti ile.',
+      description: 'Pill-style tab button with active/inactive coloring and an optional count badge.',
       filePath:    'modules/ui/TabButton.ejs',
       sourceCode:  tabButtonSource,
       variants: [

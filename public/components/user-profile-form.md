@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref prop'u ile iptal butonu.
+Controlled form for editing display name, username, bio, and profile picture URL. Username validation: 3–32 chars, lowercase alphanumeric + underscore.
 
 ## Design tokens consumed
 

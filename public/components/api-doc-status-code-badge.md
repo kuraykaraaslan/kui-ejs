@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-HTTP durum kodunu semantik renge göre renklendiren rozet. 2xx yeşil, 3xx mavi, 4xx sarı, 5xx kırmızı.
+Displays an HTTP status code with a semantic color and an optional human-readable label.
 
 ## Design tokens consumed
 

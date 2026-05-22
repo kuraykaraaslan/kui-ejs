@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığında OperationPanel açılır.
+Collapsible row representing a single API endpoint — shows the method badge, path, summary, and expands to an OperationPanel.
 
 ## Design tokens consumed
 

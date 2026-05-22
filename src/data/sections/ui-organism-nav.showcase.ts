@@ -171,7 +171,7 @@ export function buildOrganismNavData(): ShowcaseItem[] {
       title: 'Pagination',
       category: 'Organism',
       abbr: 'Pg',
-      description: 'Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonları ve boyut varyantları.',
+      description: 'Page navigation control. Collapses large page counts with ellipsis; accessible via aria-label and aria-current="page".',
       filePath: 'modules/ui/Pagination.ejs',
       sourceCode: paginationSource,
       variants: [
@@ -227,7 +227,7 @@ export function buildOrganismNavData(): ShowcaseItem[] {
       title: 'TabGroup',
       category: 'Organism',
       abbr: 'Tb',
-      description: 'Erişilebilir tab navigasyonu. ARIA rollerini, klavye gezintisini ve içerik panellerini içerir.',
+      description: 'Accessible tab navigation following the role="tablist" / role="tab" / role="tabpanel" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs.',
       filePath: 'modules/ui/TabGroup.ejs',
       sourceCode: tabGroupSource,
       variants: [
@@ -297,7 +297,7 @@ export function buildOrganismNavData(): ShowcaseItem[] {
       title: 'Breadcrumb',
       category: 'Organism',
       abbr: 'Bc',
-      description: 'Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current="page" son öğede.',
+      description: 'Hierarchical navigation trail wrapped in nav aria-label="Breadcrumb". Last item marked with aria-current="page" and aria-hidden separators.',
       filePath: 'modules/ui/Breadcrumb.ejs',
       sourceCode: breadcrumbSource,
       variants: [
@@ -357,7 +357,7 @@ export function buildOrganismNavData(): ShowcaseItem[] {
       title: 'Stepper',
       category: 'Organism',
       abbr: 'Sr',
-      description: 'Çok adımlı ilerleme göstergesi. complete/active/error/pending durumları; horizontal ve vertical yönelim.',
+      description: 'Multi-step progress indicator with complete, active, error, and pending states. Supports horizontal and vertical orientations.',
       filePath: 'modules/ui/Stepper.ejs',
       sourceCode: stepperSource,
       variants: [

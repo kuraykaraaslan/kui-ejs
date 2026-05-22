@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Port yönlendirme tablosu satırı. Kural adı, protokol, harici port, dahili IP:port ve etkin/devre dışı gösterimi.
+Port forwarding table row. Rule name, protocol, external port, internal IP:port, and enabled/disabled state.
 
 ## Design tokens consumed
 

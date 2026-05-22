@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Ürün sürüm duyurusu. Versiyon badge, öne çıkan değişiklik kartları ve changelog linki.
+Product release announcement. Version badge, highlighted change cards, and changelog link.
 
 ## Design tokens consumed
 

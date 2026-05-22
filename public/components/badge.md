@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-01
 
-Durum, kategori veya etiket göstergesi. 6 semantik varyant, 3 boyut, dot ve dismissible desteği.
+Status, category or label indicator. 6 semantic variants, 3 sizes, dot and dismissible support.
 
 ## Design tokens consumed
 

@@ -56,7 +56,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'LoginForm',
       category: 'Domain',
       abbr: 'Lf',
-      description: 'Email + şifre formu. Remember me checkbox, hata banner ve action/method desteği.',
+      description: 'Email + password sign-in form with inline validation, "Remember me" checkbox, and server-error banner.',
       filePath: 'modules/domain/common/auth/LoginForm.ejs',
       sourceCode: loginFormSource,
       variants: [
@@ -95,7 +95,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'RegisterForm',
       category: 'Domain',
       abbr: 'Rf',
-      description: 'Email + şifre + şifre doğrulama formu. Alan bazlı hata mesajları.',
+      description: 'Registration form with email, password, and confirm-password fields. Real-time password match validation and server-error support.',
       filePath: 'modules/domain/common/auth/RegisterForm.ejs',
       sourceCode: registerFormSource,
       variants: [
@@ -137,7 +137,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'ForgotPasswordForm',
       category: 'Domain',
       abbr: 'Fp',
-      description: 'Şifre sıfırlama linki gönderim formu. sent=true olduğunda onay mesajı gösterir.',
+      description: 'Email input that triggers a password reset link. Shows an inline success state after submission instead of a redirect.',
       filePath: 'modules/domain/common/auth/ForgotPasswordForm.ejs',
       sourceCode: forgotPasswordSource,
       variants: [
@@ -169,7 +169,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'ChangePasswordForm',
       category: 'Domain',
       abbr: 'Cp',
-      description: 'Mevcut şifre + yeni şifre + doğrulama formu. Alan bazlı hata mesajları.',
+      description: 'Current password + new password + confirm fields with match validation and server-error banner.',
       filePath: 'modules/domain/common/auth/ChangePasswordForm.ejs',
       sourceCode: changePasswordSource,
       variants: [
@@ -207,7 +207,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'OAuthButtons',
       category: 'Domain',
       abbr: 'Ob',
-      description: 'Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi butonların gösterileceği seçilir.',
+      description: 'Social sign-in buttons for Google, GitHub, Discord, and Microsoft. Accepts a providers prop to show only a subset.',
       filePath: 'modules/domain/common/auth/OAuthButtons.ejs',
       sourceCode: oauthButtonsSource,
       variants: [
@@ -246,7 +246,7 @@ export function buildDomainCommonAuthData(): ShowcaseItem[] {
       title: 'SessionExpiredBanner',
       category: 'Domain',
       abbr: 'Se',
-      description: 'Oturum süresi dolduğunda gösterilen uyarı banner\'ı. "Sign in again" CTA butonu içerir.',
+      description: 'Warning banner shown when the user session has expired. Includes a "Sign in again" action button.',
       filePath: 'modules/domain/common/auth/SessionExpiredBanner.ejs',
       sourceCode: sessionExpiredSource,
       variants: [

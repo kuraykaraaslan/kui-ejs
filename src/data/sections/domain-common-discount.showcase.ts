@@ -15,7 +15,7 @@ export function buildDomainCommonDiscountData(): ShowcaseItem[] {
       title: 'CouponInput',
       category: 'Domain',
       abbr: 'Ci',
-      description: 'Kupon kodu giriş + uygula/kaldır akışı. Sunucu taraflı doğrulama ile hata/başarı mesajları.',
+      description: 'Coupon code input with apply/remove flow. Calls onApply which returns success/error; shows applied state once a valid code is accepted.',
       filePath: 'modules/domain/common/discount/CouponInput.ejs',
       sourceCode: couponInputSource,
       variants: [
@@ -66,7 +66,7 @@ export function buildDomainCommonDiscountData(): ShowcaseItem[] {
       title: 'DiscountBadge',
       category: 'Domain',
       abbr: 'Db',
-      description: 'İndirim göstergesi: yüzde ("20% off"), sabit tutar (para birimi ile) veya ücretsiz kargo.',
+      description: 'Formats and displays a discount: percentage (e.g. "20% off"), fixed amount with currency, or free shipping.',
       filePath: 'modules/domain/common/discount/DiscountBadge.ejs',
       sourceCode: discountBadgeSource,
       variants: [

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Router/modem bağlantı durumları için renk kodlu rozet. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.
+Color-coded badge for router/modem connection states. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Çok satırlı metin giriş alanı. Label, hint, error ve disabled durumları; resize kontrolü destekler.
+Label + textarea + hint + error anatomy. Vertical resizing is enabled via resize-y and the parts are linked through aria-describedby.
 
 ## Design tokens consumed
 

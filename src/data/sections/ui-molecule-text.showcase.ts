@@ -38,7 +38,7 @@ export function buildMoleculeTextData(): ShowcaseItem[] {
       title: 'SearchBar',
       category: 'Molecule',
       abbr: 'Sb',
-      description: 'role="searchbox" + arama ikonu + temizle butonu. Controlled veya uncontrolled modda kullanılabilir.',
+      description: 'role="searchbox" with search icon and clear button. Works in controlled and uncontrolled modes.',
       filePath: 'modules/ui/SearchBar.ejs',
       sourceCode: searchBarSource,
       variants: [

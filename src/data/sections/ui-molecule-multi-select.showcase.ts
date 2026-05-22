@@ -98,7 +98,7 @@ export function buildMultiSelectData(): ShowcaseItem[] {
       title: 'MultiSelect',
       category: 'Molecule',
       abbr: 'Ms',
-      description: 'Chip tabanlı çoklu seçim popover. Searchable filtre, klavye navigasyonu ve disabled option desteği ile birlikte gelir.',
+      description: 'Chip-based multi-select popover with searchable filter, keyboard navigation, and disabled-option support.',
       filePath: 'modules/ui/MultiSelect.ejs',
       sourceCode,
       variants: [

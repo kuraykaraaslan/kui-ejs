@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Email + şifre + şifre doğrulama formu. Alan bazlı hata mesajları.
+Registration form with email, password, and confirm-password fields. Real-time password match validation and server-error support.
 
 ## Design tokens consumed
 

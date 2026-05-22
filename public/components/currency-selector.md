@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-ISO 4217 para birimi seçici. countries-list'ten derlenen, alfabetik sıralı native select.
+Currency dropdown built from countries-list. Deduped, alphabetically sorted ISO 4217 currency codes.
 
 ## Design tokens consumed
 

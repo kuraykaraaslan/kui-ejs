@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Tam ekran layout wrapper. sidebarContent, topbarContent ve logoContent HTML slot'ları alır. Mobilde hamburger butonu NavDrawer açar.
+Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders as an aside on desktop and opens via a drawer on mobile.
 
 ## Design tokens consumed
 

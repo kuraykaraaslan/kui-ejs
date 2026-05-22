@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined zone'lar (polygon), rota çizgisi (polyline) ve tıkla-ekle işaretçi modu.
+Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygon), route lines (polyline), and click-to-add marker mode.
 
 ## Design tokens consumed
 

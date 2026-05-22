@@ -91,7 +91,7 @@ export function buildDomainCommonChatBoxData(): ShowcaseItem[] {
       category: 'Domain',
       abbr: 'CB2',
       status: 'beta',
-      description: 'Sayfanın sağ alt köşesine sabitlenen yüzen destek sohbet bileşeni. FAB toggle, header, mesaj balonları, otomatik yükselen textarea ve okunmamış mesaj rozeti içerir.',
+      description: 'Floating chat widget that anchors to the bottom-right of the screen. Includes a FAB toggle, collapsible panel, scrollable message list with typing indicator, and an auto-growing textarea input.',
       filePath: 'modules/domain/common/chat/ChatBox.ejs',
       sourceCode,
       variants: [

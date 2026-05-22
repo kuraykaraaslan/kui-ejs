@@ -137,7 +137,7 @@ export function buildOrganismContentData(): ShowcaseItem[] {
       title: 'Card',
       category: 'Organism',
       abbr: 'Cd',
-      description: 'İçerik kartı. raised/flat/outline varyantları; title, subtitle, headerRight, footer ve loading skeleton desteği.',
+      description: 'Content container with raised / flat / outline variants. Supports title, subtitle, headerRight, footer slots and loading skeleton state.',
       filePath: 'modules/ui/Card.ejs',
       sourceCode: cardSource,
       variants: [
@@ -224,7 +224,7 @@ export function buildOrganismContentData(): ShowcaseItem[] {
       title: 'AlertBanner',
       category: 'Organism',
       abbr: 'Al',
-      description: 'Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible ve action desteği.',
+      description: 'Page-level info, success, warning or error message. Announced via role="alert" for screen readers with optional dismissible and action support.',
       filePath: 'modules/ui/AlertBanner.ejs',
       sourceCode: alertBannerSource,
       variants: [
@@ -290,7 +290,7 @@ export function buildOrganismContentData(): ShowcaseItem[] {
       title: 'Toast',
       category: 'Organism',
       abbr: 'Ts',
-      description: 'Kısa süreli bildirim kartı. success/warning/error/info/loading varyantları; title, message ve action desteği.',
+      description: 'Notification system with success/warning/error/info/loading variants. Hover-to-freeze, progress bar, title, actions, and promise support.',
       filePath: 'modules/ui/Toast.ejs',
       sourceCode: toastSource,
       variants: [

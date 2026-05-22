@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-İndirim göstergesi: yüzde ("20% off"), sabit tutar (para birimi ile) veya ücretsiz kargo.
+Formats and displays a discount: percentage (e.g. "20% off"), fixed amount with currency, or free shipping.
 
 ## Design tokens consumed
 

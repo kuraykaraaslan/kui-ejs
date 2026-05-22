@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Hesap silme zamanlama bildirimi. Grace period, kalıcı silme uyarısı ve iptal CTA.
+Account deletion scheduled notice. Grace period, permanent deletion warning, and a cancel CTA.
 
 ## Design tokens consumed
 

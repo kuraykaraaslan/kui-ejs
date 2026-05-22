@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED ödeme durumları için renk kodlu rozet.
+Color-coded badge for all PaymentStatus values: PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED.
 
 ## Variants
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-İçerik kartı. raised/flat/outline varyantları; title, subtitle, headerRight, footer ve loading skeleton desteği.
+Content container with raised / flat / outline variants. Supports title, subtitle, headerRight, footer slots and loading skeleton state.
 
 ## Design tokens consumed
 

@@ -28,7 +28,7 @@ export function buildInlineAlertData(): ShowcaseItem[] {
       title: 'InlineAlert',
       category: 'App',
       abbr: 'IA',
-      description: 'Form alanlarının yanında veya kart içlerinde kullanılan kısa uyarı şeridi. success / error / warning / info variant\'ları; ikon + tek satır mesaj.',
+      description: 'Compact inline alert strip used next to form fields or inside cards. success / error / warning / info variants; icon + single-line message.',
       filePath: 'modules/app/InlineAlert.ejs',
       sourceCode,
       variants: [

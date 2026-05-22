@@ -14,7 +14,7 @@ export function buildOAuthFlowDiagramData(): ShowcaseItem[] {
       title:       'OAuthFlowDiagram',
       category:    'Domain · API Doc',
       abbr:        'OF',
-      description: 'OAuth 2.0 akışını görsel olarak özetler: User → Your App → Auth Server hattı, akış türüne özel numaralı adım listesi, endpoint URL\'leri (authorize / token / refresh) ve mevcut scope tanımları.',
+      description: 'Visual walkthrough of an OAuth 2.0 flow with actors, numbered steps, endpoints, and scopes.',
       filePath:    'modules/domain/api-doc/OAuthFlowDiagram.ejs',
       sourceCode,
       variants: [

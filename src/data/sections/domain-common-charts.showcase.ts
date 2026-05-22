@@ -108,7 +108,7 @@ export function buildDomainCommonChartsData(): ShowcaseItem[] {
       title: 'Charts',
       category: 'Domain',
       abbr: 'Ch',
-      description: 'Chart.js chart bileşenleri Card içinde: Bar, Line, Doughnut, Radar ve Polar Area.',
+      description: 'Chart.js chart components wrapped in Cards: Bar, Line, Doughnut, Radar, and Polar Area.',
       filePath: 'modules/domain/common/charts/Charts.ejs',
       sourceCode: chartsSource,
       variants: [

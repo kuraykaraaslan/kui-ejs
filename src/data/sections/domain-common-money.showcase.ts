@@ -47,7 +47,7 @@ export function buildDomainCommonMoneyData(): ShowcaseItem[] {
       title: 'PriceDisplay',
       category: 'Domain',
       abbr: 'Pd',
-      description: 'Intl.NumberFormat ile para birimi formatlama. Boyut, locale ve üstü çizili seçenekleri destekler.',
+      description: 'Currency formatter using Intl.NumberFormat. Supports any ISO 4217 code and locale. Strikethrough prop renders an original/crossed-out price.',
       filePath: 'modules/domain/common/money/PriceDisplay.ejs',
       sourceCode: priceDisplaySource,
       variants: [
@@ -83,7 +83,7 @@ export function buildDomainCommonMoneyData(): ShowcaseItem[] {
       title: 'OrderTotalsCard',
       category: 'Domain',
       abbr: 'Ot',
-      description: 'Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satırı. Sıfır değerli satırlar gizlenir.',
+      description: 'Order summary card showing subtotal, discount, tax, service fee, shipping, and an emphasized total. Zero-value lines are hidden automatically.',
       filePath: 'modules/domain/common/money/OrderTotalsCard.ejs',
       sourceCode: orderTotalsSource,
       variants: [
@@ -116,7 +116,7 @@ export function buildDomainCommonMoneyData(): ShowcaseItem[] {
       title: 'CurrencySelector',
       category: 'Domain',
       abbr: 'Cs',
-      description: 'ISO 4217 para birimi seçici. countries-list\'ten derlenen, alfabetik sıralı native select.',
+      description: 'Currency dropdown built from countries-list. Deduped, alphabetically sorted ISO 4217 currency codes.',
       filePath: 'modules/domain/common/money/CurrencySelector.ejs',
       sourceCode: currencySelectorSource,
       variants: [

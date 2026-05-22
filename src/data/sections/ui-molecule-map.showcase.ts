@@ -158,7 +158,7 @@ export function buildMapData(): ShowcaseItem[] {
       title:       'MapView',
       category:    'Molecule',
       abbr:        'Mp',
-      description: 'Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined zone\'lar (polygon), rota çizgisi (polyline) ve tıkla-ekle işaretçi modu.',
+      description: 'Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygon), route lines (polyline), and click-to-add marker mode.',
       filePath:    'modules/ui/MapView.ejs',
       sourceCode:  mapViewSource,
       variants: [

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.
+Animated status indicator for UPLOADING / PROCESSING / READY / FAILED states. Optional progress bar with percentage.
 
 ## Design tokens consumed
 

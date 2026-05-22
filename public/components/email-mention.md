@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-@mention bildirimi. Bahseden kişi, bağlam ve alıntı excerpt gösterimi.
+@mention notification. Mentioner, context, and quoted excerpt display.
 
 ## Design tokens consumed
 

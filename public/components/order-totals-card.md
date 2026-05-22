@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satırı. Sıfır değerli satırlar gizlenir.
+Order summary card showing subtotal, discount, tax, service fee, shipping, and an emphasized total. Zero-value lines are hidden automatically.
 
 ## Design tokens consumed
 

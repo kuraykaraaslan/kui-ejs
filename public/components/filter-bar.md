@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Select, multiselect, daterange ve text tabanlı filtre paneli. GET form submit ile URL tabanlı filtre desteği.
+Select, multiselect, daterange and text-based filter panel. Supports URL-based filtering via GET form submit.
 
 ## Design tokens consumed
 

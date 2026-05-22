@@ -18,7 +18,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
       title:       'VideoPlayer',
       category:    'Organism',
       abbr:        'Vp',
-      description: 'HTML5 video oynatıcı. Kalite, altyazı, ses kanalı, oynatma hızı seçimi; özel WebVTT altyazı overlay; otomatik gizlenen kontroller; geliştirici kontrolü.',
+      description: 'Custom HTML5 video player. Quality, subtitle, audio track, and playback rate selection; custom WebVTT subtitle overlay; auto-hiding controls; programmatic API. Keyboard shortcuts: Space/K=play, ←→=±10s, ↑↓=volume, M=mute, F=fullscreen.',
       filePath:    'modules/ui/VideoPlayer.ejs',
       sourceCode:  videoPlayerSource,
       variants: [

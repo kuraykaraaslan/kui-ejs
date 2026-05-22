@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-ADMIN → red, AUTHOR → primary, USER → neutral renk eşlemesi ile rol rozeti.
+Color-coded badge for ADMIN / AUTHOR / USER roles. ADMIN renders as error (red), AUTHOR as primary (blue), USER as neutral.
 
 ## Variants
 

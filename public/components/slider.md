@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Erişilebilir carousel. role="region" + aria-roledescription="carousel" + slide aria etiketleri dahildir. Otomatik oynatma, dot navigasyon ve loop kontrolleri desteklenir.
+Accessible carousel. Includes role="region" + aria-roledescription="carousel" and per-slide aria labels. Supports autoplay, arrow keys, and dot navigation.
 
 ## Variants
 

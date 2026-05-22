@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Plan aktivasyon onayı. Özellik listesi, fiyat ve bir sonraki faturalandırma tarihi.
+Plan activation confirmation. Feature list, price, and next billing date.
 
 ## Design tokens consumed
 

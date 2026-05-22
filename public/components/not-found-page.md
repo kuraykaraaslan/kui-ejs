@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Tam sayfa 404 bileşeni. Gradient 404 yazısı, ikon, başlık, açıklama ve "Go Home" / "Go Back" butonları.
+Full-page 404 screen with a gradient "404" heading, icon slot, title, description, and home/back action buttons.
 
 ## Design tokens consumed
 

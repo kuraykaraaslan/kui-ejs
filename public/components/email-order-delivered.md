@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Teslimat onayı. Yıldız derecelendirme butonları ile yorum isteği CTA.
+Delivery confirmation. Star-rating buttons with a review request CTA.
 
 ## Design tokens consumed
 

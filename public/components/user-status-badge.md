@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-ACTIVE → green, INACTIVE → neutral, BANNED → red. dot prop ile renkli nokta eklenir.
+Color-coded badge for ACTIVE / INACTIVE / BANNED user statuses. Optional dot prop adds a leading status indicator.
 
 ## Variants
 

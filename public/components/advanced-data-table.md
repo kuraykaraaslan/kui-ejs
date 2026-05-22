@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-DataTable üzerinde satır seçimi, "select all" indeterminate state, genişleyebilir satırlar ve sticky header ekleyen geliştirilmiş tablo.
+Enhanced table with row selection (with indeterminate header), expandable rows, and optional sticky header.
 
 ## Design tokens consumed
 

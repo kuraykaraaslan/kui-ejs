@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-02
 
-Semantik HTML tablosu. thead/tbody, sütun hizalaması ve boş durum mesajı desteği.
+Responsive table. scope="col" headers, hover row highlight, empty-state message, and custom cell render support.
 
 ## Design tokens consumed
 

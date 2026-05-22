@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Destek ekibinden gelen yanıt. Ajan avatar, tam cevap metni, Reply ve View CTA çifti.
+Reply from the support team. Agent avatar, full reply text, and Reply and View CTA pair.
 
 ## Design tokens consumed
 

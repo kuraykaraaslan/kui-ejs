@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Planlı bakım öncesi uyarı. Zaman penceresi, etkilenen servisler ve status page linki.
+Advance notice before scheduled maintenance. Time window, affected services, and status page link.
 
 ## Design tokens consumed
 

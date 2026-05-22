@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Gelen kutusu mesaj bildirimi. Gönderici, mesaj önizlemesi ve Reply/Inbox CTA çifti.
+Inbox message notification. Sender, message preview, and Reply/Inbox CTA pair.
 
 ## Design tokens consumed
 

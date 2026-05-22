@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-05
 
-Canlı kart görseli önizlemeli kredi kartı giriş formu. Marka tespiti, numara formatlaması ve geçerlilik doğrulaması.
+Full credit card entry form with live card visual preview. Auto-detects brand, formats number, flips card on CVV focus, validates expiry.
 
 ## Design tokens consumed
 

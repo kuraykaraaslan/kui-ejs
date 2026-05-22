@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-Destek talebi alındı otomatik yanıtı. Ticket ID, konu, durum badge ve mesaj önizlemesi.
+Support request received auto-reply. Ticket ID, subject, status badge, and message preview.
 
 ## Design tokens consumed
 

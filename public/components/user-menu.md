@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Avatar + isim + rol trigger. Profile, Settings ve Sign out öğeleri içeren dropdown. Dışarı tıklayınca kapanır.
+Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.
 
 ## Design tokens consumed
 

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Ad, telefon, adres satırları, şehir, bölge, posta kodu ve ülke alanlarından oluşan adres formu. initial prop ile önceden doldurulabilir.
+Full address form with full name, phone, address lines, city, state/district, postal code, and country. Pre-fillable via the initial prop.
 
 ## Design tokens consumed
 

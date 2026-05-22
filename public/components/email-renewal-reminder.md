@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-05
 
-7 gün önceden yenileme hatırlatıcısı. Ödeme yöntemi, tutar ve manage/cancel linkleri.
+7-day advance renewal reminder. Payment method, amount, and manage/cancel links.
 
 ## Design tokens consumed
 

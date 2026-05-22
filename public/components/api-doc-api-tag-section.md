@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-04
 
-Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabilir bölüm olarak gösterir.
+Collapsible section grouping endpoints under a named tag — the primary navigation unit in API documentation.
 
 ## Design tokens consumed
 

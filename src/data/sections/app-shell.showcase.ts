@@ -89,7 +89,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppShell',
       category: 'App',
       abbr: 'As',
-      description: 'Tam ekran layout wrapper. sidebarContent, topbarContent ve logoContent HTML slot\'ları alır. Mobilde hamburger butonu NavDrawer açar.',
+      description: 'Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders as an aside on desktop and opens via a drawer on mobile.',
       filePath: 'modules/app/AppShell.ejs',
       sourceCode: appShellSource,
       variants: [
@@ -131,7 +131,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppSidebar',
       category: 'App',
       abbr: 'Sb',
-      description: 'Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle dahili. searchable prop ile yerleşik arama filtresi; footerContent slotu ile kullanıcı bilgisi gösterilebilir.',
+      description: 'Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter and a footer slot can host a user block or any content.',
       filePath: 'modules/app/AppSidebar.ejs',
       sourceCode: appSidebarSource,
       variants: [
@@ -233,7 +233,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppTopBar',
       category: 'App',
       abbr: 'At',
-      description: 'AppShell\'in header slotuna geçilen üst çubuk wrapper\'ı. logoContent slotu sol tarafa; children sağ tarafa flex satırda sıralanır.',
+      description: 'Top bar wrapper passed into AppShell\'s header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row.',
       filePath: 'modules/app/AppTopBar.ejs',
       sourceCode: appTopBarSource,
       variants: [

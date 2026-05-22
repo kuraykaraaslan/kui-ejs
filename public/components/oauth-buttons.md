@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi butonların gösterileceği seçilir.
+Social sign-in buttons for Google, GitHub, Discord, and Microsoft. Accepts a providers prop to show only a subset.
 
 ## Design tokens consumed
 

@@ -77,7 +77,7 @@ export function buildDomainCommonNotificationListItemData(): ShowcaseItem[] {
       category: 'Domain',
       abbr: 'NL',
       description:
-        'Tek bildirim satırı. Tür ikon tonları (order/message/system/alert/success/social), okundu/okunmadı vurgusu, göreceli zaman ve isteğe bağlı "Mark read" butonu.',
+        'Single notification row. Includes per-kind icon tones (order/message/system/alert/success/social), read/unread emphasis, relative time, and an optional "Mark read" button.',
       filePath: 'modules/domain/common/notification/NotificationListItem.ejs',
       sourceCode,
       variants: [
