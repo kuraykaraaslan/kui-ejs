@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-22T16:12:10.431Z",
+  "generatedAt": "2026-05-22T17:35:46.800Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -5956,11 +5956,11 @@
       "variants": [
         {
           "title": "Production key with scopes",
-          "code": "<%- include('modules/domain/api-doc/ApiKeyTokenCard', {\n  name: 'Production key',\n  token: 'sk_live_AbCdEfGhIjKlMnOpQrSta1b2',\n  environment: 'production',\n  createdAt: '2026-01-12',\n  lastUsedAt: '2026-05-20',\n  scopes: ['read:products', 'write:orders']\n}) %>"
+          "code": "<%- include('modules/domain/api-doc/ApiKeyTokenCard', {\n  name: 'Production key',\n  token: 'demo_production_token_REDACTED',\n  environment: 'production',\n  createdAt: '2026-01-12',\n  lastUsedAt: '2026-05-20',\n  scopes: ['read:products', 'write:orders']\n}) %>"
         },
         {
           "title": "Staging key with revoke action",
-          "code": "<%- include('modules/domain/api-doc/ApiKeyTokenCard', {\n  name: 'Staging key',\n  token: 'sk_test_XyZ9z8y',\n  environment: 'staging',\n  createdAt: '2026-04-01',\n  lastUsedAt: null,\n  onRevoke: true\n}) %>"
+          "code": "<%- include('modules/domain/api-doc/ApiKeyTokenCard', {\n  name: 'Staging key',\n  token: 'demo_staging_token_REDACTED',\n  environment: 'staging',\n  createdAt: '2026-04-01',\n  lastUsedAt: null,\n  onRevoke: true\n}) %>"
         }
       ],
       "status": "stable",

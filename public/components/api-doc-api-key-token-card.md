@@ -35,7 +35,7 @@ Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-us
 ```ejs
 <%- include('modules/domain/api-doc/ApiKeyTokenCard', {
   name: 'Production key',
-  token: 'sk_live_AbCdEfGhIjKlMnOpQrSta1b2',
+  token: 'demo_production_token_REDACTED',
   environment: 'production',
   createdAt: '2026-01-12',
   lastUsedAt: '2026-05-20',
@@ -48,7 +48,7 @@ Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-us
 ```ejs
 <%- include('modules/domain/api-doc/ApiKeyTokenCard', {
   name: 'Staging key',
-  token: 'sk_test_XyZ9z8y',
+  token: 'demo_staging_token_REDACTED',
   environment: 'staging',
   createdAt: '2026-04-01',
   lastUsedAt: null,
