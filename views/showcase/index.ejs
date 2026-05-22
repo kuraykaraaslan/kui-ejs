@@ -78,7 +78,7 @@
 
       <% } else if (!selected) { %>
         <div class="flex flex-col items-center justify-center py-24 text-center">
-          <i class="fa-solid fa-screwdriver-wrench text-4xl text-text-disabled mb-4" aria-hidden="true"></i>
+          <i class="fa-solid fa-house text-4xl text-text-disabled mb-4" aria-hidden="true"></i>
           <h2 class="text-xl font-semibold text-text-primary mb-1">Showcase coming soon</h2>
           <p class="text-sm text-text-secondary">No preview has been added for this component yet.</p>
         </div>
@@ -94,17 +94,22 @@
           <p class="text-sm text-text-secondary max-w-2xl"><%= selected.description %></p>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 mt-4">
-          <% selected.variants.forEach(function(variant) { %>
-            <div>
-              <%- include('./partials/widget', { variant: variant }) %>
+        <%
+          var _gridClass = locals.variantLayout === 'grid'
+            ? 'grid-cols-1 xl:grid-cols-2'
+            : 'grid-cols-1';
+        %>
+        <div class="grid <%= _gridClass %> gap-4">
+          <% selected.variants.forEach(function(variant) {
+            var _spanClass = (locals.variantLayout === 'grid' && variant.layout === 'stack') ? 'xl:col-span-2' : '';
+          %>
+            <div class="<%= _spanClass %>">
+              <%- include('./partials/widget', { variant: variant, variantLayout: locals.variantLayout }) %>
             </div>
           <% }); %>
         </div>
 
-        <div class="mt-4">
-          <%- include('./partials/source-block') %>
-        </div>
+        <%- include('./partials/source-block') %>
       <% } %>
 
     </main>

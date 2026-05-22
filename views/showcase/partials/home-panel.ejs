@@ -92,7 +92,7 @@
     </h2>
     <div class="space-y-2">
       <% var layers = [
-        { num: '1', label: 'modules/ui/',     desc: 'Primitive partials — atoms & molecules',         color: 'bg-info-subtle text-info' },
+        { num: '1', label: 'modules/ui/',     desc: 'Primitive partials — atoms & molecules',         color: 'bg-info-subtle text-info-fg' },
         { num: '2', label: 'modules/app/',    desc: 'Application-level patterns — organisms',          color: 'bg-primary-subtle text-primary' },
         { num: '3', label: 'modules/domain/', desc: 'Industry-specific components',                   color: 'bg-success-subtle text-success-fg' },
         { num: '4', label: 'views/themes/',   desc: 'Full-page multi-site demos',                     color: 'bg-warning-subtle text-warning-fg' },
@@ -126,11 +126,11 @@
           href="<%= t.href %>"
           class="group flex flex-col rounded-lg border border-border bg-surface-base overflow-hidden transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
         >
-          <div class="relative w-full overflow-hidden bg-surface-sunken" style="aspect-ratio:16/9;">
+          <div class="relative w-full aspect-video overflow-hidden bg-surface-sunken">
             <img
               src="<%= t.screenshot %>"
               alt="<%= t.label %>"
-              class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              class="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
           </div>
@@ -146,14 +146,12 @@
 
   <!-- Footer / author -->
   <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-border">
-    <div class="text-xs text-text-secondary">
+    <p class="text-xs text-text-secondary">
       Built by
       <a href="<%= site.authorUrl %>" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"><%= site.author %></a>
       &middot; Licensed under 0BSD
-    </div>
-    <div class="flex items-center gap-3">
-      <%- include('./github-button') %>
-    </div>
+    </p>
+    <%- include('./github-button') %>
   </div>
 
 </div>

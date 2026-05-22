@@ -4,31 +4,31 @@
     type="button"
     aria-haspopup="menu"
     aria-expanded="false"
-    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border text-text-primary hover:bg-surface-overlay transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+    class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm"
   >
     <span class="w-4 flex items-center justify-center shrink-0" aria-hidden="true">
-      <i id="theme-icon" class="fa-solid fa-display"></i>
+      <i id="theme-icon" class="fa-solid fa-display w-4 h-4"></i>
     </span>
     <span id="theme-label">System</span>
-    <i class="fa-solid fa-chevron-down text-text-disabled" style="width:.75rem;height:.75rem" aria-hidden="true"></i>
+    <i class="fa-solid fa-chevron-down text-text-disabled w-3 h-3" aria-hidden="true"></i>
   </button>
 
   <div
     id="theme-dropdown"
     role="menu"
-    class="hidden absolute right-0 mt-1 min-w-[8rem] rounded-lg border border-border bg-surface-raised shadow-lg py-1 z-50"
+    class="hidden absolute right-0 mt-1 min-w-[10rem] rounded-lg border border-border bg-surface-raised shadow-lg py-1 z-[60]"
   >
     <button type="button" role="menuitem" data-theme="light"
-      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-      <i class="fa-solid fa-sun" style="width:.875rem" aria-hidden="true"></i>Light
+      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-left text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:bg-surface-overlay transition-colors">
+      <i class="fa-solid fa-sun" aria-hidden="true"></i>Light
     </button>
     <button type="button" role="menuitem" data-theme="dark"
-      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-      <i class="fa-solid fa-moon" style="width:.875rem" aria-hidden="true"></i>Dark
+      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-left text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:bg-surface-overlay transition-colors">
+      <i class="fa-solid fa-moon" aria-hidden="true"></i>Dark
     </button>
     <button type="button" role="menuitem" data-theme="system"
-      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-      <i class="fa-solid fa-display" style="width:.875rem" aria-hidden="true"></i>System
+      class="theme-option flex w-full items-center gap-2 px-3 py-2 text-sm text-left text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:bg-surface-overlay transition-colors">
+      <i class="fa-solid fa-display" aria-hidden="true"></i>System
     </button>
   </div>
 </div>
