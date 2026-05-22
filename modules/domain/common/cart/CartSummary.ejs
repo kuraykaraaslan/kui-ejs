@@ -4,6 +4,8 @@
   var _totals       = _cart.totals        || {};
   var _appliedCoupon= locals.appliedCoupon|| null;
   var _couponAction = locals.couponAction || null;
+  var _showTotals   = locals.showTotals !== false;
+  var _showCoupon   = locals.showCoupon !== false;
   var _couponRemoveAction = locals.couponRemoveAction || null;
   var _couponError  = locals.couponError  || null;
   var _couponSuccess= locals.couponSuccess|| null;
@@ -47,7 +49,7 @@
   </div>
 
   <!-- Coupon -->
-  <% if (_couponAction || _appliedCoupon) { %>
+  <% if (_showCoupon && _couponAction) { %>
   <%- include('../discount/CouponInput', {
     action: _couponAction,
     appliedCode: _appliedCoupon,
@@ -58,7 +60,9 @@
   <% } %>
 
   <!-- Totals -->
+  <% if (_showTotals) { %>
   <%- include('../money/OrderTotalsCard', { totals: _totals, locale: _locale }) %>
+  <% } %>
 
   <!-- Checkout CTA -->
   <% if (_checkoutHref) { %>
