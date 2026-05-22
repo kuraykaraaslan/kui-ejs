@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/account-locked.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Çok fazla başarısız giriş sonrası kilit e-postası. Kilit açma süresi, sebep ve "Unlock" / "Support" butonları.
 

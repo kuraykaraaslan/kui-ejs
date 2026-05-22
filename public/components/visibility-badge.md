@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/status/VisibilityBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 PUBLIC / PRIVATE / UNLISTED görünürlük durumları için ikon-rozet. PUBLIC yeşil, PRIVATE kırmızı, UNLISTED nötr.
 

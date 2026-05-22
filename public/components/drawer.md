@@ -5,7 +5,7 @@
 - **category:** Organism
 - **filePath:** `modules/ui/Drawer.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Kenar paneli. left/right açılım, backdrop, ESC ve tabindex=-1 odak yönetimi ile birlikte gelir.
 
@@ -65,11 +65,10 @@ var _title = locals.title || '';
 var _side  = locals.side  || 'right';
 var _open  = locals.open  || false;
 
-var overlayClass = _open
-  ? 'opacity-100'
-  : 'opacity-0 pointer-events-none';
+var wrapperPointer = _open ? '' : 'pointer-events-none';
+var backdropOpacity = _open ? 'opacity-100' : 'opacity-0';
 
-var panelBase = 'relative flex flex-col w-80 max-w-full h-full bg-surface-raised border-border shadow-xl transition-transform duration-200 focus-visible:outline-none';
+var panelBase = 'relative z-[101] flex flex-col w-80 max-w-full h-full bg-surface-raised border-border shadow-xl transition-transform duration-200 focus-visible:outline-none';
 var panelSide = _side === 'right'
   ? 'ml-auto border-l'
   : 'mr-auto border-r';
@@ -80,7 +79,7 @@ var panelTranslate = _open
 
 <div
   id="<%= _id %>"
-  class="fixed inset-0 z-[100] flex transition-opacity duration-200 <%= overlayClass %>"
+  class="fixed inset-0 z-[100] flex <%= wrapperPointer %>"
   role="dialog"
   aria-modal="true"
   aria-label="<%= _title %>"
@@ -88,7 +87,7 @@ var panelTranslate = _open
   <!-- Backdrop -->
   <div
     id="<%= _id %>-backdrop"
-    class="absolute inset-0 bg-black/50"
+    class="absolute inset-0 bg-black/50 transition-opacity duration-200 <%= backdropOpacity %>"
     aria-hidden="true"
     onclick="closeDrawer('<%= _id %>')"
   ></div>
@@ -108,7 +107,7 @@ var panelTranslate = _open
         onclick="closeDrawer('<%= _id %>')"
         class="text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
       >
-        <i class="fa-solid fa-xmark" style="width:1rem;height:1rem" aria-hidden="true"></i>
+        <span class="w-4 h-4 inline-flex items-center justify-center" style="font-size:1rem"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
       </button>
     </div>
 
@@ -132,11 +131,12 @@ var panelTranslate = _open
   var drawerId = '<%= _id %>';
 
   function openDrawer(id) {
-    var el    = document.getElementById(id);
-    var panel = document.getElementById(id + '-panel');
+    var el       = document.getElementById(id);
+    var backdrop = document.getElementById(id + '-backdrop');
+    var panel    = document.getElementById(id + '-panel');
     if (!el || !panel) return;
-    el.classList.remove('opacity-0', 'pointer-events-none');
-    el.classList.add('opacity-100');
+    el.classList.remove('pointer-events-none');
+    if (backdrop) { backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100'); }
     panel.classList.remove('translate-x-full', '-translate-x-full');
     panel.classList.add('translate-x-0');
     var first = panel.querySelectorAll(FOCUSABLE)[0];
@@ -144,12 +144,13 @@ var panelTranslate = _open
   }
 
   function closeDrawer(id) {
-    var el    = document.getElementById(id);
-    var panel = document.getElementById(id + '-panel');
+    var el       = document.getElementById(id);
+    var backdrop = document.getElementById(id + '-backdrop');
+    var panel    = document.getElementById(id + '-panel');
     if (!el || !panel) return;
     var isRight = panel.classList.contains('ml-auto');
-    el.classList.add('opacity-0', 'pointer-events-none');
-    el.classList.remove('opacity-100');
+    el.classList.add('pointer-events-none');
+    if (backdrop) { backdrop.classList.add('opacity-0'); backdrop.classList.remove('opacity-100'); }
     panel.classList.remove('translate-x-0');
     panel.classList.add(isRight ? 'translate-x-full' : '-translate-x-full');
   }
@@ -159,7 +160,7 @@ var panelTranslate = _open
 
   document.addEventListener('keydown', function (e) {
     var el = document.getElementById(drawerId);
-    if (!el || el.classList.contains('opacity-0')) return;
+    if (!el || el.classList.contains('pointer-events-none')) return;
 
     if (e.key === 'Escape') { closeDrawer(drawerId); return; }
 

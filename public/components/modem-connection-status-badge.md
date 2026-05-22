@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/ConnectionStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Router/modem bağlantı durumları için renk kodlu rozet. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.
 

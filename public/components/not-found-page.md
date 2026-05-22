@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/NotFoundPage.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Tam sayfa 404 bileşeni. Gradient 404 yazısı, ikon, başlık, açıklama ve "Go Home" / "Go Back" butonları.
 

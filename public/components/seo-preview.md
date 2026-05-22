@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/seo/SeoPreview.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.
 
@@ -67,7 +67,7 @@ Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter s
   <div class="max-w-lg space-y-1">
     <% if (_siteName) { %><p class="text-xs text-text-secondary truncate"><%= _siteName %></p><% } %>
     <p class="text-xs text-success-fg truncate"><%= _url %></p>
-    <p class="text-base font-medium leading-snug truncate <%= hasTitle ? 'text-blue-700' : 'text-text-disabled italic' %>"><%= title %></p>
+    <p class="text-base font-medium leading-snug truncate <%= hasTitle ? 'text-[#1a0dab]' : 'text-text-disabled italic' %>"><%= title %></p>
     <p class="text-sm leading-relaxed line-clamp-2 <%= hasDesc ? 'text-text-secondary' : 'text-text-disabled italic' %>"><%= desc %></p>
   </div>
 

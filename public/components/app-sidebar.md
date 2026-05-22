@@ -5,7 +5,7 @@
 - **category:** App
 - **filePath:** `modules/app/AppSidebar.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle dahili. searchable prop ile yerleşik arama filtresi; footerContent slotu ile kullanıcı bilgisi gösterilebilir.
 
@@ -107,21 +107,22 @@ Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle 
     <% _groups.forEach(function(group, gi) {
       var gKey = (group.label || String(gi)).replace(/\s+/g,'_');
       var hasActive = (group.items||[]).some(function(i){ return i.id === _activeId; });
+      var _expanded = group.collapsible ? (!!group.defaultExpanded || hasActive) : true;
     %>
-    <div>
+    <div data-group-section data-group-key="<%= gKey %>">
       <% if (group.label && !_collapsed) { %>
         <% if (group.collapsible) { %>
         <button type="button" onclick="toggleSidebarGroup('<%= _id %>','<%= gKey %>')"
-          aria-expanded="true"
+          aria-expanded="<%= _expanded ? 'true' : 'false' %>"
           class="w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActive ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>">
           <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>
-          <i class="fa-solid fa-chevron-down text-xs transition-transform" id="<%= _id %>-gicon-<%= gKey %>" aria-hidden="true"></i>
+          <i class="fa-solid fa-chevron-down text-xs transition-transform<%= _expanded ? '' : ' -rotate-90' %>" id="<%= _id %>-gicon-<%= gKey %>" aria-hidden="true"></i>
         </button>
         <% } else { %>
         <p class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled px-3 mb-1"><%= group.label %></p>
         <% } %>
       <% } %>
-      <div class="space-y-0.5" id="<%= _id %>-gitems-<%= gKey %>">
+      <div class="space-y-0.5<%= _expanded ? '' : ' hidden' %>" id="<%= _id %>-gitems-<%= gKey %>">
         <% (group.items||[]).forEach(function(item) {
           var isActive = item.id === _activeId;
           var cls = 'w-full flex items-center gap-2.5 rounded-lg text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus '
@@ -134,9 +135,12 @@ Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle 
         <% } else { %>
         <button type="button" <%= isActive ? 'aria-current="page"' : '' %> <%= (_collapsed && item.label) ? 'title="'+item.label+'"' : '' %> class="<%= cls %>">
         <% } %>
-          <% if (item.icon) { %><i class="<%= item.icon %> shrink-0 w-5 text-center text-[15px] leading-none" aria-hidden="true"></i><% } %>
+          <% if (item.icon) { %><span class="shrink-0 w-5 text-center text-[15px] leading-none" aria-hidden="true"><%- item.icon %></span><% } %>
           <% if (!_collapsed) { %><span class="flex-1 truncate"><%= item.label %></span><% } %>
-          <% if (!_collapsed && item.badge) { %><span class="inline-flex items-center rounded-full font-medium bg-primary-subtle text-primary px-2 py-0.5 text-xs"><%= item.badge %></span><% } %>
+          <% if (!_collapsed && item.badge) { %>
+          <%# Badge variant="primary" size="sm" %>
+          <span class="inline-flex items-center gap-1 rounded-full font-medium bg-primary-subtle text-primary px-1.5 py-0 text-[10px]"><%= item.badge %></span>
+          <% } %>
         <% if (item.href) { %></a><% } else { %></button><% } %>
         </div>
         <% }); %>

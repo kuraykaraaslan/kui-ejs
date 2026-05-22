@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/order/refund.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 İade işlendi bildirimi. Tutar hero, iade yöntemi ve tahmini varış süresi.
 

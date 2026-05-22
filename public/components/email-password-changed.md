@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/password-changed.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Şifre değişikliği onay e-postası. Cihaz, IP ve konum bilgisi ile "Benim değildi" uyarısı.
 

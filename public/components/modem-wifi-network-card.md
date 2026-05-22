@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/WifiNetworkCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 SSID, band (2.4/5/6 GHz), güvenlik modu ve guest/disabled etiketleri. editHref prop'u ile düzenleme bağlantısı eklenir.
 

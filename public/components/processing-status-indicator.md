@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/status/ProcessingStatusIndicator.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.
 

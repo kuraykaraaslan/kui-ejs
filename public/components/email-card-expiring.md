@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/billing/card-expiring.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Kart son kullanma uyarısı. Kart görseli, plan/faturalandırma bilgisi ve güncelleme CTA.
 

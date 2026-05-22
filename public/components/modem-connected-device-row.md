@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/ConnectedDeviceRow.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Bağlı cihaz tablosu satırı. Cihaz ikonu, hostname/MAC, IP, bağlantı tipi (kablolu/wifi + dBm), trafik ve DHCP/Static/Blocked durumu.
 

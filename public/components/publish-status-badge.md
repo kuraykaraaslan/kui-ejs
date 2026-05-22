@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/status/PublishStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 DRAFT / PUBLISHED / ARCHIVED içerik durumları için Font Awesome ikonlu rozet. showIcon=false ile ikon gizlenebilir.
 

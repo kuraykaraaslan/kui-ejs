@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/auth/RegisterForm.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Email + şifre + şifre doğrulama formu. Alan bazlı hata mesajları.
 

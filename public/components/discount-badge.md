@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/discount/DiscountBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 İndirim göstergesi: yüzde ("20% off"), sabit tutar (para birimi ile) veya ücretsiz kargo.
 

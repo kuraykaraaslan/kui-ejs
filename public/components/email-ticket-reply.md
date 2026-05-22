@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/support/ticket-reply.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Destek ekibinden gelen yanıt. Ajan avatar, tam cevap metni, Reply ve View CTA çifti.
 

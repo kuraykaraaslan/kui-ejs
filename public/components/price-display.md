@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/money/PriceDisplay.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Intl.NumberFormat ile para birimi formatlama. Boyut, locale ve üstü çizili seçenekleri destekler.
 

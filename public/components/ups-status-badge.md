@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/UpsStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 UPS power status badge: On Line, On Battery (pulse), Low Battery, Fault, Calibrating, Bypassed, Offline.
 

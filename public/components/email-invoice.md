@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/billing/invoice.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Kalemli fatura. Durum badge, tüm kalemler ve toplamlar, PDF indirme CTA.
 

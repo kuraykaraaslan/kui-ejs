@@ -4,8 +4,8 @@
 - **layer:** app
 - **category:** App
 - **filePath:** `modules/app/AppCommandBar.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-04
 
 Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan Navigation/Actions/Recent grupları dahili. Klavye navigasyonu (↑↓ + Enter) destekler.
 
@@ -13,8 +13,12 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
 
 - `--border`
 - `--border-focus`
+- `--info`
+- `--info-fg`
+- `--info-subtle`
 - `--primary`
 - `--secondary`
+- `--surface-base`
 - `--surface-overlay`
 - `--surface-raised`
 - `--surface-sunken`
@@ -54,15 +58,21 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
   var _items    = locals.items    || [];
   var _placeholder = locals.placeholder || 'Type a command or search…';
 
+  // Defaults: 5 Navigation + 4 Actions + 3 Recent = 12 items.
+  // NOTE: Recent items use `faClock` (fa-clock), NOT fa-clock-rotate-left.
   var defaultItems = [
-    { icon: 'fa-solid fa-house',        label: 'Dashboard',       shortcut: 'G D', category: 'Navigation', href: '#' },
-    { icon: 'fa-solid fa-users',        label: 'Users',           shortcut: 'G U', category: 'Navigation', href: '#' },
-    { icon: 'fa-solid fa-chart-bar',    label: 'Analytics',       shortcut: 'G A', category: 'Navigation', href: '#' },
-    { icon: 'fa-solid fa-gear',         label: 'Settings',        shortcut: 'G S', category: 'Navigation', href: '#' },
-    { icon: 'fa-solid fa-plus',         label: 'New Project',     shortcut: 'C N', category: 'Actions' },
-    { icon: 'fa-solid fa-file-export',  label: 'Export Data',     shortcut: 'C E', category: 'Actions' },
-    { icon: 'fa-solid fa-clock-rotate-left', label: 'Recent: Dashboard', category: 'Recent', href: '#' },
-    { icon: 'fa-solid fa-clock-rotate-left', label: 'Recent: Users',     category: 'Recent', href: '#' },
+    { icon: 'fa-solid fa-house',        label: 'Go to Dashboard',  shortcut: 'G D', category: 'Navigation', href: '#' },
+    { icon: 'fa-solid fa-folder',       label: 'Go to Projects',   shortcut: 'G P', category: 'Navigation', href: '#' },
+    { icon: 'fa-solid fa-users',        label: 'Go to Team',       shortcut: 'G T', category: 'Navigation', href: '#' },
+    { icon: 'fa-solid fa-gear',         label: 'Go to Settings',   shortcut: 'G S', category: 'Navigation', href: '#' },
+    { icon: 'fa-solid fa-chart-bar',    label: 'Go to Analytics',  shortcut: 'G A', category: 'Navigation', href: '#' },
+    { icon: 'fa-solid fa-plus',         label: 'New Project',      shortcut: '⌘N',  category: 'Actions' },
+    { icon: 'fa-solid fa-envelope',     label: 'Send Invite',      shortcut: '⌘I',  category: 'Actions' },
+    { icon: 'fa-solid fa-file-export',  label: 'Export Data',      shortcut: '⌘E',  category: 'Actions' },
+    { icon: 'fa-solid fa-lock',         label: 'Lock Screen',      shortcut: '⌘L',  category: 'Actions' },
+    { icon: 'fa-solid fa-clock',        label: 'Project Alpha',    category: 'Recent' },
+    { icon: 'fa-solid fa-clock',        label: 'Q3 Report',        category: 'Recent' },
+    { icon: 'fa-solid fa-clock',        label: 'Design Review',    category: 'Recent' }
   ];
 
   var _allItems = _items.length ? _items : defaultItems;
@@ -71,22 +81,25 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
   _allItems.forEach(function(item) {
     if (categories.indexOf(item.category) === -1) categories.push(item.category);
   });
+
+  // Badge-equivalent class output (neutral, sm)
+  var _badgeNeutralSm = 'inline-flex items-center gap-1 rounded-full font-medium bg-surface-sunken text-text-secondary px-1.5 py-0 text-[10px]';
 %>
 <!-- AppCommandBar Trigger -->
 <% if (locals.trigger) { %>
   <span data-cmd-trigger="<%= _id %>"><%- locals.trigger %></span>
 <% } else { %>
+  <%# Fallback trigger: <Button variant="outline" size="sm" iconRight={<Badge>⌘K</Badge>}>Quick actions…</Button> %>
   <button
     type="button"
     data-cmd-trigger="<%= _id %>"
-    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-surface-raised text-text-secondary text-sm hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
-    aria-label="Open command bar (Ctrl K)"
+    class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm"
+    aria-label="Open command palette"
   >
-    <i class="fa-solid fa-magnifying-glass text-xs" aria-hidden="true"></i>
-    <span class="hidden sm:inline text-sm text-text-disabled">Search commands…</span>
-    <kbd class="hidden sm:inline-flex items-center gap-0.5 rounded border border-border bg-surface-sunken px-1.5 py-0.5 text-[10px] font-medium text-text-secondary ml-1">
-      <span>Ctrl</span><span>K</span>
-    </kbd>
+    Quick actions…
+    <span aria-hidden="true" class="shrink-0">
+      <span class="<%= _badgeNeutralSm %>">⌘K</span>
+    </span>
   </button>
 <% } %>
 
@@ -95,7 +108,7 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
   id="<%= _id %>"
   role="dialog"
   aria-modal="true"
-  aria-label="Command bar"
+  aria-labelledby="<%= _id %>-title"
   class="fixed inset-0 z-[100] hidden"
 >
   <!-- Backdrop -->
@@ -107,20 +120,9 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
 
   <!-- Panel -->
   <div class="relative mx-auto mt-16 w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-2xl overflow-hidden">
-    <!-- Search input -->
-    <div class="flex items-center gap-3 px-4 py-3 border-b border-border">
-      <i class="fa-solid fa-magnifying-glass text-text-disabled shrink-0" aria-hidden="true"></i>
-      <input
-        id="<%= _id %>-input"
-        type="search"
-        placeholder="<%= _placeholder %>"
-        autocomplete="off"
-        class="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none"
-        oninput="cmdBarFilter('<%= _id %>', this.value)"
-        onkeydown="cmdBarKeyNav(event, '<%= _id %>')"
-        aria-autocomplete="list"
-        aria-controls="<%= _id %>-list"
-      />
+    <!-- Header: title -->
+    <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-border">
+      <h2 id="<%= _id %>-title" class="text-base font-semibold text-text-primary">Command Palette</h2>
       <button
         type="button"
         data-cmd-close="<%= _id %>"
@@ -129,48 +131,71 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
       >Esc</button>
     </div>
 
-    <!-- Results -->
-    <div id="<%= _id %>-list" role="listbox" class="max-h-72 overflow-y-auto py-2">
-      <% categories.forEach(function(cat) {
-        var catItems = _allItems.filter(function(i) { return i.category === cat; });
-      %>
-      <div class="cmd-category" data-category="<%= cat %>">
-        <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled"><%= cat %></p>
-        <% catItems.forEach(function(item, idx) { %>
-        <% var tag = item.href ? 'a' : 'button'; %>
-        <<%= tag %>
-          <%= item.href ? 'href="' + item.href + '"' : 'type="button"' %>
-          role="option"
-          tabindex="-1"
-          data-cmd-item
-          data-label="<%= item.label.toLowerCase() %>"
-          class="cmd-item flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-colors text-text-primary hover:bg-surface-overlay focus:bg-surface-overlay outline-none"
-        >
-          <i class="<%= item.icon %> w-4 text-center text-text-disabled shrink-0 text-xs" aria-hidden="true"></i>
-          <span class="flex-1 truncate"><%= item.label %></span>
-          <% if (item.shortcut) { %>
-          <span class="flex items-center gap-0.5 shrink-0">
-            <% item.shortcut.split(' ').forEach(function(key) { %>
-            <kbd class="rounded border border-border bg-surface-sunken px-1.5 py-0.5 text-[10px] font-medium text-text-secondary"><%= key %></kbd>
-            <% }); %>
-          </span>
-          <% } %>
-        </<%= tag %>>
+    <div class="px-4 py-4 space-y-4">
+      <!-- Search input -->
+      <div class="relative flex items-center">
+        <span aria-hidden="true" class="absolute left-3 text-text-disabled pointer-events-none">
+          <i class="fa-solid fa-magnifying-glass" style="font-size:0.875rem"></i>
+        </span>
+        <input
+          id="<%= _id %>-input"
+          type="search"
+          placeholder="<%= _placeholder %>"
+          autocomplete="off"
+          class="block w-full rounded-md border border-border bg-surface-base pl-9 pr-3 py-2 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus transition-colors"
+          oninput="cmdBarFilter('<%= _id %>', this.value)"
+          onkeydown="cmdBarKeyNav(event, '<%= _id %>')"
+          aria-autocomplete="list"
+          aria-controls="<%= _id %>-list"
+        />
+      </div>
+
+      <!-- AlertBanner pro-tip -->
+      <div role="alert" class="flex items-start gap-3 rounded-lg border p-4 bg-info-subtle border-info text-info-fg">
+        <i class="fa-solid fa-circle-info mt-0.5 shrink-0 text-base" aria-hidden="true"></i>
+        <div class="flex-1 text-sm min-w-0">
+          <p>Pro tip: Press ⌘K from anywhere to open this palette.</p>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="<%= _id %>-list" role="listbox" class="max-h-72 overflow-y-auto -mx-4">
+        <% categories.forEach(function(cat) {
+          var catItems = _allItems.filter(function(i) { return i.category === cat; });
+        %>
+        <div class="cmd-category" data-category="<%= cat %>">
+          <div class="flex items-center gap-2 mb-1 px-4 pt-2">
+            <%# Badge-equivalent: variant=neutral, size=sm %>
+            <span class="inline-flex items-center gap-1 rounded-full font-medium bg-surface-sunken text-text-secondary px-1.5 py-0 text-[10px]"><%= cat %></span>
+          </div>
+          <% catItems.forEach(function(item, idx) { %>
+          <% var tag = item.href ? 'a' : 'button'; %>
+          <<%= tag %>
+            <%= item.href ? 'href="' + item.href + '"' : 'type="button"' %>
+            role="option"
+            tabindex="-1"
+            data-cmd-item
+            data-label="<%= item.label.toLowerCase() %>"
+            class="cmd-item flex w-full items-center justify-between gap-3 px-4 py-2 text-sm transition-colors text-text-primary hover:bg-surface-overlay focus:bg-surface-overlay outline-none"
+          >
+            <span class="flex items-center gap-2 min-w-0">
+              <% if (item.icon) { %><i class="<%= item.icon %> w-4 text-center text-text-disabled shrink-0" style="font-size:0.875rem" aria-hidden="true"></i><% } %>
+              <span class="truncate"><%= item.label %></span>
+            </span>
+            <% if (item.shortcut) { %>
+            <%# Badge-equivalent: variant=neutral, size=sm %>
+            <span class="inline-flex items-center gap-1 rounded-full font-medium bg-surface-sunken text-text-secondary px-1.5 py-0 text-[10px] shrink-0"><%= item.shortcut %></span>
+            <% } %>
+          </<%= tag %>>
+          <% }); %>
+        </div>
         <% }); %>
-      </div>
-      <% }); %>
 
-      <!-- Empty state -->
-      <div id="<%= _id %>-empty" class="hidden px-4 py-8 text-center text-sm text-text-secondary">
-        No results for your search.
+        <!-- Empty state -->
+        <p id="<%= _id %>-empty" class="hidden text-sm text-text-secondary text-center py-4">
+          No commands found for ""
+        </p>
       </div>
-    </div>
-
-    <!-- Footer hint -->
-    <div class="flex items-center gap-4 border-t border-border px-4 py-2 text-[10px] text-text-disabled">
-      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">↑↓</kbd> Navigate</span>
-      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">↵</kbd> Select</span>
-      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">Esc</kbd> Close</span>
     </div>
   </div>
 </div>
@@ -194,7 +219,7 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
   }
 
   window.cmdBarFilter = window.cmdBarFilter || function(id, query) {
-    var q = query.trim().toLowerCase();
+    var q = String(query || '').trim().toLowerCase();
     var list = document.getElementById(id + '-list');
     if (!list) return;
     var items = list.querySelectorAll('[data-cmd-item]');
@@ -202,7 +227,7 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
     var anyVisible = false;
     items.forEach(function(el) {
       var label = el.getAttribute('data-label') || '';
-      var show = !q || label.includes(q);
+      var show = !q || label.indexOf(q) !== -1;
       el.style.display = show ? '' : 'none';
       if (show) anyVisible = true;
     });
@@ -211,7 +236,10 @@ Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan N
       cat.style.display = visibleItems ? '' : 'none';
     });
     var empty = document.getElementById(id + '-empty');
-    if (empty) empty.classList.toggle('hidden', anyVisible);
+    if (empty) {
+      empty.classList.toggle('hidden', anyVisible || !q);
+      if (!anyVisible && q) empty.textContent = 'No commands found for "' + query + '"';
+    }
   };
 
   window.cmdBarKeyNav = window.cmdBarKeyNav || function(e, id) {

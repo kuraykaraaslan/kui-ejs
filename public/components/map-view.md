@@ -4,8 +4,8 @@
 - **layer:** ui
 - **category:** Molecule
 - **filePath:** `modules/ui/MapView.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-04
 
 Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined zone'lar (polygon), rota çizgisi (polyline) ve tıkla-ekle işaretçi modu.
 
@@ -15,6 +15,7 @@ Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined
 - `--border-focus`
 - `--primary`
 - `--primary-fg`
+- `--primary-hover`
 - `--surface-overlay`
 - `--surface-raised`
 - `--text-primary`
@@ -69,56 +70,68 @@ var _zones   = locals.zones   || [];
 var _routes  = locals.routes  || [];
 var _cls     = locals.className || '';
 
-var btnBase    = 'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-2 py-1 text-xs';
+// Button base classes — kept in sync with Button.ejs `xs` size + primary/outline variants.
+var btnBase    = 'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed px-2 py-1 text-xs';
+var btnPrimary = 'bg-primary text-primary-fg hover:bg-primary-hover';
 var btnOutline = 'border border-border text-text-primary hover:bg-surface-overlay';
-var btnActive  = 'bg-primary text-primary-fg';
 %>
-
-<div class="rounded-xl border border-border shadow-sm overflow-hidden bg-surface-raised<%= _cls ? ' ' + _cls : '' %>"
+<%/*
+  Inline Card(variant="raised") wrapper with -mx-6 -my-4 cancel-padding inner
+  so toolbar + map render edge-to-edge inside Card's rounded border.
+*/%>
+<div class="rounded-xl border border-border overflow-hidden text-left bg-surface-raised shadow-sm<%= _cls ? ' ' + _cls : '' %>"
      style="isolation:isolate">
+  <div class="px-6 py-4">
+    <div class="-mx-6 -my-4 flex flex-col">
 
-  <!-- Toolbar — uses Button + Card header styles -->
-  <div class="flex items-center gap-2 px-4 py-2.5 bg-surface-raised border-b border-border flex-wrap">
+      <!-- Toolbar -->
+      <div class="px-4 py-2.5 bg-surface-raised border-b border-border">
+        <div class="flex items-center gap-2 flex-wrap">
 
-    <button type="button" id="<%= _id %>-add-btn"
-      class="<%= btnBase %> <%= btnOutline %>"
-      aria-pressed="false">
-      <i class="fa-solid fa-plus"         aria-hidden="true"></i>
-      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-      İşaretçi Ekle
-    </button>
+          <button type="button" id="<%= _id %>-add-btn"
+            class="<%= btnBase %> <%= btnOutline %>"
+            title="Haritaya işaretçi ekle"
+            aria-pressed="false">
+            <span aria-hidden="true" class="shrink-0" data-add-left><i class="fa-solid fa-plus"></i></span>
+            <span data-add-label>İşaretçi Ekle</span>
+            <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-location-dot"></i></span>
+          </button>
 
-    <% if (_zones.length > 0) { %>
-    <button type="button" id="<%= _id %>-zones-btn"
-      class="<%= btnBase %> <%= btnActive %>"
-      aria-pressed="true">
-      <i class="fa-solid fa-eye"         aria-hidden="true"></i>
-      <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-      Bölgeler
-    </button>
-    <% } %>
+          <% if (_zones.length > 0) { %>
+          <button type="button" id="<%= _id %>-zones-btn"
+            class="<%= btnBase %> <%= btnPrimary %>"
+            title="Bölgeleri gizle"
+            aria-pressed="true">
+            <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-eye"></i></span>
+            <span>Bölgeler</span>
+            <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-layer-group"></i></span>
+          </button>
+          <% } %>
 
-    <% if (_routes.length > 0) { %>
-    <button type="button" id="<%= _id %>-routes-btn"
-      class="<%= btnBase %> <%= btnActive %>"
-      aria-pressed="true">
-      <i class="fa-solid fa-eye"   aria-hidden="true"></i>
-      <i class="fa-solid fa-route" aria-hidden="true"></i>
-      Rotalar
-    </button>
-    <% } %>
+          <% if (_routes.length > 0) { %>
+          <button type="button" id="<%= _id %>-routes-btn"
+            class="<%= btnBase %> <%= btnPrimary %>"
+            title="Rotaları gizle"
+            aria-pressed="true">
+            <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-eye"></i></span>
+            <span>Rotalar</span>
+            <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-route"></i></span>
+          </button>
+          <% } %>
 
-    <span id="<%= _id %>-hint"
-      class="ml-auto text-xs text-primary font-medium animate-pulse hidden"
-      aria-live="polite">
-      Haritaya tıklayarak işaretçi ekleyin
-    </span>
+          <span id="<%= _id %>-hint"
+            class="text-xs text-primary font-medium animate-pulse hidden"
+            aria-live="polite">
+            Haritaya tıklayarak işaretçi ekleyin
+          </span>
+        </div>
+      </div>
 
-  </div><!-- /toolbar -->
+      <!-- Map canvas -->
+      <div id="<%= _id %>-map" style="height:<%= _height %>px"></div>
 
-  <!-- Map canvas -->
-  <div id="<%= _id %>-map" style="height:<%= _height %>px"></div>
-
+    </div>
+  </div>
 </div>
 
 <script>
@@ -209,9 +222,9 @@ var btnActive  = 'bg-primary text-primary-fg';
     var zonesBtn = document.getElementById('<%- _id %>-zones-btn');
     var routeBtn = document.getElementById('<%- _id %>-routes-btn');
 
-    var btnBase    = 'inline-flex items-center justify-center gap-1.5 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-2 py-1 text-xs';
+    var btnBase    = 'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed px-2 py-1 text-xs';
     var btnOutline = 'border border-border text-text-primary hover:bg-surface-overlay';
-    var btnPrimary = 'bg-primary text-primary-fg';
+    var btnPrimary = 'bg-primary text-primary-fg hover:bg-primary-hover';
 
     function setActive(btn, on) {
       if (!btn) return;
@@ -224,10 +237,20 @@ var btnActive  = 'bg-primary text-primary-fg';
       }
     }
 
+    function setAddBtnState(active) {
+      setActive(addBtn, active);
+      if (!addBtn) return;
+      var leftIcon = addBtn.querySelector('[data-add-left] i');
+      var label    = addBtn.querySelector('[data-add-label]');
+      if (leftIcon) leftIcon.className = active ? 'fa-solid fa-xmark' : 'fa-solid fa-plus';
+      if (label)    label.textContent  = active ? 'İptal' : 'İşaretçi Ekle';
+      addBtn.setAttribute('title', active ? 'İşaretçi eklemeyi iptal et' : 'Haritaya işaretçi ekle');
+    }
+
     if (addBtn) {
       addBtn.addEventListener('click', function () {
         addMode = !addMode;
-        setActive(addBtn, addMode);
+        setAddBtnState(addMode);
         if (hint) hint.classList.toggle('hidden', !addMode);
         mapEl.style.cursor = addMode ? 'crosshair' : '';
       });
@@ -246,7 +269,7 @@ var btnActive  = 'bg-primary text-primary-fg';
         ]
       }));
       addMode = false;
-      setActive(addBtn, false);
+      setAddBtnState(false);
       if (hint) hint.classList.add('hidden');
       mapEl.style.cursor = '';
     });
@@ -257,8 +280,9 @@ var btnActive  = 'bg-primary text-primary-fg';
         zonesOn = !zonesOn;
         zoneLayers.forEach(function (l) { zonesOn ? l.addTo(map) : map.removeLayer(l); });
         var eyeIcon = zonesBtn.querySelector('.fa-eye, .fa-eye-slash');
-        if (eyeIcon) eyeIcon.className = (zonesOn ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash') + ' aria-hidden="true"';
+        if (eyeIcon) eyeIcon.className = zonesOn ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
         setActive(zonesBtn, zonesOn);
+        zonesBtn.setAttribute('title', zonesOn ? 'Bölgeleri gizle' : 'Bölgeleri göster');
       });
     }
 
@@ -268,8 +292,9 @@ var btnActive  = 'bg-primary text-primary-fg';
         routesOn = !routesOn;
         routeLayers.forEach(function (l) { routesOn ? l.addTo(map) : map.removeLayer(l); });
         var eyeIcon = routeBtn.querySelector('.fa-eye, .fa-eye-slash');
-        if (eyeIcon) eyeIcon.className = (routesOn ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash') + ' aria-hidden="true"';
+        if (eyeIcon) eyeIcon.className = routesOn ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
         setActive(routeBtn, routesOn);
+        routeBtn.setAttribute('title', routesOn ? 'Rotaları gizle' : 'Rotaları göster');
       });
     }
   }

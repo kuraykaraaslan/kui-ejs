@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/notification/mention.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 @mention bildirimi. Bahseden kişi, bağlam ve alıntı excerpt gösterimi.
 

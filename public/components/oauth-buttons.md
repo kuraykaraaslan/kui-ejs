@@ -5,16 +5,13 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/auth/OAuthButtons.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi butonların gösterileceği seçilir.
 
 ## Design tokens consumed
 
-- `--border`
-- `--border-focus`
 - `--primary`
-- `--surface-overlay`
 - `--text-primary`
 
 ## Variants
@@ -41,29 +38,33 @@ Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi
 
 ```ejs
 <%
-  var _providers = locals.providers || ['google', 'github', 'discord', 'microsoft'];
+  var _allowed   = { GOOGLE: 1, GITHUB: 1, DISCORD: 1, MICROSOFT: 1 };
+  var _providers = (locals.providers || ['GOOGLE', 'GITHUB', 'DISCORD', 'MICROSOFT']).filter(function (p) {
+    return !!_allowed[String(p).toUpperCase()];
+  }).map(function (p) { return String(p).toUpperCase(); });
   var _action    = locals.action    || '#';
   var _method    = locals.method    || 'post';
 
   var providerMeta = {
-    google:    { label: 'Continue with Google',    icon: 'fa-brands fa-google',    iconColor: 'text-[#EA4335]' },
-    github:    { label: 'Continue with GitHub',    icon: 'fa-brands fa-github',    iconColor: 'text-text-primary' },
-    discord:   { label: 'Continue with Discord',   icon: 'fa-brands fa-discord',   iconColor: 'text-[#5865F2]' },
-    microsoft: { label: 'Continue with Microsoft', icon: 'fa-brands fa-microsoft', iconColor: 'text-[#00A4EF]' },
+    GOOGLE:    { label: 'Continue with Google',    icon: 'fa-brands fa-google',    iconClass: 'text-[#EA4335]' },
+    GITHUB:    { label: 'Continue with GitHub',    icon: 'fa-brands fa-github',    iconClass: 'text-text-primary' },
+    DISCORD:   { label: 'Continue with Discord',   icon: 'fa-brands fa-discord',   iconClass: 'text-[#5865F2]' },
+    MICROSOFT: { label: 'Continue with Microsoft', icon: 'fa-brands fa-microsoft', iconClass: 'text-[#00A4EF]' }
   };
 %>
 <div class="flex flex-col gap-2<%= locals.className ? ' ' + locals.className : '' %>">
   <% _providers.forEach(function (provider) { %>
-  <%
-    var meta = providerMeta[provider] || { label: 'Continue with ' + provider, icon: 'fa-brands fa-' + provider, iconColor: 'text-text-primary' };
-  %>
+  <% var meta = providerMeta[provider]; %>
   <form action="<%= _action %>" method="<%= _method %>">
     <input type="hidden" name="provider" value="<%= provider %>">
-    <button type="submit"
-      class="w-full inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-4 py-2 text-sm">
-      <i class="<%= meta.icon %> <%= meta.iconColor %>" aria-hidden="true"></i>
-      <%= meta.label %>
-    </button>
+    <%- include('../../../ui/Button', {
+      type: 'submit',
+      variant: 'outline',
+      fullWidth: true,
+      ariaLabel: meta.label,
+      iconLeft: '<span class="' + meta.iconClass + '"><i class="' + meta.icon + '" aria-hidden="true"></i></span>',
+      children: meta.label
+    }) %>
   </form>
   <% }); %>
 </div>

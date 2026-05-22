@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/user/UserAvatar.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Kullanıcı nesnesi (name/email/profilePicture) alarak Avatar'ı sarar. online/away/busy/offline statü noktası desteği.
 

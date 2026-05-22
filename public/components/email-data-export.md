@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/system/data-export.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Veri dışa aktarma hazır bildirimi. Dosya boyutu, format, son kullanma tarihi ve indirme CTA.
 

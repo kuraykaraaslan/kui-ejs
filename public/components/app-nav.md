@@ -5,7 +5,7 @@
 - **category:** App
 - **filePath:** `modules/app/AppNav.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Yatay navigasyon çubuğu. Masaüstünde inline linkler, mobilde hamburger drawer açar. logoContent, navItems ve children slotları. sticky ve bordered seçenekleri.
 

@@ -4,8 +4,8 @@
 - **layer:** app
 - **category:** App
 - **filePath:** `modules/app/SplashScreen.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-05
 
 Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.
 
@@ -47,7 +47,7 @@ Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çub
   aria-live="polite"
   aria-label="<%= locals.message || 'Loading' %>"
   aria-busy="<%= _visible %>"
-  class="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-6 bg-surface-base transition-opacity duration-500<%= _visible ? ' opacity-100 pointer-events-auto' : ' opacity-0 pointer-events-none' %><%= locals.className ? ' '+locals.className : '' %>"
+  class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-surface-base transition-opacity duration-500<%= _visible ? ' opacity-100 pointer-events-auto' : ' opacity-0 pointer-events-none' %><%= locals.className ? ' '+locals.className : '' %>"
 >
   <% if (locals.logoContent) { %>
   <div class="flex items-center justify-center"><%- locals.logoContent %></div>

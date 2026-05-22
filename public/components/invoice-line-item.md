@@ -5,7 +5,7 @@
 - **category:** Domain · Invoice
 - **filePath:** `modules/domain/invoice/InvoiceLineItem.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Table row for a single invoice line item with description, quantity, unit price, and total.
 

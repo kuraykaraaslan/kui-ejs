@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/UpsInfoCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 2-column info grid displaying UPS model, serial, firmware, capacity, and voltage specs.
 

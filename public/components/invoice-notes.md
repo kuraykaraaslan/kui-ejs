@@ -5,7 +5,7 @@
 - **category:** Domain · Invoice
 - **filePath:** `modules/domain/invoice/InvoiceNotes.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Invoice footer section with optional notes text, bank details, and custom footer.
 

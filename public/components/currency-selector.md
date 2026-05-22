@@ -5,15 +5,23 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/money/CurrencySelector.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 ISO 4217 para birimi seçici. countries-list'ten derlenen, alfabetik sıralı native select.
 
 ## Design tokens consumed
 
 - `--border`
+- `--border-focus`
 - `--primary`
+- `--primary-subtle`
+- `--secondary`
+- `--surface-base`
+- `--surface-overlay`
+- `--surface-raised`
+- `--text-disabled`
 - `--text-primary`
+- `--text-secondary`
 
 ## Variants
 
@@ -41,32 +49,199 @@ ISO 4217 para birimi seçici. countries-list'ten derlenen, alfabetik sıralı na
 
 ```ejs
 <%
-  var _id       = locals.id       || 'currency';
-  var _name     = locals.name     || 'currency';
-  var _value    = locals.value    || 'TRY';
-  var _label    = locals.label    !== undefined ? locals.label : 'Currency';
-  var _disabled = !!locals.disabled;
+  var _id         = locals.id         || 'currency';
+  var _value      = locals.value      || 'TRY';
+  var _label      = locals.label      !== undefined ? locals.label : 'Currency';
+  var _disabled   = !!locals.disabled;
   var _currencies = locals.currencies || [];
+  // NOTE: drop `name` attribute — NextJS uses onChange callback, no native form submit.
+  var _rootId = _id + '-root';
+  var _btnId  = _id;
+  var _portalId = _id + '-portal';
+  // TODO: country flag fallback — when a real ISO mapping isn't supplied,
+  //       fall back to plain ISO badge (3-letter currency code in a chip).
 %>
-<div class="space-y-1<%= locals.className ? ' ' + locals.className : '' %>">
+<div id="<%= _rootId %>" class="space-y-1<%= locals.className ? ' ' + locals.className : '' %>" data-currency-selector>
   <% if (_label) { %>
-  <label for="<%= _id %>" class="block text-sm font-medium text-text-primary"><%= _label %></label>
+  <label for="<%= _btnId %>" class="block text-sm font-medium text-text-primary"><%= _label %></label>
   <% } %>
-  <div class="relative">
-    <select id="<%= _id %>" name="<%= _name %>"
-      class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary hover:border-text-tertiary transition-colors px-3 py-2 text-sm pr-8 disabled:opacity-50 disabled:cursor-not-allowed"
-      <%= _disabled ? 'disabled' : '' %>>
-      <% _currencies.forEach(function(c) { %>
-      <option value="<%= c %>" <%= c === _value ? 'selected' : '' %>><%= c %></option>
-      <% }); %>
-      <% if (!_currencies.length) { %>
-      <option value="<%= _value %>" selected><%= _value %></option>
-      <% } %>
-    </select>
-    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-text-tertiary">
-      <i class="fa-solid fa-chevron-down text-xs" aria-hidden="true"></i>
-    </div>
+  <div class="relative w-full" data-currency-trigger-wrap>
+    <%- include('../../../ui/Button', {
+      element: 'button',
+      variant: 'outline',
+      size:    'sm',
+      type:    'button',
+      disabled: _disabled,
+      ariaLabel: 'Select currency',
+      fullWidth: true,
+      className: 'justify-between gap-2',
+      children: '<span class="flex items-center gap-2"><span data-currency-flag aria-hidden="true"></span><span data-currency-value>' + _value + '</span></span><span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled" aria-hidden="true"><i class="fa-solid fa-chevron-down" style="font-size:12px"></i></span>'
+    }) %>
   </div>
 </div>
+
+<script>
+(function () {
+  var rootId   = '<%= _rootId %>';
+  var portalId = '<%= _portalId %>';
+  var initial  = <%- JSON.stringify(_value) %>;
+  var disabled = <%- JSON.stringify(_disabled) %>;
+  var supplied = <%- JSON.stringify(_currencies) %>;
+
+  var root = document.getElementById(rootId);
+  if (!root || root.dataset.csInit === '1') return;
+  root.dataset.csInit = '1';
+
+  var btn = root.querySelector('button');
+  if (!btn) return;
+  btn.setAttribute('aria-haspopup', 'listbox');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.id = '<%= _btnId %>';
+
+  // Build option list. If caller supplies a flat list, use it as currency codes only.
+  var options = (Array.isArray(supplied) && supplied.length)
+    ? supplied.map(function (c) {
+        if (typeof c === 'string') return { value: c, countryCode: null };
+        return { value: c.value || c.code || '', countryCode: c.countryCode || null };
+      })
+    : [{ value: initial, countryCode: null }];
+
+  var current = initial;
+  var open    = false;
+  var portal  = null;
+  var searchEl = null;
+  var listEl   = null;
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function flagHtml(opt) {
+    if (opt && opt.countryCode) {
+      // Real flag mapping unavailable in EJS runtime — render compact ISO badge as fallback.
+      // TODO: swap in country-flag-icons when SVG sprite or static assets are wired up.
+      return '<span class="inline-flex items-center justify-center w-5 h-3.5 rounded-[2px] bg-surface-overlay text-[8px] font-bold text-text-secondary tracking-tight shrink-0" aria-hidden="true">' + escapeHtml(opt.countryCode) + '</span>';
+    }
+    return '<span class="inline-flex items-center justify-center w-5 h-3.5 rounded-[2px] bg-surface-overlay text-[8px] font-bold text-text-secondary tracking-tight shrink-0" aria-hidden="true">' + escapeHtml(opt.value.slice(0, 3)) + '</span>';
+  }
+
+  function syncTrigger() {
+    var flagSlot  = btn.querySelector('[data-currency-flag]');
+    var valueSlot = btn.querySelector('[data-currency-value]');
+    var opt = options.filter(function (o) { return o.value === current; })[0] || { value: current };
+    if (flagSlot)  flagSlot.innerHTML = flagHtml(opt);
+    if (valueSlot) valueSlot.textContent = opt.value;
+  }
+  syncTrigger();
+
+  function buildPortal() {
+    portal = document.createElement('div');
+    portal.id = portalId;
+    portal.setAttribute('role', 'listbox');
+    portal.setAttribute('aria-label', 'Select currency');
+    portal.className = 'rounded-lg border border-border bg-surface-raised shadow-lg';
+    portal.style.position = 'fixed';
+    portal.style.zIndex = '9999';
+
+    // Search bar (uses SearchBar atom markup inlined to avoid include-at-runtime)
+    var searchWrap = document.createElement('div');
+    searchWrap.className = 'p-2 border-b border-border';
+    searchWrap.innerHTML =
+      '<div class="relative flex items-center">' +
+        '<span aria-hidden="true" class="absolute left-3 text-text-disabled pointer-events-none w-3.5 h-3.5 inline-flex items-center justify-center">' +
+          '<i class="fa-solid fa-magnifying-glass" style="font-size:14px"></i>' +
+        '</span>' +
+        '<input type="text" role="searchbox" placeholder="Search currency…" autocomplete="off" data-currency-search ' +
+          'class="block w-full rounded-md border border-border bg-surface-base px-3 py-2 pl-8 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus transition-colors">' +
+      '</div>';
+    portal.appendChild(searchWrap);
+
+    listEl = document.createElement('ul');
+    listEl.className = 'max-h-56 overflow-y-auto py-1';
+    portal.appendChild(listEl);
+
+    document.body.appendChild(portal);
+    searchEl = portal.querySelector('[data-currency-search]');
+    if (searchEl) searchEl.addEventListener('input', function () { renderList(searchEl.value); });
+    renderList('');
+  }
+
+  function renderList(query) {
+    if (!listEl) return;
+    var q = (query || '').trim().toLowerCase();
+    var filtered = q ? options.filter(function (o) { return o.value.toLowerCase().indexOf(q) !== -1; }) : options;
+    listEl.innerHTML = '';
+    if (!filtered.length) {
+      var empty = document.createElement('li');
+      empty.className = 'px-3 py-2 text-sm text-text-secondary';
+      empty.textContent = 'No results';
+      listEl.appendChild(empty);
+      return;
+    }
+    filtered.forEach(function (opt) {
+      var li = document.createElement('li');
+      var b  = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('role', 'option');
+      b.setAttribute('aria-selected', String(opt.value === current));
+      var active = opt.value === current;
+      b.className = 'flex w-full items-center gap-2 px-3 py-2 text-sm text-left transition-colors focus-visible:outline-none focus-visible:bg-surface-overlay ' +
+        (active ? 'bg-primary-subtle text-primary font-medium' : 'text-text-primary hover:bg-surface-overlay');
+      b.innerHTML = flagHtml(opt) + '<span>' + escapeHtml(opt.value) + '</span>';
+      b.addEventListener('click', function () {
+        current = opt.value;
+        syncTrigger();
+        close();
+        root.dispatchEvent(new CustomEvent('currency:change', { detail: { value: current }, bubbles: true }));
+      });
+      li.appendChild(b);
+      listEl.appendChild(li);
+    });
+  }
+
+  function position() {
+    if (!portal) return;
+    var rect = btn.getBoundingClientRect();
+    portal.style.top   = (rect.bottom + 4) + 'px';
+    portal.style.left  = rect.left + 'px';
+    portal.style.width = rect.width + 'px';
+  }
+
+  function openMenu() {
+    if (disabled || open) return;
+    if (!portal) buildPortal();
+    portal.hidden = false;
+    portal.style.display = '';
+    position();
+    open = true;
+    btn.setAttribute('aria-expanded', 'true');
+    setTimeout(function () { if (searchEl) searchEl.focus(); }, 0);
+  }
+
+  function close() {
+    if (!open) return;
+    if (portal) { portal.style.display = 'none'; }
+    open = false;
+    btn.setAttribute('aria-expanded', 'false');
+    if (searchEl) searchEl.value = '';
+    renderList('');
+  }
+
+  btn.addEventListener('click', function (e) { e.preventDefault(); open ? close() : openMenu(); });
+
+  document.addEventListener('mousedown', function (e) {
+    if (!open) return;
+    if (root.contains(e.target) || (portal && portal.contains(e.target))) return;
+    close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && open) close();
+  });
+  window.addEventListener('scroll', function () { if (open) position(); }, true);
+  window.addEventListener('resize', function () { if (open) position(); });
+})();
+</script>
 
 ```

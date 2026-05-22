@@ -5,7 +5,7 @@
 - **category:** Organism
 - **filePath:** `modules/ui/Breadcrumb.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current="page" son öğede.
 
@@ -63,21 +63,36 @@ Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current="page" 
 ```ejs
 <%
   var _items     = locals.items     || [];
+  var _maxItems  = locals.maxItems  || 0;
   var _className = locals.className || '';
+
+  var displayed = _items;
+  var truncated = false;
+  if (_maxItems && _items.length > _maxItems) {
+    truncated = true;
+    // first + ellipsis + last (_maxItems - 1) items
+    var tail = _items.slice(_items.length - (_maxItems - 1));
+    displayed = [_items[0], { label: '…', href: undefined, _isEllipsis: true }].concat(tail);
+  }
 %>
 <nav aria-label="Breadcrumb"<%= _className ? ' class="' + _className + '"' : '' %>>
   <ol class="flex flex-wrap items-center gap-1 text-sm">
-    <% _items.forEach(function (item, i) { %>
+    <% displayed.forEach(function (item, i) { %>
     <%
-      var isLast = i === _items.length - 1;
+      var isLast      = i === displayed.length - 1;
+      var isEllipsis  = !!item._isEllipsis;
     %>
     <li class="flex items-center gap-1">
-      <% if (!isLast && item.href) { %>
+      <% if (!isLast && item.href && !isEllipsis) { %>
       <a href="<%= item.href %>" class="text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"><%= item.label %></a>
-      <i class="fa-solid fa-chevron-right text-xs text-text-disabled" aria-hidden="true"></i>
+      <span class="w-2.5 h-2.5 inline-flex items-center justify-center text-text-disabled" aria-hidden="true"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i></span>
       <% } else { %>
-      <span class="<%= isLast ? 'text-text-primary font-medium' : 'text-text-secondary' %>"<%= isLast ? ' aria-current="page"' : '' %>><%= item.label %></span>
-      <% if (!isLast) { %><i class="fa-solid fa-chevron-right text-xs text-text-disabled" aria-hidden="true"></i><% } %>
+      <span
+        class="<%= isLast ? 'text-text-primary font-medium' : 'text-text-secondary' %><%= isEllipsis ? ' select-none' : '' %>"
+        <% if (isLast) { %>aria-current="page"<% } %>
+        <% if (isEllipsis) { %>aria-hidden="true"<% } %>
+      ><%= item.label %></span>
+      <% if (!isLast) { %><span class="w-2.5 h-2.5 inline-flex items-center justify-center text-text-disabled" aria-hidden="true"><i class="fa-solid fa-chevron-right" style="font-size:10px"></i></span><% } %>
       <% } %>
     </li>
     <% }); %>

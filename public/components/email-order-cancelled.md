@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/order/cancelled.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Sipariş iptali bildirimi. İptal sebebi, üstü çizili kalemler ve iade süresi.
 

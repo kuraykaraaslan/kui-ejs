@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/auth/LoginForm.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Email + şifre formu. Remember me checkbox, hata banner ve action/method desteği.
 
@@ -61,7 +61,6 @@ Email + şifre formu. Remember me checkbox, hata banner ve action/method desteğ
     type: 'email',
     name: 'email',
     required: true,
-    placeholder: 'you@example.com',
     value: locals.emailValue || '',
     iconLeft: '<i class="fa-solid fa-envelope text-xs" aria-hidden="true"></i>'
   }) %>
@@ -75,9 +74,9 @@ Email + şifre formu. Remember me checkbox, hata banner ve action/method desteğ
     iconLeft: '<i class="fa-solid fa-lock text-xs" aria-hidden="true"></i>'
   }) %>
 
-  <label class="inline-flex items-center gap-2 text-sm text-text-secondary cursor-pointer select-none">
+  <label class="flex items-center gap-2 text-sm text-text-secondary cursor-pointer select-none">
     <input type="checkbox" name="rememberMe" value="1"
-      class="h-4 w-4 rounded border-border accent-primary focus-visible:ring-2 focus-visible:ring-border-focus">
+      class="rounded border-border accent-primary focus-visible:ring-2 focus-visible:ring-border-focus">
     Remember me
   </label>
 

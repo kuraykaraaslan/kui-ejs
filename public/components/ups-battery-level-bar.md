@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/BatteryLevelBar.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Battery charge indicator with percent, color-coded bar (green/yellow/red), charge status, and runtime remaining.
 

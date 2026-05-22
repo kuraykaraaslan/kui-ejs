@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/notification/new-message.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Gelen kutusu mesaj bildirimi. Gönderici, mesaj önizlemesi ve Reply/Inbox CTA çifti.
 

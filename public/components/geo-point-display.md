@@ -4,8 +4,8 @@
 - **layer:** domain
 - **category:** Domain
 - **filePath:** `modules/domain/common/location/GeoPointDisplay.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-04
 
 Enlem/boylam koordinat gösterimi ve Google Maps bağlantısı. Hassasiyet ve etiket ayarlanabilir.
 

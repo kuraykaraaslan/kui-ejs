@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/welcome.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Kayıt sonrası gönderilen hoş geldin e-postası. E-posta doğrulama CTA ve "next steps" listesi içerir.
 

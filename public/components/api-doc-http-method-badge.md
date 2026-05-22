@@ -5,7 +5,7 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/HttpMethodBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 HTTP metodunu renk kodlu rozet olarak gösterir. GET yeşil, POST mavi, DELETE kırmızı, vb.
 

@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/login-alert.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Yeni cihazdan giriş uyarısı. Cihaz, konum ve IP bilgisi; "Secure My Account" ve "This Was Me" CTA çifti.
 

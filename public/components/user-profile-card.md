@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/user/UserProfileCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Profil kartı: kapak banner, avatar, görünen ad, kullanıcı adı, biyografi, rol ve durum rozetleri ve isteğe bağlı actions slotu.
 

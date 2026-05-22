@@ -4,8 +4,8 @@
 - **layer:** ui
 - **category:** Organism
 - **filePath:** `modules/ui/VideoPlayer.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-04
 
 HTML5 video oynatıcı. Kalite, altyazı, ses kanalı, oynatma hızı seçimi; özel WebVTT altyazı overlay; otomatik gizlenen kontroller; geliştirici kontrolü.
 
@@ -497,6 +497,21 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
 </div>
 
+<%/*
+  ──────────────────────────────────────────────────────────────────────────────
+  JS-event-vs-callback API (EJS) — note for consumers
+  ──────────────────────────────────────────────────────────────────────────────
+  The React `VideoPlayer.tsx` exposes callback props (`onQualityChange`,
+  `onAudioTrackChange`, `onCastStateChange`, `onControlsVisibilityChange`).
+  This EJS twin runs as a vanilla-JS IIFE and instead dispatches DOM
+  `CustomEvent`s on the player container:
+    - `vp:qualitychange`      → detail: { value }
+    - `vp:audiotrackchange`   → detail: { index }
+  Subscribe via:
+    document.getElementById('<id>').addEventListener('vp:qualitychange', ...);
+  The imperative API is exposed at `window.__vp[<id>]` (togglePlay, seekBy,
+  toggleMute, setVolume, setSpeed, setQuality, setSubtitle, etc.).
+*/%>
 <script>
 (function () {
   var id          = '<%= _id %>';
@@ -556,7 +571,9 @@ var _speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
   function fmt(s) {
     if (!isFinite(s) || isNaN(s)) return '0:00';
     var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = Math.floor(s % 60);
-    return (h > 0 ? h + ':' : '') + (h > 0 && m < 10 ? '0' : '') + m + ':' + (sec < 10 ? '0' : '') + sec;
+    var mm = String(m).padStart(2, '0');
+    var ss = String(sec).padStart(2, '0');
+    return (h > 0 ? h + ':' : '') + mm + ':' + ss;
   }
 
   function setControlsVisible(v) {

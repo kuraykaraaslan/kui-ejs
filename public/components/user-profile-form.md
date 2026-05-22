@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/user/UserProfileForm.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref prop'u ile iptal butonu.
 
@@ -69,7 +69,6 @@ Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref
     label: 'Display Name',
     type:  'text',
     name:  'name',
-    placeholder: 'Jane Doe',
     value: _initial.name || '',
     error: _errors.name
   }) %>
@@ -79,9 +78,7 @@ Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref
     label: 'Username',
     type:  'text',
     name:  'username',
-    placeholder: 'janedoe',
     value: _initial.username || '',
-    hint:  'Lowercase letters, numbers and underscores. 3–32 characters.',
     error: _errors.username
   }) %>
 
@@ -90,7 +87,6 @@ Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref
     label: 'Bio',
     name:  'biography',
     rows:  3,
-    placeholder: 'Tell us about yourself…',
     value: _initial.biography || '',
     error: _errors.biography
   }) %>
@@ -100,9 +96,7 @@ Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref
     label: 'Profile Picture URL',
     type:  'url',
     name:  'profilePicture',
-    placeholder: 'https://example.com/avatar.jpg',
     value: _initial.profilePicture || '',
-    iconLeft: '<i class="fa-solid fa-link text-xs" aria-hidden="true"></i>',
     error: _errors.profilePicture
   }) %>
 

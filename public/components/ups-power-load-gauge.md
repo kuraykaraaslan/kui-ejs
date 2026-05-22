@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/PowerLoadGauge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Load percentage gauge with watts/VA display and color-coded bar (green < 50%, yellow 50-80%, red > 80%).
 

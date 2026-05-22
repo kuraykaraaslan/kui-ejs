@@ -5,7 +5,7 @@
 - **category:** Organism
 - **filePath:** `modules/ui/AlertBanner.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible ve action desteği.
 
@@ -102,7 +102,9 @@ Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible 
   var vm = variantMap[_v] || variantMap.info;
 %>
 <div id="<%= _id %>" role="alert" class="flex items-start gap-3 rounded-lg border p-4 <%= vm.container %>">
-  <i class="fa-solid <%= vm.icon %> mt-0.5 shrink-0 text-base" aria-hidden="true"></i>
+  <span aria-hidden="true" class="mt-0.5 shrink-0 font-bold w-4 h-4 inline-flex items-center justify-center">
+    <i class="fa-solid <%= vm.icon %>"></i>
+  </span>
   <div class="flex-1 text-sm min-w-0">
     <% if (_title) { %><p class="font-semibold"><%= _title %></p><% } %>
     <p class="<%= _title ? 'mt-0.5' : '' %>"><%= _message %></p>
@@ -123,7 +125,9 @@ Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible 
     onclick="this.closest('[role=alert]').style.display='none'"
     class="shrink-0 hover:opacity-70 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
   >
-    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    <span aria-hidden="true" class="w-4 h-4 inline-flex items-center justify-center">
+      <i class="fa-solid fa-xmark"></i>
+    </span>
   </button>
   <% } %>
 </div>

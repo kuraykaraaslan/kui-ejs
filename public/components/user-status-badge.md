@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/user/UserStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 ACTIVE → green, INACTIVE → neutral, BANNED → red. dot prop ile renkli nokta eklenir.
 

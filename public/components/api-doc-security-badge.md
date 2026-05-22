@@ -5,7 +5,7 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/SecurityBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 OpenAPI güvenlik şeması türünü gösteren rozet. apiKey, http (Bearer), oauth2, openIdConnect, mutualTLS.
 

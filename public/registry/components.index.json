@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-17T16:24:43.480Z",
+  "generatedAt": "2026-05-22T10:53:25.101Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -197,7 +197,7 @@
       "abbr": "Bt",
       "description": "Temel interaktif element. 5 görsel stil (variant) ve 5 boyut (size) destekler. disabled, loading ve selected durumları yerleşiktir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-01",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -223,7 +223,7 @@
       "abbr": "BG",
       "description": "Birbirini dışlayan seçenekler için segmentli buton grubu. 4 variant, 4 boyut ve disabled item desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-01",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -246,7 +246,7 @@
       "abbr": "Bg",
       "description": "Durum, kategori veya etiket göstergesi. 6 semantik varyant, 3 boyut, dot ve dismissible desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-01",
       "designTokens": [
         "--error",
         "--error-fg",
@@ -278,15 +278,18 @@
       "abbr": "Av",
       "description": "Kullanıcı profil fotoğrafı veya baş harfleri gösterici. 5 boyut, opsiyonel status dot.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-01",
       "designTokens": [
         "--border",
         "--error",
         "--primary",
         "--primary-subtle",
+        "--secondary",
         "--success",
         "--surface-base",
+        "--surface-sunken",
         "--text-disabled",
+        "--text-secondary",
         "--warning"
       ],
       "variantCount": 4
@@ -300,7 +303,7 @@
       "abbr": "Sp",
       "description": "CSS border tabanlı yükleme göstergesi. FontAwesome gerektirmez. 5 boyut, border-border / border-t-primary renk sistemi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-01",
       "designTokens": [
         "--border"
       ],
@@ -315,14 +318,14 @@
       "abbr": "Tg",
       "description": "Boolean ayarlar için sürgü kontrolü. peer tabanlı CSS ile çalışır; label ve 3 boyut destekler.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
-        "--border-focus",
         "--primary",
-        "--primary-fg",
+        "--secondary",
         "--surface-sunken",
-        "--text-primary"
+        "--text-primary",
+        "--text-secondary"
       ],
       "variantCount": 5
     },
@@ -335,14 +338,14 @@
       "abbr": "Cb",
       "description": "Tekil boolean seçim kontrolü. Label, hint ve disabled durumları; 3 boyut destekler.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
         "--error",
         "--primary",
         "--secondary",
-        "--surface-base",
+        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
@@ -357,16 +360,20 @@
       "abbr": "In",
       "description": "Metin giriş alanı. Label, hint, error, prefix icon, password toggle ve 3 boyut destekler.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--border-strong",
         "--error",
         "--error-subtle",
         "--primary",
         "--secondary",
+        "--success",
+        "--success-fg",
+        "--success-subtle",
         "--surface-base",
+        "--surface-overlay",
+        "--surface-sunken",
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
@@ -382,16 +389,16 @@
       "abbr": "Ta",
       "description": "Çok satırlı metin giriş alanı. Label, hint, error ve disabled durumları; resize kontrolü destekler.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--border-strong",
         "--error",
         "--error-subtle",
         "--primary",
         "--secondary",
         "--surface-base",
+        "--surface-sunken",
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
@@ -407,11 +414,10 @@
       "abbr": "Sb",
       "description": "role=\"searchbox\" + arama ikonu + temizle butonu. Controlled veya uncontrolled modda kullanılabilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--border-strong",
         "--primary",
         "--surface-base",
         "--text-disabled",
@@ -428,16 +434,17 @@
       "abbr": "Sl",
       "description": "Label + select + hint + error anatomy. appearance-none ile native dropdown stilini override eder, chevron ikonu ile.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--border-strong",
         "--error",
         "--error-subtle",
         "--primary",
         "--secondary",
         "--surface-base",
+        "--surface-overlay",
+        "--surface-raised",
         "--surface-sunken",
         "--text-disabled",
         "--text-primary",
@@ -454,14 +461,14 @@
       "abbr": "Rg",
       "description": "fieldset + legend tabanlı radio grubu. WCAG uyumlu klavye navigasyonu, cardStyle varyantı ile görsel plan seçimi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
+        "--border-focus",
         "--error",
         "--primary",
-        "--primary-subtle",
         "--secondary",
-        "--surface-overlay",
+        "--surface-base",
         "--text-primary",
         "--text-secondary"
       ],
@@ -476,12 +483,14 @@
       "abbr": "Cg",
       "description": "Chip görünümlü çoklu seçim grubu. Seçili chip bg-primary-subtle / border-primary renk tokenları ile işaretlenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
+        "--border-focus",
         "--error",
         "--primary",
         "--primary-subtle",
+        "--surface-base",
         "--surface-overlay",
         "--text-primary"
       ],
@@ -496,12 +505,15 @@
       "abbr": "Dp",
       "description": "Native date input ile label + hint + error anatomy. min/max kısıtlaması ve disabled desteği ile birlikte gelir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
+        "--border-focus",
         "--error",
+        "--error-subtle",
         "--primary",
         "--secondary",
+        "--surface-base",
         "--surface-sunken",
         "--text-primary",
         "--text-secondary"
@@ -517,14 +529,25 @@
       "abbr": "Fi",
       "description": "Drag-and-drop görünümlü dosya yükleme alanı. accept filtresi, multiple ve disabled desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
+        "--border-focus",
         "--error",
+        "--error-fg",
+        "--error-subtle",
         "--primary",
+        "--primary-active",
+        "--primary-fg",
+        "--primary-hover",
         "--primary-subtle",
         "--secondary",
+        "--success",
+        "--success-fg",
+        "--surface-base",
+        "--surface-raised",
         "--surface-sunken",
+        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
@@ -539,7 +562,7 @@
       "abbr": "Cd",
       "description": "İçerik kartı. raised/flat/outline varyantları; title, subtitle, headerRight, footer ve loading skeleton desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -562,7 +585,7 @@
       "abbr": "Al",
       "description": "Bilgi, uyarı, hata ve başarı mesajları için renk-kodlu banner. dismissible ve action desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -590,7 +613,7 @@
       "abbr": "Ts",
       "description": "Kısa süreli bildirim kartı. success/warning/error/info/loading varyantları; title, message ve action desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -620,13 +643,14 @@
       "abbr": "Pg",
       "description": "Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonları ve boyut varyantları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
         "--primary",
         "--primary-fg",
         "--secondary",
+        "--surface-base",
         "--surface-overlay",
         "--text-disabled",
         "--text-primary",
@@ -643,7 +667,7 @@
       "abbr": "Tb",
       "description": "Erişilebilir tab navigasyonu. ARIA rollerini, klavye gezintisini ve içerik panellerini içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -663,7 +687,7 @@
       "abbr": "Bc",
       "description": "Hiyerarşik navigasyon izi. Font Awesome chevron separator, aria-current=\"page\" son öğede.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -684,10 +708,11 @@
       "abbr": "Sr",
       "description": "Çok adımlı ilerleme göstergesi. complete/active/error/pending durumları; horizontal ve vertical yönelim.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--error",
+        "--error-fg",
         "--primary",
         "--primary-fg",
         "--secondary",
@@ -709,7 +734,7 @@
       "abbr": "Md",
       "description": "Odak kapanı dialog. Backdrop, ESC tuşu ile kapatma, ARIA labelledby/describedby ve sm/md/lg boyutu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -731,7 +756,7 @@
       "abbr": "Dr",
       "description": "Kenar paneli. left/right açılım, backdrop, ESC ve tabindex=-1 odak yönetimi ile birlikte gelir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -751,7 +776,7 @@
       "abbr": "Tl",
       "description": "Semantik HTML tablosu. thead/tbody, sütun hizalaması ve boş durum mesajı desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-02",
       "designTokens": [
         "--border",
         "--primary",
@@ -773,16 +798,16 @@
       "abbr": "DT",
       "description": "Server-side paginated data table. Card wrapper, başlık slotu, toolbar slotu, tıklanabilir satır ve her zaman görünür pagination desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
+        "--border-strong",
         "--primary",
         "--primary-fg",
         "--secondary",
         "--surface-base",
         "--surface-overlay",
-        "--surface-raised",
         "--surface-sunken",
         "--text-disabled",
         "--text-primary",
@@ -798,13 +823,14 @@
       "filePath": "modules/ui/MapView.ejs",
       "abbr": "Mp",
       "description": "Leaflet tabanlı etkileşimli harita. Tooltip destekli işaretçiler, predefined zone'lar (polygon), rota çizgisi (polyline) ve tıkla-ekle işaretçi modu.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
         "--primary",
         "--primary-fg",
+        "--primary-hover",
         "--surface-overlay",
         "--surface-raised",
         "--text-primary"
@@ -819,8 +845,8 @@
       "filePath": "modules/ui/VideoPlayer.ejs",
       "abbr": "Vp",
       "description": "HTML5 video oynatıcı. Kalite, altyazı, ses kanalı, oynatma hızı seçimi; özel WebVTT altyazı overlay; otomatik gizlenen kontroller; geliştirici kontrolü.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -837,7 +863,7 @@
       "abbr": "As",
       "description": "Tam ekran layout wrapper. sidebarContent, topbarContent ve logoContent HTML slot'ları alır. Mobilde hamburger butonu NavDrawer açar.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -860,7 +886,7 @@
       "abbr": "Sb",
       "description": "Daraltılabilir kenar çubuğu. navGroups veya navItems alır; collapsed toggle dahili. searchable prop ile yerleşik arama filtresi; footerContent slotu ile kullanıcı bilgisi gösterilebilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -884,7 +910,7 @@
       "abbr": "At",
       "description": "AppShell'in header slotuna geçilen üst çubuk wrapper'ı. logoContent slotu sol tarafa; children sağ tarafa flex satırda sıralanır.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -897,7 +923,7 @@
       "abbr": "An",
       "description": "Yatay navigasyon çubuğu. Masaüstünde inline linkler, mobilde hamburger drawer açar. logoContent, navItems ve children slotları. sticky ve bordered seçenekleri.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -920,7 +946,7 @@
       "abbr": "Nd",
       "description": "Herhangi bir trigger + içeriği Drawer'a saran wrapper. Kendi açık/kapalı state'ini tutar. AppNav'ın mobil menüsü olarak kullanılır.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--primary",
         "--primary-subtle",
@@ -938,16 +964,13 @@
       "abbr": "Um",
       "description": "Avatar + isim + rol göstergen trigger'a tıklayınca açılan kullanıcı dropdown'ı. name, email, role, profileHref, settingsHref, signOutHref prop'ları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--error",
-        "--error-subtle",
         "--primary",
         "--secondary",
         "--surface-overlay",
-        "--surface-raised",
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
@@ -963,7 +986,7 @@
       "abbr": "Gs",
       "description": "Kategori bazlı arama sonuçları listesi ile global arama alanı. Statik önizlemede açık sonuç paneli görünür.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--primary",
@@ -985,13 +1008,17 @@
       "filePath": "modules/app/AppCommandBar.ejs",
       "abbr": "Cb",
       "description": "Ctrl+K ile açılan komut paleti. items dizisi ile özel komutlar; varsayılan Navigation/Actions/Recent grupları dahili. Klavye navigasyonu (↑↓ + Enter) destekler.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
+        "--info",
+        "--info-fg",
+        "--info-subtle",
         "--primary",
         "--secondary",
+        "--surface-base",
         "--surface-overlay",
         "--surface-raised",
         "--surface-sunken",
@@ -1010,7 +1037,7 @@
       "abbr": "Fm",
       "description": "Form layout wrapper. title, description, error ve actionsContent slot'ları. columns prop ile 1 veya 2 kolonlu grid düzeni.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--primary",
@@ -1029,19 +1056,10 @@
       "abbr": "Fb",
       "description": "Select, multiselect, daterange ve text tabanlı filtre paneli. GET form submit ile URL tabanlı filtre desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
-        "--border-focus",
-        "--primary",
-        "--primary-fg",
-        "--primary-hover",
-        "--secondary",
-        "--surface-overlay",
-        "--surface-raised",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
+        "--surface-raised"
       ],
       "variantCount": 2
     },
@@ -1054,7 +1072,7 @@
       "abbr": "Dh",
       "description": "Detay/kayıt sayfaları için sayfa başlığı. title, subtitle, status badge, aksiyon butonları ve opsiyonel sekme navigasyonu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1090,11 +1108,12 @@
       "abbr": "Er",
       "description": "Hata durumu: uyarı banner'ı + merkezi boş durum kombinasyonu. retryHref ile yeniden deneme linki.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
         "--error",
+        "--error-fg",
         "--error-subtle",
         "--primary",
         "--secondary",
@@ -1113,7 +1132,7 @@
       "abbr": "Ns",
       "description": "Kayıt bulunamadı / içerik yok durumu. backHref ile geri dön linki.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1121,6 +1140,7 @@
         "--secondary",
         "--surface-overlay",
         "--surface-sunken",
+        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
@@ -1135,11 +1155,10 @@
       "abbr": "Lo",
       "description": "İskelet yükleme animasyonları. spinner / table / cards / list / detail / form variant'ları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--surface-base",
-        "--surface-raised",
         "--surface-sunken"
       ],
       "variantCount": 5
@@ -1152,8 +1171,8 @@
       "filePath": "modules/app/SplashScreen.ejs",
       "abbr": "Ss",
       "description": "Uygulama başlatma tam ekran bindirme katmanı. logoContent slotu, ilerleme çubuğu ve mesaj alanı içerir.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-05",
       "designTokens": [
         "--primary",
         "--secondary",
@@ -1172,7 +1191,7 @@
       "abbr": "Lf",
       "description": "Email + şifre formu. Remember me checkbox, hata banner ve action/method desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1193,7 +1212,7 @@
       "abbr": "Rf",
       "description": "Email + şifre + şifre doğrulama formu. Alan bazlı hata mesajları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--error",
         "--error-fg",
@@ -1210,12 +1229,9 @@
       "abbr": "Ob",
       "description": "Google, GitHub, Discord ve Microsoft OAuth butonları. providers dizisiyle hangi butonların gösterileceği seçilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
-        "--border",
-        "--border-focus",
         "--primary",
-        "--surface-overlay",
         "--text-primary"
       ],
       "variantCount": 2
@@ -1229,7 +1245,7 @@
       "abbr": "Ua",
       "description": "Kullanıcı nesnesi (name/email/profilePicture) alarak Avatar'ı sarar. online/away/busy/offline statü noktası desteği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1242,7 +1258,7 @@
       "abbr": "Ur",
       "description": "ADMIN → red, AUTHOR → primary, USER → neutral renk eşlemesi ile rol rozeti.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 1
     },
@@ -1255,7 +1271,7 @@
       "abbr": "Us",
       "description": "ACTIVE → green, INACTIVE → neutral, BANNED → red. dot prop ile renkli nokta eklenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1268,16 +1284,13 @@
       "abbr": "Um",
       "description": "Avatar + isim + rol trigger. Profile, Settings ve Sign out öğeleri içeren dropdown. Dışarı tıklayınca kapanır.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--border-focus",
-        "--error",
-        "--error-subtle",
         "--primary",
         "--secondary",
         "--surface-overlay",
-        "--surface-raised",
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
@@ -1293,7 +1306,7 @@
       "abbr": "Pd",
       "description": "Intl.NumberFormat ile para birimi formatlama. Boyut, locale ve üstü çizili seçenekleri destekler.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--secondary",
         "--text-secondary"
@@ -1309,7 +1322,7 @@
       "abbr": "Ps",
       "description": "PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED ödeme durumları için renk kodlu rozet.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1322,8 +1335,13 @@
       "abbr": "Af",
       "description": "Ad, telefon, adres satırları, şehir, bölge, posta kodu ve ülke alanlarından oluşan adres formu. initial prop ile önceden doldurulabilir.",
       "status": "stable",
-      "since": "0.1",
-      "designTokens": [],
+      "since": "2025-03",
+      "designTokens": [
+        "--border",
+        "--error",
+        "--error-subtle",
+        "--surface-base"
+      ],
       "variantCount": 2
     },
     {
@@ -1335,14 +1353,14 @@
       "abbr": "Ac",
       "description": "Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta kodu ve ülge. Seçili durum ve edit/delete butonları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--error",
         "--primary",
+        "--primary-hover",
         "--secondary",
         "--surface-base",
-        "--surface-overlay",
         "--surface-raised",
         "--text-disabled",
         "--text-primary",
@@ -1359,7 +1377,7 @@
       "abbr": "Ot",
       "description": "Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satırı. Sıfır değerli satırlar gizlenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [
         "--border",
         "--primary",
@@ -1381,7 +1399,7 @@
       "abbr": "Pb",
       "description": "DRAFT / PUBLISHED / ARCHIVED içerik durumları için Font Awesome ikonlu rozet. showIcon=false ile ikon gizlenebilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1394,7 +1412,7 @@
       "abbr": "Vb",
       "description": "PUBLIC / PRIVATE / UNLISTED görünürlük durumları için ikon-rozet. PUBLIC yeşil, PRIVATE kırmızı, UNLISTED nötr.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-03",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1407,14 +1425,9 @@
       "abbr": "Ls",
       "description": "Native select ile dil seçici. en/tr/de/fr/ar varsayılan diller; autoSubmit ile form aracılığıyla otomatik gönderi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
-        "--border",
-        "--primary",
-        "--secondary",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
+        "--text-disabled"
       ],
       "variantCount": 3
     },
@@ -1427,11 +1440,13 @@
       "abbr": "Cp",
       "description": "Mevcut şifre + yeni şifre + doğrulama formu. Alan bazlı hata mesajları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
+        "--border",
         "--error",
         "--error-fg",
-        "--error-subtle"
+        "--error-subtle",
+        "--surface-base"
       ],
       "variantCount": 2
     },
@@ -1444,7 +1459,7 @@
       "abbr": "Pc",
       "description": "Profil kartı: kapak banner, avatar, görünen ad, kullanıcı adı, biyografi, rol ve durum rozetleri ve isteğe bağlı actions slotu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--primary",
@@ -1465,7 +1480,7 @@
       "abbr": "Up",
       "description": "Display name, username (regex), bio (300 char), avatar URL alanları. cancelHref prop'u ile iptal butonu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1487,7 +1502,7 @@
       "abbr": "Ue",
       "description": "Tema (SYSTEM/LIGHT/DARK), dil seçimi, email/push/newsletter toggle'ları içeren tercihler formu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--error",
@@ -1507,17 +1522,12 @@
       "abbr": "Ci",
       "description": "Kupon kodu giriş + uygula/kaldır akışı. Sunucu taraflı doğrulama ile hata/başarı mesajları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
-        "--border",
-        "--border-focus",
         "--error",
-        "--primary",
         "--success",
         "--success-fg",
-        "--success-subtle",
-        "--surface-overlay",
-        "--text-primary"
+        "--success-subtle"
       ],
       "variantCount": 2
     },
@@ -1530,7 +1540,7 @@
       "abbr": "Db",
       "description": "İndirim göstergesi: yüzde (\"20% off\"), sabit tutar (para birimi ile) veya ücretsiz kargo.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--error",
         "--error-subtle"
@@ -1546,17 +1556,8 @@
       "abbr": "Pm",
       "description": "Radio-group kart seçici. Credit card, debit card, bank transfer ve wallet seçenekleri.",
       "status": "stable",
-      "since": "0.1",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--border-strong",
-        "--primary",
-        "--primary-subtle",
-        "--secondary",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "since": "2025-04",
+      "designTokens": [],
       "variantCount": 1
     },
     {
@@ -1568,7 +1569,7 @@
       "abbr": "Sc",
       "description": "Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum rozeti.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--primary",
@@ -1589,7 +1590,7 @@
       "abbr": "Fp",
       "description": "Şifre sıfırlama linki gönderim formu. sent=true olduğunda onay mesajı gösterir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--error",
         "--error-fg",
@@ -1609,13 +1610,9 @@
       "abbr": "Se",
       "description": "Oturum süresi dolduğunda gösterilen uyarı banner'ı. \"Sign in again\" CTA butonu içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
-        "--border",
-        "--border-focus",
         "--primary",
-        "--primary-fg",
-        "--primary-hover",
         "--secondary",
         "--text-primary",
         "--text-secondary",
@@ -1633,17 +1630,11 @@
       "abbr": "Sf",
       "description": "SEO metadata formu: başlık (60 karakter sınırı), meta açıklaması (160 karakter) ve anahtar kelime etiket girişi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
-        "--border",
         "--error",
         "--error-fg",
-        "--error-subtle",
-        "--primary",
-        "--primary-subtle",
-        "--secondary",
-        "--text-primary",
-        "--text-secondary"
+        "--error-subtle"
       ],
       "variantCount": 2
     },
@@ -1656,7 +1647,7 @@
       "abbr": "Sp",
       "description": "Google arama sonucu önizleme kartı. Başlık, URL ve açıklama ile karakter sayacı göstergesi. Boş alanlar yer tutucu metin gösterir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--error",
@@ -1679,8 +1670,8 @@
       "filePath": "modules/domain/common/address/AddressSelector.ejs",
       "abbr": "As",
       "description": "AddressCard üzerine kurulu seçilebilir adres listesi. Ekle, düzenle ve sil callback'leri destekler.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1700,16 +1691,9 @@
       "filePath": "modules/domain/common/location/LocationPicker.ejs",
       "abbr": "Lp",
       "description": "Ülke seçici (countries-list), şehir, bölge, posta kodu ve isteğe bağlı enlem/boylam alanları. 2 sütun grid.",
-      "status": "stable",
-      "since": "0.1",
-      "designTokens": [
-        "--border",
-        "--error",
-        "--error-fg",
-        "--error-subtle",
-        "--primary",
-        "--text-primary"
-      ],
+      "status": "beta",
+      "since": "2025-04",
+      "designTokens": [],
       "variantCount": 2
     },
     {
@@ -1720,8 +1704,8 @@
       "filePath": "modules/domain/common/location/GeoPointDisplay.ejs",
       "abbr": "Gp",
       "description": "Enlem/boylam koordinat gösterimi ve Google Maps bağlantısı. Hassasiyet ve etiket ayarlanabilir.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1743,7 +1727,7 @@
       "abbr": "Pi",
       "description": "UPLOADING / PROCESSING / READY / FAILED durumları için animasyonlu gösterge. İsteğe bağlı ilerleme çubuğu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--error",
         "--info",
@@ -1766,11 +1750,19 @@
       "abbr": "Cs",
       "description": "ISO 4217 para birimi seçici. countries-list'ten derlenen, alfabetik sıralı native select.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
+        "--border-focus",
         "--primary",
-        "--text-primary"
+        "--primary-subtle",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--surface-raised",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
       ],
       "variantCount": 2
     },
@@ -1783,7 +1775,7 @@
       "abbr": "Dp",
       "description": "Dil koduna göre dir=\"rtl\"/\"ltr\" atayan wrapper div. RTL dilleri: ar, he, fa, ur, yi, ku, ps, sd.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1795,8 +1787,8 @@
       "filePath": "modules/domain/common/payment/CreditCardVisual.ejs",
       "abbr": "Cv",
       "description": "3D flip kredi kartı görseli. Ön: numara, isim, son tarih. Arka: CVV şeridi. VISA, MC, AMEX, Discover destekli.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-05",
       "designTokens": [],
       "variantCount": 2
     },
@@ -1808,8 +1800,8 @@
       "filePath": "modules/domain/common/payment/CreditCardForm.ejs",
       "abbr": "Cf",
       "description": "Canlı kart görseli önizlemeli kredi kartı giriş formu. Marka tespiti, numara formatlaması ve geçerlilik doğrulaması.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-05",
       "designTokens": [
         "--error",
         "--error-fg",
@@ -1825,8 +1817,8 @@
       "filePath": "modules/domain/common/payment/SavedCardSelector.ejs",
       "abbr": "Sk",
       "description": "Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve varsayılan göstergesi.",
-      "status": "stable",
-      "since": "0.1",
+      "status": "beta",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1850,7 +1842,7 @@
       "abbr": "Nf",
       "description": "Tam sayfa 404 bileşeni. Gradient 404 yazısı, ikon, başlık, açıklama ve \"Go Home\" / \"Go Back\" butonları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--border-focus",
@@ -1872,7 +1864,7 @@
       "abbr": "We",
       "description": "Kayıt sonrası gönderilen hoş geldin e-postası. E-posta doğrulama CTA ve \"next steps\" listesi içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -1894,7 +1886,7 @@
       "abbr": "Vo",
       "description": "6 haneli OTP kodu. Büyük, mono font kod gösterimi ve süre uyarısı.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -1916,7 +1908,7 @@
       "abbr": "Pr",
       "description": "Şifre sıfırlama linki e-postası. Süre uyarısı ve güvenlik notu içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -1938,7 +1930,7 @@
       "abbr": "Pc",
       "description": "Şifre değişikliği onay e-postası. Cihaz, IP ve konum bilgisi ile \"Benim değildi\" uyarısı.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -1961,7 +1953,7 @@
       "abbr": "La",
       "description": "Yeni cihazdan giriş uyarısı. Cihaz, konum ve IP bilgisi; \"Secure My Account\" ve \"This Was Me\" CTA çifti.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -1984,7 +1976,7 @@
       "abbr": "Al",
       "description": "Çok fazla başarısız giriş sonrası kilit e-postası. Kilit açma süresi, sebep ve \"Unlock\" / \"Support\" butonları.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2008,7 +2000,7 @@
       "abbr": "Oc",
       "description": "Sipariş onayı makbuzu. Satır kalemleri, ara toplam/vergi/toplam ve kargo adresi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2031,7 +2023,7 @@
       "abbr": "Os",
       "description": "Kargo bildirimi. Taşıyıcı, takip numarası, tahmini teslimat tarihi ve \"Track My Package\" CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2053,7 +2045,7 @@
       "abbr": "Od",
       "description": "Teslimat onayı. Yıldız derecelendirme butonları ile yorum isteği CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2077,7 +2069,7 @@
       "abbr": "Ox",
       "description": "Sipariş iptali bildirimi. İptal sebebi, üstü çizili kalemler ve iade süresi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--info",
@@ -2101,7 +2093,7 @@
       "abbr": "Rf",
       "description": "İade işlendi bildirimi. Tutar hero, iade yöntemi ve tahmini varış süresi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2124,7 +2116,7 @@
       "abbr": "Ac",
       "description": "Terk edilen sepet yeniden katılım e-postası. Kupon kodu, indirim teklifi ve sepet içeriği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2147,7 +2139,7 @@
       "abbr": "Iv",
       "description": "Kalemli fatura. Durum badge, tüm kalemler ve toplamlar, PDF indirme CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2172,7 +2164,7 @@
       "abbr": "Sa",
       "description": "Plan aktivasyon onayı. Özellik listesi, fiyat ve bir sonraki faturalandırma tarihi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--primary",
         "--primary-fg",
@@ -2194,7 +2186,7 @@
       "abbr": "Rr",
       "description": "7 gün önceden yenileme hatırlatıcısı. Ödeme yöntemi, tutar ve manage/cancel linkleri.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--info",
@@ -2218,7 +2210,7 @@
       "abbr": "Sc",
       "description": "Abonelik iptali. Erişim sona erme tarihi, yeniden aktivasyon CTA ve geri bildirim linki.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--info",
@@ -2242,7 +2234,7 @@
       "abbr": "Pf",
       "description": "Ödeme başarısız bildirimi. Hata sebebi, yeniden deneme tarihi ve ödeme yöntemi güncelleme CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2264,7 +2256,7 @@
       "abbr": "Ce",
       "description": "Kart son kullanma uyarısı. Kart görseli, plan/faturalandırma bilgisi ve güncelleme CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--info",
         "--primary",
@@ -2286,7 +2278,7 @@
       "abbr": "Cr",
       "description": "Yorum cevabı bildirimi. Orijinal yorum + yeni cevap thread görünümü.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2309,7 +2301,7 @@
       "abbr": "Mn",
       "description": "@mention bildirimi. Bahseden kişi, bağlam ve alıntı excerpt gösterimi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2331,7 +2323,7 @@
       "abbr": "Nm",
       "description": "Gelen kutusu mesaj bildirimi. Gönderici, mesaj önizlemesi ve Reply/Inbox CTA çifti.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2354,7 +2346,7 @@
       "abbr": "Nl",
       "description": "Haftalık bülten. Makale kartları, etiket renkleri ve okuma süresi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2376,7 +2368,7 @@
       "abbr": "Ep",
       "description": "Süre sınırlı kampanya. Gradient başlık, fiyat karşılaştırma, kesik çizgili kupon kodu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2398,7 +2390,7 @@
       "abbr": "Pu",
       "description": "Ürün sürüm duyurusu. Versiyon badge, öne çıkan değişiklik kartları ve changelog linki.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2422,7 +2414,7 @@
       "abbr": "Me",
       "description": "Planlı bakım öncesi uyarı. Zaman penceresi, etkilenen servisler ve status page linki.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--info",
         "--primary",
@@ -2442,7 +2434,7 @@
       "abbr": "Pl",
       "description": "Gizlilik politikası / kullanım şartları güncelleme. Madde madde özet ve yürürlük tarihi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2465,7 +2457,7 @@
       "abbr": "De",
       "description": "Veri dışa aktarma hazır bildirimi. Dosya boyutu, format, son kullanma tarihi ve indirme CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2489,7 +2481,7 @@
       "abbr": "Ad",
       "description": "Hesap silme zamanlama bildirimi. Grace period, kalıcı silme uyarısı ve iptal CTA.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2512,7 +2504,7 @@
       "abbr": "To",
       "description": "Destek talebi alındı otomatik yanıtı. Ticket ID, konu, durum badge ve mesaj önizlemesi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2536,7 +2528,7 @@
       "abbr": "Tr",
       "description": "Destek ekibinden gelen yanıt. Ajan avatar, tam cevap metni, Reply ve View CTA çifti.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2559,7 +2551,7 @@
       "abbr": "Ts",
       "description": "Destek talebi çözüldü bildirimi. Çözüm özeti, emoji derecelendirme ve yeniden açma seçeneği.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2582,7 +2574,7 @@
       "abbr": "Ch",
       "description": "Chart.js chart bileşenleri Card içinde: Bar, Line, Doughnut, Radar ve Polar Area.",
       "status": "beta",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2602,7 +2594,7 @@
       "abbr": "CS",
       "description": "Router/modem bağlantı durumları için renk kodlu rozet. CONNECTED · DISCONNECTED · CONNECTING (pulse) · ERROR · ENABLED · DISABLED · ACTIVE · INACTIVE.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2624,7 +2616,7 @@
       "abbr": "SS",
       "description": "Cihaz modeli, CPU/RAM ilerleme çubukları, sıcaklık, uptime ve firmware versiyonu. Sıcaklık eşiğine göre renk değişir (>55 warning, >70 error).",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2648,7 +2640,7 @@
       "abbr": "WS",
       "description": "WAN bağlantı tipi, IP/gateway/DNS bilgileri ve ISP hız göstergesi. Durum rozetine göre renk kodlaması.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2674,7 +2666,7 @@
       "abbr": "WN",
       "description": "SSID, band (2.4/5/6 GHz), güvenlik modu ve guest/disabled etiketleri. editHref prop'u ile düzenleme bağlantısı eklenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--info",
@@ -2698,7 +2690,7 @@
       "abbr": "CD",
       "description": "Bağlı cihaz tablosu satırı. Cihaz ikonu, hostname/MAC, IP, bağlantı tipi (kablolu/wifi + dBm), trafik ve DHCP/Static/Blocked durumu.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -2723,7 +2715,7 @@
       "abbr": "PF",
       "description": "Port yönlendirme tablosu satırı. Kural adı, protokol, harici port, dahili IP:port ve etkin/devre dışı gösterimi.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -2744,7 +2736,7 @@
       "abbr": "AI",
       "description": "Router bildirimi satırı. INFO · WARNING · CRITICAL şiddet seviyeleri. Okunmamış uyarılar mavi nokta ile işaretlenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--error",
         "--info",
@@ -2765,7 +2757,7 @@
       "abbr": "SC",
       "description": "HTTP durum kodunu semantik renge göre renklendiren rozet. 2xx yeşil, 3xx mavi, 4xx sarı, 5xx kırmızı.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--error",
@@ -2795,7 +2787,7 @@
       "abbr": "HM",
       "description": "HTTP metodunu renk kodlu rozet olarak gösterir. GET yeşil, POST mavi, DELETE kırmızı, vb.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--error",
@@ -2824,7 +2816,7 @@
       "abbr": "SB",
       "description": "OpenAPI güvenlik şeması türünü gösteren rozet. apiKey, http (Bearer), oauth2, openIdConnect, mutualTLS.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--info",
@@ -2853,8 +2845,11 @@
       "abbr": "SS",
       "description": "Rounded-full pill varyantı güvenlik rozeti — sidebar ve üst bilgi alanları için.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
+        "--error",
+        "--error-fg",
+        "--error-subtle",
         "--info",
         "--info-fg",
         "--info-subtle",
@@ -2881,28 +2876,17 @@
       "abbr": "PT",
       "description": "API parametrelerini tablo biçiminde listeler. Konum rozeti, tip, zorunluluk ve açıklama sütunları içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
-        "--error",
-        "--error-fg",
-        "--error-subtle",
-        "--info",
-        "--info-fg",
-        "--info-subtle",
         "--primary",
-        "--primary-subtle",
         "--secondary",
         "--surface-base",
-        "--surface-overlay",
         "--surface-raised",
         "--surface-sunken",
         "--text-disabled",
         "--text-primary",
-        "--text-secondary",
-        "--warning",
-        "--warning-fg",
-        "--warning-subtle"
+        "--text-secondary"
       ],
       "variantCount": 1
     },
@@ -2915,14 +2899,12 @@
       "abbr": "SV",
       "description": "JSON Schema nesnesini hiyerarşik olarak görselleştirir. İç içe nesneler details/summary ile genişletilebilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--error",
         "--primary",
         "--secondary",
-        "--success",
-        "--success-fg",
         "--surface-base",
         "--surface-overlay",
         "--surface-raised",
@@ -2930,7 +2912,7 @@
         "--text-primary",
         "--text-secondary",
         "--warning",
-        "--warning-fg"
+        "--warning-subtle"
       ],
       "variantCount": 1
     },
@@ -2943,9 +2925,11 @@
       "abbr": "CS",
       "description": "API kod örneklerini koyu arka planlı panel içinde gösterir. İlk örnek açık, diğerleri details/summary ile erişilebilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
-        "--border"
+        "--border",
+        "--border-focus",
+        "--success"
       ],
       "variantCount": 1
     },
@@ -2958,26 +2942,19 @@
       "abbr": "SR",
       "description": "API sunucu listesini gösterir. Aktif sunucu URL ve ortam etiketi ile öne çıkar, diğerleri details/summary ile listelenir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
-        "--info",
-        "--info-fg",
-        "--info-subtle",
+        "--border-focus",
+        "--border-strong",
         "--primary",
         "--primary-subtle",
         "--secondary",
-        "--success",
-        "--success-fg",
-        "--success-subtle",
         "--surface-overlay",
         "--surface-raised",
         "--text-disabled",
         "--text-primary",
-        "--text-secondary",
-        "--warning",
-        "--warning-fg",
-        "--warning-subtle"
+        "--text-secondary"
       ],
       "variantCount": 1
     },
@@ -2990,29 +2967,17 @@
       "abbr": "RC",
       "description": "Tek bir API yanıtını katlanabilir kart içinde gösterir. Durum kodu rozeti, açıklama ve şema içerir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
-        "--error",
-        "--error-fg",
-        "--error-subtle",
-        "--info",
-        "--info-fg",
-        "--info-subtle",
         "--primary",
         "--secondary",
-        "--success",
-        "--success-fg",
-        "--success-subtle",
         "--surface-base",
         "--surface-overlay",
         "--surface-raised",
         "--text-disabled",
         "--text-primary",
-        "--text-secondary",
-        "--warning",
-        "--warning-fg",
-        "--warning-subtle"
+        "--text-secondary"
       ],
       "variantCount": 1
     },
@@ -3025,23 +2990,14 @@
       "abbr": "OP",
       "description": "Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Samples bölümleri details/summary ile katlanabilir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
-        "--error",
-        "--error-fg",
-        "--error-subtle",
-        "--info",
-        "--info-fg",
-        "--info-subtle",
         "--primary",
-        "--primary-subtle",
         "--secondary",
         "--surface-base",
         "--surface-raised",
-        "--surface-sunken",
         "--text-disabled",
-        "--text-primary",
         "--text-secondary",
         "--warning",
         "--warning-fg",
@@ -3058,7 +3014,7 @@
       "abbr": "ER",
       "description": "Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığında OperationPanel açılır.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--primary",
@@ -3081,7 +3037,7 @@
       "abbr": "TS",
       "description": "Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabilir bölüm olarak gösterir.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-04",
       "designTokens": [
         "--border",
         "--primary",
@@ -3089,7 +3045,6 @@
         "--surface-base",
         "--surface-overlay",
         "--surface-raised",
-        "--surface-sunken",
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
@@ -3105,7 +3060,7 @@
       "abbr": "IS",
       "description": "Invoice lifecycle status badge: Draft, Sent, Paid, Overdue, Partial, Cancelled.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -3159,7 +3114,7 @@
       "abbr": "IL",
       "description": "Table row for a single invoice line item with description, quantity, unit price, and total.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--primary",
         "--secondary",
@@ -3179,7 +3134,7 @@
       "abbr": "IT",
       "description": "Invoice totals block: subtotal, discount, VAT, total, paid amount, and balance due.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -3200,7 +3155,7 @@
       "abbr": "IN",
       "description": "Invoice footer section with optional notes text, bank details, and custom footer.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -3219,7 +3174,7 @@
       "abbr": "US",
       "description": "UPS power status badge: On Line, On Battery (pulse), Low Battery, Fault, Calibrating, Bypassed, Offline.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--error",
@@ -3241,7 +3196,7 @@
       "abbr": "BL",
       "description": "Battery charge indicator with percent, color-coded bar (green/yellow/red), charge status, and runtime remaining.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--error",
         "--secondary",
@@ -3261,7 +3216,7 @@
       "abbr": "PG",
       "description": "Load percentage gauge with watts/VA display and color-coded bar (green < 50%, yellow 50-80%, red > 80%).",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--error",
         "--secondary",
@@ -3281,7 +3236,7 @@
       "abbr": "OC",
       "description": "Outlet status card showing name, ON/OFF status badge, power draw, and protection indicator.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--info",
@@ -3305,7 +3260,7 @@
       "abbr": "EL",
       "description": "Event log table row with timestamp, severity indicator, event code, and message.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--error",
         "--info",
@@ -3329,7 +3284,7 @@
       "abbr": "UI",
       "description": "2-column info grid displaying UPS model, serial, firmware, capacity, and voltage specs.",
       "status": "stable",
-      "since": "0.1",
+      "since": "2025-05",
       "designTokens": [
         "--border",
         "--primary",
@@ -3346,37 +3301,43 @@
       "id": "theme-common",
       "title": "Common Theme",
       "route": "/theme/common",
-      "status": "stable"
-    },
-    {
-      "id": "theme-email",
-      "title": "Email Templates",
-      "route": "/theme/common/email",
-      "status": "stable"
-    },
-    {
-      "id": "theme-modem",
-      "title": "Modem Theme",
-      "route": "/theme/modem",
-      "status": "stable"
+      "status": "stable",
+      "since": "2025-04"
     },
     {
       "id": "theme-api-doc",
       "title": "API Doc Theme",
       "route": "/theme/api-doc",
-      "status": "stable"
+      "status": "stable",
+      "since": "2025-05"
+    },
+    {
+      "id": "theme-email",
+      "title": "Email Templates",
+      "route": "/theme/common/email",
+      "status": "stable",
+      "since": "2025-05"
+    },
+    {
+      "id": "theme-modem",
+      "title": "Modem Theme",
+      "route": "/theme/modem",
+      "status": "stable",
+      "since": "2025-05"
     },
     {
       "id": "theme-invoice",
       "title": "Invoice Theme",
       "route": "/theme/invoice",
-      "status": "stable"
+      "status": "stable",
+      "since": "2025-05"
     },
     {
       "id": "theme-ups",
       "title": "UPS Theme",
       "route": "/theme/ups",
-      "status": "stable"
+      "status": "stable",
+      "since": "2025-05"
     }
   ]
 }

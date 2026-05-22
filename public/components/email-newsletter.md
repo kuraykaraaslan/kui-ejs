@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/marketing/newsletter.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Haftalık bülten. Makale kartları, etiket renkleri ve okuma süresi.
 

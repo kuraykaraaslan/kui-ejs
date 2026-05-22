@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/address/AddressCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta kodu ve ülge. Seçili durum ve edit/delete butonları.
 
@@ -14,9 +14,9 @@ Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta ko
 - `--border`
 - `--error`
 - `--primary`
+- `--primary-hover`
 - `--secondary`
 - `--surface-base`
-- `--surface-overlay`
 - `--surface-raised`
 - `--text-disabled`
 - `--text-primary`
@@ -92,11 +92,24 @@ Salt okunur adres kartı. Ad, telefon, adres satırları, şehir/bölge/posta ko
   <% if (_editHref || _deleteAction) { %>
   <div class="flex gap-2 pt-2 border-t border-border">
     <% if (_editHref) { %>
-    <a href="<%= _editHref %>" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors bg-transparent text-primary hover:bg-surface-overlay px-2 py-1 text-xs">Edit</a>
+    <%- include('../../../ui/Button', {
+      element: 'a',
+      variant: 'ghost',
+      size: 'xs',
+      href: _editHref,
+      className: 'text-primary hover:text-primary-hover',
+      children: 'Edit'
+    }) %>
     <% } %>
     <% if (_deleteAction) { %>
     <form action="<%= _deleteAction %>" method="post" onsubmit="return confirm('Delete this address?')">
-      <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors bg-transparent text-error hover:opacity-80 px-2 py-1 text-xs">Delete</button>
+      <%- include('../../../ui/Button', {
+        type: 'submit',
+        variant: 'ghost',
+        size: 'xs',
+        className: 'text-error hover:opacity-80',
+        children: 'Delete'
+      }) %>
     </form>
     <% } %>
   </div>

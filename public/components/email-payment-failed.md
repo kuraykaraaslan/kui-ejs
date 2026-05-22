@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/billing/payment-failed.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Ödeme başarısız bildirimi. Hata sebebi, yeniden deneme tarihi ve ödeme yöntemi güncelleme CTA.
 

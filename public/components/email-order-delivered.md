@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/order/delivered.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Teslimat onayı. Yıldız derecelendirme butonları ile yorum isteği CTA.
 

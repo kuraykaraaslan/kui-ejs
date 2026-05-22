@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/marketing/product-update.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Ürün sürüm duyurusu. Versiyon badge, öne çıkan değişiklik kartları ve changelog linki.
 

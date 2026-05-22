@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/system/account-deletion.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Hesap silme zamanlama bildirimi. Grace period, kalıcı silme uyarısı ve iptal CTA.
 

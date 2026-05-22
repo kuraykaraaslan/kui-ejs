@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/OutletCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Outlet status card showing name, ON/OFF status badge, power draw, and protection indicator.
 

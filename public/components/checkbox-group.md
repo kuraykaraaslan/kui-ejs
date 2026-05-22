@@ -5,16 +5,18 @@
 - **category:** Molecule
 - **filePath:** `modules/ui/CheckboxGroup.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Chip görünümlü çoklu seçim grubu. Seçili chip bg-primary-subtle / border-primary renk tokenları ile işaretlenir.
 
 ## Design tokens consumed
 
 - `--border`
+- `--border-focus`
 - `--error`
 - `--primary`
 - `--primary-subtle`
+- `--surface-base`
 - `--surface-overlay`
 - `--text-primary`
 
@@ -70,33 +72,35 @@ Chip görünümlü çoklu seçim grubu. Seçili chip bg-primary-subtle / border-
   var _opts    = locals.options  || [];
   var _sel     = locals.selected || [];
   var _dis     = !!locals.disabled;
+  var _legend  = locals.legend   || '';
 %>
-<fieldset class="<%= locals.className || '' %>">
-  <% if (locals.legend) { %>
-    <legend class="text-sm font-medium text-text-primary mb-3"><%= locals.legend %></legend>
-  <% } %>
+<fieldset class="space-y-2 <%= locals.className || '' %>" data-testid="checkboxgroup">
+  <legend class="text-sm font-medium text-text-primary mb-2"><%= _legend %></legend>
   <div class="flex flex-wrap gap-2">
     <% _opts.forEach(function(opt) { %>
       <%
-        var isSelected = _sel.indexOf(opt.value) !== -1 || _sel.indexOf(opt) !== -1;
+        var optValue = (opt && typeof opt === 'object') ? opt.value : opt;
+        var optLabel = (opt && typeof opt === 'object') ? opt.label : opt;
+        var isSelected = _sel.indexOf(optValue) !== -1;
       %>
-      <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors focus-within:ring-2 focus-within:ring-primary/20 cursor-pointer <%= _dis ? 'opacity-50 cursor-not-allowed' : '' %> <%= isSelected ? 'bg-primary-subtle border-primary text-primary' : 'bg-surface border-border text-text-primary hover:bg-surface-overlay' %>">
+      <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors focus-within:ring-2 focus-within:ring-border-focus <%= _dis ? 'cursor-not-allowed opacity-50' : 'cursor-pointer' %> <%= isSelected ? 'bg-primary-subtle border-primary text-primary' : 'bg-surface-base border-border text-text-primary hover:bg-surface-overlay' %>">
         <input
           type="checkbox"
-          value="<%= opt.value || opt %>"
+          value="<%= optValue %>"
+          data-testid="checkboxgroup-<%= optValue %>"
           class="sr-only"
           <%= isSelected ? 'checked' : '' %>
           <%= _dis ? 'disabled' : '' %>
         >
         <% if (isSelected) { %>
-          <i class="fa-solid fa-check text-xs" aria-hidden="true"></i>
+          <span aria-hidden="true" class="w-3 h-3 inline-flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
         <% } %>
-        <span><%= opt.label || opt %></span>
+        <span><%= optLabel %></span>
       </label>
     <% }); %>
   </div>
   <% if (locals.error) { %>
-    <p class="mt-2 text-xs text-error" role="alert"><%= locals.error %></p>
+    <p class="text-xs text-error mt-1" role="alert"><%= locals.error %></p>
   <% } %>
 </fieldset>
 

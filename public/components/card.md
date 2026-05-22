@@ -5,7 +5,7 @@
 - **category:** Organism
 - **filePath:** `modules/ui/Card.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 İçerik kartı. raised/flat/outline varyantları; title, subtitle, headerRight, footer ve loading skeleton desteği.
 
@@ -93,6 +93,13 @@
   var _hoverable   = !!locals.hoverable;
   var _loading     = !!locals.loading;
   var _className   = locals.className   || '';
+  var _onClick     = locals.onClick     || '';
+  var _isInteractive = !!locals.isInteractive || !!_onClick;
+  var _as          = locals.as          || (_isInteractive ? 'button' : 'div');
+  var _isButton    = _as === 'button';
+
+  // Hoverable auto-enables when interactive
+  var hoverable = _hoverable || _isInteractive;
 
   var vc = {
     raised:  'bg-surface-raised shadow-sm',
@@ -100,11 +107,21 @@
     outline: 'bg-transparent',
   }[_v] || 'bg-surface-raised shadow-sm';
 
-  var hoverClass = _hoverable
+  var hoverClass = hoverable
     ? 'transition-shadow hover:shadow-md hover:border-border-focus cursor-pointer'
     : '';
+
+  var interactiveClass = _isInteractive
+    ? 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus w-full'
+    : '';
+
+  var loadingClass = _loading ? 'pointer-events-none' : '';
 %>
-<div class="rounded-xl border border-border overflow-hidden text-left <%= vc %> <%= hoverClass %><%= _className ? ' ' + _className : '' %>">
+<<%= _as %>
+  class="rounded-xl border border-border overflow-hidden text-left <%= vc %> <%= hoverClass %> <%= interactiveClass %> <%= loadingClass %><%= _className ? ' ' + _className : '' %>"
+  <% if (_isButton) { %>type="button"<% } %>
+  <% if (_onClick) { %>onclick="<%= _onClick %>"<% } %>
+>
   <% if (_loading) { %>
   <div class="px-6 py-4 space-y-3 animate-pulse">
     <div class="h-4 bg-surface-sunken rounded w-2/3"></div>
@@ -129,6 +146,6 @@
     <div class="px-6 py-3 border-t border-border bg-surface-base"><%- _footer %></div>
     <% } %>
   <% } %>
-</div>
+</<%= _as %>>
 
 ```

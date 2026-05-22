@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/payment/PaymentSummaryCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum rozeti.
 
@@ -79,12 +79,10 @@ Salt okunur ödeme özet kartı: tutar, yöntem, sağlayıcı, referans ve durum
     </div>
     <% } %>
 
-    <% if (_payment.provider) { %>
     <div class="flex items-center justify-between">
       <span class="text-sm text-text-secondary">Provider</span>
-      <span class="text-sm font-medium text-text-primary"><%= _payment.provider %></span>
+      <span class="text-sm font-medium text-text-primary"><%= _payment.provider || '' %></span>
     </div>
-    <% } %>
 
     <% if (_payment.providerPaymentId) { %>
     <div class="flex items-center justify-between gap-4">

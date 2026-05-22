@@ -5,7 +5,7 @@
 - **category:** Organism
 - **filePath:** `modules/ui/Pagination.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonları ve boyut varyantları.
 
@@ -16,6 +16,7 @@ Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonlar
 - `--primary`
 - `--primary-fg`
 - `--secondary`
+- `--surface-base`
 - `--surface-overlay`
 - `--text-disabled`
 - `--text-primary`
@@ -79,6 +80,9 @@ Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonlar
   var _totalPages    = locals.totalPages    || 1;
   var _size          = locals.size          || 'md';
   var _showFirstLast = !!locals.showFirstLast;
+  var _showJumpTo    = !!locals.showJumpTo;
+  var _jumpAction    = locals.jumpAction    || '';
+  var _id            = locals.id            || 'pg-' + Math.random().toString(36).substr(2, 9);
   var _className     = locals.className     || '';
 
   var sizeMap = {
@@ -125,7 +129,7 @@ Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonlar
       type="button"
       aria-label="Page <%= item %>"
       <%= item === _page ? 'aria-current="page"' : '' %>
-      class="rounded-md font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus flex items-center justify-center <%= s.page %> <%= item === _page ? 'bg-primary text-primary-fg border-primary' : 'border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary' %>"
+      class="rounded-md font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus text-center <%= s.page %> <%= item === _page ? 'bg-primary text-primary-fg border-primary' : 'border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary' %>"
     ><%= item %></button>
     <% } %>
   <% }); %>
@@ -136,6 +140,38 @@ Sayfa gezinme kontrolü. Sayfa penceresi + ellipsis hesabı, first/last butonlar
   <% if (_showFirstLast) { %>
   <button type="button" <%= _page >= _totalPages ? 'disabled' : '' %> aria-label="Last page"
     class="<%= navBtnBase %> <%= _page >= _totalPages ? navDisabled : navEnabled %>">»</button>
+  <% } %>
+
+  <% if (_showJumpTo) { %>
+  <form
+    id="<%= _id %>-jump"
+    <% if (_jumpAction) { %>action="<%= _jumpAction %>" method="get"<% } %>
+    class="flex items-center gap-1.5 ml-2"
+    onsubmit="return (function(form){
+      var input = form.querySelector('input[name=page]');
+      var n = parseInt(input.value, 10);
+      if (isNaN(n) || n < 1 || n > <%= _totalPages %>) return false;
+      var evt = new CustomEvent('pagination:jump', { detail: { page: n }, bubbles: true });
+      form.dispatchEvent(evt);
+      if (!form.getAttribute('action')) { input.value = ''; return false; }
+      return true;
+    })(this);"
+  >
+    <label for="<%= _id %>-jump-input" class="text-xs text-text-secondary whitespace-nowrap">Go to</label>
+    <input
+      id="<%= _id %>-jump-input"
+      name="page"
+      type="number"
+      min="1"
+      max="<%= _totalPages %>"
+      aria-label="Jump to page, 1–<%= _totalPages %>"
+      class="w-14 rounded-md border border-border bg-surface-base text-center text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus py-1 px-1"
+    />
+    <button
+      type="submit"
+      class="rounded-md border border-border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-2 py-1 text-text-secondary hover:bg-surface-overlay hover:text-text-primary"
+    >Go</button>
+  </form>
   <% } %>
 </nav>
 

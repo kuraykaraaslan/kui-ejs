@@ -4,8 +4,8 @@
 - **layer:** domain
 - **category:** Domain
 - **filePath:** `modules/domain/common/address/AddressSelector.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-04
 
 AddressCard üzerine kurulu seçilebilir adres listesi. Ekle, düzenle ve sil callback'leri destekler.
 

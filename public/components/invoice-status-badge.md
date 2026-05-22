@@ -5,7 +5,7 @@
 - **category:** Domain · Invoice
 - **filePath:** `modules/domain/invoice/InvoiceStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Invoice lifecycle status badge: Draft, Sent, Paid, Overdue, Partial, Cancelled.
 

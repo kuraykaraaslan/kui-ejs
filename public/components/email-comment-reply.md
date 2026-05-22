@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/notification/comment-reply.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Yorum cevabı bildirimi. Orijinal yorum + yeni cevap thread görünümü.
 

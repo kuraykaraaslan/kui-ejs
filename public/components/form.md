@@ -5,7 +5,7 @@
 - **category:** App
 - **filePath:** `modules/app/Form.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Form layout wrapper. title, description, error ve actionsContent slot'ları. columns prop ile 1 veya 2 kolonlu grid düzeni.
 

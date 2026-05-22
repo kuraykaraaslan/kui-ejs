@@ -5,7 +5,7 @@
 - **category:** Atom
 - **filePath:** `modules/ui/Textarea.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-02
 
 Çok satırlı metin giriş alanı. Label, hint, error ve disabled durumları; resize kontrolü destekler.
 
@@ -13,12 +13,12 @@
 
 - `--border`
 - `--border-focus`
-- `--border-strong`
 - `--error`
 - `--error-subtle`
 - `--primary`
 - `--secondary`
 - `--surface-base`
+- `--surface-sunken`
 - `--text-disabled`
 - `--text-primary`
 - `--text-secondary`
@@ -71,43 +71,42 @@
 
 ```ejs
 <%
-  var _sz  = locals.size     || 'md';
-  var _dis = locals.disabled ? 'disabled' : '';
-  var _id  = locals.id || 'textarea-' + Math.random().toString(36).substr(2, 9);
+  var _id   = locals.id   || 'textarea-' + Math.random().toString(36).substr(2, 9);
   var _rows = locals.rows || 4;
+  var _dis  = !!locals.disabled;
+  var _req  = !!locals.required;
+  var _val  = (locals.value !== undefined && locals.value !== null) ? String(locals.value) : '';
 
-  var sc = {
-    sm: 'px-2.5 py-1.5 text-sm',
-    md: 'px-3 py-2 text-sm',
-    lg: 'px-4 py-3 text-base',
-  }[_sz] || 'px-3 py-2 text-sm';
+  var _hintId  = (locals.hint  && !locals.error) ? (_id + '-hint')  : '';
+  var _errorId = locals.error ? (_id + '-error') : '';
+  var _describedBy = [_hintId, _errorId].filter(function (x) { return !!x; }).join(' ');
 
-  var baseInputClass = 'block w-full rounded-md border bg-surface-base text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed transition-colors';
-
-  var stateClass = locals.error
+  var baseClass = 'block w-full rounded-md border px-3 py-2 text-sm transition-colors resize-y '
+    + 'text-text-primary placeholder:text-text-disabled '
+    + 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus '
+    + 'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-sunken ';
+  baseClass += locals.error
     ? 'border-error ring-1 ring-error bg-error-subtle'
-    : 'border-border hover:border-border-strong';
+    : 'border-border bg-surface-base';
 %>
-<div class="w-full <%= locals.className || '' %>">
-  <% if (locals.label) { %>
-    <label for="<%= _id %>" class="block text-sm font-medium text-text-primary mb-1.5">
-      <%= locals.label %> <% if (locals.required) { %><span class="text-error">*</span><% } %>
-    </label>
-  <% } %>
-  <textarea 
-    id="<%= _id %>" 
+<div class="space-y-1 <%= locals.className || '' %>">
+  <label for="<%= _id %>" class="block text-sm font-medium text-text-primary">
+    <%= locals.label || '' %><% if (_req) { %><span class="text-error ml-1" aria-hidden="true">*</span><span class="sr-only">(required)</span><% } %>
+  </label>
+  <textarea
+    id="<%= _id %>"
     rows="<%= _rows %>"
-    class="<%= baseInputClass %> <%= stateClass %> <%= sc %><%= locals.resize === 'none' ? ' resize-none' : '' %>"
+    class="<%= baseClass %>"
     <% if (locals.placeholder) { %>placeholder="<%= locals.placeholder %>"<% } %>
     <% if (locals.name) { %>name="<%= locals.name %>"<% } %>
-    <%= _dis %>
-    <% if (locals.required) { %>required<% } %>
-  ><% if (locals.value) { %><%= locals.value %><% } %></textarea>
-  <% if (locals.hint || locals.error) { %>
-    <p class="mt-1.5 text-sm <%= locals.error ? 'text-error' : 'text-text-secondary' %>">
-      <%= locals.error || locals.hint %>
-    </p>
-  <% } %>
+    <% if (_dis) { %>disabled<% } %>
+    <% if (_req) { %>required<% } %>
+    aria-invalid="<%= locals.error ? 'true' : 'false' %>"
+    <% if (_describedBy) { %>aria-describedby="<%= _describedBy %>"<% } %>
+    data-testid="textarea-<%= _id %>"
+  ><%= _val %></textarea>
+  <% if (_hintId) { %><p id="<%= _hintId %>" class="text-xs text-text-secondary"><%= locals.hint %></p><% } %>
+  <% if (_errorId) { %><p id="<%= _errorId %>" class="text-xs text-error" role="alert"><%= locals.error %></p><% } %>
 </div>
 
 ```

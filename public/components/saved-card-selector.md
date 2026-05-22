@@ -4,8 +4,8 @@
 - **layer:** domain
 - **category:** Domain
 - **filePath:** `modules/domain/common/payment/SavedCardSelector.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-05
 
 Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve varsayılan göstergesi.
 
@@ -75,10 +75,10 @@ Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve v
       var bc = brandColor[card.brand] || 'bg-gray-500';
       var bl = brandLabel[card.brand] || '••';
       var rowClass = isSelected
-        ? 'border-primary ring-2 ring-primary ring-offset-1 bg-surface-raised'
-        : 'border-border hover:border-border-strong bg-surface-raised';
+        ? 'border-primary ring-2 ring-primary ring-offset-1'
+        : 'border-border hover:border-border-strong';
     %>
-    <label class="flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-border-focus <%= rowClass %>">
+    <label class="flex items-center gap-3 rounded-lg border bg-surface-raised p-3 cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-border-focus <%= rowClass %>">
       <input type="radio" name="savedCard" value="<%= card.cardId %>"
         <%= isSelected ? 'checked' : '' %>
         class="sr-only">
@@ -97,11 +97,14 @@ Kayıtlı ödeme kartları listesi. Marka rozeti, maskeli numara, son tarih ve v
       </div>
 
       <% if (_removeAction) { %>
-      <form action="<%= _removeAction.replace('{id}', card.cardId) %>" method="post" class="shrink-0">
-        <button type="submit" onclick="return confirm('Remove this card?')"
-          class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors bg-transparent text-error hover:opacity-80 px-2 py-1 text-xs">
-          Remove
-        </button>
+      <form action="<%= _removeAction.replace('{id}', card.cardId) %>" method="post" class="shrink-0" onsubmit="return confirm('Remove this card?')">
+        <%- include('../../../ui/Button', {
+          variant: 'ghost',
+          size:    'xs',
+          type:    'submit',
+          children: 'Remove',
+          className: 'text-error shrink-0'
+        }) %>
       </form>
       <% } %>
     </label>

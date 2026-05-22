@@ -5,7 +5,7 @@
 - **category:** App
 - **filePath:** `modules/app/AppTopBar.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 AppShell'in header slotuna geçilen üst çubuk wrapper'ı. logoContent slotu sol tarafa; children sağ tarafa flex satırda sıralanır.
 

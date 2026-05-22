@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/system/policy-update.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Gizlilik politikası / kullanım şartları güncelleme. Madde madde özet ve yürürlük tarihi.
 

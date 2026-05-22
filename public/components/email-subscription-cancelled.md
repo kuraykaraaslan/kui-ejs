@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/billing/subscription-cancelled.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Abonelik iptali. Erişim sona erme tarihi, yeniden aktivasyon CTA ve geri bildirim linki.
 

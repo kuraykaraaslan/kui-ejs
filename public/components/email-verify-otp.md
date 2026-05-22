@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/verify-email.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 6 haneli OTP kodu. Büyük, mono font kod gösterimi ve süre uyarısı.
 

@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/money/OrderTotalsCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satırı. Sıfır değerli satırlar gizlenir.
 
@@ -63,15 +63,23 @@ Sipariş özet kartı: ara toplam, indirim, vergi, kargo ve kalın Total satır�
   <% lines.forEach(function(line) { %>
   <div class="flex items-center justify-between text-sm">
     <span class="text-text-secondary"><%= line.label %></span>
-    <span class="tabular-nums<%= line.isDiscount ? ' text-success-fg' : ' text-text-primary' %>">
-      <%= line.isDiscount ? '−' : '' %><%= fmt(line.amount) %>
-    </span>
+    <%- include('./PriceDisplay', {
+      amount:   Math.abs(line.amount),
+      currency: _currency,
+      locale:   _locale,
+      className: line.isDiscount ? 'text-success-fg' : ''
+    }) %>
   </div>
   <% }); %>
 
   <div class="flex items-center justify-between pt-3 border-t border-border">
     <span class="text-sm font-semibold text-text-primary">Total</span>
-    <span class="tabular-nums text-xl font-semibold text-text-primary"><%= fmt(_totals.total || 0) %></span>
+    <%- include('./PriceDisplay', {
+      amount:   _totals.total || 0,
+      currency: _currency,
+      locale:   _locale,
+      size:     'lg'
+    }) %>
   </div>
 </div>
 

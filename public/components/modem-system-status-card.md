@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/SystemStatusCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Cihaz modeli, CPU/RAM ilerleme çubukları, sıcaklık, uptime ve firmware versiyonu. Sıcaklık eşiğine göre renk değişir (>55 warning, >70 error).
 

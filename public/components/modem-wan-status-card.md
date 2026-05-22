@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/WanStatusCard.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 WAN bağlantı tipi, IP/gateway/DNS bilgileri ve ISP hız göstergesi. Durum rozetine göre renk kodlaması.
 

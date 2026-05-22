@@ -5,7 +5,7 @@
 - **category:** Domain · UPS
 - **filePath:** `modules/domain/ups/EventLogRow.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Event log table row with timestamp, severity indicator, event code, and message.
 

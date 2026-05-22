@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/user/UserRoleBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 ADMIN → red, AUTHOR → primary, USER → neutral renk eşlemesi ile rol rozeti.
 

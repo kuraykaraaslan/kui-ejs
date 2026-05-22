@@ -5,7 +5,7 @@
 - **category:** App
 - **filePath:** `modules/app/NavDrawer.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 Herhangi bir trigger + içeriği Drawer'a saran wrapper. Kendi açık/kapalı state'ini tutar. AppNav'ın mobil menüsü olarak kullanılır.
 

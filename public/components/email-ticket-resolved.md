@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/support/ticket-resolved.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Destek talebi çözüldü bildirimi. Çözüm özeti, emoji derecelendirme ve yeniden açma seçeneği.
 

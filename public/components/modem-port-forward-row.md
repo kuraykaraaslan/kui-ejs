@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/PortForwardRow.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Port yönlendirme tablosu satırı. Kural adı, protokol, harici port, dahili IP:port ve etkin/devre dışı gösterimi.
 

@@ -5,7 +5,7 @@
 - **category:** Domain · Modem
 - **filePath:** `modules/domain/modem/AlertItem.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Router bildirimi satırı. INFO · WARNING · CRITICAL şiddet seviyeleri. Okunmamış uyarılar mavi nokta ile işaretlenir.
 

@@ -5,7 +5,7 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/StatusCodeBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 HTTP durum kodunu semantik renge göre renklendiren rozet. 2xx yeşil, 3xx mavi, 4xx sarı, 5xx kırmızı.
 

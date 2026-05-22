@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/system/maintenance.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Planlı bakım öncesi uyarı. Zaman penceresi, etkilenen servisler ve status page linki.
 

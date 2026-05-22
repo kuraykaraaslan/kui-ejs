@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/order/shipped.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Kargo bildirimi. Taşıyıcı, takip numarası, tahmini teslimat tarihi ve "Track My Package" CTA.
 

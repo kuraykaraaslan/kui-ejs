@@ -25,10 +25,6 @@ html.sidebar-collapsed .sidebar-item {
   padding-top:    0.5rem; /* py-2 */
   padding-bottom: 0.5rem;
 }
-html.sidebar-collapsed .sidebar-item-icon {
-  width:  2rem; /* w-8 — larger icon when collapsed */
-  height: 2rem;
-}
 html.sidebar-collapsed #sidebar-collapse-row {
   justify-content: center;
 }
@@ -36,6 +32,39 @@ html.sidebar-collapsed #sidebar-logo {
   padding-left:  0.75rem; /* px-3 */
   padding-right: 0.75rem;
   justify-content: center;
+}
+
+/* ── Sidebar scrollbar (mirrors NextJS .sidebar-scrollbar-hover) ── */
+.sidebar-scrollbar-hover {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.sidebar-scrollbar-hover:hover,
+.sidebar-scrollbar-hover:focus-visible,
+.sidebar-scrollbar-hover:focus-within {
+  scrollbar-color: var(--border-strong) transparent;
+}
+.sidebar-scrollbar-hover::-webkit-scrollbar {
+  width:  8px;
+  height: 8px;
+}
+.sidebar-scrollbar-hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scrollbar-hover::-webkit-scrollbar-thumb {
+  background:    transparent;
+  border-radius: 9999px;
+}
+.sidebar-scrollbar-hover:hover::-webkit-scrollbar-thumb,
+.sidebar-scrollbar-hover:focus-visible::-webkit-scrollbar-thumb,
+.sidebar-scrollbar-hover:focus-within::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+}
+.sidebar-scrollbar-hover:hover::-webkit-scrollbar-thumb:hover,
+.sidebar-scrollbar-hover:focus-visible::-webkit-scrollbar-thumb:hover,
+.sidebar-scrollbar-hover:focus-within::-webkit-scrollbar-thumb:hover {
+  background: var(--text-disabled);
 }
 
 :root {

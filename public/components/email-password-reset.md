@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/auth/password-reset.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Şifre sıfırlama linki e-postası. Süre uyarısı ve güvenlik notu içerir.
 

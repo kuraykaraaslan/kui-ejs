@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/support/ticket-opened.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Destek talebi alındı otomatik yanıtı. Ticket ID, konu, durum badge ve mesaj önizlemesi.
 

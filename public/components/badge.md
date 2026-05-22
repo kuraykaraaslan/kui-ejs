@@ -5,7 +5,7 @@
 - **category:** Atom
 - **filePath:** `modules/ui/Badge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-01
 
 Durum, kategori veya etiket göstergesi. 6 semantik varyant, 3 boyut, dot ve dismissible desteği.
 
@@ -125,8 +125,8 @@ var dc = {
   <% } %>
   <%= locals.children %>
   <% if (locals.dismissible) { %>
-    <button type="button" aria-label="Remove" class="ml-0.5 leading-none hover:opacity-70 transition-opacity focus-visible:outline-none rounded-full">
-      <i class="fa-solid fa-xmark" style="width:.625rem;height:.625rem" aria-hidden="true"></i>
+    <button type="button" aria-label="Remove" <% if (locals.onDismissHandler) { %>onclick="<%= locals.onDismissHandler %>"<% } %> class="ml-0.5 leading-none hover:opacity-70 transition-opacity focus-visible:outline-none rounded-full">
+      <i class="fa-solid fa-xmark" style="font-size:.625rem" aria-hidden="true"></i>
     </button>
   <% } %>
 </span>

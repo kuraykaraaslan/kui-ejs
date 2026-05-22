@@ -5,7 +5,7 @@
 - **category:** Domain · Invoice
 - **filePath:** `modules/domain/invoice/InvoiceTotals.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Invoice totals block: subtotal, discount, VAT, total, paid amount, and balance due.
 

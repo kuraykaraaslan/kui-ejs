@@ -5,7 +5,7 @@
 - **category:** Domain
 - **filePath:** `modules/domain/common/payment/PaymentStatusBadge.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-03
 
 PENDING / AUTHORIZED / PAID / FAILED / CANCELLED / REFUNDED ödeme durumları için renk kodlu rozet.
 

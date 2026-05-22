@@ -5,7 +5,7 @@
 - **category:** Atom
 - **filePath:** `modules/ui/Spinner.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-01
 
 CSS border tabanlı yükleme göstergesi. FontAwesome gerektirmez. 5 boyut, border-border / border-t-primary renk sistemi.
 

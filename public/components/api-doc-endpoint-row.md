@@ -5,7 +5,7 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/EndpointRow.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığında OperationPanel açılır.
 
@@ -51,7 +51,7 @@ Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığınd
   var hasSecurity  = _operation.security && _operation.security.length > 0;
   var isDeprecated = !!_operation.deprecated;
 %>
-<div id="<%= _operation.operationId ? 'op-' + _operation.operationId : '' %>" class="rounded-xl border border-border overflow-hidden scroll-mt-20<%= locals.className ? ' ' + locals.className : '' %>">
+<div class="rounded-xl border border-border overflow-hidden<%= locals.className ? ' ' + locals.className : '' %>">
   <details<%= _defaultOpen ? ' open' : '' %> class="group">
     <summary class="flex w-full items-center gap-3 px-4 py-3 text-left bg-surface-raised hover:bg-surface-overlay transition-colors cursor-pointer list-none focus:outline-none group-open:border-b group-open:border-border">
 
@@ -61,15 +61,21 @@ Tek bir endpoint satırı — HTTP metod rozeti, path ve özet. Tıklandığınd
 
       <div class="flex items-center gap-2 shrink-0">
         <% if (_operation.summary) { %>
-          <span class="hidden sm:block text-xs text-text-secondary truncate max-w-xs"><%= _operation.summary %></span>
+          <span class="hidden sm:block text-xs text-text-secondary truncate max-w-[240px]"><%= _operation.summary %></span>
         <% } %>
         <% if (hasSecurity) { %>
-          <i class="fa-solid fa-lock text-xs text-text-disabled" aria-label="Requires authentication"></i>
+          <span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled">
+            <i class="fa-solid fa-lock" aria-label="Requires authentication"></i>
+          </span>
         <% } %>
         <% if (isDeprecated) { %>
-          <i class="fa-solid fa-triangle-exclamation text-xs text-warning" aria-label="Deprecated"></i>
+          <span class="w-3.5 h-3.5 inline-flex items-center justify-center text-warning">
+            <i class="fa-solid fa-triangle-exclamation" aria-label="Deprecated"></i>
+          </span>
         <% } %>
-        <i class="fa-solid fa-chevron-down text-[10px] text-text-disabled group-open:rotate-180 transition-transform" aria-hidden="true"></i>
+        <span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled group-open:rotate-180 transition-transform">
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </span>
       </div>
     </summary>
 

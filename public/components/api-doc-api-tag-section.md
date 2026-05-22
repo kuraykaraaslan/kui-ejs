@@ -5,7 +5,7 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/ApiTagSection.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabilir bölüm olarak gösterir.
 
@@ -17,7 +17,6 @@ Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabili
 - `--surface-base`
 - `--surface-overlay`
 - `--surface-raised`
-- `--surface-sunken`
 - `--text-disabled`
 - `--text-primary`
 - `--text-secondary`
@@ -54,12 +53,14 @@ Bir OpenAPI tag grubunu, altındaki endpoint satırlarıyla birlikte katlanabili
   <details<%= _defaultOpen ? ' open' : '' %> class="group">
     <summary class="flex w-full items-center gap-3 px-5 py-4 text-left bg-surface-raised hover:bg-surface-overlay transition-colors cursor-pointer list-none focus:outline-none group-open:border-b group-open:border-border">
 
-      <i class="fa-solid fa-chevron-down w-4 text-text-disabled shrink-0 group-open:rotate-0 -rotate-90 transition-transform text-xs" aria-hidden="true"></i>
+      <span class="w-4 h-4 inline-flex items-center justify-center text-text-disabled shrink-0 group-open:rotate-0 -rotate-90 transition-transform">
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </span>
 
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
           <h3 class="font-semibold text-text-primary"><%= _tag.name || '' %></h3>
-          <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-surface-sunken text-text-secondary"><%= totalOps %></span>
+          <%- include('../../ui/Badge', { variant: 'neutral', size: 'sm', children: String(totalOps) }) %>
         </div>
         <% if (_tag.description) { %>
           <p class="text-xs text-text-secondary mt-0.5 line-clamp-1"><%= _tag.description %></p>

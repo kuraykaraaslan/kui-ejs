@@ -4,8 +4,8 @@
 - **layer:** domain
 - **category:** Domain
 - **filePath:** `modules/domain/common/payment/CreditCardVisual.ejs`
-- **status:** stable
-- **since:** 0.1
+- **status:** beta
+- **since:** 2025-05
 
 3D flip kredi kartı görseli. Ön: numara, isim, son tarih. Arka: CVV şeridi. VISA, MC, AMEX, Discover destekli.
 
@@ -69,6 +69,8 @@
   var cvvStars = _cvv ? '•'.repeat(_cvv.length) : '•••';
 %>
 <div class="w-72 h-44 select-none<%= locals.className ? ' ' + locals.className : '' %>"
+  data-credit-card-visual
+  data-flipped="<%= _flipped ? 'true' : 'false' %>"
   style="perspective:1000px" aria-hidden="true">
   <div class="relative w-full h-full transition-transform duration-500"
     style="transform-style:preserve-3d;transform:<%= _flipped ? 'rotateY(180deg)' : 'rotateY(0deg)' %>">

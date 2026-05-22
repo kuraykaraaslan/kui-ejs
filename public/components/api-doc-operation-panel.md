@@ -5,27 +5,18 @@
 - **category:** Domain · API Doc
 - **filePath:** `modules/domain/api-doc/OperationPanel.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-04
 
 Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Samples bölümleri details/summary ile katlanabilir.
 
 ## Design tokens consumed
 
 - `--border`
-- `--error`
-- `--error-fg`
-- `--error-subtle`
-- `--info`
-- `--info-fg`
-- `--info-subtle`
 - `--primary`
-- `--primary-subtle`
 - `--secondary`
 - `--surface-base`
 - `--surface-raised`
-- `--surface-sunken`
 - `--text-disabled`
-- `--text-primary`
 - `--text-secondary`
 - `--warning`
 - `--warning-fg`
@@ -67,6 +58,7 @@ Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Sa
   var _samples   = _operation.codeSamples || [];
   var _security  = _operation.security    || [];
   var _reqBody   = _operation.requestBody || null;
+  var _externalDocs = _operation.externalDocs || null;
 
   var pathParams   = _params.filter(function(p) { return p.in === 'path';   });
   var queryParams  = _params.filter(function(p) { return p.in === 'query';  });
@@ -75,26 +67,7 @@ Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Sa
   var reqBodyContent = _reqBody && _reqBody.content ? Object.entries(_reqBody.content) : [];
 
   var hasSamples = _samples.length > 0;
-
-  /* Unique namespace for this tab group — based on operationId */
-  var ns = 'opt-' + (_operation.operationId || ('x' + Math.random().toString(36).slice(2))).replace(/[^a-z0-9]/gi, '-');
 %>
-
-<style>
-  #<%= ns %> > [type=radio] { display: none; }
-  #<%= ns %> .op-panel { display: none; }
-  #<%= ns %>-p:checked ~ .op-panels > .panel-p { display: block; }
-  #<%= ns %>-b:checked ~ .op-panels > .panel-b { display: block; }
-  #<%= ns %>-r:checked ~ .op-panels > .panel-r { display: block; }
-  #<%= ns %>-c:checked ~ .op-panels > .panel-c { display: block; }
-  #<%= ns %>-p:checked ~ .op-tabs label[for="<%= ns %>-p"],
-  #<%= ns %>-b:checked ~ .op-tabs label[for="<%= ns %>-b"],
-  #<%= ns %>-r:checked ~ .op-tabs label[for="<%= ns %>-r"],
-  #<%= ns %>-c:checked ~ .op-tabs label[for="<%= ns %>-c"] {
-    border-bottom-color: var(--primary);
-    color: var(--primary);
-  }
-</style>
 
 <div class="rounded-xl border border-border bg-surface-base overflow-hidden<%= locals.className ? ' ' + locals.className : '' %>">
 
@@ -102,7 +75,9 @@ Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Sa
   <div class="px-5 py-4 border-b border-border bg-surface-raised space-y-2">
     <% if (_operation.deprecated) { %>
     <div class="flex items-center gap-2 text-xs text-warning-fg bg-warning-subtle rounded px-3 py-1.5">
-      <i class="fa-solid fa-triangle-exclamation text-xs shrink-0" aria-hidden="true"></i>
+      <span class="w-3.5 h-3.5 inline-flex items-center justify-center shrink-0">
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      </span>
       This operation is deprecated.
     </div>
     <% } %>
@@ -113,143 +88,121 @@ Tam API operasyonunu gösterir: Parametreler, Request Body, Responses ve Code Sa
 
     <div class="flex flex-wrap items-center gap-2">
       <% _tags.forEach(function(tag) { %>
-        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium bg-surface-sunken text-text-secondary"><%= tag %></span>
+        <%- include('../../ui/Badge', { variant: 'neutral', size: 'sm', children: tag }) %>
       <% }); %>
       <% _security.forEach(function(scheme) {
         var schemeName = Object.keys(scheme)[0] || '';
       %>
-        <span class="inline-flex items-center gap-1 rounded-full font-medium px-2 py-0.5 text-xs bg-info-subtle text-info-fg">
-          <i class="fa-solid fa-lock text-[10px]" aria-hidden="true"></i>
-          <%= schemeName %>
-        </span>
+        <%- include('./SecuritySchemeBadge', { type: 'http', name: schemeName, size: 'sm' }) %>
       <% }); %>
     </div>
+
+    <% if (_externalDocs) { %>
+      <a
+        href="<%= _externalDocs.url %>"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+      >
+        External docs
+        <span class="w-3 h-3 inline-flex items-center justify-center">
+          <i class="fa-solid fa-external-link" aria-hidden="true"></i>
+        </span>
+      </a>
+    <% } %>
   </div>
 
-  <!-- Tab system -->
-  <div id="<%= ns %>">
+  <%
+    // Build tab content as HTML strings so we can pass them to TabGroup.
+    function renderParamsTab() {
+      var html = '<div class="space-y-4 p-4">';
+      if (!_params.length) {
+        html += '<p class="text-sm text-text-disabled text-center py-4">No parameters.</p>';
+      }
+      ['path','query','header','cookie'].forEach(function(group) {
+        var list = group === 'path' ? pathParams
+                 : group === 'query' ? queryParams
+                 : group === 'header' ? headerParams
+                 : cookieParams;
+        if (!list.length) return;
+        var label = group.charAt(0).toUpperCase() + group.slice(1);
+        if (group === 'cookie') label = 'Cookies';
+        if (group === 'header') label = 'Headers';
+        html += '<section>';
+        html += '<h4 class="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">' + label + '</h4>';
+        html += include('./ParameterTable', { parameters: list });
+        html += '</section>';
+      });
+      html += '</div>';
+      return html;
+    }
 
-    <!-- Radio inputs (hidden via CSS) — must be direct children before tab bar -->
-    <input type="radio" id="<%= ns %>-p" name="<%= ns %>" checked>
-    <input type="radio" id="<%= ns %>-b" name="<%= ns %>">
-    <input type="radio" id="<%= ns %>-r" name="<%= ns %>">
-    <% if (hasSamples) { %>
-    <input type="radio" id="<%= ns %>-c" name="<%= ns %>">
-    <% } %>
+    function renderBodyTab() {
+      var html = '<div class="p-4 space-y-4">';
+      if (!_reqBody) {
+        html += '<p class="text-sm text-text-disabled text-center py-4">No request body.</p>';
+      } else {
+        if (_reqBody.required) {
+          html += '<div>' + include('../../ui/Badge', { variant: 'error', size: 'sm', children: 'required' }) + '</div>';
+        }
+        if (_reqBody.description) {
+          html += '<p class="text-sm text-text-secondary">' + _reqBody.description + '</p>';
+        }
+        reqBodyContent.forEach(function(entry) {
+          var mime = entry[0], obj = entry[1];
+          html += '<div>';
+          html += '<p class="text-xs font-mono text-text-disabled mb-2">' + mime + '</p>';
+          if (obj.schema) html += include('./SchemaViewer', { schema: obj.schema });
+          html += '</div>';
+        });
+      }
+      html += '</div>';
+      return html;
+    }
 
-    <!-- Tab bar -->
-    <div class="op-tabs flex border-b border-border bg-surface-raised overflow-x-auto">
-      <label for="<%= ns %>-p"
-             class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-text-secondary border-b-2 border-transparent -mb-px cursor-pointer whitespace-nowrap hover:text-text-primary transition-colors">
-        Parameters
-        <% if (_params.length) { %>
-          <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-surface-sunken text-text-secondary"><%= _params.length %></span>
-        <% } %>
-      </label>
+    function renderResponsesTab() {
+      var html = '<div class="p-4 space-y-2">';
+      if (!_responses.length) {
+        html += '<p class="text-sm text-text-disabled text-center py-4">No responses defined.</p>';
+      } else {
+        _responses.forEach(function(res) {
+          html += include('./ResponseCard', { response: res, defaultOpen: res.statusCode && String(res.statusCode).startsWith('2') });
+        });
+      }
+      html += '</div>';
+      return html;
+    }
 
-      <label for="<%= ns %>-b"
-             class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-text-secondary border-b-2 border-transparent -mb-px cursor-pointer whitespace-nowrap hover:text-text-primary transition-colors">
-        Request Body
-        <% if (_reqBody) { %>
-          <% if (_reqBody.required) { %>
-            <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-error-subtle text-error-fg">required</span>
-          <% } else { %>
-            <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-primary-subtle text-primary">1</span>
-          <% } %>
-        <% } %>
-      </label>
+    function renderSamplesTab() {
+      return '<div class="p-4">' + include('./CodeSamplePanel', { samples: _samples }) + '</div>';
+    }
 
-      <label for="<%= ns %>-r"
-             class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-text-secondary border-b-2 border-transparent -mb-px cursor-pointer whitespace-nowrap hover:text-text-primary transition-colors">
-        Responses
-        <% if (_responses.length) { %>
-          <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-surface-sunken text-text-secondary"><%= _responses.length %></span>
-        <% } %>
-      </label>
+    var _tabs = [
+      {
+        id: 'params',
+        label: 'Parameters',
+        badge: _params.length ? include('../../ui/Badge', { variant: 'neutral', size: 'sm', children: String(_params.length) }) : null,
+        content: renderParamsTab(),
+      },
+      {
+        id: 'body',
+        label: 'Request Body',
+        badge: _reqBody ? include('../../ui/Badge', { variant: 'primary', size: 'sm', children: '1' }) : null,
+        content: renderBodyTab(),
+      },
+      {
+        id: 'responses',
+        label: 'Responses',
+        badge: _responses.length ? include('../../ui/Badge', { variant: 'neutral', size: 'sm', children: String(_responses.length) }) : null,
+        content: renderResponsesTab(),
+      },
+    ];
+    if (hasSamples) {
+      _tabs.push({ id: 'samples', label: 'Code Samples', content: renderSamplesTab() });
+    }
+  %>
 
-      <% if (hasSamples) { %>
-      <label for="<%= ns %>-c"
-             class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-text-secondary border-b-2 border-transparent -mb-px cursor-pointer whitespace-nowrap hover:text-text-primary transition-colors">
-        Code Samples
-      </label>
-      <% } %>
-    </div>
-
-    <!-- Tab panels -->
-    <div class="op-panels">
-
-      <!-- Parameters -->
-      <div class="op-panel panel-p px-5 py-4 space-y-4">
-        <% if (!_params.length) { %>
-          <p class="text-sm text-text-disabled text-center py-4">No parameters.</p>
-        <% } %>
-        <% if (pathParams.length > 0) { %>
-          <section>
-            <h4 class="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">Path</h4>
-            <%- include('./ParameterTable', { parameters: pathParams }) %>
-          </section>
-        <% } %>
-        <% if (queryParams.length > 0) { %>
-          <section>
-            <h4 class="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">Query</h4>
-            <%- include('./ParameterTable', { parameters: queryParams }) %>
-          </section>
-        <% } %>
-        <% if (headerParams.length > 0) { %>
-          <section>
-            <h4 class="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">Headers</h4>
-            <%- include('./ParameterTable', { parameters: headerParams }) %>
-          </section>
-        <% } %>
-        <% if (cookieParams.length > 0) { %>
-          <section>
-            <h4 class="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2">Cookies</h4>
-            <%- include('./ParameterTable', { parameters: cookieParams }) %>
-          </section>
-        <% } %>
-      </div>
-
-      <!-- Request Body -->
-      <div class="op-panel panel-b px-5 py-4 space-y-3">
-        <% if (!_reqBody) { %>
-          <p class="text-sm text-text-disabled text-center py-4">No request body.</p>
-        <% } else { %>
-          <% if (_reqBody.description) { %>
-            <p class="text-sm text-text-secondary"><%= _reqBody.description %></p>
-          <% } %>
-          <% reqBodyContent.forEach(function(entry) {
-            var mime = entry[0];
-            var obj  = entry[1];
-          %>
-            <div>
-              <p class="text-xs font-mono text-text-disabled mb-2"><%= mime %></p>
-              <% if (obj.schema) { %>
-                <%- include('./SchemaViewer', { schema: obj.schema }) %>
-              <% } %>
-            </div>
-          <% }); %>
-        <% } %>
-      </div>
-
-      <!-- Responses -->
-      <div class="op-panel panel-r px-5 py-4 space-y-2">
-        <% if (!_responses.length) { %>
-          <p class="text-sm text-text-disabled text-center py-4">No responses defined.</p>
-        <% } %>
-        <% _responses.forEach(function(res) { %>
-          <%- include('./ResponseCard', { response: res, defaultOpen: res.statusCode && res.statusCode.startsWith('2') }) %>
-        <% }); %>
-      </div>
-
-      <!-- Code Samples -->
-      <% if (hasSamples) { %>
-      <div class="op-panel panel-c p-4">
-        <%- include('./CodeSamplePanel', { samples: _samples }) %>
-      </div>
-      <% } %>
-
-    </div><!-- /op-panels -->
-  </div><!-- /tab system -->
+  <%- include('../../ui/TabGroup', { tabs: _tabs, label: 'Operation details' }) %>
 </div>
 
 ```

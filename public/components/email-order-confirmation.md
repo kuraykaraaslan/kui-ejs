@@ -5,7 +5,7 @@
 - **category:** Email
 - **filePath:** `views/theme/common/email/order/confirmation.ejs`
 - **status:** stable
-- **since:** 0.1
+- **since:** 2025-05
 
 Sipariş onayı makbuzu. Satır kalemleri, ara toplam/vergi/toplam ve kargo adresi.
 
