@@ -166,9 +166,9 @@ export const SITE_LOCALS = {
   short: SHOWCASE_BRAND.short,
   initial: SHOWCASE_BRAND.initial,
   tagline: SHOWCASE_BRAND.tagline,
-  /** Browser <title> default — matches NextJS metadata.title.default = name only. */
-  title: SHOWCASE_BRAND.name,
-  /** Long descriptive title for OG / Twitter / structured data. */
+  /** Browser <title> default — matches NextJS metadata.title.default (descriptive "Brand — Tagline"). */
+  title: `${SHOWCASE_BRAND.name} — ${SHOWCASE_BRAND.tagline}`,
+  /** Long descriptive title for OG / Twitter / structured data (same as `title`). */
   longTitle: `${SHOWCASE_BRAND.name} — ${SHOWCASE_BRAND.tagline}`,
   description: SHOWCASE_BRAND.description,
   url: SHOWCASE_LINKS.siteUrl,
@@ -188,7 +188,7 @@ export const SITE_LOCALS = {
  * - `buildPageTitle('Dashboard', 'UPS Theme')` → `"Dashboard — UPS Theme | Brand"`
  */
 export function buildPageTitle(page?: string | null, suffix?: string | null): string {
-  if (!page) return SHOWCASE_BRAND.name;
+  if (!page) return `${SHOWCASE_BRAND.name} — ${SHOWCASE_BRAND.tagline}`;
   if (suffix) return `${page} — ${suffix} | ${SHOWCASE_BRAND.name}`;
   return `${page} | ${SHOWCASE_BRAND.name}`;
 }
