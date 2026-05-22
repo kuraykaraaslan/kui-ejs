@@ -1,0 +1,120 @@
+<%
+  var _steps         = locals.steps         || [];
+  var _current       = typeof locals.currentStep === 'number' ? locals.currentStep : 0;
+  var _stepError     = locals.stepError     || '';
+  var _completeLabel = locals.completeLabel || 'Finish';
+  var _cancelLabel   = locals.cancelLabel   || 'Cancel';
+  var _nextLabel     = locals.nextLabel     || 'Next';
+  var _prevLabel     = locals.prevLabel     || 'Back';
+  var _showCancel    = locals.showCancel !== false;
+  var _onCancelHref  = locals.onCancelHref  || '';
+  var _onNextHref    = locals.onNextHref    || '';
+  var _onPrevHref    = locals.onPrevHref    || '';
+  var _onCompleteHref= locals.onCompleteHref|| '';
+  var _completing    = !!locals.completing;
+  var _className     = locals.className     || '';
+  var _flowId        = locals.id || ('stepflow-' + Math.random().toString(36).slice(2, 8));
+
+  if (_current < 0) _current = 0;
+  if (_current > _steps.length - 1) _current = Math.max(0, _steps.length - 1);
+
+  var stepperItems = _steps.map(function (s, i) {
+    return {
+      label: s.label,
+      description: s.description,
+      state: i < _current ? 'complete' : (i === _current ? 'active' : 'pending')
+    };
+  });
+
+  var isLast = _current === _steps.length - 1;
+  var activeStep = _steps[_current] || {};
+%>
+<div id="<%= _flowId %>" class="space-y-6<%= _className ? ' ' + _className : '' %>">
+  <%- include('../ui/Stepper', { steps: stepperItems }) %>
+
+  <div class="min-h-[12rem]">
+    <%- activeStep.content || '' %>
+  </div>
+
+  <% if (_stepError) { %>
+  <div role="alert" aria-live="assertive" class="rounded-xl border bg-error-subtle border-error">
+    <div class="flex items-start gap-3 px-4 py-3">
+      <i class="fa-solid fa-circle-exclamation mt-0.5 shrink-0 text-error" aria-hidden="true"></i>
+      <p class="text-sm text-text-secondary leading-snug"><%= _stepError %></p>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="flex items-center justify-between gap-3 pt-4 border-t border-border">
+    <div>
+      <% if (_showCancel && _current === 0) { %>
+        <% if (_onCancelHref) { %>
+        <a href="<%= _onCancelHref %>" class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _cancelLabel %>
+        </a>
+        <% } else { %>
+        <button type="button" data-stepflow-cancel class="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _cancelLabel %>
+        </button>
+        <% } %>
+      <% } %>
+      <% if (_current > 0) { %>
+        <% if (_onPrevHref) { %>
+        <a href="<%= _onPrevHref %>" class="inline-flex items-center justify-center rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _prevLabel %>
+        </a>
+        <% } else { %>
+        <button type="button" data-stepflow-prev class="inline-flex items-center justify-center rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _prevLabel %>
+        </button>
+        <% } %>
+      <% } %>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-xs text-text-disabled"><%= _current + 1 %> / <%= _steps.length %></span>
+      <% if (isLast) { %>
+        <% if (_onCompleteHref) { %>
+        <a href="<%= _onCompleteHref %>" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _completing ? ' opacity-70 pointer-events-none' : '' %>" aria-busy="<%= _completing ? 'true' : 'false' %>">
+          <% if (_completing) { %><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><% } %>
+          <%= _completeLabel %>
+        </a>
+        <% } else { %>
+        <button type="button" data-stepflow-complete class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed" <%= _completing ? 'disabled aria-busy="true"' : '' %>>
+          <% if (_completing) { %><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><% } %>
+          <%= _completeLabel %>
+        </button>
+        <% } %>
+      <% } else { %>
+        <% if (_onNextHref) { %>
+        <a href="<%= _onNextHref %>" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _nextLabel %>
+          <i class="fa-solid fa-arrow-right w-3.5 h-3.5" aria-hidden="true"></i>
+        </a>
+        <% } else { %>
+        <button type="button" data-stepflow-next class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+          <%= _nextLabel %>
+          <i class="fa-solid fa-arrow-right w-3.5 h-3.5" aria-hidden="true"></i>
+        </button>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('<%= _flowId %>');
+  if (!root) return;
+  function fire(name) {
+    root.dispatchEvent(new CustomEvent(name, { bubbles: true }));
+  }
+  var n = root.querySelector('[data-stepflow-next]');
+  var p = root.querySelector('[data-stepflow-prev]');
+  var c = root.querySelector('[data-stepflow-cancel]');
+  var d = root.querySelector('[data-stepflow-complete]');
+  if (n) n.addEventListener('click', function () { fire('stepflow:next'); });
+  if (p) p.addEventListener('click', function () { fire('stepflow:prev'); });
+  if (c) c.addEventListener('click', function () { fire('stepflow:cancel'); });
+  if (d) d.addEventListener('click', function () { fire('stepflow:complete'); });
+})();
+</script>

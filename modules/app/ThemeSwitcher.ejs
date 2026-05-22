@@ -1,0 +1,113 @@
+<%
+  var _id        = locals.id || ('theme-switcher-' + Math.random().toString(36).slice(2, 8));
+  var _className = locals.className || '';
+  var _menuId    = _id + '-menu';
+%>
+<div id="<%= _id %>" class="relative inline-block<%= _className ? ' ' + _className : '' %>">
+  <button
+    type="button"
+    data-theme-trigger
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="<%= _menuId %>"
+    class="inline-flex items-center justify-center gap-2 rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+  >
+    <span class="w-4 flex items-center justify-center shrink-0" aria-hidden="true">
+      <i data-theme-icon-light    class="fa-solid fa-sun w-4 h-4 hidden" aria-hidden="true"></i>
+      <i data-theme-icon-dark     class="fa-solid fa-moon w-4 h-4 hidden" aria-hidden="true"></i>
+      <i data-theme-icon-system   class="fa-solid fa-desktop w-4 h-4" aria-hidden="true"></i>
+    </span>
+    <span data-theme-label>System</span>
+    <i class="fa-solid fa-chevron-down w-3 h-3 text-text-disabled" aria-hidden="true"></i>
+  </button>
+
+  <div
+    id="<%= _menuId %>"
+    role="menu"
+    aria-labelledby="<%= _id %>"
+    data-theme-menu
+    class="hidden absolute right-0 z-50 mt-1 min-w-[10rem] rounded-md border border-border bg-surface-raised shadow-lg py-1"
+  >
+    <button type="button" role="menuitem" data-theme-set="light"
+      class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-sm text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+      <i class="fa-solid fa-sun w-4 h-4 text-text-secondary" aria-hidden="true"></i>
+      <span>Light</span>
+    </button>
+    <button type="button" role="menuitem" data-theme-set="dark"
+      class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-sm text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+      <i class="fa-solid fa-moon w-4 h-4 text-text-secondary" aria-hidden="true"></i>
+      <span>Dark</span>
+    </button>
+    <button type="button" role="menuitem" data-theme-set="system"
+      class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-sm text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+      <i class="fa-solid fa-desktop w-4 h-4 text-text-secondary" aria-hidden="true"></i>
+      <span>System</span>
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('<%= _id %>');
+  if (!root) return;
+
+  var trigger = root.querySelector('[data-theme-trigger]');
+  var menu    = root.querySelector('[data-theme-menu]');
+  var label   = root.querySelector('[data-theme-label]');
+  var iLight  = root.querySelector('[data-theme-icon-light]');
+  var iDark   = root.querySelector('[data-theme-icon-dark]');
+  var iSystem = root.querySelector('[data-theme-icon-system]');
+  var html    = document.documentElement;
+  var mq      = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function readTheme() {
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t === 'light' || t === 'dark' || t === 'system') return t;
+    return 'system';
+  }
+
+  function apply(theme) {
+    var isDark = theme === 'dark' || (theme === 'system' && mq.matches);
+    html.classList.toggle('dark', isDark);
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+    try { document.cookie = 'theme=' + (isDark ? 'dark' : 'light') + '; path=/; max-age=31536000; SameSite=Lax'; } catch (e) {}
+
+    iLight.classList.toggle('hidden', theme !== 'light');
+    iDark.classList.toggle('hidden', theme !== 'dark');
+    iSystem.classList.toggle('hidden', theme !== 'system');
+    label.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+  }
+
+  function openMenu(open) {
+    menu.classList.toggle('hidden', !open);
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  trigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    openMenu(menu.classList.contains('hidden'));
+  });
+
+  root.querySelectorAll('[data-theme-set]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      apply(btn.getAttribute('data-theme-set'));
+      openMenu(false);
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!root.contains(e.target)) openMenu(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') openMenu(false);
+  });
+
+  mq.addEventListener('change', function () {
+    if (readTheme() === 'system') apply('system');
+  });
+
+  apply(readTheme());
+})();
+</script>

@@ -1,0 +1,39 @@
+<%
+  var _skipHref       = locals.skipHref       || '#main-content';
+  var _skipLabel      = locals.skipLabel      || 'Skip to main content';
+  var _politeness     = locals.politeness     || 'polite';
+  var _message        = locals.message        || '';
+  var _liveId         = locals.liveId         || 'a11y-live-region';
+  var _className      = locals.className      || '';
+%>
+<a
+  href="<%= _skipHref %>"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>"
+>
+  <%= _skipLabel %>
+</a>
+
+<div
+  id="<%= _liveId %>"
+  role="status"
+  aria-live="<%= _politeness %>"
+  aria-atomic="true"
+  class="sr-only"
+><%= _message %></div>
+
+<script>
+(function () {
+  var liveId = '<%= _liveId %>';
+  function announce(msg, politeness) {
+    var el = document.getElementById(liveId);
+    if (!el) return;
+    if (politeness === 'assertive' || politeness === 'polite') {
+      el.setAttribute('aria-live', politeness);
+    }
+    // Clear then set to force AT re-announcement
+    el.textContent = '';
+    setTimeout(function () { el.textContent = String(msg == null ? '' : msg); }, 30);
+  }
+  window.announce = window.announce || announce;
+})();
+</script>

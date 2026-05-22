@@ -1,0 +1,37 @@
+<%
+  var _name     = locals.name     || locals.id || ('field-' + Math.random().toString(36).substr(2, 6));
+  var _label    = locals.label    || '';
+  var _hint     = locals.hint     || '';
+  var _error    = locals.error    || '';
+  var _required = !!locals.required;
+  var _className = locals.className || '';
+
+  var _hintId   = _hint  ? (_name + '-hint')  : '';
+  var _errorId  = _error ? (_name + '-error') : '';
+  var _describedBy = [_hintId, _errorId].filter(Boolean).join(' ');
+
+  // Children get id/aria attrs via these locals — when including this template,
+  // caller can render its <input>/<select>/<textarea> directly inside `children`
+  // using these expected attributes:
+  //   id="<%= name %>"
+  //   aria-describedby="<%= describedBy %>"
+  //   aria-invalid="<%= !!error %>"
+%>
+<div class="flex flex-col gap-1.5<%= _className ? ' ' + _className : '' %>">
+  <label
+    for="<%= _name %>"
+    class="text-sm font-medium text-text-primary<%= _required ? " after:content-['*'] after:ml-0.5 after:text-error" : '' %>"
+  >
+    <%= _label %>
+  </label>
+
+  <%- locals.children || '' %>
+
+  <% if (_hint && !_error) { %>
+  <p id="<%= _hintId %>" class="text-xs text-text-secondary"><%= _hint %></p>
+  <% } %>
+
+  <% if (_error) { %>
+  <p id="<%= _errorId %>" role="alert" class="text-xs text-error"><%= _error %></p>
+  <% } %>
+</div>
