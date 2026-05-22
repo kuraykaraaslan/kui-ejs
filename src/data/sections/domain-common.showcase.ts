@@ -12,6 +12,14 @@ import { buildDomainCommonSeoData } from './domain-common-seo.showcase';
 import { buildDomainCommonLocationData } from './domain-common-location.showcase';
 import { buildDomainCommonEmailData } from './domain-common-email.showcase';
 import { buildDomainCommonChartsData } from './domain-common-charts.showcase';
+import { buildDomainCommonNotificationFilterTabsData } from './domain-common-notification-filter-tabs.showcase';
+import { buildDomainCommonNotificationListItemData } from './domain-common-notification-list-item.showcase';
+import { buildDomainCommonNotificationMenuData } from './domain-common-notification-menu.showcase';
+import { buildDomainCommonCheckoutSuccessStateData } from './domain-common-checkout-success-state.showcase';
+import { buildDomainCommonCartBadgeData } from './domain-common-cart-badge.showcase';
+import { buildDomainCommonChatBoxData } from './domain-common-chat-box.showcase';
+import { buildDomainCommonCountrySelectorData } from './domain-common-country-selector.showcase';
+import { buildDomainCommonSubscriptionPlanCardData } from './domain-common-subscription-plan-card.showcase';
 
 const languageSwitcherSource = fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/i18n/LanguageSwitcher.ejs'), 'utf-8');
 const directionProviderSource= fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/i18n/DirectionProvider.ejs'), 'utf-8');
@@ -196,6 +204,14 @@ export function buildDomainCommonData(): ShowcaseItem[] {
     notFoundPageItem,
     ...buildDomainCommonEmailData(),
     ...buildDomainCommonChartsData(),
+    ...buildDomainCommonNotificationFilterTabsData(),
+    ...buildDomainCommonNotificationListItemData(),
+    ...buildDomainCommonNotificationMenuData(),
+    ...buildDomainCommonCheckoutSuccessStateData(),
+    ...buildDomainCommonCartBadgeData(),
+    ...buildDomainCommonChatBoxData(),
+    ...buildDomainCommonCountrySelectorData(),
+    ...buildDomainCommonSubscriptionPlanCardData(),
   ]) {
     allItems[item.id] = item;
   }
@@ -234,11 +250,13 @@ export function buildDomainCommonData(): ShowcaseItem[] {
     'geo-point-display',
     'processing-status-indicator',
     'currency-selector',
+    'country-selector',
     'direction-provider',
     'credit-card-visual',
     'credit-card-form',
     'saved-card-selector',
     'not-found-page',
+    'chat-box',
     // Emails
     'email-welcome',
     'email-verify-otp',
@@ -272,6 +290,12 @@ export function buildDomainCommonData(): ShowcaseItem[] {
     'email-ticket-reply',
     'email-ticket-resolved',
     'charts',
+    'notification-filter-tabs',
+    'notification-list-item',
+    'notification-menu',
+    'subscription-plan-card',
+    'checkout-success-state',
+    'cart-badge',
   ];
 
   return ORDER.map((id) => {

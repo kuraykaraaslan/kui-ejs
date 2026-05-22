@@ -16,6 +16,9 @@ const responseCardSource      = fs.readFileSync(path.join(BASE, 'ResponseCard.ej
 const operationPanelSource    = fs.readFileSync(path.join(BASE, 'OperationPanel.ejs'),     'utf-8');
 const endpointRowSource       = fs.readFileSync(path.join(BASE, 'EndpointRow.ejs'),        'utf-8');
 const apiTagSectionSource     = fs.readFileSync(path.join(BASE, 'ApiTagSection.ejs'),      'utf-8');
+const apiKeyTokenCardSource   = fs.readFileSync(path.join(BASE, 'ApiKeyTokenCard.ejs'),    'utf-8');
+const authSchemeCardSource    = fs.readFileSync(path.join(BASE, 'AuthSchemeCard.ejs'),     'utf-8');
+const oauthFlowDiagramSource  = fs.readFileSync(path.join(BASE, 'OAuthFlowDiagram.ejs'),   'utf-8');
 
 /* ─── Shared helpers ─── */
 
@@ -512,6 +515,268 @@ const apiTagSectionItem: ShowcaseItem = {
   ],
 };
 
+/* ─── ApiKeyTokenCard ─── */
+
+const apiKeyTokenCardItem: ShowcaseItem = {
+  id:          'api-doc-api-key-token-card',
+  title:       'ApiKeyTokenCard',
+  category:    'Domain · API Doc',
+  abbr:        'AT',
+  description: 'API anahtarı / kişisel erişim token kartı. Maskeli/gizli token gösterimi, göster-gizle, panoya kopyala, ortam rozeti, scope listesi ve isteğe bağlı revoke aksiyonu içerir.',
+  filePath:    'modules/domain/api-doc/ApiKeyTokenCard.ejs',
+  sourceCode:  apiKeyTokenCardSource,
+  variants: [
+    {
+      title: 'Production key with scopes',
+      previewHtml: `<div class="p-4 max-w-sm">
+  <div class="rounded-xl border border-border bg-surface-raised p-4 flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-2 min-w-0">
+        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning-subtle text-warning">
+          <span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
+        </div>
+        <div class="min-w-0">
+          <p class="font-semibold text-text-primary truncate">Production key</p>
+          <div class="mt-1"><span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-success-subtle text-success-fg">production</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-base font-mono text-xs text-text-primary">
+      <span class="flex-1 truncate select-all" aria-label="API token">••••••••••••••••a1b2</span>
+      <button type="button" aria-label="Reveal token" class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay"><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-eye" aria-hidden="true"></i></span></button>
+      <button type="button" aria-label="Copy token" class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay"><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-copy" aria-hidden="true"></i></span></button>
+    </div>
+    <dl class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Created</dt><dd class="text-text-primary">Jan 12, 2026</dd></div>
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Last used</dt><dd class="text-text-primary">May 20, 2026</dd></div>
+    </dl>
+    <div class="flex flex-wrap gap-1.5 border-t border-border pt-3">
+      <code class="px-1.5 py-0.5 rounded bg-primary-subtle text-primary font-mono text-[11px]">read:products</code>
+      <code class="px-1.5 py-0.5 rounded bg-primary-subtle text-primary font-mono text-[11px]">write:orders</code>
+    </div>
+  </div>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/ApiKeyTokenCard', {
+  name: 'Production key',
+  token: 'sk_live_AbCdEfGhIjKlMnOpQrSta1b2',
+  environment: 'production',
+  createdAt: '2026-01-12',
+  lastUsedAt: '2026-05-20',
+  scopes: ['read:products', 'write:orders']
+}) %>`,
+    },
+    {
+      title: 'Staging key with revoke action',
+      previewHtml: `<div class="p-4 max-w-sm">
+  <div class="rounded-xl border border-border bg-surface-raised p-4 flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-2 min-w-0">
+        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning-subtle text-warning">
+          <span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
+        </div>
+        <div class="min-w-0">
+          <p class="font-semibold text-text-primary truncate">Staging key</p>
+          <div class="mt-1"><span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-warning-subtle text-warning-fg">staging</span></div>
+        </div>
+      </div>
+      <button type="button" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-error border border-error/40 hover:bg-error-subtle"><span class="w-3 h-3 inline-flex items-center justify-center"><i class="fa-solid fa-trash" aria-hidden="true"></i></span>Revoke</button>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-surface-base font-mono text-xs text-text-primary">
+      <span class="flex-1 truncate select-all">••••••••••••9z8y</span>
+      <button type="button" aria-label="Reveal token" class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary"><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-eye" aria-hidden="true"></i></span></button>
+      <button type="button" aria-label="Copy token" class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary"><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-copy" aria-hidden="true"></i></span></button>
+    </div>
+    <dl class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Created</dt><dd class="text-text-primary">Apr 1, 2026</dd></div>
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Last used</dt><dd class="text-text-primary">Never</dd></div>
+    </dl>
+  </div>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/ApiKeyTokenCard', {
+  name: 'Staging key',
+  token: 'sk_test_XyZ9z8y',
+  environment: 'staging',
+  createdAt: '2026-04-01',
+  lastUsedAt: null,
+  onRevoke: true
+}) %>`,
+    },
+  ],
+};
+
+/* ─── AuthSchemeCard ─── */
+
+const authSchemeCardItem: ShowcaseItem = {
+  id:          'api-doc-auth-scheme-card',
+  title:       'AuthSchemeCard',
+  category:    'Domain · API Doc',
+  abbr:        'AK',
+  description: 'Bir kimlik doğrulama şemasını kart olarak özetler. İkon, isim, SecuritySchemeBadge, opsiyonel Recommended rozeti, açıklama ve meta alanlar (clientId, scopes vb.) içerir; href / onSelect ile etkileşimli hâle gelir.',
+  filePath:    'modules/domain/api-doc/AuthSchemeCard.ejs',
+  sourceCode:  authSchemeCardSource,
+  variants: [
+    {
+      title: 'OAuth 2.0 recommended scheme',
+      previewHtml: `<div class="p-4 max-w-md">
+  <a href="#" class="block rounded-xl border border-border bg-surface-raised p-4 text-left transition-shadow hover:shadow-md hover:border-border-focus">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-3 min-w-0">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-subtle text-primary">
+          <span class="w-4 h-4 inline-flex items-center justify-center"><i class="fa-solid fa-shield" aria-hidden="true"></i></span>
+        </div>
+        <div class="min-w-0">
+          <p class="font-semibold text-text-primary truncate">OAuth 2.0</p>
+          <div class="mt-1 flex flex-wrap items-center gap-1.5">
+            <span class="inline-flex items-center gap-1.5 rounded-full font-medium px-2 py-0.5 text-xs bg-primary-subtle text-primary border border-primary/30"><i class="fa-solid fa-circle-check text-[10px]" aria-hidden="true"></i>oauth2</span>
+            <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-success-subtle text-success-fg">Recommended</span>
+          </div>
+        </div>
+      </div>
+      <i class="fa-solid fa-arrow-right text-[13px] text-text-disabled mt-1" aria-hidden="true"></i>
+    </div>
+    <p class="mt-3 text-sm text-text-secondary leading-relaxed">Authorization Code flow with PKCE — preferred for user-facing apps.</p>
+    <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 border-t border-border pt-3">
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Client ID</dt><dd class="text-xs text-text-primary font-mono break-words">prod_client_42</dd></div>
+      <div><dt class="text-[10px] uppercase tracking-wider text-text-disabled">Scopes</dt><dd class="text-xs text-text-primary font-mono break-words">read write</dd></div>
+    </dl>
+  </a>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/AuthSchemeCard', {
+  name: 'OAuth 2.0',
+  type: 'oauth2',
+  recommended: true,
+  description: 'Authorization Code flow with PKCE — preferred for user-facing apps.',
+  metaItems: [
+    { label: 'Client ID', value: 'prod_client_42' },
+    { label: 'Scopes',    value: 'read write' },
+  ],
+  href: '/auth/oauth2'
+}) %>`,
+    },
+    {
+      title: 'API Key static scheme',
+      previewHtml: `<div class="p-4 max-w-md">
+  <div class="block rounded-xl border border-border bg-surface-raised p-4 text-left">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-3 min-w-0">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-subtle text-primary">
+          <span class="w-4 h-4 inline-flex items-center justify-center"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
+        </div>
+        <div class="min-w-0">
+          <p class="font-semibold text-text-primary truncate">X-API-Key</p>
+          <div class="mt-1 flex flex-wrap items-center gap-1.5">
+            <span class="inline-flex items-center gap-1.5 rounded-full font-medium px-2 py-0.5 text-xs bg-warning-subtle text-warning-fg border border-warning/30"><i class="fa-solid fa-key text-[10px]" aria-hidden="true"></i>apiKey</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-3 text-sm text-text-secondary leading-relaxed">Static header-based key for server-to-server integrations.</p>
+  </div>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/AuthSchemeCard', {
+  name: 'X-API-Key',
+  type: 'apiKey',
+  description: 'Static header-based key for server-to-server integrations.'
+}) %>`,
+    },
+  ],
+};
+
+/* ─── OAuthFlowDiagram ─── */
+
+const oauthFlowDiagramItem: ShowcaseItem = {
+  id:          'api-doc-oauth-flow-diagram',
+  title:       'OAuthFlowDiagram',
+  category:    'Domain · API Doc',
+  abbr:        'OF',
+  description: 'OAuth 2.0 akışını görsel olarak özetler: User → Your App → Auth Server hattı, akış türüne özel numaralı adım listesi, endpoint URL\'leri (authorize / token / refresh) ve mevcut scope tanımları.',
+  filePath:    'modules/domain/api-doc/OAuthFlowDiagram.ejs',
+  sourceCode:  oauthFlowDiagramSource,
+  variants: [
+    {
+      title: 'Authorization Code flow',
+      previewHtml: `<div class="p-4 max-w-md">
+  <div class="rounded-xl border border-border bg-surface-raised p-4 flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-text-disabled">OAuth 2.0 Flow</p>
+        <p class="text-base font-semibold text-text-primary mt-0.5">Authorization Code</p>
+      </div>
+      <span class="inline-flex items-center gap-1 rounded-full font-medium px-1.5 py-0 text-[10px] bg-primary-subtle text-primary"><span class="w-3 h-3 inline-flex items-center justify-center"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>authorizationCode</span>
+    </div>
+    <div class="flex items-center justify-between gap-2 px-2 py-3 bg-surface-base rounded-lg border border-border">
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-user text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">User</span></div>
+      <i class="fa-solid fa-arrow-right text-[11px] text-text-disabled" aria-hidden="true"></i>
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-server text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">Your App</span></div>
+      <i class="fa-solid fa-arrow-right text-[11px] text-text-disabled" aria-hidden="true"></i>
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-shield-halved text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">Auth Server</span></div>
+    </div>
+    <ol class="space-y-1.5">
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">1</span><span>User clicks "Sign in"</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">2</span><span>Redirect to /authorize</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">3</span><span>User grants consent</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">4</span><span>Code returned to app</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">5</span><span>Exchange code for token</span></li>
+    </ol>
+    <dl class="border-t border-border pt-3 space-y-1.5">
+      <div class="flex items-baseline gap-2"><dt class="shrink-0 text-[10px] uppercase tracking-wider text-text-disabled w-32">Authorization URL</dt><dd class="font-mono text-xs text-text-primary break-all">https://auth.example.com/authorize</dd></div>
+      <div class="flex items-baseline gap-2"><dt class="shrink-0 text-[10px] uppercase tracking-wider text-text-disabled w-32">Token URL</dt><dd class="font-mono text-xs text-text-primary break-all">https://auth.example.com/token</dd></div>
+    </dl>
+    <div class="border-t border-border pt-3">
+      <p class="text-[10px] uppercase tracking-wider text-text-disabled mb-2">Available scopes</p>
+      <ul class="space-y-1">
+        <li class="flex items-start gap-2 text-xs"><i class="fa-solid fa-circle-check text-[11px] text-success mt-0.5 shrink-0" aria-hidden="true"></i><div class="min-w-0"><code class="font-mono text-text-primary font-semibold">read</code><span class="text-text-secondary"> &mdash; Read access</span></div></li>
+        <li class="flex items-start gap-2 text-xs"><i class="fa-solid fa-circle-check text-[11px] text-success mt-0.5 shrink-0" aria-hidden="true"></i><div class="min-w-0"><code class="font-mono text-text-primary font-semibold">write</code><span class="text-text-secondary"> &mdash; Write access</span></div></li>
+      </ul>
+    </div>
+  </div>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/OAuthFlowDiagram', {
+  flow: 'authorizationCode',
+  authorizationUrl: 'https://auth.example.com/authorize',
+  tokenUrl:         'https://auth.example.com/token',
+  scopes: [
+    { name: 'read',  description: 'Read access' },
+    { name: 'write', description: 'Write access' },
+  ]
+}) %>`,
+    },
+    {
+      title: 'Client Credentials flow',
+      previewHtml: `<div class="p-4 max-w-md">
+  <div class="rounded-xl border border-border bg-surface-raised p-4 flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wider text-text-disabled">OAuth 2.0 Flow</p>
+        <p class="text-base font-semibold text-text-primary mt-0.5">Client Credentials</p>
+      </div>
+      <span class="inline-flex items-center gap-1 rounded-full font-medium px-1.5 py-0 text-[10px] bg-primary-subtle text-primary"><span class="w-3 h-3 inline-flex items-center justify-center"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>clientCredentials</span>
+    </div>
+    <div class="flex items-center justify-between gap-2 px-2 py-3 bg-surface-base rounded-lg border border-border">
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-user text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">User</span></div>
+      <i class="fa-solid fa-arrow-right text-[11px] text-text-disabled" aria-hidden="true"></i>
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-server text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">Your App</span></div>
+      <i class="fa-solid fa-arrow-right text-[11px] text-text-disabled" aria-hidden="true"></i>
+      <div class="flex flex-col items-center gap-1 min-w-0"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary"><i class="fa-solid fa-shield-halved text-[13px]" aria-hidden="true"></i></span><span class="text-[10px] font-medium text-text-secondary truncate">Auth Server</span></div>
+    </div>
+    <ol class="space-y-1.5">
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">1</span><span>App authenticates with client ID + secret</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">2</span><span>POST to /token</span></li>
+      <li class="flex items-start gap-2 text-sm text-text-primary"><span class="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-subtle text-primary text-[10px] font-bold font-mono">3</span><span>Access token returned</span></li>
+    </ol>
+    <dl class="border-t border-border pt-3 space-y-1.5">
+      <div class="flex items-baseline gap-2"><dt class="shrink-0 text-[10px] uppercase tracking-wider text-text-disabled w-32">Token URL</dt><dd class="font-mono text-xs text-text-primary break-all">https://auth.example.com/token</dd></div>
+    </dl>
+  </div>
+</div>`,
+      code: `<%- include('modules/domain/api-doc/OAuthFlowDiagram', {
+  flow: 'clientCredentials',
+  tokenUrl: 'https://auth.example.com/token'
+}) %>`,
+    },
+  ],
+};
+
 /* ─── Builder ─── */
 
 export function buildApiDocDomainData(): ShowcaseItem[] {
@@ -528,5 +793,8 @@ export function buildApiDocDomainData(): ShowcaseItem[] {
     operationPanelItem,
     endpointRowItem,
     apiTagSectionItem,
+    apiKeyTokenCardItem,
+    authSchemeCardItem,
+    oauthFlowDiagramItem,
   ];
 }

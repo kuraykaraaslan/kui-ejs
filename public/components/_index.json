@@ -29,6 +29,30 @@
     "category": "Atom",
     "file": "spinner.md"
   },
+  "skeleton": {
+    "name": "Skeleton",
+    "layer": "ui",
+    "category": "Atom",
+    "file": "skeleton.md"
+  },
+  "skip-link": {
+    "name": "SkipLink + LiveRegion",
+    "layer": "ui",
+    "category": "Atom",
+    "file": "skip-link.md"
+  },
+  "brand-logo": {
+    "name": "BrandLogo",
+    "layer": "ui",
+    "category": "Atom",
+    "file": "brand-logo.md"
+  },
+  "star-rating": {
+    "name": "StarRating",
+    "layer": "ui",
+    "category": "Atom",
+    "file": "star-rating.md"
+  },
   "toggle": {
     "name": "Toggle",
     "layer": "ui",
@@ -76,6 +100,30 @@
     "layer": "ui",
     "category": "Molecule",
     "file": "checkbox-group.md"
+  },
+  "multi-select": {
+    "name": "MultiSelect",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "multi-select.md"
+  },
+  "combo-box": {
+    "name": "ComboBox",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "combo-box.md"
+  },
+  "date-range-picker": {
+    "name": "DateRangePicker",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "date-range-picker.md"
+  },
+  "tag-input": {
+    "name": "TagInput",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "tag-input.md"
   },
   "date-picker": {
     "name": "DatePicker",
@@ -167,6 +215,84 @@
     "category": "Organism",
     "file": "video-player.md"
   },
+  "slider": {
+    "name": "Slider",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "slider.md"
+  },
+  "stat-card": {
+    "name": "StatCard",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "stat-card.md"
+  },
+  "tab-button": {
+    "name": "TabButton",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "tab-button.md"
+  },
+  "view-toggle": {
+    "name": "ViewToggle",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "view-toggle.md"
+  },
+  "empty-state": {
+    "name": "EmptyState",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "empty-state.md"
+  },
+  "tooltip": {
+    "name": "Tooltip",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "tooltip.md"
+  },
+  "dropdown-menu": {
+    "name": "DropdownMenu",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "dropdown-menu.md"
+  },
+  "popover": {
+    "name": "Popover",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "popover.md"
+  },
+  "advanced-data-table": {
+    "name": "AdvancedDataTable",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "advanced-data-table.md"
+  },
+  "server-data-table": {
+    "name": "ServerDataTable",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "server-data-table.md"
+  },
+  "tree-view": {
+    "name": "TreeView",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "tree-view.md"
+  },
+  "content-score-bar": {
+    "name": "ContentScoreBar",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "content-score-bar.md"
+  },
+  "page-header": {
+    "name": "PageHeader",
+    "layer": "ui",
+    "category": "Organism",
+    "file": "page-header.md"
+  },
   "app-shell": {
     "name": "AppShell",
     "layer": "app",
@@ -256,6 +382,66 @@
     "layer": "app",
     "category": "App",
     "file": "splash-screen.md"
+  },
+  "accessibility-kit": {
+    "name": "AccessibilityKit",
+    "layer": "app",
+    "category": "App",
+    "file": "accessibility-kit.md"
+  },
+  "app-drawer": {
+    "name": "AppDrawer",
+    "layer": "app",
+    "category": "App",
+    "file": "app-drawer.md"
+  },
+  "form-field": {
+    "name": "FormField",
+    "layer": "app",
+    "category": "App",
+    "file": "form-field.md"
+  },
+  "notification-system": {
+    "name": "NotificationSystem",
+    "layer": "app",
+    "category": "App",
+    "file": "notification-system.md"
+  },
+  "section-card": {
+    "name": "SectionCard",
+    "layer": "app",
+    "category": "App",
+    "file": "section-card.md"
+  },
+  "inline-alert": {
+    "name": "InlineAlert",
+    "layer": "app",
+    "category": "App",
+    "file": "inline-alert.md"
+  },
+  "step-shell": {
+    "name": "StepShell",
+    "layer": "app",
+    "category": "App",
+    "file": "step-shell.md"
+  },
+  "app-breadcrumbs": {
+    "name": "AppBreadcrumbs",
+    "layer": "app",
+    "category": "App",
+    "file": "app-breadcrumbs.md"
+  },
+  "app-footer": {
+    "name": "AppFooter",
+    "layer": "app",
+    "category": "App",
+    "file": "app-footer.md"
+  },
+  "theme-switcher": {
+    "name": "ThemeSwitcher",
+    "layer": "app",
+    "category": "App",
+    "file": "theme-switcher.md"
   },
   "login-form": {
     "name": "LoginForm",
@@ -443,6 +629,12 @@
     "category": "Domain",
     "file": "currency-selector.md"
   },
+  "country-selector": {
+    "name": "CountrySelector",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "country-selector.md"
+  },
   "direction-provider": {
     "name": "DirectionProvider",
     "layer": "domain",
@@ -472,6 +664,12 @@
     "layer": "domain",
     "category": "Domain",
     "file": "not-found-page.md"
+  },
+  "chat-box": {
+    "name": "ChatBox",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "chat-box.md"
   },
   "email-welcome": {
     "name": "WelcomeEmail",
@@ -665,6 +863,42 @@
     "category": "Domain",
     "file": "charts.md"
   },
+  "notification-filter-tabs": {
+    "name": "NotificationFilterTabs",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "notification-filter-tabs.md"
+  },
+  "notification-list-item": {
+    "name": "NotificationListItem",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "notification-list-item.md"
+  },
+  "notification-menu": {
+    "name": "NotificationMenu",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "notification-menu.md"
+  },
+  "subscription-plan-card": {
+    "name": "SubscriptionPlanCard",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "subscription-plan-card.md"
+  },
+  "checkout-success-state": {
+    "name": "CheckoutSuccessState",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "checkout-success-state.md"
+  },
+  "cart-badge": {
+    "name": "CartBadge",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "cart-badge.md"
+  },
   "modem-connection-status-badge": {
     "name": "ConnectionStatusBadge",
     "layer": "domain",
@@ -778,6 +1012,24 @@
     "layer": "domain",
     "category": "Domain · API Doc",
     "file": "api-doc-api-tag-section.md"
+  },
+  "api-doc-api-key-token-card": {
+    "name": "ApiKeyTokenCard",
+    "layer": "domain",
+    "category": "Domain · API Doc",
+    "file": "api-doc-api-key-token-card.md"
+  },
+  "api-doc-auth-scheme-card": {
+    "name": "AuthSchemeCard",
+    "layer": "domain",
+    "category": "Domain · API Doc",
+    "file": "api-doc-auth-scheme-card.md"
+  },
+  "api-doc-oauth-flow-diagram": {
+    "name": "OAuthFlowDiagram",
+    "layer": "domain",
+    "category": "Domain · API Doc",
+    "file": "api-doc-oauth-flow-diagram.md"
   },
   "invoice-status-badge": {
     "name": "InvoiceStatusBadge",
