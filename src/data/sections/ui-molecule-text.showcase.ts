@@ -44,8 +44,8 @@ export function buildMoleculeTextData(): ShowcaseItem[] {
       variants: [
         {
           title: 'Default',
-          previewHtml: wrapW(searchBar('placeholder="Search components…"')),
-          code: `<%- include('modules/ui/SearchBar', { placeholder: 'Search components…' }) %>`,
+          previewHtml: wrapW(searchBar('placeholder="Search.."')),
+          code: `<%- include('modules/ui/SearchBar', { placeholder: 'Search..' }) %>`,
         },
         {
           title: 'With value (clear button)',

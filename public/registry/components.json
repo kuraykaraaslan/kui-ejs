@@ -813,7 +813,7 @@
       "variants": [
         {
           "title": "Default",
-          "code": "<%- include('modules/ui/SearchBar', { placeholder: 'Search components…' }) %>"
+          "code": "<%- include('modules/ui/SearchBar', { placeholder: 'Search..' }) %>"
         },
         {
           "title": "With value (clear button)",

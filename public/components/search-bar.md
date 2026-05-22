@@ -23,7 +23,7 @@ role="searchbox" with search icon and clear button. Works in controlled and unco
 ### Default
 
 ```ejs
-<%- include('modules/ui/SearchBar', { placeholder: 'Search components…' }) %>
+<%- include('modules/ui/SearchBar', { placeholder: 'Search..' }) %>
 ```
 
 ### With value (clear button)
