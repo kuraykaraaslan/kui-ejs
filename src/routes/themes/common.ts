@@ -1,3 +1,4 @@
+import { buildPageTitle } from '../../config/showcase.config';
 import { Router, Request, Response } from 'express';
 
 const router = Router();
@@ -107,7 +108,7 @@ router.get('/', (_req: Request, res: Response) => {
 router.get('/auth/login', (req: Request, res: Response) => {
   res.render('theme/common/auth/login', {
     layout:      'layouts/blank',
-    title:       'Login — Common Theme',
+    title: buildPageTitle('Login', 'Common Theme'),
     showExpired: !req.query.noexpired,
     successMsg:  req.query.success ? `Signed in as ${req.query.email || 'you'}` : '',
     error:       req.query.error   || '',
@@ -124,7 +125,7 @@ router.post('/auth/login', (req: Request, res: Response) => {
 router.get('/auth/register', (req: Request, res: Response) => {
   res.render('theme/common/auth/register', {
     layout:       'layouts/blank',
-    title:        'Register — Common Theme',
+    title: buildPageTitle('Register', 'Common Theme'),
     successEmail: req.query.success || '',
     error:        req.query.error   || '',
   });
@@ -142,7 +143,7 @@ router.post('/auth/register', (req: Request, res: Response) => {
 router.get('/auth/forgot-password', (req: Request, res: Response) => {
   res.render('theme/common/auth/forgot-password', {
     layout:     'layouts/blank',
-    title:      'Forgot Password — Common Theme',
+    title: buildPageTitle('Forgot Password', 'Common Theme'),
     sent:       !!req.query.sent,
     emailValue: req.query.email || '',
   });
@@ -156,7 +157,7 @@ router.post('/auth/forgot-password', (req: Request, res: Response) => {
 router.get('/auth/reset-password', (req: Request, res: Response) => {
   res.render('theme/common/auth/reset-password', {
     layout:  'layouts/blank',
-    title:   'Reset Password — Common Theme',
+    title: buildPageTitle('Reset Password', 'Common Theme'),
     success: !!req.query.success,
     error:   req.query.error || '',
   });
@@ -172,7 +173,7 @@ router.post('/auth/reset-password', (req: Request, res: Response) => {
 router.get('/auth/verify-email', (req: Request, res: Response) => {
   res.render('theme/common/auth/verify-email', {
     layout:   'layouts/blank',
-    title:    'Verify Email — Common Theme',
+    title: buildPageTitle('Verify Email', 'Common Theme'),
     verified: !!req.query.verified,
   });
 });
@@ -180,7 +181,7 @@ router.get('/auth/verify-email', (req: Request, res: Response) => {
 router.get('/auth/two-factor', (req: Request, res: Response) => {
   res.render('theme/common/auth/two-factor', {
     layout:  'layouts/blank',
-    title:   'Two-Factor Auth — Common Theme',
+    title: buildPageTitle('Two-Factor Auth', 'Common Theme'),
     success: !!req.query.success,
   });
 });
@@ -192,7 +193,7 @@ router.get('/auth/two-factor', (req: Request, res: Response) => {
 router.get('/cart', (_req: Request, res: Response) => {
   res.render('theme/common/cart/index', {
     layout:        'layouts/blank',
-    title:         'Cart — Common Theme',
+    title: buildPageTitle('Cart', 'Common Theme'),
     cart:          demoCart,
     appliedCoupon: cartCoupon,
   });
@@ -240,7 +241,7 @@ router.post('/cart/coupon/remove', (_req: Request, res: Response) => {
 router.get('/payment', (_req: Request, res: Response) => {
   res.render('theme/common/payment/index', {
     layout:      'layouts/blank',
-    title:       'Payment Components — Common Theme',
+    title: buildPageTitle('Payment Components', 'Common Theme'),
     orderTotals: ORDER_TOTALS,
     savedCards:  demoCards,
     demoPayment: { paymentId: 'pay_demo_001', provider: 'Stripe', providerPaymentId: 'pi_3NxYz2EwLHMpEt9Q1aB2c3D4', method: 'CREDIT_CARD', status: 'PAID', amount: ORDER_TOTALS.total, currency: ORDER_TOTALS.currency },
@@ -250,7 +251,7 @@ router.get('/payment', (_req: Request, res: Response) => {
 router.get('/payment/checkout', (_req: Request, res: Response) => {
   res.render('theme/common/payment/checkout', {
     layout:      'layouts/blank',
-    title:       'Checkout — Common Theme',
+    title: buildPageTitle('Checkout', 'Common Theme'),
     addresses:   demoAddresses,
     cards:       demoCards,
     demoCart,
@@ -263,7 +264,7 @@ router.get('/payment/checkout', (_req: Request, res: Response) => {
 ══════════════════════════════════════════════════════════════ */
 
 router.get('/not-found', (_req: Request, res: Response) => {
-  res.render('theme/common/not-found', { layout: 'layouts/blank', title: '404 — Common Theme' });
+  res.render('theme/common/not-found', { layout: 'layouts/blank', title: buildPageTitle('404', 'Common Theme') });
 });
 
 /* ══════════════════════════════════════════════════════════════
@@ -286,7 +287,7 @@ function accountContext() {
 router.get('/account/profile', (req: Request, res: Response) => {
   res.render('theme/common/account/profile', {
     layout:  'layouts/blank',
-    title:   'Profile — Common Theme',
+    title: buildPageTitle('Profile', 'Common Theme'),
     user:    accountContext(),
     saved:   !!req.query.saved,
     editing: !!req.query.edit,
@@ -303,7 +304,7 @@ router.post('/account/profile', (req: Request, res: Response) => {
 router.get('/account/settings', (req: Request, res: Response) => {
   res.render('theme/common/account/settings', {
     layout:      'layouts/blank',
-    title:       'Settings — Common Theme',
+    title: buildPageTitle('Settings', 'Common Theme'),
     user:        accountContext(),
     preferences: demoPreferences,
     prefSaved:   !!req.query.prefSaved,
@@ -334,7 +335,7 @@ router.post('/account/settings/password', (req: Request, res: Response) => {
 router.get('/account/addresses', (req: Request, res: Response) => {
   res.render('theme/common/account/addresses', {
     layout:    'layouts/blank',
-    title:     'Addresses — Common Theme',
+    title: buildPageTitle('Addresses', 'Common Theme'),
     user:      accountContext(),
     addresses: demoAddresses,
     mode:      (req.query.mode as string) || 'list',
@@ -377,7 +378,7 @@ router.post('/account/addresses/:idx/delete', (req: Request, res: Response) => {
 router.get('/account/payment-methods', (req: Request, res: Response) => {
   res.render('theme/common/account/payment-methods', {
     layout: 'layouts/blank',
-    title:  'Payment Methods — Common Theme',
+    title: buildPageTitle('Payment Methods', 'Common Theme'),
     user:   accountContext(),
     cards:  demoCards,
     adding: !!req.query.adding,
@@ -408,7 +409,7 @@ router.post('/account/payment-methods/:id/remove', (req: Request, res: Response)
 router.get('/account/orders', (req: Request, res: Response) => {
   res.render('theme/common/account/orders', {
     layout: 'layouts/blank',
-    title:  'Orders — Common Theme',
+    title: buildPageTitle('Orders', 'Common Theme'),
     user:   accountContext(),
     orders: DEMO_ORDERS,
     filter: (req.query.filter as string) || 'ALL',
@@ -449,7 +450,7 @@ const EMAIL_ORDER_TOTALS = { subtotal: 1299.90, discount: 0, tax: 233.98, shippi
 const EMAIL_SHIPPING     = { fullName: 'John Doe', addressLine1: 'Atatürk Caddesi No:42', city: 'Istanbul', country: 'Turkey', postalCode: '34330' };
 
 router.get('/email', (_req, res) =>
-  res.render('theme/common/email/index', { layout: 'layouts/blank', title: 'Email Previews — Common Theme' }));
+  res.render('theme/common/email/index', { layout: 'layouts/blank', title: buildPageTitle('Email Previews', 'Common Theme') }));
 
 /* Auth emails */
 router.get('/email/auth/welcome', (_req, res) =>

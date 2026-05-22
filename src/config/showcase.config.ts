@@ -175,3 +175,17 @@ export const SITE_LOCALS = {
   author: SHOWCASE_LINKS.author.name,
   authorUrl: SHOWCASE_LINKS.author.url,
 };
+
+/**
+ * Build a consistent browser `<title>` across showcase + theme routes.
+ * Mirrors NextJS `metadata.title.template` pattern (`%s | ${name}`).
+ *
+ * - `buildPageTitle()` → `"Brand — Tagline"` (site default)
+ * - `buildPageTitle('Button')` → `"Button | Brand"`
+ * - `buildPageTitle('Dashboard', 'UPS Theme')` → `"Dashboard — UPS Theme | Brand"`
+ */
+export function buildPageTitle(page?: string | null, suffix?: string | null): string {
+  if (!page) return SITE_LOCALS.title;
+  if (suffix) return `${page} — ${suffix} | ${SHOWCASE_BRAND.name}`;
+  return `${page} | ${SHOWCASE_BRAND.name}`;
+}

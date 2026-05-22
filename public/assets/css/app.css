@@ -3,10 +3,8 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
     --color-red-50: oklch(97.1% 0.013 17.38);
     --color-red-200: oklch(88.5% 0.062 18.334);
     --color-red-500: oklch(63.7% 0.237 25.331);
@@ -144,8 +142,8 @@
     --aspect-video: 16 / 9;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    --default-font-family: var(--font-sans);
-    --default-mono-font-family: var(--font-mono);
+    --default-font-family: var(--font-geist-sans);
+    --default-mono-font-family: var(--font-geist-mono);
   }
 }
 @layer base {
@@ -467,9 +465,6 @@
   .left-3 {
     left: calc(var(--spacing) * 3);
   }
-  .left-3\.5 {
-    left: calc(var(--spacing) * 3.5);
-  }
   .left-4 {
     left: calc(var(--spacing) * 4);
   }
@@ -497,9 +492,6 @@
   .z-50 {
     z-index: 50;
   }
-  .z-\[40\] {
-    z-index: 40;
-  }
   .z-\[60\] {
     z-index: 60;
   }
@@ -517,9 +509,6 @@
   }
   .z-\[101\] {
     z-index: 101;
-  }
-  .z-\[110\] {
-    z-index: 110;
   }
   .z-\[9999\] {
     z-index: 9999;
@@ -836,9 +825,6 @@
   .max-h-48 {
     max-height: calc(var(--spacing) * 48);
   }
-  .max-h-52 {
-    max-height: calc(var(--spacing) * 52);
-  }
   .max-h-56 {
     max-height: calc(var(--spacing) * 56);
   }
@@ -1102,9 +1088,6 @@
   }
   .min-w-\[3\.5rem\] {
     min-width: 3.5rem;
-  }
-  .min-w-\[8rem\] {
-    min-width: 8rem;
   }
   .min-w-\[10rem\] {
     min-width: 10rem;
@@ -2449,9 +2432,6 @@
   .pl-9 {
     padding-left: calc(var(--spacing) * 9);
   }
-  .pl-10 {
-    padding-left: calc(var(--spacing) * 10);
-  }
   .text-center {
     text-align: center;
   }
@@ -2462,10 +2442,10 @@
     text-align: right;
   }
   .font-mono {
-    font-family: var(--font-mono);
+    font-family: var(--font-geist-mono);
   }
   .font-sans {
-    font-family: var(--font-sans);
+    font-family: var(--font-geist-sans);
   }
   .text-2xl {
     font-size: var(--text-2xl);
@@ -3207,11 +3187,6 @@
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
   }
-  .peer-focus\:ring-border-focus {
-    &:is(:where(.peer):focus ~ *) {
-      --tw-ring-color: var(--border-focus);
-    }
-  }
   .peer-focus\:ring-primary\/20 {
     &:is(:where(.peer):focus ~ *) {
       --tw-ring-color: var(--primary);
@@ -3283,14 +3258,6 @@
   .focus-within\:ring-border-focus {
     &:focus-within {
       --tw-ring-color: var(--border-focus);
-    }
-  }
-  .focus-within\:ring-primary\/20 {
-    &:focus-within {
-      --tw-ring-color: var(--primary);
-      @supports (color: color-mix(in lab, red, red)) {
-        --tw-ring-color: color-mix(in oklab, var(--primary) 20%, transparent);
-      }
     }
   }
   .hover\:h-2 {
@@ -3835,11 +3802,6 @@
       border-color: var(--border-focus);
     }
   }
-  .focus-visible\:bg-primary-subtle {
-    &:focus-visible {
-      background-color: var(--primary-subtle);
-    }
-  }
   .focus-visible\:bg-surface-overlay {
     &:focus-visible {
       background-color: var(--surface-overlay);
@@ -4299,6 +4261,16 @@
       appearance: none;
     }
   }
+}
+:root {
+  --font-geist-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+body {
+  font-family: var(--font-geist-sans);
+}
+code, pre, kbd, samp, .font-mono {
+  font-family: var(--font-geist-mono);
 }
 #sidebar {
   width: 14rem;

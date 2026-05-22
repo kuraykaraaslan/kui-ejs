@@ -1,3 +1,4 @@
+import { buildPageTitle } from '../../config/showcase.config';
 import { Router, Request, Response } from 'express';
 import { invoiceData } from '../../data/invoice.data';
 
@@ -10,7 +11,7 @@ router.get('/', (req: Request, res: Response) => {
     : invoiceData.invoices.filter(i => i.status === statusFilter);
   res.render('theme/invoice/index', {
     layout: 'layouts/blank',
-    title: 'Invoices — Nexus Digital',
+    title: buildPageTitle('Invoices', 'Invoice Theme'),
     data: invoiceData,
     invoices,
     statusFilter,

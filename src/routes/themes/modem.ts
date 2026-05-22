@@ -1,3 +1,4 @@
+import { buildPageTitle } from '../../config/showcase.config';
 import { Router, Request, Response } from 'express';
 import { modemState } from '../../data/modem.data';
 
@@ -6,7 +7,7 @@ const router = Router();
 router.get('/', (_req: Request, res: Response) => {
   res.render('theme/modem/index', {
     layout: 'layouts/blank',
-    title:  'Dashboard — Modem Theme',
+    title: buildPageTitle('Dashboard', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -14,7 +15,7 @@ router.get('/', (_req: Request, res: Response) => {
 router.get('/network', (_req: Request, res: Response) => {
   res.render('theme/modem/network', {
     layout: 'layouts/blank',
-    title:  'Network — Modem Theme',
+    title: buildPageTitle('Network', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -22,7 +23,7 @@ router.get('/network', (_req: Request, res: Response) => {
 router.get('/wifi', (_req: Request, res: Response) => {
   res.render('theme/modem/wifi', {
     layout: 'layouts/blank',
-    title:  'Wi-Fi — Modem Theme',
+    title: buildPageTitle('Wi-Fi', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -30,7 +31,7 @@ router.get('/wifi', (_req: Request, res: Response) => {
 router.get('/devices', (req: Request, res: Response) => {
   res.render('theme/modem/devices', {
     layout:  'layouts/blank',
-    title:   'Devices — Modem Theme',
+    title: buildPageTitle('Devices', 'Modem Theme'),
     state:   modemState,
     filter:  (req.query.filter as string) || 'ALL',
   });
@@ -39,7 +40,7 @@ router.get('/devices', (req: Request, res: Response) => {
 router.get('/firewall', (_req: Request, res: Response) => {
   res.render('theme/modem/firewall', {
     layout: 'layouts/blank',
-    title:  'Firewall — Modem Theme',
+    title: buildPageTitle('Firewall', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -47,7 +48,7 @@ router.get('/firewall', (_req: Request, res: Response) => {
 router.get('/nat', (_req: Request, res: Response) => {
   res.render('theme/modem/nat', {
     layout: 'layouts/blank',
-    title:  'NAT / Port Forwarding — Modem Theme',
+    title: buildPageTitle('NAT / Port Forwarding', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -55,7 +56,7 @@ router.get('/nat', (_req: Request, res: Response) => {
 router.get('/vpn', (_req: Request, res: Response) => {
   res.render('theme/modem/vpn', {
     layout: 'layouts/blank',
-    title:  'VPN — Modem Theme',
+    title: buildPageTitle('VPN', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -63,7 +64,7 @@ router.get('/vpn', (_req: Request, res: Response) => {
 router.get('/qos', (_req: Request, res: Response) => {
   res.render('theme/modem/qos', {
     layout: 'layouts/blank',
-    title:  'QoS — Modem Theme',
+    title: buildPageTitle('QoS', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -71,7 +72,7 @@ router.get('/qos', (_req: Request, res: Response) => {
 router.get('/parental', (_req: Request, res: Response) => {
   res.render('theme/modem/parental', {
     layout: 'layouts/blank',
-    title:  'Parental Controls — Modem Theme',
+    title: buildPageTitle('Parental Controls', 'Modem Theme'),
     state:  modemState,
   });
 });
@@ -79,7 +80,7 @@ router.get('/parental', (_req: Request, res: Response) => {
 router.get('/system', (req: Request, res: Response) => {
   res.render('theme/modem/system', {
     layout:    'layouts/blank',
-    title:     'System — Modem Theme',
+    title: buildPageTitle('System', 'Modem Theme'),
     state:     modemState,
     logFilter: (req.query.logFilter as string) || 'ALL',
   });
@@ -88,7 +89,7 @@ router.get('/system', (req: Request, res: Response) => {
 router.get('/settings', (_req: Request, res: Response) => {
   res.render('theme/modem/settings', {
     layout: 'layouts/blank',
-    title:  'Settings — Modem Theme',
+    title: buildPageTitle('Settings', 'Modem Theme'),
     state:  modemState,
   });
 });
