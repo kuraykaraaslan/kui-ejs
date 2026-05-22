@@ -88,6 +88,14 @@
     </div>
     <% } %>
 
+    <!-- Search -->
+    <div class="px-3 py-2.5 border-b border-border shrink-0">
+      <%- include('../../../modules/ui/SearchBar', {
+        id: 'api-nav-search',
+        placeholder: 'Filter endpoints…'
+      }) %>
+    </div>
+
     <!-- Tag / endpoint nav -->
     <nav class="flex-1 overflow-y-auto px-2 py-2 space-y-0.5" aria-label="API endpoints">
       <% tags.forEach(function(tag) {
@@ -150,6 +158,54 @@
 
   </aside>
 
+  <!-- Endpoint filter: wires the two SearchBar inputs to the tag/endpoint nav -->
+  <script>(function(){
+    var nav = document.querySelector('nav[aria-label="API endpoints"]');
+    if (!nav) return;
+    var inputs = [document.getElementById('api-nav-search'), document.getElementById('api-topbar-search')].filter(Boolean);
+    if (!inputs.length) return;
+
+    var emptyMsg = document.createElement('p');
+    emptyMsg.className = 'px-3 py-6 text-xs text-text-disabled text-center hidden';
+    emptyMsg.setAttribute('data-api-search-empty', '');
+    nav.insertBefore(emptyMsg, nav.firstChild);
+
+    function apply(query) {
+      var q = (query || '').trim().toLowerCase();
+      var anyMatch = false;
+
+      nav.querySelectorAll('details').forEach(function(d) {
+        var summaryText = (d.querySelector('summary span') || {}).textContent || '';
+        var tagMatches = q === '' || summaryText.toLowerCase().indexOf(q) !== -1;
+        var hasMatchingItem = false;
+
+        d.querySelectorAll('li').forEach(function(li) {
+          var path    = (li.querySelector('p.font-mono')   || {}).textContent || '';
+          var summary = (li.querySelector('p.text-\\[10px\\]') || {}).textContent || '';
+          var hit = q === '' || tagMatches || (path + ' ' + summary).toLowerCase().indexOf(q) !== -1;
+          li.classList.toggle('hidden', !hit);
+          if (hit) hasMatchingItem = true;
+        });
+
+        var visible = tagMatches || hasMatchingItem;
+        d.classList.toggle('hidden', !visible);
+        if (visible) anyMatch = true;
+        if (q !== '' && !tagMatches && hasMatchingItem) d.setAttribute('open', '');
+      });
+
+      emptyMsg.textContent = 'No results for "' + (query || '') + '"';
+      emptyMsg.classList.toggle('hidden', q === '' || anyMatch);
+    }
+
+    inputs.forEach(function(input) {
+      input.addEventListener('input', function(e) {
+        var v = e.target.value;
+        inputs.forEach(function(other) { if (other !== input && other.value !== v) other.value = v; });
+        apply(v);
+      });
+    });
+  })();</script>
+
   <!-- Main column -->
   <div class="flex-1 flex flex-col min-w-0">
 
@@ -162,8 +218,17 @@
         <span class="text-sm font-semibold text-text-primary truncate"><%= info.title || 'API Docs' %></span>
       </div>
 
-      <!-- Spacer (desktop: search would go here) -->
-      <div class="flex-1"></div>
+      <!-- Desktop search -->
+      <div class="hidden lg:flex flex-1 max-w-xs">
+        <%- include('../../../modules/ui/SearchBar', {
+          id: 'api-topbar-search',
+          placeholder: 'Filter endpoints…',
+          className: 'w-full'
+        }) %>
+      </div>
+
+      <!-- Spacer pushes right-side items to the end on mobile -->
+      <div class="flex-1 lg:hidden"></div>
 
       <!-- Right side -->
       <div class="flex items-center gap-3 shrink-0">
