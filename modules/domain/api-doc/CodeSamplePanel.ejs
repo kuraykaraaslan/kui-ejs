@@ -1,32 +1,116 @@
 <%
   var _samples = locals.samples || [];
   if (!_samples.length) { return; }
+  var _csid = 'csp_' + Math.random().toString(36).slice(2, 10);
 %>
-<div class="rounded-lg border border-border overflow-hidden bg-gray-950<%= locals.className ? ' ' + locals.className : '' %>">
+<div id="<%= _csid %>" class="rounded-lg border border-border overflow-hidden bg-gray-950<%= locals.className ? ' ' + locals.className : '' %>">
   <div class="flex items-center justify-between gap-2 px-3 py-2 border-b border-white/10">
-    <div class="flex gap-1 flex-wrap">
-      <% _samples.forEach(function(s, i) { %>
-        <span class="rounded px-2.5 py-1 text-xs font-medium <%= i === 0 ? 'bg-white/15 text-white' : 'text-white/50' %>">
-          <%= s.label || s.lang %>
-        </span>
+    <div class="flex gap-1 flex-wrap" role="tablist">
+      <% _samples.forEach(function(s, i) {
+        var active = i === 0;
+      %>
+        <button
+          type="button"
+          role="tab"
+          data-lang="<%= s.lang %>"
+          data-active="<%= active ? 'true' : 'false' %>"
+          aria-selected="<%= active ? 'true' : 'false' %>"
+          class="rounded px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= active ? 'bg-white/15 text-white' : 'text-white/50 hover:text-white/80 hover:bg-white/10' %>"
+        ><%= s.label || s.lang %></button>
       <% }); %>
     </div>
-    <span class="text-xs text-white/40 hidden sm:block">
-      <i class="fa-solid fa-code text-[10px]" aria-hidden="true"></i>
-      <%= _samples.length %> sample<%= _samples.length > 1 ? 's' : '' %>
-    </span>
+    <button
+      type="button"
+      data-csp-copy
+      aria-label="Copy code"
+      class="flex items-center gap-1.5 rounded px-2 py-1 text-xs text-white/50 hover:text-white/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+    >
+      <span class="w-3 h-3 inline-flex items-center justify-center">
+        <i class="fa-solid fa-copy" data-csp-copy-icon aria-hidden="true"></i>
+      </span>
+      <span data-csp-copy-label>Copy</span>
+    </button>
   </div>
-  <% _samples.forEach(function(s, i) { %>
-    <% if (i === 0) { %>
-      <pre class="overflow-x-auto p-4 text-xs text-white/90 font-mono leading-relaxed"><code><%= s.source %></code></pre>
-    <% } else { %>
-      <details class="border-t border-white/10 group">
-        <summary class="flex items-center gap-2 px-4 py-2 text-xs text-white/50 cursor-pointer list-none hover:text-white/80 transition-colors focus:outline-none">
-          <i class="fa-solid fa-chevron-right text-[9px] group-open:rotate-90 transition-transform" aria-hidden="true"></i>
-          <%= s.label || s.lang %>
-        </summary>
-        <pre class="overflow-x-auto px-4 pb-4 text-xs text-white/90 font-mono leading-relaxed"><code><%= s.source %></code></pre>
-      </details>
-    <% } %>
+
+  <% _samples.forEach(function(s, i) {
+    var active = i === 0;
+  %>
+    <pre
+      data-lang-panel="<%= s.lang %>"
+      data-source="<%= encodeURIComponent(s.source) %>"
+      class="overflow-x-auto p-4 text-xs text-white/90 font-mono leading-relaxed <%= active ? '' : 'hidden' %>"
+    ><code><%= s.source %></code></pre>
   <% }); %>
 </div>
+
+<script>(function(){
+  var root = document.getElementById('<%= _csid %>');
+  if (!root || root.dataset.cspInit === '1') return;
+  root.dataset.cspInit = '1';
+
+  var tabs   = root.querySelectorAll('[data-lang]');
+  var panels = root.querySelectorAll('[data-lang-panel]');
+
+  function activate(lang) {
+    tabs.forEach(function(t) {
+      var on = t.getAttribute('data-lang') === lang;
+      t.setAttribute('data-active', on ? 'true' : 'false');
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.classList.toggle('bg-white/15', on);
+      t.classList.toggle('text-white', on);
+      t.classList.toggle('text-white/50', !on);
+      t.classList.toggle('hover:text-white/80', !on);
+      t.classList.toggle('hover:bg-white/10', !on);
+    });
+    panels.forEach(function(p) {
+      var on = p.getAttribute('data-lang-panel') === lang;
+      p.classList.toggle('hidden', !on);
+    });
+  }
+
+  tabs.forEach(function(t) {
+    t.addEventListener('click', function(){ activate(t.getAttribute('data-lang')); });
+  });
+
+  var copyBtn   = root.querySelector('[data-csp-copy]');
+  var copyIcon  = root.querySelector('[data-csp-copy-icon]');
+  var copyLabel = root.querySelector('[data-csp-copy-label]');
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function(){
+      var activeTab = root.querySelector('[data-active="true"]');
+      var lang = activeTab ? activeTab.getAttribute('data-lang') : null;
+      var panel = lang ? root.querySelector('[data-lang-panel="' + lang + '"]') : panels[0];
+      var src = panel ? decodeURIComponent(panel.getAttribute('data-source') || '') : '';
+      var done = function() {
+        copyBtn.classList.add('text-success');
+        copyBtn.classList.remove('text-white/50');
+        if (copyLabel) copyLabel.textContent = 'Copied!';
+        if (copyIcon) { copyIcon.classList.remove('fa-copy'); copyIcon.classList.add('fa-check'); }
+        copyBtn.setAttribute('aria-label', 'Copied');
+        setTimeout(function(){
+          copyBtn.classList.remove('text-success');
+          copyBtn.classList.add('text-white/50');
+          if (copyLabel) copyLabel.textContent = 'Copy';
+          if (copyIcon) { copyIcon.classList.remove('fa-check'); copyIcon.classList.add('fa-copy'); }
+          copyBtn.setAttribute('aria-label', 'Copy code');
+        }, 2000);
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(src).then(done).catch(function(){});
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = src;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'absolute';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+      } catch (e) { /* ignore */ }
+    });
+  }
+})();</script>

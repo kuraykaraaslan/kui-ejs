@@ -1,62 +1,57 @@
 <%
-  var _cart       = locals.cart       || {};
-  var _items      = _cart.items       || [];
-  var _locale     = locals.locale     || 'tr-TR';
-  var _id         = locals.id         || 'cart-preview';
+  var _cart        = locals.cart        || {};
+  var _items       = _cart.items        || [];
+  var _totals      = _cart.totals       || {};
+  var _locale      = locals.locale      || 'tr-TR';
+  var _id          = locals.id          || ('cart-preview-' + Math.random().toString(36).substr(2, 9));
   var _defaultOpen = !!locals.defaultOpen;
 
-  var currency = (_cart.totals && _cart.totals.currency) || 'TRY';
+  var currency = _totals.currency || 'TRY';
   var totalQty = _items.reduce(function(s, i) { return s + (i.quantity || 1); }, 0);
-  function fmtPrice(n) {
-    return n.toLocaleString(_locale, { style: 'currency', currency: currency, minimumFractionDigits: 2 });
-  }
+  var itemLabel = totalQty + ' item' + (totalQty !== 1 ? 's' : '');
 %>
 <div class="rounded-xl border border-border bg-surface-raised overflow-hidden<%= locals.className ? ' ' + locals.className : '' %>"
   id="<%= _id %>">
 
-  <!-- Header (toggle) -->
+  <!-- toggle header -->
   <button type="button"
     onclick="toggleCartPreview('<%= _id %>')"
-    class="w-full flex items-center justify-between px-4 py-3 border-b border-border hover:bg-surface-overlay transition-colors"
-    aria-expanded="<%= _defaultOpen ? 'true' : 'false' %>">
-    <span class="text-sm font-semibold text-text-primary flex items-center gap-2">
-      <i class="fa-solid fa-cart-shopping text-text-secondary text-xs" aria-hidden="true"></i>
-      Order Summary
-      <span class="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary text-primary-fg text-xs font-bold">
-        <%= totalQty %>
+    aria-expanded="<%= _defaultOpen ? 'true' : 'false' %>"
+    class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="w-4 h-4 inline-flex items-center justify-center text-text-secondary" aria-hidden="true">
+        <i class="fa-solid fa-cart-shopping"></i>
       </span>
-    </span>
-    <i class="fa-solid fa-chevron-down text-text-disabled text-xs transition-transform" id="<%= _id %>-chevron" aria-hidden="true"></i>
+      <span class="text-sm font-semibold text-text-primary">Your order</span>
+      <span class="text-xs text-text-secondary">(<%= itemLabel %>)</span>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <%- include('../money/PriceDisplay', {
+        amount: _totals.total || 0,
+        currency: currency,
+        locale: _locale,
+        size: 'sm'
+      }) %>
+      <span id="<%= _id %>-chevron" class="h-3.5 w-3.5 inline-flex items-center justify-center text-text-secondary transition-transform duration-200<%= _defaultOpen ? ' rotate-180' : '' %>" aria-hidden="true">
+        <i class="fa-solid fa-chevron-down" style="font-size:12px"></i>
+      </span>
+    </div>
   </button>
 
-  <!-- Items -->
-  <div id="<%= _id %>-body" class="<%= _defaultOpen ? '' : 'hidden' %>">
+  <!-- expanded items -->
+  <div id="<%= _id %>-body" class="border-t border-border px-4 py-3 space-y-3<%= _defaultOpen ? '' : ' hidden' %>">
     <% if (_items.length === 0) { %>
-    <p class="px-4 py-6 text-sm text-text-secondary text-center">Your cart is empty.</p>
+    <p class="text-sm text-text-secondary py-2 text-center">No items in cart.</p>
     <% } else { %>
-    <ul class="divide-y divide-border">
-      <% _items.forEach(function(item) { %>
-      <li class="flex items-center gap-3 px-4 py-3">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-overlay border border-border">
-          <% if (item.image) { %>
-          <img src="<%= item.image %>" alt="<%= item.name %>" class="h-full w-full rounded-lg object-cover">
-          <% } else { %>
-          <i class="fa-solid fa-box text-text-disabled text-sm" aria-hidden="true"></i>
-          <% } %>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-medium text-text-primary truncate"><%= item.name %></p>
-          <% if (item.variant) { %><p class="text-xs text-text-secondary font-mono truncate"><%= item.variant %></p><% } %>
-        </div>
-        <div class="text-right shrink-0">
-          <p class="text-xs font-semibold text-text-primary tabular-nums"><%= fmtPrice((item.price || 0) * (item.quantity || 1)) %></p>
-          <% if ((item.quantity || 1) > 1) { %>
-          <p class="text-xs text-text-secondary">×<%= item.quantity %></p>
-          <% } %>
-        </div>
-      </li>
-      <% }); %>
-    </ul>
+    <% _items.forEach(function(item, idx) { %>
+    <%- include('./CartItem', {
+      item: item,
+      compact: true,
+      locale: _locale,
+      className: idx > 0 ? 'border-t border-border pt-3' : ''
+    }) %>
+    <% }); %>
     <% } %>
   </div>
 </div>
@@ -68,21 +63,10 @@
     var chevron = document.getElementById(id + '-chevron');
     var btn     = document.querySelector('#' + id + ' [aria-expanded]');
     if (!body) return;
-    var open = body.classList.toggle('hidden');
-    if (chevron) chevron.style.transform = open ? '' : 'rotate(180deg)';
-    if (btn)     btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+    var nowHidden = body.classList.toggle('hidden');
+    if (chevron) chevron.classList.toggle('rotate-180', !nowHidden);
+    if (btn)     btn.setAttribute('aria-expanded', nowHidden ? 'false' : 'true');
   }
   window.toggleCartPreview = window.toggleCartPreview || toggleCartPreview;
-
-  // Init chevron state
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[id^="cart-preview"]').forEach(function (el) {
-      var body    = document.getElementById(el.id + '-body');
-      var chevron = document.getElementById(el.id + '-chevron');
-      if (body && chevron) {
-        chevron.style.transform = body.classList.contains('hidden') ? '' : 'rotate(180deg)';
-      }
-    });
-  });
 })();
 </script>

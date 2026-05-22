@@ -1,7 +1,6 @@
 <%
   var _columns      = locals.columns      || [];
   var _rows         = locals.rows         || [];
-  var _getRowKey    = locals.getRowKey    || function(r){ return r.id || JSON.stringify(r); };
   var _getRowHref   = locals.getRowHref   || null;
   var _page         = Number(locals.page) || 1;
   var _totalPages   = Math.max(1, Number(locals.totalPages) || 1);
@@ -14,62 +13,11 @@
   var _headerRight  = locals.headerRight  || '';
   var _toolbar      = locals.toolbar      || '';
   var _className    = locals.className    || '';
-  var _qs           = locals.qs           || '';
-  var _sort         = locals.sort         || '';
-  var _dir          = locals.dir          || '';
 
   var _alignClass = { left: 'text-left', center: 'text-center', right: 'text-right' };
 
-  function _stripParam(qs, name) {
-    if (!qs) return '';
-    return qs.split('&').filter(function(kv) {
-      var k = kv.split('=')[0];
-      return k && k !== name;
-    }).join('&');
-  }
-
-  var _baseQs = _stripParam(_stripParam(_stripParam(_qs, 'page'), 'sort'), 'dir');
-
-  function _buildUrl(params) {
-    var parts = [];
-    if (_baseQs) parts.push(_baseQs);
-    Object.keys(params).forEach(function(k) {
-      if (params[k] !== undefined && params[k] !== null && params[k] !== '') {
-        parts.push(k + '=' + encodeURIComponent(params[k]));
-      }
-    });
-    return '?' + parts.join('&');
-  }
-
-  function _pageUrl(p) { return _buildUrl({ sort: _sort, dir: _dir, page: p }); }
-  function _sortUrl(key) {
-    var nextDir = 'asc';
-    if (_sort === key) nextDir = _dir === 'asc' ? 'desc' : (_dir === 'desc' ? '' : 'asc');
-    if (nextDir === '') return _buildUrl({ page: 1 });
-    return _buildUrl({ sort: key, dir: nextDir, page: 1 });
-  }
-
   var _rangeStart = (_total != null && _pageSize != null) ? (_page - 1) * _pageSize + 1 : null;
   var _rangeEnd   = (_total != null && _pageSize != null) ? Math.min(_page * _pageSize, _total) : null;
-
-  var _allPages = [];
-  for (var _pi = 1; _pi <= _totalPages; _pi++) _allPages.push(_pi);
-  var _visible = _allPages.filter(function(p) {
-    return p === 1 || p === _totalPages || Math.abs(p - _page) <= 1;
-  });
-  var _withEllipsis = [];
-  var _prevP = null;
-  for (var _pj = 0; _pj < _visible.length; _pj++) {
-    var _vp = _visible[_pj];
-    if (_prevP !== null && _vp - _prevP > 1) _withEllipsis.push('ellipsis');
-    _withEllipsis.push(_vp);
-    _prevP = _vp;
-  }
-
-  var _navLink  = 'flex items-center justify-center rounded-md text-sm font-medium border border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
-  var _navDead  = 'flex items-center justify-center rounded-md text-sm font-medium border border-border text-text-disabled cursor-not-allowed opacity-50';
-  var _navSm    = 'h-9 px-3';
-  var _navSq    = 'h-9 w-9';
 %>
 <div class="rounded-xl border border-border bg-surface-raised shadow-sm overflow-hidden<%= _className ? ' ' + _className : '' %>">
 
@@ -89,7 +37,7 @@
 
   <% if (_loading) { %>
     <div class="flex justify-center py-12">
-      <span class="inline-block w-8 h-8 rounded-full border-2 border-border border-t-primary animate-spin" role="status" aria-label="Loading"></span>
+      <%- include('Spinner', { size: 'lg' }) %>
     </div>
   <% } else { %>
     <div class="overflow-x-auto">
@@ -97,25 +45,9 @@
         <thead>
           <tr class="border-b border-border bg-surface-sunken">
             <% _columns.forEach(function(col) { %>
-            <%
-              var _isSorted = col.sortable && _sort === col.key;
-              var _ariaSort = _isSorted ? (_dir === 'asc' ? 'ascending' : 'descending') : 'none';
-            %>
             <th scope="col"
-                class="px-6 py-3 text-xs font-semibold text-text-secondary uppercase tracking-wider <%= _alignClass[col.align] || 'text-left' %><%= col.thClass ? ' ' + col.thClass : '' %>"
-                <% if (col.sortable) { %>aria-sort="<%= _ariaSort %>"<% } %>>
-              <% if (col.sortable) { %>
-                <a href="<%- _sortUrl(col.key) %>" class="inline-flex items-center gap-1 uppercase tracking-wider text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded">
-                  <%= col.header %>
-                  <% if (_isSorted && _dir === 'asc') { %>
-                    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-                  <% } else if (_isSorted && _dir === 'desc') { %>
-                    <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
-                  <% } %>
-                </a>
-              <% } else { %>
-                <%= col.header %>
-              <% } %>
+                class="px-6 py-3 text-xs font-semibold text-text-secondary uppercase tracking-wider <%= _alignClass[col.align] || 'text-left' %><%= col.thClass ? ' ' + col.thClass : '' %>">
+              <%= col.header %>
             </th>
             <% }); %>
           </tr>
@@ -137,7 +69,7 @@
                 <% if (col.render) { %>
                   <%- col.render(row) %>
                 <% } else { %>
-                  <%= row[col.key] !== undefined && row[col.key] !== null ? row[col.key] : '—' %>
+                  <%= row[col.key] !== undefined && row[col.key] !== null ? row[col.key] : '' %>
                 <% } %>
               </td>
               <% }); %>
@@ -156,39 +88,7 @@
           <%= _total %> result<%= _total !== 1 ? 's' : '' %>
         <% } %>
       </p>
-      <nav aria-label="Pagination" class="flex items-center gap-1">
-        <%
-          var _hasFirst = _page > 1;
-          var _hasPrev  = _page > 1;
-          var _hasNext  = _page < _totalPages;
-          var _hasLast  = _page < _totalPages;
-        %>
-        <% if (_hasFirst) { %>
-          <a href="<%- _pageUrl(1) %>" aria-label="First page" class="<%= _navLink %> <%= _navSm %>">«</a>
-          <a href="<%- _pageUrl(_page - 1) %>" aria-label="Previous page" class="<%= _navLink %> <%= _navSm %>">‹</a>
-        <% } else { %>
-          <span class="<%= _navDead %> <%= _navSm %>" aria-disabled="true">«</span>
-          <span class="<%= _navDead %> <%= _navSm %>" aria-disabled="true">‹</span>
-        <% } %>
-
-        <% _withEllipsis.forEach(function(item) { %>
-          <% if (item === 'ellipsis') { %>
-            <span class="<%= _navSq %> flex items-center justify-center text-text-disabled text-sm">…</span>
-          <% } else if (item === _page) { %>
-            <span aria-current="page" class="<%= _navSq %> flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-fg border border-primary"><%= item %></span>
-          <% } else { %>
-            <a href="<%- _pageUrl(item) %>" aria-label="Go to page <%= item %>" class="<%= _navLink %> <%= _navSq %>"><%= item %></a>
-          <% } %>
-        <% }); %>
-
-        <% if (_hasNext) { %>
-          <a href="<%- _pageUrl(_page + 1) %>" aria-label="Next page" class="<%= _navLink %> <%= _navSm %>">›</a>
-          <a href="<%- _pageUrl(_totalPages) %>" aria-label="Last page" class="<%= _navLink %> <%= _navSm %>">»</a>
-        <% } else { %>
-          <span class="<%= _navDead %> <%= _navSm %>" aria-disabled="true">›</span>
-          <span class="<%= _navDead %> <%= _navSm %>" aria-disabled="true">»</span>
-        <% } %>
-      </nav>
+      <%- include('Pagination', { page: _page, totalPages: _totalPages, showFirstLast: true }) %>
     </div>
   <% } %>
 </div>

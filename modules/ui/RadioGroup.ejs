@@ -1,50 +1,67 @@
 <%
   var _name    = locals.name    || 'radio-' + Math.random().toString(36).substr(2, 9);
   var _opts    = locals.options || [];
-  var _val     = locals.value   || '';
+  var _val     = (locals.value !== undefined && locals.value !== null) ? String(locals.value) : '';
   var _dis     = !!locals.disabled;
-  var _cardStyle = !!locals.cardStyle;
+  var _variant = locals.variant || (locals.cardStyle ? 'card' : 'default');
+  var _cols    = locals.columns || 1;
+
+  var _gridClass = '';
+  if (_cols === 1) {
+    _gridClass = 'space-y-2';
+  } else if (_cols === 2) {
+    _gridClass = 'grid gap-2 grid-cols-1 sm:grid-cols-2';
+  } else if (_cols === 3) {
+    _gridClass = 'grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+  } else {
+    _gridClass = 'space-y-2';
+  }
 %>
-<fieldset class="<%= locals.className || '' %>">
+<fieldset class="space-y-1 <%= locals.className || '' %>">
   <% if (locals.legend) { %>
-    <legend class="text-sm font-medium text-text-primary mb-3"><%= locals.legend %></legend>
+    <legend class="mb-2 text-sm font-medium text-text-primary"><%= locals.legend %></legend>
   <% } %>
-  <div class="space-y-2">
-    <% _opts.forEach(function(opt) { %>
-      <% if (_cardStyle) { %>
-        <label class="flex items-start gap-3 rounded-lg border px-4 py-3 cursor-pointer transition-colors <%= _dis ? 'opacity-50 cursor-not-allowed' : '' %> <%= (_val === opt.value) ? 'border-primary bg-primary-subtle' : 'border-border bg-surface hover:bg-surface-overlay' %>">
-          <input
-            type="radio"
-            name="<%= _name %>"
-            value="<%= opt.value %>"
-            class="mt-0.5 h-4 w-4 text-primary border-border focus:ring-2 focus:ring-primary/20"
-            <%= (_val === opt.value) ? 'checked' : '' %>
-            <%= _dis ? 'disabled' : '' %>
-          >
-          <div>
-            <span class="text-sm font-medium <%= (_val === opt.value) ? 'text-primary' : 'text-text-primary' %>"><%= opt.label %></span>
-            <% if (opt.hint) { %><p class="text-xs text-text-secondary mt-0.5"><%= opt.hint %></p><% } %>
-          </div>
-        </label>
-      <% } else { %>
-        <label class="flex items-start gap-2 cursor-pointer <%= _dis ? 'opacity-50 cursor-not-allowed' : '' %>">
-          <input
-            type="radio"
-            name="<%= _name %>"
-            value="<%= opt.value %>"
-            class="mt-0.5 h-4 w-4 text-primary border-border focus:ring-2 focus:ring-primary/20"
-            <%= (_val === opt.value) ? 'checked' : '' %>
-            <%= _dis ? 'disabled' : '' %>
-          >
-          <div>
+  <div class="<%= _gridClass %>">
+    <% _opts.forEach(function (opt) { %>
+      <%
+        var active = (String(opt.value) === _val);
+        var labelClass = 'flex items-start gap-2 ';
+        labelClass += _dis ? 'cursor-not-allowed opacity-50 ' : 'cursor-pointer ';
+        if (_variant === 'card') {
+          labelClass += 'rounded-lg border border-border bg-surface-base p-3 transition-colors hover:border-border-focus ';
+          if (active) labelClass += 'border-primary bg-primary/5 ';
+          if (locals.error) labelClass += 'border-error ';
+        }
+        if (locals.optionClassName) labelClass += locals.optionClassName + ' ';
+
+        var inputClass = 'mt-0.5 h-4 w-4 border-border text-primary focus-visible:ring-2 focus-visible:ring-border-focus';
+        if (locals.error) inputClass += ' border-error';
+      %>
+      <label class="<%= labelClass %>">
+        <input
+          type="radio"
+          name="<%= _name %>"
+          value="<%= opt.value %>"
+          class="<%= inputClass %>"
+          data-testid="radio-<%= _name %>-<%= opt.value %>"
+          <%= active ? 'checked' : '' %>
+          <%= _dis ? 'disabled' : '' %>
+        >
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <% if (opt.icon) { %>
+              <span class="text-lg leading-none text-text-secondary"><%- opt.icon %></span>
+            <% } %>
             <span class="text-sm text-text-primary"><%= opt.label %></span>
-            <% if (opt.hint) { %><p class="text-xs text-text-secondary"><%= opt.hint %></p><% } %>
           </div>
-        </label>
-      <% } %>
+          <% if (opt.hint) { %>
+            <p class="mt-0.5 text-xs text-text-secondary"><%= opt.hint %></p>
+          <% } %>
+        </div>
+      </label>
     <% }); %>
   </div>
   <% if (locals.error) { %>
-    <p class="mt-2 text-xs text-error" role="alert"><%= locals.error %></p>
+    <p class="mt-1 text-xs text-error" role="alert"><%= locals.error %></p>
   <% } %>
 </fieldset>

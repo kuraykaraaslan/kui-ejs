@@ -6,7 +6,7 @@
   var stateStyles = {
     complete: { circle: 'bg-success text-text-inverse border-success',         text: 'text-text-primary',           line: 'bg-success' },
     active:   { circle: 'bg-primary text-primary-fg border-primary',           text: 'text-text-primary font-semibold', line: 'bg-border' },
-    error:    { circle: 'bg-error text-text-inverse border-error',             text: 'text-error',                  line: 'bg-border' },
+    error:    { circle: 'bg-error text-text-inverse border-error',             text: 'text-error-fg',               line: 'bg-border' },
     pending:  { circle: 'bg-surface-base text-text-disabled border-border',    text: 'text-text-disabled',          line: 'bg-border' },
   };
 %>
@@ -22,11 +22,11 @@
     <div class="flex flex-col items-center shrink-0">
       <div class="h-8 w-8 rounded-full border-2 flex items-center justify-center text-xs font-bold shrink-0 <%= s.circle %>"
         aria-label="Step <%= i + 1 %>: <%= step.label %> — <%= state %>">
-        <% if (state === 'complete') { %><i class="fa-solid fa-check text-xs" aria-hidden="true"></i>
-        <% } else if (state === 'error') { %><i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+        <% if (state === 'complete') { %><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+        <% } else if (state === 'error') { %><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
         <% } else { %><%= i + 1 %><% } %>
       </div>
-      <% if (!isLast) { %><div class="w-0.5 flex-1 min-h-8 mt-1 <%= s.line %>"></div><% } %>
+      <% if (!isLast) { %><div class="w-0.5 flex-1 min-h-[2rem] mt-1 <%= s.line %>" aria-hidden="true"></div><% } %>
     </div>
     <div class="<%= isLast ? 'pb-0' : 'pb-6' %>">
       <p class="text-sm <%= s.text %>"><%= step.label %></p>
@@ -47,8 +47,8 @@
     <div class="flex flex-col items-center gap-1 shrink-0">
       <div class="h-8 w-8 rounded-full border-2 flex items-center justify-center text-xs font-bold <%= s.circle %>"
         aria-label="Step <%= i + 1 %>: <%= step.label %> — <%= state %>">
-        <% if (state === 'complete') { %><i class="fa-solid fa-check text-xs" aria-hidden="true"></i>
-        <% } else if (state === 'error') { %><i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+        <% if (state === 'complete') { %><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+        <% } else if (state === 'error') { %><span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-xmark" aria-hidden="true"></i></span>
         <% } else { %><%= i + 1 %><% } %>
       </div>
       <div class="text-center">
@@ -56,7 +56,7 @@
         <% if (step.description) { %><p class="text-xs text-text-secondary"><%= step.description %></p><% } %>
       </div>
     </div>
-    <% if (!isLast) { %><div class="h-0.5 flex-1 mx-2 mt-[-1.25rem] <%= s.line %>"></div><% } %>
+    <% if (!isLast) { %><div class="h-0.5 flex-1 mx-2 mt-[-1.25rem] <%= s.line %>" aria-hidden="true"></div><% } %>
   </li>
   <% }); %>
 </ol>

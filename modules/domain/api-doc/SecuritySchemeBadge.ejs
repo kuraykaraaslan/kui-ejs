@@ -2,22 +2,39 @@
   var _scheme    = locals.scheme || {};
   var _type      = locals.type || _scheme.type || 'apiKey';
   var _name      = locals.name || _scheme.name || null;
-  var _size      = locals.size || 'md';
+  var _size      = locals.size || 'sm';
   var _className = locals.className || '';
 
   var schemeConfig = {
-    apiKey:        { label: 'API Key',        icon: 'fa-solid fa-key',          style: 'bg-warning-subtle text-warning-fg' },
-    http:          { label: 'HTTP',           icon: 'fa-solid fa-lock',         style: 'bg-info-subtle text-info-fg' },
-    oauth2:        { label: 'OAuth 2.0',      icon: 'fa-solid fa-shield',       style: 'bg-primary-subtle text-primary' },
-    openIdConnect: { label: 'OpenID Connect', icon: 'fa-solid fa-fingerprint',  style: 'bg-success-subtle text-success-fg' },
-    mutualTLS:     { label: 'Mutual TLS',     icon: 'fa-solid fa-user-shield',  style: 'bg-surface-sunken text-text-secondary' },
+    apiKey:        { label: 'API Key',        icon: 'fa-solid fa-key',          variant: 'warning' },
+    http:          { label: 'HTTP',           icon: 'fa-solid fa-lock',         variant: 'info'    },
+    oauth2:        { label: 'OAuth 2.0',      icon: 'fa-solid fa-shield',       variant: 'primary' },
+    openIdConnect: { label: 'OpenID Connect', icon: 'fa-solid fa-fingerprint',  variant: 'success' },
+    mutualTLS:     { label: 'mTLS',           icon: 'fa-solid fa-user-shield',  variant: 'neutral' },
   };
 
-  var sizeClass   = _size === 'sm' ? 'px-1.5 py-0 text-[10px]' : 'px-2 py-0.5 text-xs';
+  // Mirror Badge.ejs variant/size class maps exactly so the chip output is
+  // identical to a plain Badge include but lets us embed an inline icon.
+  var vc = {
+    success: 'bg-success-subtle text-success-fg',
+    error:   'bg-error-subtle text-error-fg',
+    warning: 'bg-warning-subtle text-warning-fg',
+    info:    'bg-info-subtle text-info-fg',
+    neutral: 'bg-surface-sunken text-text-secondary',
+    primary: 'bg-primary-subtle text-primary',
+  };
+  var sc = {
+    sm: 'px-1.5 py-0 text-[10px]',
+    md: 'px-2 py-0.5 text-xs',
+    lg: 'px-3 py-1 text-sm',
+  };
+
   var config      = schemeConfig[_type] || schemeConfig['apiKey'];
   var displayName = _name || config.label;
+  var variantClass = vc[config.variant] || vc.neutral;
+  var sizeClass    = sc[_size] || sc.md;
 %>
-<span class="inline-flex items-center gap-1 rounded-full font-medium <%= sizeClass %> <%= config.style %><%= _className ? ' ' + _className : '' %>">
-  <i class="<%= config.icon %> text-[10px]" aria-hidden="true"></i>
+<span class="inline-flex items-center gap-1 rounded-full font-medium <%= variantClass %> <%= sizeClass %><%= _className ? ' ' + _className : '' %>">
+  <i class="<%= config.icon %> w-3 h-3" aria-hidden="true"></i>
   <%= displayName %>
 </span>

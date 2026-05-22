@@ -34,7 +34,7 @@
               type="checkbox"
               aria-label="Select all rows"
               data-adt-select-all
-              class="h-4 w-4 rounded border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+              class="h-4 w-4 rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-border-focus"
             />
           </th>
           <% } %>
@@ -43,23 +43,7 @@
           <% } %>
           <% _columns.forEach(function(col) { %>
           <th scope="col" class="px-4 py-3 text-xs font-semibold text-text-secondary uppercase tracking-wider <%= _alignClass[col.align] || 'text-left' %><%= col.thClass ? ' ' + col.thClass : '' %>">
-            <% if (col.sortable) { %>
-              <button
-                type="button"
-                class="inline-flex items-center gap-1 uppercase tracking-wider text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
-                aria-sort="<%= col.sortDir === 'asc' ? 'ascending' : (col.sortDir === 'desc' ? 'descending' : 'none') %>"
-                data-adt-sort-key="<%= col.key %>"
-              >
-                <%= col.header %>
-                <% if (col.sortDir === 'asc') { %>
-                  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-                <% } else if (col.sortDir === 'desc') { %>
-                  <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
-                <% } %>
-              </button>
-            <% } else { %>
-              <%= col.header %>
-            <% } %>
+            <%= col.header %>
           </th>
           <% }); %>
         </tr>
@@ -82,7 +66,7 @@
                 type="checkbox"
                 aria-label="Select row <%= i + 1 %>"
                 data-adt-row-check="<%= i %>"
-                class="h-4 w-4 rounded border-border text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                class="h-4 w-4 rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-border-focus"
               />
             </td>
             <% } %>
@@ -95,7 +79,9 @@
                 data-adt-expand="<%= i %>"
                 class="text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
               >
-                <i class="fa-solid fa-chevron-right" data-adt-expand-icon style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
+                <span class="w-2.5 h-2.5 inline-flex items-center justify-center" aria-hidden="true">
+                  <i class="fa-solid fa-chevron-right" data-adt-expand-icon style="font-size:10px"></i>
+                </span>
               </button>
             </td>
             <% } else if (_hasExpand) { %>

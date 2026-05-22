@@ -7,10 +7,6 @@
   var _nextLabel     = locals.nextLabel     || 'Next';
   var _prevLabel     = locals.prevLabel     || 'Back';
   var _showCancel    = locals.showCancel !== false;
-  var _onCancelHref  = locals.onCancelHref  || '';
-  var _onNextHref    = locals.onNextHref    || '';
-  var _onPrevHref    = locals.onPrevHref    || '';
-  var _onCompleteHref= locals.onCompleteHref|| '';
   var _completing    = !!locals.completing;
   var _className     = locals.className     || '';
   var _flowId        = locals.id || ('stepflow-' + Math.random().toString(36).slice(2, 8));
@@ -37,65 +33,46 @@
   </div>
 
   <% if (_stepError) { %>
-  <div role="alert" class="flex items-start gap-3 rounded-lg border p-4 bg-error-subtle border-error text-error-fg">
-    <i class="fa-solid fa-circle-xmark mt-0.5 shrink-0 text-base" aria-hidden="true"></i>
-    <div class="flex-1 text-sm min-w-0">
-      <p><%= _stepError %></p>
-    </div>
-  </div>
+    <%- include('../ui/AlertBanner', { variant: 'error', message: _stepError }) %>
   <% } %>
 
   <div class="flex items-center justify-between gap-3 pt-4 border-t border-border">
     <div>
       <% if (_showCancel && _current === 0) { %>
-        <% if (_onCancelHref) { %>
-        <a href="<%= _onCancelHref %>" class="inline-flex items-center justify-center rounded-md bg-transparent px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _cancelLabel %>
-        </a>
-        <% } else { %>
-        <button type="button" data-stepflow-cancel class="inline-flex items-center justify-center rounded-md bg-transparent px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _cancelLabel %>
-        </button>
-        <% } %>
+        <span data-stepflow-cancel>
+          <%- include('../ui/Button', {
+            variant: 'ghost',
+            children: _cancelLabel,
+          }) %>
+        </span>
       <% } %>
       <% if (_current > 0) { %>
-        <% if (_onPrevHref) { %>
-        <a href="<%= _onPrevHref %>" class="inline-flex items-center justify-center rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _prevLabel %>
-        </a>
-        <% } else { %>
-        <button type="button" data-stepflow-prev class="inline-flex items-center justify-center rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _prevLabel %>
-        </button>
-        <% } %>
+        <span data-stepflow-prev>
+          <%- include('../ui/Button', {
+            variant: 'outline',
+            children: _prevLabel,
+          }) %>
+        </span>
       <% } %>
     </div>
     <div class="flex items-center gap-2">
       <span class="text-xs text-text-disabled"><%= _current + 1 %> / <%= _steps.length %></span>
       <% if (isLast) { %>
-        <% if (_onCompleteHref) { %>
-        <a href="<%= _onCompleteHref %>" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _completing ? ' opacity-70 pointer-events-none' : '' %>" aria-busy="<%= _completing ? 'true' : 'false' %>">
-          <% if (_completing) { %><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><% } %>
-          <%= _completeLabel %>
-        </a>
-        <% } else { %>
-        <button type="button" data-stepflow-complete class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed" <%= _completing ? 'disabled aria-busy="true"' : '' %>>
-          <% if (_completing) { %><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><% } %>
-          <%= _completeLabel %>
-        </button>
-        <% } %>
+        <span data-stepflow-complete>
+          <%- include('../ui/Button', {
+            variant: 'primary',
+            loading: _completing,
+            children: _completeLabel,
+          }) %>
+        </span>
       <% } else { %>
-        <% if (_onNextHref) { %>
-        <a href="<%= _onNextHref %>" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _nextLabel %>
-          <i class="fa-solid fa-arrow-right w-3.5 h-3.5" aria-hidden="true"></i>
-        </a>
-        <% } else { %>
-        <button type="button" data-stepflow-next class="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-          <%= _nextLabel %>
-          <i class="fa-solid fa-arrow-right w-3.5 h-3.5" aria-hidden="true"></i>
-        </button>
-        <% } %>
+        <span data-stepflow-next>
+          <%- include('../ui/Button', {
+            variant:   'primary',
+            children:  _nextLabel,
+            iconRight: '<span class="w-3.5 h-3.5 inline-flex items-center justify-center"><i class="fa-solid fa-arrow-right" style="font-size:14px"></i></span>',
+          }) %>
+        </span>
       <% } %>
     </div>
   </div>
@@ -108,10 +85,10 @@
   function fire(name) {
     root.dispatchEvent(new CustomEvent(name, { bubbles: true }));
   }
-  var n = root.querySelector('[data-stepflow-next]');
-  var p = root.querySelector('[data-stepflow-prev]');
-  var c = root.querySelector('[data-stepflow-cancel]');
-  var d = root.querySelector('[data-stepflow-complete]');
+  var n = root.querySelector('[data-stepflow-next] button, [data-stepflow-next] a');
+  var p = root.querySelector('[data-stepflow-prev] button, [data-stepflow-prev] a');
+  var c = root.querySelector('[data-stepflow-cancel] button, [data-stepflow-cancel] a');
+  var d = root.querySelector('[data-stepflow-complete] button, [data-stepflow-complete] a');
   if (n) n.addEventListener('click', function () { fire('stepflow:next'); });
   if (p) p.addEventListener('click', function () { fire('stepflow:prev'); });
   if (c) c.addEventListener('click', function () { fire('stepflow:cancel'); });

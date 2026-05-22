@@ -12,14 +12,16 @@
     <div class="flex items-center gap-2">
       <% if (locals.logoContent) { %><%- locals.logoContent %><% } %>
       <% if (locals.version) { %>
-      <span class="inline-flex items-center rounded-full font-medium bg-surface-sunken text-text-secondary px-2 py-0.5 text-xs">v<%= locals.version %></span>
+      <%# Badge variant="neutral" size="md" %>
+      <span class="inline-flex items-center rounded-md font-medium bg-surface-overlay text-text-primary px-2.5 py-0.5 text-sm border border-border">v<%= locals.version %></span>
       <% } %>
     </div>
     <% if (locals.navContent) { %>
     <nav aria-label="Footer navigation" class="flex items-center gap-1"><%- locals.navContent %></nav>
     <% } %>
     <% if (_sc) { %>
-    <span class="inline-flex items-center gap-1 rounded-full font-medium <%= _sc.cls %> px-2 py-0.5 text-xs">
+    <%# Badge variant=<status> size="md" dot %>
+    <span class="inline-flex items-center gap-1 rounded-md font-medium <%= _sc.cls %> px-2.5 py-0.5 text-sm border border-border">
       <span class="h-1.5 w-1.5 rounded-full shrink-0 <%= _sc.dot %>" aria-hidden="true"></span>
       <%= _sc.label %>
     </span>

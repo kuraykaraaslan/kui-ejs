@@ -12,6 +12,8 @@
   var vm = variantMap[_v] || variantMap.success;
 %>
 <div class="rounded-lg border px-4 py-2.5 text-sm font-medium flex items-center gap-1.5 <%= vm.container %><%= _className ? ' ' + _className : '' %>">
-  <i class="fa-solid <%= vm.icon %> shrink-0" style="width:0.875rem;height:0.875rem" aria-hidden="true"></i>
-  <span><%- _message %></span>
+  <span aria-hidden="true" class="w-3.5 h-3.5 inline-flex items-center justify-center shrink-0">
+    <i class="fa-solid <%= vm.icon %>" style="font-size:14px"></i>
+  </span>
+  <span><%= _message %></span>
 </div>

@@ -9,14 +9,6 @@
   var _emailNotifications = _initial.emailNotifications !== false;
   var _pushNotifications  = _initial.pushNotifications  !== false;
   var _newsletter         = _initial.newsletter         !== false;
-
-  var languages = [
-    { value: 'en', label: '🇺🇸 English' },
-    { value: 'tr', label: '🇹🇷 Türkçe' },
-    { value: 'de', label: '🇩🇪 Deutsch' },
-    { value: 'fr', label: '🇫🇷 Français' },
-    { value: 'ar', label: '🇸🇦 العربية' },
-  ];
 %>
 <form action="<%= _action %>" method="<%= _method %>" novalidate class="space-y-6<%= locals.className ? ' ' + locals.className : '' %>">
   <% if (_error) { %>
@@ -30,25 +22,9 @@
   <div class="space-y-3">
     <h3 class="text-sm font-semibold text-text-primary">Appearance</h3>
 
-    <div>
-      <label for="pref-theme" class="block text-sm font-medium text-text-primary mb-1.5">Theme</label>
-      <select id="pref-theme" name="theme"
-        class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary px-3 py-2 text-sm">
-        <option value="SYSTEM" <%= _theme === 'SYSTEM' ? 'selected' : '' %>>System default</option>
-        <option value="LIGHT"  <%= _theme === 'LIGHT'  ? 'selected' : '' %>>Light</option>
-        <option value="DARK"   <%= _theme === 'DARK'   ? 'selected' : '' %>>Dark</option>
-      </select>
-    </div>
+    <%- include('../../../app/ThemeSwitcher', { value: _theme }) %>
 
-    <div>
-      <label for="pref-language" class="block text-sm font-medium text-text-primary mb-1.5">Language</label>
-      <select id="pref-language" name="language"
-        class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary px-3 py-2 text-sm">
-        <% languages.forEach(function (lang) { %>
-        <option value="<%= lang.value %>" <%= _language === lang.value ? 'selected' : '' %>><%= lang.label %></option>
-        <% }); %>
-      </select>
-    </div>
+    <%- include('../i18n/LanguageSwitcher', { value: _language, name: 'language' }) %>
   </div>
 
   <!-- Notifications -->

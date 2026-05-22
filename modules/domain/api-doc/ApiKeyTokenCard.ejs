@@ -10,10 +10,10 @@
   var _revokeLabel = locals.revokeLabel || ('Revoke ' + _name);
   var _className   = locals.className   || '';
 
-  var envBadgeStyle = {
-    production:  'bg-success-subtle text-success-fg',
-    staging:     'bg-warning-subtle text-warning-fg',
-    development: 'bg-surface-sunken text-text-secondary',
+  var envBadgeVariant = {
+    production:  'success',
+    staging:     'warning',
+    development: 'neutral',
   };
 
   function maskToken(token) {
@@ -47,14 +47,16 @@
   <div class="flex items-start justify-between gap-3">
     <div class="flex items-start gap-2 min-w-0">
       <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warning-subtle text-warning">
-        <i class="fa-solid fa-key text-[13px]" aria-hidden="true"></i>
+        <span class="w-3.5 h-3.5 inline-flex items-center justify-center">
+          <i class="fa-solid fa-key" aria-hidden="true"></i>
+        </span>
       </div>
       <div class="min-w-0">
         <p class="font-semibold text-text-primary truncate"><%= _name %></p>
         <% if (_environment) { %>
-        <span class="inline-flex items-center gap-1 rounded-full font-medium px-1.5 py-0 text-[10px] mt-1 <%= envBadgeStyle[_environment] || envBadgeStyle.development %>">
-          <%= _environment %>
-        </span>
+        <div class="mt-1">
+          <%- include('../../ui/Badge', { variant: envBadgeVariant[_environment] || 'neutral', size: 'sm', children: _environment }) %>
+        </div>
         <% } %>
       </div>
     </div>
@@ -66,7 +68,9 @@
       class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-error border border-error/40 hover:bg-error-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
       aria-label="<%= _revokeLabel %>"
     >
-      <i class="fa-solid fa-trash text-[11px]" aria-hidden="true"></i>
+      <span class="w-3 h-3 inline-flex items-center justify-center">
+        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+      </span>
       Revoke
     </button>
     <% } %>
@@ -86,7 +90,9 @@
       aria-pressed="false"
       class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
     >
-      <i class="fa-solid fa-eye text-[13px]" data-aktc-eye aria-hidden="true"></i>
+      <span class="w-3.5 h-3.5 inline-flex items-center justify-center">
+        <i class="fa-solid fa-eye" data-aktc-eye aria-hidden="true"></i>
+      </span>
     </button>
     <button
       type="button"
@@ -94,7 +100,9 @@
       aria-label="Copy token to clipboard"
       class="inline-flex items-center justify-center w-7 h-7 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
     >
-      <i class="fa-solid fa-copy text-[13px]" data-aktc-copy-icon aria-hidden="true"></i>
+      <span class="w-3.5 h-3.5 inline-flex items-center justify-center">
+        <i class="fa-solid fa-copy" data-aktc-copy-icon aria-hidden="true"></i>
+      </span>
     </button>
   </div>
 

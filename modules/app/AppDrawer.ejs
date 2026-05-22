@@ -61,8 +61,8 @@
     </div>
 
     <div class="flex-1 min-h-0 overflow-y-auto px-4 py-4">
-      <% if (locals.headerContent) { %>
-      <div class="mb-4"><%- locals.headerContent %></div>
+      <% if (locals.header) { %>
+      <div class="mb-4"><%- locals.header %></div>
       <% } %>
 
       <% if (_searchable) { %>
@@ -105,8 +105,9 @@
             <button
               type="button"
               data-item-label="<%= (item.label || '').toLowerCase() %>"
+              data-item-id="<%= item.id || '' %>"
               <% if (isActive) { %>aria-current="page"<% } %>
-              onclick="(function(){ <% if (item.href) { %>window.location.href='<%= item.href %>';<% } %> closeDrawer('<%= _id %>'); })()"
+              onclick="appDrawerSelect('<%= _id %>', '<%= item.id || '' %>')"
               class="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary-subtle text-primary font-semibold' : 'text-text-primary hover:bg-surface-overlay' %>"
             >
               <span class="flex items-center gap-2">
@@ -127,12 +128,12 @@
         <% }); %>
 
         <p id="<%= _id %>-empty" class="hidden text-sm text-text-secondary text-center py-4">
-          No results
+          No results for ""
         </p>
       </div>
 
-      <% if (locals.footerContent) { %>
-      <div class="mt-4 pt-4 border-t border-border"><%- locals.footerContent %></div>
+      <% if (locals.footer) { %>
+      <div class="mt-4 pt-4 border-t border-border"><%- locals.footer %></div>
       <% } %>
     </div>
   </div>
@@ -192,9 +193,21 @@
     }
   }
 
+  function appDrawerSelect(id, itemId) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.dispatchEvent(new CustomEvent('appdrawer:select', {
+        detail: { id: itemId },
+        bubbles: true
+      }));
+    }
+    closeDrawer(id);
+  }
+
   window.openDrawer       = window.openDrawer       || openDrawer;
   window.closeDrawer      = window.closeDrawer      || closeDrawer;
   window.filterAppDrawer  = window.filterAppDrawer  || filterAppDrawer;
+  window.appDrawerSelect  = window.appDrawerSelect  || appDrawerSelect;
 
   document.addEventListener('keydown', function (e) {
     var el = document.getElementById(drawerId);

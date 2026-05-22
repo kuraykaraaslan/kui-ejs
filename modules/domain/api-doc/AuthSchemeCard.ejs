@@ -34,16 +34,16 @@
   <div class="flex items-start justify-between gap-3">
     <div class="flex items-start gap-3 min-w-0">
       <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-subtle text-primary">
-        <i class="<%= iconClass %> text-base" aria-hidden="true"></i>
+        <span class="w-4 h-4 inline-flex items-center justify-center">
+          <i class="<%= iconClass %>" aria-hidden="true"></i>
+        </span>
       </div>
       <div class="min-w-0">
         <p class="font-semibold text-text-primary truncate"><%= _name %></p>
         <div class="mt-1 flex flex-wrap items-center gap-1.5">
           <%- include('./SecuritySchemeBadge', { type: _type, size: 'sm' }) %>
           <% if (_recommended) { %>
-          <span class="inline-flex items-center gap-1 rounded-full font-medium px-1.5 py-0 text-[10px] bg-success-subtle text-success-fg">
-            Recommended
-          </span>
+          <%- include('../../ui/Badge', { variant: 'success', size: 'sm', children: 'Recommended' }) %>
           <% } %>
         </div>
       </div>

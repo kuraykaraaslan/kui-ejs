@@ -2,11 +2,15 @@
   var _tabs      = locals.tabs      || [];
   var _activeTab = locals.activeTab || (_tabs.length > 0 ? _tabs[0].id : '');
   var _label     = locals.label     || 'Tabs';
+  var _lazy      = !!locals.lazy;
   var _id        = locals.id        || 'tabgroup-' + Math.random().toString(36).substr(2, 9);
+
+  var _inactiveCls = 'border-transparent text-text-secondary hover:text-text-primary hover:border-border';
+  var _activeCls   = 'border-primary text-primary';
 %>
-<div id="<%= _id %>" class="w-full">
-  <div role="tablist" aria-label="<%= _label %>" class="flex border-b border-border">
-    <% _tabs.forEach(function (tab) { %>
+<div id="<%= _id %>" class="w-full" data-tg-root data-tg-lazy="<%= _lazy ? '1' : '0' %>">
+  <div role="tablist" aria-label="<%= _label %>" class="flex border-b border-border pb-3">
+    <% _tabs.forEach(function (tab, ti) { %>
     <button
       type="button"
       role="tab"
@@ -15,49 +19,134 @@
       aria-controls="<%= _id %>-panel-<%= tab.id %>"
       <%= tab.disabled ? 'aria-disabled="true"' : '' %>
       tabindex="<%= tab.id === _activeTab ? '0' : '-1' %>"
-      onclick="<%= !tab.disabled ? 'activateTab(\'' + _id + '\', \'' + tab.id + '\')' : '' %>"
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= tab.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none border-transparent text-text-secondary' : (tab.id === _activeTab ? 'border-primary text-primary' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border') %>"
+      data-tg-tab="<%= tab.id %>"
+      data-tg-index="<%= ti %>"
+      <%= tab.disabled ? 'data-tg-disabled="1"' : '' %>
+      class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= tab.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none border-transparent text-text-secondary' : (tab.id === _activeTab ? _activeCls : _inactiveCls) %>"
     >
-      <% if (tab.icon) { %><i class="fa-solid <%= tab.icon %> text-sm" aria-hidden="true"></i><% } %>
+      <% if (tab.icon) { %><span aria-hidden="true" class="shrink-0"><%- tab.icon %></span><% } %>
       <%= tab.label %>
       <% if (tab.badge) { %><span class="shrink-0"><%- tab.badge %></span><% } %>
     </button>
     <% }); %>
   </div>
 
-  <% _tabs.forEach(function (tab) { %>
+  <% _tabs.forEach(function (tab) {
+    var _isActive = tab.id === _activeTab;
+    var _shouldRender = !_lazy || _isActive;
+  %>
   <div
     id="<%= _id %>-panel-<%= tab.id %>"
     role="tabpanel"
     aria-labelledby="<%= _id %>-tab-<%= tab.id %>"
     tabindex="0"
-    <%= tab.id !== _activeTab ? 'hidden' : '' %>
+    data-tg-panel="<%= tab.id %>"
+    <%= _isActive ? '' : 'hidden' %>
     class="py-4 focus-visible:outline-none"
   >
-    <%- tab.content || '' %>
+    <% if (_shouldRender) { %>
+      <%- tab.content || '' %>
+    <% } %>
   </div>
   <% }); %>
 </div>
 
 <script>
 (function () {
-  function activateTab(groupId, tabId) {
-    var group = document.getElementById(groupId);
-    if (!group) return;
-    group.querySelectorAll('[role="tab"]').forEach(function (t) {
-      var active = t.id === groupId + '-tab-' + tabId;
-      t.setAttribute('aria-selected', active ? 'true' : 'false');
-      t.setAttribute('tabindex', active ? '0' : '-1');
-      t.classList.toggle('border-primary', active);
-      t.classList.toggle('text-primary', active);
-      t.classList.toggle('border-transparent', !active);
-      t.classList.toggle('text-text-secondary', !active);
+  var root = document.getElementById('<%= _id %>');
+  if (!root) return;
+  var lazy = root.getAttribute('data-tg-lazy') === '1';
+  var activated = new Set();
+
+  var inactiveCls = ['border-transparent', 'text-text-secondary', 'hover:text-text-primary', 'hover:border-border'];
+  var activeCls   = ['border-primary', 'text-primary'];
+
+  var TAB_CONTENTS = <%- JSON.stringify(_tabs.map(function (t) { return { id: t.id, content: t.content || '' }; })) %>;
+
+  // Pre-mark currently active panel.
+  root.querySelectorAll('[role="tab"]').forEach(function (t) {
+    if (t.getAttribute('aria-selected') === 'true') {
+      activated.add(t.getAttribute('data-tg-tab'));
+    }
+  });
+
+  var tabBtns = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+
+  function activate(tabId) {
+    var groupId = root.id;
+    // Tabs.
+    tabBtns.forEach(function (t) {
+      var isActive = t.getAttribute('data-tg-tab') === tabId;
+      var isDisabled = t.getAttribute('data-tg-disabled') === '1';
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      t.setAttribute('tabindex', isActive ? '0' : '-1');
+      if (isDisabled) return;
+      activeCls.forEach(function (c) { t.classList.toggle(c, isActive); });
+      inactiveCls.forEach(function (c) { t.classList.toggle(c, !isActive); });
     });
-    group.querySelectorAll('[role="tabpanel"]').forEach(function (p) {
-      var active = p.id === groupId + '-panel-' + tabId;
-      active ? p.removeAttribute('hidden') : p.setAttribute('hidden', '');
+    // Panels.
+    root.querySelectorAll('[role="tabpanel"]').forEach(function (p) {
+      var pid = p.getAttribute('data-tg-panel');
+      var isActive = pid === tabId;
+      if (isActive) {
+        if (lazy && !activated.has(pid)) {
+          var match = TAB_CONTENTS.find(function (c) { return c.id === pid; });
+          if (match) p.innerHTML = match.content;
+        }
+        p.removeAttribute('hidden');
+        activated.add(pid);
+      } else {
+        p.setAttribute('hidden', '');
+      }
     });
   }
-  window.activateTab = window.activateTab || activateTab;
+
+  function focusTab(idx) {
+    var btn = tabBtns[idx];
+    if (btn) { btn.focus(); activate(btn.getAttribute('data-tg-tab')); }
+  }
+
+  function nextEnabled(start, dir) {
+    var n = tabBtns.length;
+    if (n === 0) return -1;
+    var i = start;
+    for (var c = 0; c < n; c++) {
+      i = (i + dir + n) % n;
+      if (tabBtns[i].getAttribute('data-tg-disabled') !== '1') return i;
+    }
+    return -1;
+  }
+
+  function firstEnabled() {
+    for (var i = 0; i < tabBtns.length; i++) {
+      if (tabBtns[i].getAttribute('data-tg-disabled') !== '1') return i;
+    }
+    return -1;
+  }
+
+  function lastEnabled() {
+    for (var i = tabBtns.length - 1; i >= 0; i--) {
+      if (tabBtns[i].getAttribute('data-tg-disabled') !== '1') return i;
+    }
+    return -1;
+  }
+
+  tabBtns.forEach(function (btn, idx) {
+    btn.addEventListener('click', function () {
+      if (btn.getAttribute('data-tg-disabled') === '1') return;
+      activate(btn.getAttribute('data-tg-tab'));
+    });
+    btn.addEventListener('keydown', function (e) {
+      var target = null;
+      if (e.key === 'ArrowRight')      target = nextEnabled(idx, +1);
+      else if (e.key === 'ArrowLeft')  target = nextEnabled(idx, -1);
+      else if (e.key === 'Home')       target = firstEnabled();
+      else if (e.key === 'End')        target = lastEnabled();
+      if (target !== null && target >= 0) {
+        e.preventDefault();
+        focusTab(target);
+      }
+    });
+  });
 })();
 </script>

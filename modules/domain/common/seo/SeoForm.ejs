@@ -25,33 +25,24 @@
     hint: _titleLen + '/60'
   }) %>
 
-  <div class="w-full">
-    <label for="seo-description" class="block text-sm font-medium text-text-primary mb-1.5">Meta Description</label>
-    <textarea id="seo-description" name="seoDescription" rows="3"
-      placeholder="Short description shown in search results"
-      class="block w-full rounded-md border bg-surface text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-primary/20 border-border focus:border-primary hover:border-text-tertiary transition-colors px-3 py-2 text-sm resize-y"
-    ><%= _initial.seoDescription || '' %></textarea>
-    <% if (_errors.seoDescription) { %>
-    <p class="mt-1.5 text-sm text-error"><%= _errors.seoDescription %></p>
-    <% } else { %>
-    <p class="mt-1.5 text-sm text-text-secondary"><%= _descLen %>/160</p>
-    <% } %>
-  </div>
+  <%- include('../../../ui/Textarea', {
+    id:    'seo-description',
+    label: 'Meta Description',
+    name:  'seoDescription',
+    rows:  3,
+    placeholder: 'Short description shown in search results',
+    value: _initial.seoDescription || '',
+    error: _errors.seoDescription,
+    hint:  _descLen + '/160'
+  }) %>
 
-  <div class="w-full">
-    <label class="block text-sm font-medium text-text-primary mb-1.5">Keywords</label>
-    <div class="flex flex-wrap gap-1.5 rounded-md border border-border bg-surface px-3 py-2 min-h-[2.5rem]">
-      <% _keywords.forEach(function(kw) { %>
-      <span class="inline-flex items-center gap-1 rounded-full bg-primary-subtle text-primary px-2 py-0.5 text-xs font-medium">
-        <%= kw %>
-        <input type="hidden" name="keywords[]" value="<%= kw %>">
-      </span>
-      <% }); %>
-      <input type="text" placeholder="Add keyword…" id="seo-keyword-input"
-        class="flex-1 min-w-[8rem] bg-transparent text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none">
-    </div>
-    <p class="mt-1.5 text-xs text-text-secondary">Press Enter or comma to add a keyword.</p>
-  </div>
+  <%- include('../../../ui/TagInput', {
+    id:    'seo-keywords',
+    label: 'Keywords',
+    name:  'keywords',
+    value: _keywords,
+    placeholder: 'Add keyword…'
+  }) %>
 
   <div class="flex justify-end gap-2 pt-2">
     <% if (_cancelHref) { %>

@@ -5,19 +5,25 @@
   var _actionLabel = locals.actionLabel || '';
   var _actionHref  = locals.actionHref  || '';
   var _persistent  = !!locals.persistent;
+  var _position    = locals.position    || 'top-right';
 
   var variantMap = {
-    success: { container: 'bg-success-subtle border-success', iconColor: 'text-success-fg', icon: 'fa-circle-check' },
-    warning: { container: 'bg-warning-subtle border-warning', iconColor: 'text-warning',    icon: 'fa-triangle-exclamation' },
-    error:   { container: 'bg-error-subtle border-error',     iconColor: 'text-error',      icon: 'fa-circle-xmark' },
-    info:    { container: 'bg-info-subtle border-info',       iconColor: 'text-info',        icon: 'fa-circle-info' },
-    loading: { container: 'bg-surface-raised border-border',  iconColor: 'text-text-secondary', icon: 'fa-spinner fa-spin' },
+    success: { container: 'bg-success-subtle border-success', iconColor: 'text-success-fg',     progressColor: 'bg-success', icon: 'fa-circle-check',         spin: false, role: 'status', live: 'polite'    },
+    warning: { container: 'bg-warning-subtle border-warning', iconColor: 'text-warning',         progressColor: 'bg-warning', icon: 'fa-triangle-exclamation', spin: false, role: 'status', live: 'polite'    },
+    error:   { container: 'bg-error-subtle border-error',     iconColor: 'text-error',           progressColor: 'bg-error',   icon: 'fa-circle-xmark',         spin: false, role: 'alert',  live: 'assertive' },
+    info:    { container: 'bg-info-subtle border-info',       iconColor: 'text-info',            progressColor: 'bg-info',    icon: 'fa-circle-info',          spin: false, role: 'status', live: 'polite'    },
+    loading: { container: 'bg-surface-raised border-border',  iconColor: 'text-text-secondary',  progressColor: 'bg-primary', icon: 'fa-spinner',              spin: true,  role: 'status', live: 'polite'    },
   };
   var vm = variantMap[_v] || variantMap.info;
 %>
-<div class="relative w-80 rounded-xl border shadow-lg overflow-hidden pointer-events-auto <%= vm.container %>">
+<%/*
+  Static partial (server-rendered single toast card). Use the JS API for
+  dynamic toasts: window.toast({ ... }) / window.notify({ ... }) / window.toast.dismiss(id).
+*/%>
+<div class="relative w-80 rounded-xl border shadow-lg overflow-hidden pointer-events-auto <%= vm.container %>"
+  role="<%= vm.role %>" aria-live="<%= vm.live %>">
   <div class="flex items-start gap-3 px-4 pt-4 pb-3">
-    <i class="fa-solid <%= vm.icon %> mt-0.5 shrink-0 <%= vm.iconColor %>" aria-hidden="true"></i>
+    <i class="fa-solid <%= vm.icon %><%= vm.spin ? ' animate-spin' : '' %> mt-0.5 shrink-0 <%= vm.iconColor %>" aria-hidden="true"></i>
     <div class="flex-1 min-w-0">
       <% if (_title) { %><p class="text-sm font-semibold text-text-primary leading-snug"><%= _title %></p><% } %>
       <p class="text-sm text-text-secondary leading-snug<%= _title ? ' mt-0.5' : '' %>"><%= _message %></p>
@@ -43,3 +49,213 @@
     <% } %>
   </div>
 </div>
+
+<%/*
+  Initialise the global toast controller exactly once per page. Safe to include
+  this partial multiple times — the IIFE no-ops on re-init.
+*/%>
+<script>
+(function () {
+  if (window.__toastInit) return;
+  window.__toastInit = true;
+
+  var POSITION_MAP = {
+    'top-right':     'top-4 right-4 items-end',
+    'top-left':      'top-4 left-4 items-start',
+    'top-center':    'top-4 left-1/2 -translate-x-1/2 items-center',
+    'bottom-right':  'bottom-4 right-4 items-end',
+    'bottom-left':   'bottom-4 left-4 items-start',
+    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center',
+  };
+
+  var VARIANTS = {
+    success: { container: 'bg-success-subtle border-success', iconColor: 'text-success-fg',    progressColor: 'bg-success', icon: 'fa-circle-check',         spin: false },
+    warning: { container: 'bg-warning-subtle border-warning', iconColor: 'text-warning',        progressColor: 'bg-warning', icon: 'fa-triangle-exclamation', spin: false },
+    error:   { container: 'bg-error-subtle border-error',     iconColor: 'text-error',          progressColor: 'bg-error',   icon: 'fa-circle-xmark',         spin: false },
+    info:    { container: 'bg-info-subtle border-info',       iconColor: 'text-info',           progressColor: 'bg-info',    icon: 'fa-circle-info',          spin: false },
+    loading: { container: 'bg-surface-raised border-border',  iconColor: 'text-text-secondary', progressColor: 'bg-primary', icon: 'fa-spinner',              spin: true  },
+  };
+
+  var DEFAULT_DURATION = 5000;
+  var TICK_MS          = 50;
+  var EXIT_MS          = 250;
+
+  var containers = {}; // position -> HTMLElement
+  var nextId     = 1;
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  function getContainer(position) {
+    var pos = POSITION_MAP[position] ? position : 'top-right';
+    if (containers[pos]) return containers[pos];
+    var el = document.createElement('div');
+    el.className = 'fixed z-[90] flex flex-col gap-2 pointer-events-none ' + POSITION_MAP[pos];
+    document.body.appendChild(el);
+    containers[pos] = el;
+    return el;
+  }
+
+  function getEffectiveDuration(opts) {
+    if (opts.variant === 'loading') return null;
+    if (opts.duration === null)     return null;
+    if (typeof opts.duration === 'number') return opts.duration;
+    return DEFAULT_DURATION;
+  }
+
+  function renderActions(actions, dismiss) {
+    if (!actions || !actions.length) return '';
+    return '<div class="flex flex-wrap gap-x-3 gap-y-1 mt-2.5" data-toast-actions>'
+      + actions.map(function (a, i) {
+          var danger = a.variant === 'danger';
+          var cls = 'text-xs font-semibold rounded transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus '
+            + (danger ? 'text-error' : 'text-text-primary underline underline-offset-2');
+          return '<button type="button" data-toast-action="' + i + '" class="' + cls + '">' + escapeHtml(a.label) + '</button>';
+        }).join('')
+      + '</div>';
+  }
+
+  function showToast(opts) {
+    opts = opts || {};
+    var variant = VARIANTS[opts.variant] ? opts.variant : 'info';
+    var vm      = VARIANTS[variant];
+    var id      = 'toast-' + (nextId++);
+    var pos     = opts.position || 'top-right';
+    var duration = getEffectiveDuration({ variant: variant, duration: opts.duration });
+    var hasDuration = duration !== null;
+    var showClose = opts.closeButton !== false;
+    var role = variant === 'error' ? 'alert'  : 'status';
+    var live = variant === 'error' ? 'assertive' : 'polite';
+
+    var container = getContainer(pos);
+
+    var card = document.createElement('div');
+    card.setAttribute('data-toast-id', id);
+    card.setAttribute('role', role);
+    card.setAttribute('aria-live', live);
+    card.className = 'relative w-80 rounded-xl border shadow-lg overflow-hidden pointer-events-auto transition-all duration-250 ease-out opacity-0 translate-y-3 scale-95 ' + vm.container;
+
+    var iconSpin = vm.spin ? ' animate-spin' : '';
+    var titleHtml = opts.title ? '<p class="text-sm font-semibold text-text-primary leading-snug">' + escapeHtml(opts.title) + '</p>' : '';
+    var msgClass  = 'text-sm text-text-secondary leading-snug' + (opts.title ? ' mt-0.5' : '');
+    var closeHtml = showClose
+      ? '<button type="button" aria-label="Dismiss" data-toast-close class="shrink-0 mt-0.5 rounded text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"><i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i></button>'
+      : '';
+    var progressHtml = hasDuration
+      ? '<div class="absolute bottom-0 left-0 right-0 h-0.5 bg-black/5"><div class="h-full rounded-full ' + vm.progressColor + '" data-toast-progress style="width:100%;opacity:0.5"></div></div>'
+      : '';
+
+    card.innerHTML =
+        '<div class="flex items-start gap-3 px-4 pt-4 pb-3">'
+      +   '<span class="mt-0.5 ' + vm.iconColor + '" aria-hidden="true"><i class="fa-solid ' + vm.icon + iconSpin + ' shrink-0"></i></span>'
+      +   '<div class="flex-1 min-w-0">'
+      +     titleHtml
+      +     '<p class="' + msgClass + '">' + escapeHtml(opts.message || '') + '</p>'
+      +     renderActions(opts.actions, null)
+      +   '</div>'
+      +   closeHtml
+      + '</div>'
+      + progressHtml;
+
+    container.appendChild(card);
+
+    // ── enter animation ──
+    requestAnimationFrame(function () {
+      card.classList.remove('opacity-0', 'translate-y-3', 'scale-95');
+      card.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+    });
+
+    // ── countdown / progress ──
+    var paused      = false;
+    var exiting     = false;
+    var remaining   = duration || 0;
+    var lastTick    = 0;
+    var tickTimer   = null;
+    var progressEl  = card.querySelector('[data-toast-progress]');
+
+    function dismiss() {
+      if (exiting) return;
+      exiting = true;
+      stopTicking();
+      card.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+      card.classList.add('opacity-0', 'translate-y-3', 'scale-95');
+      setTimeout(function () {
+        if (card.parentNode) card.parentNode.removeChild(card);
+        if (typeof opts.onDismiss === 'function') {
+          try { opts.onDismiss(); } catch (e) {}
+        }
+      }, EXIT_MS);
+    }
+
+    function startTicking() {
+      if (!hasDuration || tickTimer) return;
+      lastTick = Date.now();
+      tickTimer = setInterval(function () {
+        if (paused || exiting) return;
+        var now = Date.now();
+        var elapsed = now - lastTick;
+        lastTick = now;
+        remaining = Math.max(0, remaining - elapsed);
+        if (progressEl) progressEl.style.width = (remaining / duration * 100) + '%';
+        if (remaining <= 0) { stopTicking(); dismiss(); }
+      }, TICK_MS);
+    }
+    function stopTicking() { if (tickTimer) { clearInterval(tickTimer); tickTimer = null; } }
+
+    // ── pause on hover / tab hidden ──
+    card.addEventListener('mouseenter', function () { if (hasDuration) { paused = true; } });
+    card.addEventListener('mouseleave', function () { if (hasDuration) { paused = false; lastTick = Date.now(); } });
+    var visHandler = function () { paused = document.hidden; if (!paused) lastTick = Date.now(); };
+    if (hasDuration) document.addEventListener('visibilitychange', visHandler);
+
+    // ── actions ──
+    var actionBtns = card.querySelectorAll('[data-toast-action]');
+    actionBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var idx = parseInt(btn.getAttribute('data-toast-action'), 10);
+        var action = opts.actions && opts.actions[idx];
+        if (action && typeof action.onClick === 'function') {
+          try { action.onClick(dismiss); } catch (e) { dismiss(); }
+        }
+      });
+    });
+
+    // ── close ──
+    var closeBtn = card.querySelector('[data-toast-close]');
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+
+    startTicking();
+
+    // Cleanup visibilitychange listener when card removed
+    var observer = new MutationObserver(function () {
+      if (!card.parentNode && hasDuration) {
+        document.removeEventListener('visibilitychange', visHandler);
+        observer.disconnect();
+      }
+    });
+    observer.observe(container, { childList: true });
+
+    return { id: id, dismiss: dismiss };
+  }
+
+  function toast(opts) { return showToast(opts || {}); }
+  toast.dismiss = function (id) {
+    var card = document.querySelector('[data-toast-id="' + id + '"]');
+    if (!card) return;
+    var btn = card.querySelector('[data-toast-close]');
+    if (btn) btn.click();
+    else if (card.parentNode) card.parentNode.removeChild(card);
+  };
+  toast.success = function (o) { return showToast(Object.assign({}, o, { variant: 'success' })); };
+  toast.error   = function (o) { return showToast(Object.assign({}, o, { variant: 'error' })); };
+  toast.warning = function (o) { return showToast(Object.assign({}, o, { variant: 'warning' })); };
+  toast.info    = function (o) { return showToast(Object.assign({}, o, { variant: 'info' })); };
+  toast.loading = function (o) { return showToast(Object.assign({}, o, { variant: 'loading', duration: null })); };
+
+  window.toast  = toast;
+  window.notify = toast; // alias
+})();
+</script>

@@ -16,7 +16,6 @@
 <button
   type="button"
   <% if (_onClick) { %>onclick="<%= _onClick %>"<% } %>
-  <% if (_active) { %>aria-pressed="true"<% } %>
   class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= stateCls %><%= _className ? ' ' + _className : '' %>"
 >
   <%- _children %>

@@ -24,8 +24,8 @@
   data-slider-loop="<%= _loop ? '1' : '0' %>"
 >
   <div
-    class="flex transition-transform duration-300 ease-in-out will-change-transform"
-    style="transform: translateX(0%);"
+    class="flex ease-in-out will-change-transform"
+    style="transform: translateX(0%); transition-property: transform; transition-duration: 350ms;"
     data-slider-track
   >
     <% _slides.forEach(function(slide, i) { %>
@@ -47,18 +47,14 @@
     type="button"
     aria-label="Previous slide"
     data-slider-prev
-    class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-  >
-    <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-  </button>
+    class="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white<%= (!_loop && _total <= 1) ? ' hidden' : '' %>"
+  >‹</button>
   <button
     type="button"
     aria-label="Next slide"
     data-slider-next
     class="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-  >
-    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-  </button>
+  >›</button>
   <% } %>
 
   <% if (_showDots && _total > 1) { %>
@@ -114,6 +110,11 @@
         d.classList.add('w-2', 'bg-white/40', 'hover:bg-white/70');
       }
     });
+    // Toggle prev/next visibility based on canPrev/canNext in non-loop mode
+    var canPrev = loop || current > 0;
+    var canNext = loop || current < total - 1;
+    if (prevBtn) prevBtn.classList.toggle('hidden', !canPrev);
+    if (nextBtn) nextBtn.classList.toggle('hidden', !canNext);
   }
 
   function goTo(idx) {
@@ -139,10 +140,8 @@
   }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
-  root.addEventListener('mouseenter', stop);
-  root.addEventListener('mouseleave', start);
-  root.addEventListener('focusin',  stop);
-  root.addEventListener('focusout', start);
+  // Initial render to reflect canPrev/canNext on mount (e.g. non-loop slider)
+  render();
 
   start();
 })();

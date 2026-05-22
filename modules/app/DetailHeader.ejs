@@ -20,7 +20,8 @@
         <div class="flex items-center gap-2 flex-wrap">
           <h1 class="text-2xl font-bold text-text-primary leading-tight"><%= locals.title %></h1>
           <% if (locals.status) { %>
-          <span class="inline-flex items-center rounded-full font-medium <%= _badgeCls %> px-2 py-0.5 text-xs"><%= locals.status %></span>
+          <%# Badge-equivalent: variant=<statusVariant> size=md (default Badge size). Class output matches Badge.ejs. %>
+          <span class="inline-flex items-center gap-1 rounded-md font-medium <%= _badgeCls %> px-2 py-0.5 text-xs"><%= locals.status %></span>
           <% } %>
           <% if (locals.badgeContent) { %><%- locals.badgeContent %><% } %>
         </div>

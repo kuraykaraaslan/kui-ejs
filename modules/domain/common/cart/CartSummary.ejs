@@ -24,21 +24,24 @@
 
   <% if (_items.length === 0) { %>
   <!-- Empty cart -->
-  <div class="rounded-xl border border-border bg-surface-raised py-16 text-center space-y-3">
-    <i class="fa-solid fa-cart-shopping text-4xl text-text-disabled" aria-hidden="true"></i>
-    <p class="text-sm font-medium text-text-primary">Your cart is empty</p>
-    <p class="text-sm text-text-secondary">Add some items to get started.</p>
+  <div class="flex flex-col items-center justify-center gap-3 py-12 text-center">
+    <span class="w-10 h-10 inline-flex items-center justify-center text-text-disabled" aria-hidden="true">
+      <i class="fa-solid fa-cart-shopping" style="font-size:40px"></i>
+    </span>
+    <p class="font-medium text-text-primary">Your cart is empty</p>
+    <p class="text-sm text-text-secondary">Add items to get started</p>
   </div>
   <% } else { %>
 
   <!-- Items -->
-  <div class="rounded-xl border border-border bg-surface-raised px-5 divide-y divide-border">
+  <div class="divide-y divide-border">
     <% _items.forEach(function(item) { %>
     <%- include('./CartItem', {
       item: item,
       updateAction: _updateAction,
       removeAction: _removeAction,
-      locale: _locale
+      locale: _locale,
+      className: 'py-4 first:pt-0 last:pb-0'
     }) %>
     <% }); %>
   </div>
@@ -59,11 +62,13 @@
 
   <!-- Checkout CTA -->
   <% if (_checkoutHref) { %>
-  <a href="<%= _checkoutHref %>"
-    class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-fg hover:bg-primary-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-    <%= _checkoutLabel %>
-    <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
-  </a>
+  <%- include('../../../ui/Button', {
+    element: 'a',
+    href: _checkoutHref,
+    fullWidth: true,
+    className: 'h-11 font-semibold',
+    children: _checkoutLabel
+  }) %>
   <% } %>
 
   <% } %>

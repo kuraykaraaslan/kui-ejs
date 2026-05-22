@@ -4,17 +4,22 @@
   var _hasSidebar = !!(locals.sidebarContent);
   var _hasTopbar  = !!(locals.topbarContent);
   var _title = locals.mobileSidebarTitle || 'Navigation';
+  var _collapsed = !!locals.sidebarCollapsed;
+  var _logoContent = (_collapsed && locals.compactLogo)
+    ? locals.compactLogo
+    : (locals.logoContent || locals.compactLogo || '');
+  var _logoIsCompact = _collapsed && !!locals.compactLogo;
 %>
 <div class="flex h-screen overflow-hidden bg-surface-base<%= locals.className ? ' '+locals.className : '' %>">
 
   <% if (_hasSidebar) { %>
   <aside class="relative hidden lg:flex flex-col h-full min-h-0 shrink-0 border-r border-border bg-surface-raised">
-    <% if (locals.logoContent) { %>
-    <div class="absolute inset-x-0 top-0 z-10 flex items-center h-14 border-b border-border bg-surface-raised overflow-hidden px-4">
-      <%- locals.logoContent %>
+    <% if (_logoContent) { %>
+    <div class="absolute inset-x-0 top-0 z-10 flex items-center h-14 border-b border-border bg-surface-raised overflow-hidden <%= _logoIsCompact ? 'justify-center px-2' : 'px-4' %>">
+      <%- _logoContent %>
     </div>
     <% } %>
-    <div class="flex min-h-0 flex-1<%= locals.logoContent ? ' pt-14' : '' %>">
+    <div class="flex min-h-0 flex-1<%= _logoContent ? ' pt-14' : '' %>">
       <%- locals.sidebarContent %>
     </div>
   </aside>
@@ -22,11 +27,11 @@
 
   <div class="flex flex-1 flex-col min-w-0 min-h-0">
     <% if (_hasTopbar) { %>
-    <header class="sticky top-0 z-[40] flex items-center h-14 px-4 border-b border-border bg-surface-raised/90 backdrop-blur shrink-0">
+    <header class="sticky top-0 z-30 flex items-center h-14 px-4 border-b border-border bg-surface-raised/90 backdrop-blur shrink-0">
       <% if (_hasSidebar) { %>
       <button type="button" onclick="openDrawer('<%= _drawerId %>')"
         aria-label="Open sidebar"
-        class="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+        class="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
         <i class="fa-solid fa-bars" aria-hidden="true"></i>
       </button>
       <% } %>
@@ -39,6 +44,6 @@
   </div>
 
   <% if (_hasSidebar) { %>
-  <%- include('../ui/Drawer', { id: _drawerId, title: _title, side: 'left', open: false, children: locals.sidebarContent || '' }) %>
+  <%- include('../ui/Drawer', { id: _drawerId, title: _title, side: 'left', open: false, className: '!w-72', children: locals.sidebarContent || '' }) %>
   <% } %>
 </div>

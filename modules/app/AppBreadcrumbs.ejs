@@ -61,21 +61,27 @@
 
   <div class="flex items-center gap-2 sm:hidden">
     <nav aria-label="Breadcrumb" class="flex items-center gap-1 text-sm">
-      <% if (_items.length === 1) { %>
-        <span class="text-text-primary font-medium px-1"><%= _items[0].label %></span>
-      <% } else { %>
-        <% if (_items[0].href) { %>
-          <a href="<%= _items[0].href %>" class="text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded px-1"><%= _items[0].label %></a>
+      <%
+        var _mobileItems;
+        if (_items.length >= 3) {
+          _mobileItems = [_items[0], { label: '…' }, _items[_items.length - 1]];
+        } else {
+          _mobileItems = _items.slice();
+        }
+      %>
+      <% _mobileItems.forEach(function(item, mi) {
+        var isLastMobile = mi === _mobileItems.length - 1;
+      %>
+        <% if (isLastMobile) { %>
+          <span class="text-text-primary font-medium px-1" aria-current="page"><%= item.label %></span>
+        <% } else if (item.href) { %>
+          <a href="<%= item.href %>" class="text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded px-1"><%= item.label %></a>
+          <i class="fa-solid fa-chevron-right text-text-disabled" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
         <% } else { %>
-          <span class="text-text-secondary px-1"><%= _items[0].label %></span>
-        <% } %>
-        <i class="fa-solid fa-chevron-right text-text-disabled" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
-        <% if (_items.length > 2) { %>
-          <span class="text-text-secondary px-1">…</span>
+          <span class="text-text-secondary px-1"><%= item.label %></span>
           <i class="fa-solid fa-chevron-right text-text-disabled" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
         <% } %>
-        <span class="text-text-primary font-medium px-1"><%= _items[_items.length - 1].label %></span>
-      <% } %>
+      <% }); %>
     </nav>
     <% if (_items.length > 2) { %>
     <div class="relative">

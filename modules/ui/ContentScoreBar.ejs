@@ -61,7 +61,7 @@
         <% if (r.hint) { %>title="<%= r.hint %>"<% } %>
         class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium cursor-default select-none transition-colors <%= pillClass %>"
       >
-        <% if (r.pass) { %><i class="fa-solid fa-check w-2.5 h-2.5" aria-hidden="true"></i><% } %>
+        <% if (r.pass) { %><span class="w-2.5 h-2.5 inline-flex items-center justify-center" aria-hidden="true"><i class="fa-solid fa-check" style="font-size:10px"></i></span><% } %>
         <%= r.label %>
       </span>
     <% }); %>

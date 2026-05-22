@@ -28,6 +28,8 @@
   var container = document.getElementById('notification-system');
   if (!container) return;
 
+  // Mirror Toast.ejs variantMap so individual notifications match the
+  // ui/Toast partial markup pixel-for-pixel.
   var variantMap = {
     success: { container: 'bg-success-subtle border-success', iconColor: 'text-success-fg',     progressColor: 'bg-success', icon: 'fa-circle-check' },
     warning: { container: 'bg-warning-subtle border-warning', iconColor: 'text-warning',        progressColor: 'bg-warning', icon: 'fa-triangle-exclamation' },
@@ -53,14 +55,50 @@
     setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 250);
   }
 
+  // Build markup that matches modules/ui/Toast.ejs output (container shell,
+  // icon row, title/message block, optional action, optional dismiss). The
+  // progress bar overlay is unique to the notification system.
+  function buildToast(id, opts, vm) {
+    var title       = opts.title       || '';
+    var message     = opts.message     || '';
+    var actionLabel = opts.actionLabel || '';
+    var actionHref  = opts.actionHref  || '';
+    var persistent  = !!opts.persistent || opts.variant === 'loading';
+    var closeButton = opts.closeButton !== false && !persistent;
+
+    var titleHtml = title
+      ? '<p class="text-sm font-semibold text-text-primary leading-snug">' + escapeHtml(title) + '</p>'
+      : '';
+    var msgClass  = 'text-sm text-text-secondary leading-snug' + (title ? ' mt-0.5' : '');
+
+    var actionHtml = '';
+    if (actionLabel) {
+      var actionInner = actionHref
+        ? '<a href="' + escapeHtml(actionHref) + '" class="text-xs font-semibold rounded underline underline-offset-2 text-text-primary hover:opacity-70">' + escapeHtml(actionLabel) + '</a>'
+        : '<button type="button" class="text-xs font-semibold rounded underline underline-offset-2 text-text-primary hover:opacity-70">' + escapeHtml(actionLabel) + '</button>';
+      actionHtml = '<div class="flex flex-wrap gap-x-3 gap-y-1 mt-2.5">' + actionInner + '</div>';
+    }
+
+    var dismissBtn = closeButton
+      ? '<button type="button" aria-label="Dismiss" data-dismiss="' + id + '" ' +
+        'class="shrink-0 mt-0.5 rounded text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">' +
+        '<i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i></button>'
+      : '';
+
+    return '<div class="flex items-start gap-3 px-4 pt-4 pb-3">' +
+             '<i class="fa-solid ' + vm.icon + ' mt-0.5 shrink-0 ' + vm.iconColor + '" aria-hidden="true"></i>' +
+             '<div class="flex-1 min-w-0">' + titleHtml +
+               '<p class="' + msgClass + '">' + escapeHtml(message) + '</p>' +
+               actionHtml +
+             '</div>' + dismissBtn +
+           '</div>';
+  }
+
   function pushNotification(opts) {
     opts = opts || {};
     var variant     = opts.variant || 'info';
-    var title       = opts.title || '';
-    var message     = opts.message || '';
     var duration    = typeof opts.duration === 'number' ? opts.duration : (variant === 'loading' ? null : 5000);
     var persistent  = !!opts.persistent || variant === 'loading';
-    var closeButton = opts.closeButton !== false;
     var vm          = variantMap[variant] || variantMap.info;
     var role        = variant === 'error' ? 'alert' : 'status';
     var live        = variant === 'error' ? 'assertive' : 'polite';
@@ -71,30 +109,19 @@
     wrap.id = id;
     wrap.setAttribute('role', role);
     wrap.setAttribute('aria-live', live);
+    // Matches Toast.ejs shell exactly: `relative w-80 rounded-xl border shadow-lg overflow-hidden pointer-events-auto <container>`
     wrap.className = 'relative w-80 rounded-xl border shadow-lg overflow-hidden pointer-events-auto transition-all duration-250 ease-out ' + vm.container;
     wrap.style.opacity = '0';
     wrap.style.transform = 'translateY(12px) scale(0.95)';
 
-    var titleHtml = title ? '<p class="text-sm font-semibold text-text-primary leading-snug">' + escapeHtml(title) + '</p>' : '';
-    var msgClass  = 'text-sm text-text-secondary leading-snug' + (title ? ' mt-0.5' : '');
-    var dismissBtn = closeButton ?
-      '<button type="button" aria-label="Dismiss" data-dismiss="' + id + '" ' +
-      'class="shrink-0 mt-0.5 rounded text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">' +
-      '<i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i></button>' : '';
+    // Progress bar height mirrors the Toast.ejs/Toast.tsx pattern (h-0.5 = 2px).
+    var progressHtml = hasDuration
+      ? '<div class="absolute bottom-0 left-0 right-0 h-0.5 bg-black/5">' +
+          '<div data-progress class="h-full rounded-full transition-none ' + vm.progressColor + '" style="width:100%;opacity:0.5"></div>' +
+        '</div>'
+      : '';
 
-    var progressHtml = hasDuration ?
-      '<div class="absolute bottom-0 left-0 right-0 h-0.5 bg-black/5">' +
-        '<div data-progress class="h-full rounded-full transition-none ' + vm.progressColor + '" style="width:100%;opacity:0.5"></div>' +
-      '</div>' : '';
-
-    wrap.innerHTML =
-      '<div class="flex items-start gap-3 px-4 pt-4 pb-3">' +
-        '<span class="mt-0.5 ' + vm.iconColor + '" aria-hidden="true"><i class="fa-solid ' + vm.icon + '"></i></span>' +
-        '<div class="flex-1 min-w-0">' + titleHtml +
-          '<p class="' + msgClass + '">' + escapeHtml(message) + '</p>' +
-        '</div>' + dismissBtn +
-      '</div>' + progressHtml;
-
+    wrap.innerHTML = buildToast(id, opts, vm) + progressHtml;
     container.appendChild(wrap);
 
     requestAnimationFrame(function () {

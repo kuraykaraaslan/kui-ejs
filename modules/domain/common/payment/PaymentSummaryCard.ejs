@@ -34,12 +34,10 @@
     </div>
     <% } %>
 
-    <% if (_payment.provider) { %>
     <div class="flex items-center justify-between">
       <span class="text-sm text-text-secondary">Provider</span>
-      <span class="text-sm font-medium text-text-primary"><%= _payment.provider %></span>
+      <span class="text-sm font-medium text-text-primary"><%= _payment.provider || '' %></span>
     </div>
-    <% } %>
 
     <% if (_payment.providerPaymentId) { %>
     <div class="flex items-center justify-between gap-4">
