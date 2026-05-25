@@ -14,6 +14,7 @@ import { buildStepShellData }             from './app-step-shell.showcase';
 import { buildAppBreadcrumbsData }        from './app-breadcrumbs.showcase';
 import { buildAppFooterData }             from './app-footer.showcase';
 import { buildThemeSwitcherData }         from './app-theme-switcher.showcase';
+import { buildAppRichTextEditorData }     from './app-rich-text-editor.showcase';
 
 export function buildAppPatternsData(): ShowcaseItem[] {
   return [
@@ -32,5 +33,6 @@ export function buildAppPatternsData(): ShowcaseItem[] {
     ...buildAppBreadcrumbsData(),
     ...buildAppFooterData(),
     ...buildThemeSwitcherData(),
+    ...buildAppRichTextEditorData(),
   ];
 }

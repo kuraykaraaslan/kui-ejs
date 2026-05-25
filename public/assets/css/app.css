@@ -1011,6 +1011,9 @@
   .w-full {
     width: 100%;
   }
+  .w-px {
+    width: 1px;
+  }
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
@@ -1507,6 +1510,9 @@
         border-color: color-mix(in oklab, var(--warning) 20%, transparent);
       }
     }
+  }
+  .self-center {
+    align-self: center;
   }
   .self-end {
     align-self: flex-end;

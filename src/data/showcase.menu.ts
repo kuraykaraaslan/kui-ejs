@@ -208,6 +208,7 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'step-shell',          title: 'StepShell',          category: 'App', abbr: 'Ss', since: '2026-05' },
       { id: 'accessibility-kit',   title: 'AccessibilityKit',   category: 'App', abbr: 'AK', since: '2026-05' },
       { id: 'theme-switcher',      title: 'ThemeSwitcher',      category: 'App', abbr: 'TS', since: '2026-05' },
+      { id: 'rich-text-editor',    title: 'RichTextEditor',     category: 'App', abbr: 'RT', since: '2026-05' },
       { id: 'error-state',         title: 'ErrorState',         category: 'App', abbr: 'Er', since: '2025-03' },
       { id: 'not-found-state',     title: 'NotFoundState',      category: 'App', abbr: 'Ns', since: '2025-03' },
       { id: 'loading-state',       title: 'LoadingState',       category: 'App', abbr: 'Lo', since: '2025-03' },
