@@ -55,12 +55,12 @@ Interactive JSON Schema tree viewer with type coloring, constraint display, and 
   var _renderRoot  = locals.renderRoot !== false; // top-level wrapper
 
   var TYPE_COLORS = {
-    string:  'text-blue-600 dark:text-blue-400',
-    number:  'text-purple-600 dark:text-purple-400',
-    integer: 'text-purple-600 dark:text-purple-400',
-    boolean: 'text-orange-600 dark:text-orange-400',
-    array:   'text-yellow-600 dark:text-yellow-400',
-    object:  'text-green-600 dark:text-green-400',
+    string:  'text-green-600 dark:text-green-400',
+    number:  'text-blue-600 dark:text-blue-400',
+    integer: 'text-blue-600 dark:text-blue-400',
+    boolean: 'text-purple-600 dark:text-purple-400',
+    array:   'text-orange-600 dark:text-orange-400',
+    object:  'text-yellow-600 dark:text-yellow-400',
     'null':  'text-text-disabled',
   };
 

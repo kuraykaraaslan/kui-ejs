@@ -79,7 +79,7 @@ Label + checkbox + optional hint / error message. aria-describedby is wired up a
 %>
 <div class="flex items-start gap-3 <%= locals.className || '' %>" data-testid="checkbox-<%= _id %>">
   <input id="<%= _id %>" type="checkbox" <%= _ch %> <%= _dis %>
-    class="mt-0.5 h-4 w-4 rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed <%= _error ? 'border-error' : '' %> <%= _dis ? '' : 'cursor-pointer' %>"
+    class="mt-0.5 h-4 w-4 rounded border-border text-primary focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed <%= _error ? 'border-error' : '' %>"
     <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %>
     <% if (_error) { %>aria-invalid="true"<% } %>
     <% if (_indet) { %>aria-checked="mixed"<% } %>

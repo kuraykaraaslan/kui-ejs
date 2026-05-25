@@ -443,6 +443,24 @@
     "category": "App",
     "file": "theme-switcher.md"
   },
+  "rich-text-editor": {
+    "name": "RichTextEditor",
+    "layer": "app",
+    "category": "App",
+    "file": "rich-text-editor.md"
+  },
+  "context-menu": {
+    "name": "ContextMenu",
+    "layer": "app",
+    "category": "App",
+    "file": "context-menu.md"
+  },
+  "image-gallery": {
+    "name": "ImageGallery",
+    "layer": "app",
+    "category": "App",
+    "file": "image-gallery.md"
+  },
   "login-form": {
     "name": "LoginForm",
     "layer": "domain",

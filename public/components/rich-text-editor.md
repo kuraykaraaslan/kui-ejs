@@ -1,0 +1,343 @@
+# RichTextEditor
+
+- **id:** `rich-text-editor`
+- **layer:** app
+- **category:** App
+- **filePath:** `modules/app/RichTextEditor.ejs`
+- **status:** stable
+- **since:** 2026-05
+
+WYSIWYG editor for long-form prose. Built on Quill 2.x — the same library powers the NextJS sibling so output HTML is identical. Toolbar covers bold/italic/underline/strike/inline code, headings, blockquote, code block, lists, link, image (via Modal + file upload as data URL), text align, clear formatting, undo/redo.
+
+## Design tokens consumed
+
+- `--border`
+- `--border-focus`
+- `--error`
+- `--primary`
+- `--primary-fg`
+- `--primary-hover`
+- `--secondary`
+- `--surface-base`
+- `--surface-overlay`
+- `--surface-sunken`
+- `--text-disabled`
+- `--text-primary`
+- `--text-secondary`
+
+## Variants
+
+### Empty
+
+```ejs
+<%- include('modules/app/RichTextEditor', {
+  id: 'article-body',
+  name: 'body',
+  label: 'Article body',
+  hint: 'Use the toolbar to format your text.',
+  placeholder: 'Start writing your article…'
+}) %>
+```
+
+### Pre-populated
+
+```ejs
+<%- include('modules/app/RichTextEditor', {
+  id: 'release-notes',
+  name: 'releaseNotes',
+  label: 'Release notes',
+  value: '<h1>Release notes</h1><p>...</p>'
+}) %>
+```
+
+### Read-only
+
+```ejs
+<%- include('modules/app/RichTextEditor', {
+  id: 'archived',
+  name: 'archived',
+  label: 'Archived document',
+  hint: 'This document is read-only.',
+  value: savedHtml,
+  readOnly: true
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  // ─── RichTextEditor (EJS) ───────────────────────────────────────────────────
+  //
+  // Quill 2.x WYSIWYG. Sibling of /home/kuray/01_NextJS_Components
+  // modules/app/RichTextEditor.tsx — same toolbar markup, same tokens,
+  // same Quill output HTML.
+  //
+  // Quill (and quill.snow.css) are loaded once by views/showcase/index.ejs
+  // and views/layouts/main.ejs (when present). This template only emits the
+  // toolbar + container markup, a hidden form field, the image-insert modal,
+  // and an inline <script> that bootstraps Quill for this instance.
+  //
+  // Usage: include this template with locals: id, name, label, hint, error,
+  // value (HTML string), placeholder, readOnly (bool), minHeight (px).
+  // See modules/app/RichTextEditor.ejs callers for examples.
+
+  var _id          = locals.id          || ('rte-' + Math.random().toString(36).substr(2, 6));
+  var _name        = locals.name        || _id;
+  var _label       = locals.label       || '';
+  var _hint        = locals.hint        || '';
+  var _error       = locals.error       || '';
+  var _value       = locals.value       || '';
+  var _placeholder = locals.placeholder || 'Write something…';
+  var _readOnly    = !!locals.readOnly;
+  var _minHeight   = Number(locals.minHeight) > 0 ? Number(locals.minHeight) : 180;
+  var _className   = locals.className   || '';
+
+  var _hintId      = _hint  ? (_id + '-hint')  : '';
+  var _errorId     = _error ? (_id + '-error') : '';
+  var _describedBy = [_hintId, _errorId].filter(Boolean).join(' ');
+
+  var _modalId     = _id + '-img-modal';
+  var _modalChildren = '' +
+    '<div class="space-y-4">' +
+      '<div class="space-y-1">' +
+        '<span class="block text-sm font-medium text-text-primary">Image file</span>' +
+        '<div id="' + _id + '-img-drop" class="relative rounded-md border-2 border-dashed border-border bg-surface-base flex items-center justify-center gap-2 px-4 py-4 text-center text-sm">' +
+          '<i class="fa-solid fa-folder-open text-text-disabled" aria-hidden="true"></i>' +
+          '<span class="text-text-secondary">' +
+            '<button type="button" id="' + _id + '-img-browse" class="text-primary underline underline-offset-2 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded">Choose file</button>' +
+            ' or drop here' +
+          '</span>' +
+          '<input type="file" accept="image/*" class="sr-only" id="' + _id + '-img-file" />' +
+        '</div>' +
+        '<p id="' + _id + '-img-filename" class="text-xs text-text-secondary hidden"></p>' +
+        '<p class="text-xs text-text-disabled">Max 5.0 MB. PNG, JPG, GIF, WebP, SVG.</p>' +
+      '</div>' +
+      '<div class="space-y-1">' +
+        '<label for="' + _id + '-img-url" class="block text-sm font-medium text-text-primary">Or paste URL</label>' +
+        '<input type="url" id="' + _id + '-img-url" placeholder="https://example.com/image.png" class="block w-full rounded-md border border-border bg-surface-base text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 text-sm" />' +
+      '</div>' +
+      '<div class="space-y-1">' +
+        '<label for="' + _id + '-img-alt" class="block text-sm font-medium text-text-primary">Alt text</label>' +
+        '<input type="text" id="' + _id + '-img-alt" class="block w-full rounded-md border border-border bg-surface-base text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-2 text-sm" />' +
+        '<p class="text-xs text-text-secondary">Describe the image for screen readers.</p>' +
+      '</div>' +
+      '<p id="' + _id + '-img-error" class="text-sm text-error hidden" role="alert"></p>' +
+    '</div>';
+
+  var _modalFooter = '' +
+    '<button type="button" onclick="closeModal(\'' + _modalId + '\')" class="inline-flex items-center justify-center gap-2 rounded-md border border-border text-text-primary hover:bg-surface-overlay px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">Cancel</button>' +
+    '<button type="button" id="' + _id + '-img-insert" class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed">Insert</button>';
+
+  // Toolbar button helper — single string per button mirrors React side.
+  function btn(cls, label, icon, extra) {
+    return '<button type="button" class="kui-rte-btn inline-flex items-center justify-center w-7 h-7 rounded text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors ' + cls + '" aria-label="' + label + '"' + (extra || '') + '>' +
+      '<i class="fa-solid ' + icon + ' w-3.5 h-3.5" aria-hidden="true" style="font-size:0.875rem"></i>' +
+    '</button>';
+  }
+  var _divider = '<span class="w-px h-5 bg-border mx-1 self-center" aria-hidden="true"></span>';
+%>
+<div class="flex flex-col gap-1.5<%= _className ? ' ' + _className : '' %>">
+  <% if (_label) { %>
+  <label for="<%= _id %>" class="text-sm font-medium text-text-primary"><%= _label %></label>
+  <% } %>
+
+  <div
+    id="<%= _id %>"
+    data-kui-rte
+    <% if (_describedBy) { %>aria-describedby="<%= _describedBy %>"<% } %>
+    aria-invalid="<%= _error ? 'true' : 'false' %>"
+    class="rounded-md border <%= _error ? 'border-error' : 'border-border' %> bg-surface-base overflow-hidden focus-within:ring-2 focus-within:ring-border-focus<%= _readOnly ? ' bg-surface-sunken' : '' %>"
+  >
+    <div id="<%= _id %>-toolbar" class="ql-toolbar ql-snow flex flex-wrap items-center gap-0.5<%= _readOnly ? ' hidden' : '' %>">
+      <select class="ql-header" aria-label="Heading level">
+        <option value="1">H1</option>
+        <option value="2">H2</option>
+        <option value="3">H3</option>
+        <option value="" selected>Paragraph</option>
+      </select>
+      <%- btn('ql-blockquote', 'Blockquote', 'fa-quote-right') %>
+      <%- btn('ql-code-block', 'Code block', 'fa-code-branch') %>
+
+      <%- _divider %>
+
+      <%- btn('ql-bold',      'Bold',          'fa-bold') %>
+      <%- btn('ql-italic',    'Italic',        'fa-italic') %>
+      <%- btn('ql-underline', 'Underline',     'fa-underline') %>
+      <%- btn('ql-strike',    'Strikethrough', 'fa-strikethrough') %>
+      <%- btn('ql-code',      'Inline code',   'fa-code') %>
+
+      <%- _divider %>
+
+      <%- btn('ql-list', 'Bullet list',   'fa-list-ul', ' value="bullet"') %>
+      <%- btn('ql-list', 'Numbered list', 'fa-list-ol', ' value="ordered"') %>
+
+      <%- _divider %>
+
+      <%- btn('ql-link',  'Insert link',  'fa-link') %>
+      <%- btn('ql-image', 'Insert image', 'fa-image') %>
+
+      <%- _divider %>
+
+      <%- btn('ql-align', 'Align left',   'fa-align-left',   ' value=""') %>
+      <%- btn('ql-align', 'Align center', 'fa-align-center', ' value="center"') %>
+      <%- btn('ql-align', 'Align right',  'fa-align-right',  ' value="right"') %>
+
+      <%- _divider %>
+
+      <%- btn('ql-clean', 'Clear formatting', 'fa-remove-format') %>
+
+      <%- _divider %>
+
+      <button type="button" class="kui-rte-btn inline-flex items-center justify-center w-7 h-7 rounded text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors" id="<%= _id %>-undo" aria-label="Undo"><i class="fa-solid fa-rotate-left w-3.5 h-3.5" aria-hidden="true" style="font-size:0.875rem"></i></button>
+      <button type="button" class="kui-rte-btn inline-flex items-center justify-center w-7 h-7 rounded text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors" id="<%= _id %>-redo" aria-label="Redo"><i class="fa-solid fa-rotate-right w-3.5 h-3.5" aria-hidden="true" style="font-size:0.875rem"></i></button>
+    </div>
+    <div id="<%= _id %>-editor" class="kui-rte-content" style="min-height: <%= _minHeight %>px"></div>
+  </div>
+
+  <input type="hidden" name="<%= _name %>" id="<%= _id %>-value" value="<%= _value %>" />
+
+  <% if (_hint && !_error) { %>
+  <p id="<%= _hintId %>" class="text-xs text-text-secondary"><%= _hint %></p>
+  <% } %>
+  <% if (_error) { %>
+  <p id="<%= _errorId %>" role="alert" class="text-xs text-error"><%= _error %></p>
+  <% } %>
+</div>
+
+<%- include('../ui/Modal', {
+  id: _modalId,
+  title: 'Insert image',
+  description: 'Upload a file or paste an image URL.',
+  size: 'md',
+  children: _modalChildren,
+  footer: _modalFooter
+}) %>
+
+<script>
+(function () {
+  var id = <%- JSON.stringify(_id) %>;
+  var modalId = id + '-img-modal';
+  var initialHtml = <%- JSON.stringify(_value) %>;
+  var readOnly = <%= _readOnly ? 'true' : 'false' %>;
+  var placeholder = <%- JSON.stringify(_placeholder) %>;
+
+  function init() {
+    var root      = document.getElementById(id);
+    var editorEl  = document.getElementById(id + '-editor');
+    var toolbarEl = document.getElementById(id + '-toolbar');
+    var hidden    = document.getElementById(id + '-value');
+    if (!root || !editorEl || !toolbarEl || root.getAttribute('data-kui-rte-bound') === '1') return;
+    if (typeof Quill === 'undefined') {
+      // Quill loaded async or absent — retry shortly.
+      return setTimeout(init, 60);
+    }
+    root.setAttribute('data-kui-rte-bound', '1');
+
+    var savedRange = null;
+    var quill = new Quill(editorEl, {
+      theme: 'snow',
+      readOnly: readOnly,
+      placeholder: placeholder,
+      modules: {
+        toolbar: {
+          container: toolbarEl,
+          handlers: {
+            image: function () {
+              savedRange = quill.getSelection(true);
+              if (window.openModal) window.openModal(modalId);
+            }
+          }
+        },
+        history: { delay: 100, maxStack: 200, userOnly: true }
+      }
+    });
+
+    if (initialHtml) quill.clipboard.dangerouslyPasteHTML(initialHtml, 'silent');
+
+    var debounceTimer;
+    quill.on('text-change', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function () {
+        if (hidden) hidden.value = quill.root.innerHTML;
+      }, 150);
+    });
+
+    var undoBtn = document.getElementById(id + '-undo');
+    var redoBtn = document.getElementById(id + '-redo');
+    if (undoBtn) undoBtn.addEventListener('click', function () { quill.history.undo(); });
+    if (redoBtn) redoBtn.addEventListener('click', function () { quill.history.redo(); });
+
+    // Image-insert Modal wiring
+    var fileInput = document.getElementById(id + '-img-file');
+    var browseBtn = document.getElementById(id + '-img-browse');
+    var fileName  = document.getElementById(id + '-img-filename');
+    var urlInput  = document.getElementById(id + '-img-url');
+    var altInput  = document.getElementById(id + '-img-alt');
+    var insertBtn = document.getElementById(id + '-img-insert');
+    var errorEl   = document.getElementById(id + '-img-error');
+    var pickedFile = null;
+    var MAX_BYTES = 5 * 1024 * 1024;
+
+    function showError(msg) { if (!errorEl) return; errorEl.textContent = msg || ''; errorEl.classList.toggle('hidden', !msg); }
+    function resetFile() {
+      pickedFile = null;
+      if (fileInput) fileInput.value = '';
+      if (fileName) { fileName.textContent = ''; fileName.classList.add('hidden'); }
+    }
+    function resetModal() {
+      resetFile();
+      if (urlInput) urlInput.value = '';
+      if (altInput) altInput.value = '';
+      showError('');
+    }
+    function fmtBytes(n) { return n < 1024 ? n + ' B' : n < 1048576 ? (n/1024).toFixed(1) + ' KB' : (n/1048576).toFixed(1) + ' MB'; }
+
+    if (browseBtn && fileInput) browseBtn.addEventListener('click', function () { fileInput.click(); });
+    if (fileInput) fileInput.addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      if (!/^image\//.test(f.type)) { showError('File must be an image.'); resetFile(); return; }
+      if (f.size > MAX_BYTES) { showError('Image exceeds ' + fmtBytes(MAX_BYTES) + ' limit.'); resetFile(); return; }
+      showError('');
+      pickedFile = f;
+      if (fileName) { fileName.textContent = f.name + ' (' + fmtBytes(f.size) + ')'; fileName.classList.remove('hidden'); }
+    });
+
+    function doInsert(src, alt) {
+      var range = savedRange || { index: quill.getLength(), length: 0 };
+      quill.insertEmbed(range.index, 'image', src, 'user');
+      var imgs = quill.root.querySelectorAll('img');
+      var last = imgs[imgs.length - 1];
+      if (last && alt) last.setAttribute('alt', alt);
+      quill.setSelection(range.index + 1, 0, 'user');
+      if (hidden) hidden.value = quill.root.innerHTML;
+      if (window.closeModal) window.closeModal(modalId);
+      resetModal();
+    }
+
+    if (insertBtn) insertBtn.addEventListener('click', function () {
+      var alt = (altInput && altInput.value || '').trim();
+      var url = (urlInput && urlInput.value || '').trim();
+      if (pickedFile) {
+        var reader = new FileReader();
+        reader.onload = function () { doInsert(String(reader.result), alt); };
+        reader.onerror = function () { showError('Failed to read file.'); };
+        reader.readAsDataURL(pickedFile);
+      } else if (url) {
+        doInsert(url, alt);
+      } else {
+        showError('Choose a file or paste a URL.');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+```

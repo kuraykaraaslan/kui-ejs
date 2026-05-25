@@ -45,7 +45,7 @@ Badge for DRAFT / PUBLISHED / ARCHIVED content states with contextual Font Aweso
   variant:  meta.variant,
   size:     _size,
   children: label,
-  className: 'gap-1'
+  className: 'gap-1' + (locals.className ? ' ' + locals.className : '')
 }) %>
 
 ```

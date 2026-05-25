@@ -62,7 +62,7 @@ Table displaying API parameters with location (path/query/header/cookie), type, 
     <tbody class="divide-y divide-border">
       <% _parameters.forEach(function(param) {
         var schema   = param.schema || {};
-        var typeStr  = schema.type || (schema.$ref ? schema.$ref.split('/').pop() : '—');
+        var typeStr  = schema.type || (schema.$ref ? '$ref' : '—');
         var inVar    = locationVariant[param.in] || 'neutral';
       %>
       <tr class="bg-surface-base hover:bg-surface-raised transition-colors">

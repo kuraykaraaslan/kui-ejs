@@ -47,7 +47,7 @@ Badge for PUBLIC / PRIVATE / UNLISTED visibility states with eye/lock icons. PUB
   variant:  meta.variant,
   size:     _size,
   children: label,
-  className: 'gap-1'
+  className: 'gap-1' + (locals.className ? ' ' + locals.className : '')
 }) %>
 
 ```

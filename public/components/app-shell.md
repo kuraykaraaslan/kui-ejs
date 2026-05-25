@@ -57,11 +57,13 @@ Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders 
     ? locals.compactLogo
     : (locals.logoContent || locals.compactLogo || '');
   var _logoIsCompact = _collapsed && !!locals.compactLogo;
+  var _asideClassName = locals.asideClassName ? ' ' + locals.asideClassName : '';
+  var _mainClassName  = locals.mainClassName  ? ' ' + locals.mainClassName  : '';
 %>
 <div class="flex h-screen overflow-hidden bg-surface-base<%= locals.className ? ' '+locals.className : '' %>">
 
   <% if (_hasSidebar) { %>
-  <aside class="relative hidden lg:flex flex-col h-full min-h-0 shrink-0 border-r border-border bg-surface-raised">
+  <aside class="relative hidden lg:flex flex-col h-full min-h-0 shrink-0 border-r border-border bg-surface-raised<%= _asideClassName %>">
     <% if (_logoContent) { %>
     <div class="absolute inset-x-0 top-0 z-10 flex items-center h-14 border-b border-border bg-surface-raised overflow-hidden <%= _logoIsCompact ? 'justify-center px-2' : 'px-4' %>">
       <%- _logoContent %>
@@ -86,7 +88,7 @@ Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders 
       <div class="flex min-w-0 flex-1"><%- locals.topbarContent %></div>
     </header>
     <% } %>
-    <main id="main-content" class="flex-1 overflow-y-auto p-4 sm:p-6">
+    <main id="main-content" class="flex-1 overflow-y-auto p-4 sm:p-6<%= _mainClassName %>">
       <%- locals.children || '' %>
     </main>
   </div>

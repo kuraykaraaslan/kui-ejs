@@ -15,6 +15,8 @@ import { buildAppBreadcrumbsData }        from './app-breadcrumbs.showcase';
 import { buildAppFooterData }             from './app-footer.showcase';
 import { buildThemeSwitcherData }         from './app-theme-switcher.showcase';
 import { buildAppRichTextEditorData }     from './app-rich-text-editor.showcase';
+import { buildContextMenuData }           from './app-context-menu.showcase';
+import { buildImageGalleryData }          from './app-image-gallery.showcase';
 
 export function buildAppPatternsData(): ShowcaseItem[] {
   return [
@@ -34,5 +36,7 @@ export function buildAppPatternsData(): ShowcaseItem[] {
     ...buildAppFooterData(),
     ...buildThemeSwitcherData(),
     ...buildAppRichTextEditorData(),
+    ...buildContextMenuData(),
+    ...buildImageGalleryData(),
   ];
 }

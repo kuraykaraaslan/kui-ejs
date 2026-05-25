@@ -77,7 +77,7 @@ Command-palette-style global search field. Supports a categorised result list, k
     role="listbox"
     aria-label="Search results"
     hidden
-    class="absolute top-full mt-1.5 left-0 right-0 z-[70] rounded-lg border border-border bg-surface-raised shadow-xl overflow-hidden max-h-72 overflow-y-auto"
+    class="absolute top-full mt-1.5 left-0 right-0 z-50 rounded-lg border border-border bg-surface-raised shadow-xl overflow-hidden max-h-72 overflow-y-auto"
   >
     <% if (_loading) { %>
     <div data-gs-loading class="px-4 py-6 text-center text-sm text-text-secondary animate-pulse">Searching…</div>

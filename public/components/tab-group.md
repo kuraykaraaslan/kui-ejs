@@ -112,6 +112,16 @@ Accessible tab navigation following the role="tablist" / role="tab" / role="tabp
   <% }); %>
 </div>
 
+<%
+  /* Inline-script-safe JSON for TAB_CONTENTS: escape sequences that would
+     otherwise terminate <script> early or be invalid inside a JS string literal. */
+  var _tabContentsJson = JSON
+    .stringify(_tabs.map(function (t) { return { id: t.id, content: t.content || '' }; }))
+    .replace(/<\/(script|style)/gi, '<\\/$1')
+    .replace(/<!--/g, '<\\!--')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+%>
 <script>
 (function () {
   var root = document.getElementById('<%= _id %>');
@@ -122,7 +132,7 @@ Accessible tab navigation following the role="tablist" / role="tab" / role="tabp
   var inactiveCls = ['border-transparent', 'text-text-secondary', 'hover:text-text-primary', 'hover:border-border'];
   var activeCls   = ['border-primary', 'text-primary'];
 
-  var TAB_CONTENTS = <%- JSON.stringify(_tabs.map(function (t) { return { id: t.id, content: t.content || '' }; })) %>;
+  var TAB_CONTENTS = <%- _tabContentsJson %>;
 
   // Pre-mark currently active panel.
   root.querySelectorAll('[role="tab"]').forEach(function (t) {
