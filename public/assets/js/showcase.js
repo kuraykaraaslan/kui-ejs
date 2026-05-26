@@ -154,6 +154,68 @@ window.closeMobileSidebar = closeMobileSidebar;
 if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileSidebar);
 if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeMobileSidebar);
 
+// ── Variant split resizer ─────────────────────────────────
+(function VariantSplitResizer() {
+  var MIN = 20, MAX = 80, DEFAULT = 40;
+  var mq = window.matchMedia('(min-width: 640px)');
+  var splits = document.querySelectorAll('[data-variant-split]');
+
+  splits.forEach(function (container) {
+    if (container.getAttribute('data-stack') === '1') return;
+    var preview = container.querySelector('[data-split-preview]');
+    var resizer = container.querySelector('[data-split-resizer]');
+    if (!preview || !resizer) return;
+
+    var pct = DEFAULT;
+    var dragging = false;
+
+    function apply() {
+      if (mq.matches) {
+        preview.style.width = pct + '%';
+      } else {
+        preview.style.width = '';
+      }
+      resizer.setAttribute('aria-valuenow', String(Math.round(pct)));
+    }
+
+    function setPct(next) {
+      pct = Math.min(MAX, Math.max(MIN, next));
+      apply();
+    }
+
+    mq.addEventListener('change', apply);
+    apply();
+
+    resizer.addEventListener('pointerdown', function (e) {
+      if (!mq.matches) return;
+      e.preventDefault();
+      dragging = true;
+      try { resizer.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    resizer.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var rect = container.getBoundingClientRect();
+      setPct(((e.clientX - rect.left) / rect.width) * 100);
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      try { resizer.releasePointerCapture(e.pointerId); } catch (err) {}
+    }
+    resizer.addEventListener('pointerup', endDrag);
+    resizer.addEventListener('pointercancel', endDrag);
+    resizer.addEventListener('dblclick', function () { setPct(DEFAULT); });
+    resizer.addEventListener('keydown', function (e) {
+      if (!mq.matches) return;
+      if (e.key === 'ArrowLeft')      { e.preventDefault(); setPct(pct - 2); }
+      else if (e.key === 'ArrowRight'){ e.preventDefault(); setPct(pct + 2); }
+      else if (e.key === 'Home')      { e.preventDefault(); setPct(MIN); }
+      else if (e.key === 'End')       { e.preventDefault(); setPct(MAX); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setPct(DEFAULT); }
+    });
+  });
+})();
+
 // ── Copy buttons ──────────────────────────────────────────
 document.querySelectorAll('.copy-btn').forEach((btn) => {
   btn.addEventListener('click', async () => {

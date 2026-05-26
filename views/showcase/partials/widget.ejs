@@ -26,10 +26,17 @@
 
   <div class="flex-1 min-h-0">
   <!-- Preview + Code -->
-  <div class="flex divide-border <%= _isStack ? 'flex-col divide-y' : 'flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x' %>">
+  <div
+    class="variant-split flex <%= _isStack ? 'flex-col' : 'flex-col sm:flex-row' %>"
+    data-variant-split
+    data-stack="<%= _isStack ? '1' : '0' %>"
+  >
 
     <!-- Preview panel -->
-    <div class="flex flex-col <%= !_isStack ? 'sm:w-2/5' : '' %>">
+    <div
+      class="flex flex-col <%= !_isStack ? 'border-b border-border sm:border-b-0' : '' %>"
+      data-split-preview
+    >
       <div class="px-3 py-1.5 border-b border-border bg-surface-overlay">
         <span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Preview</span>
       </div>
@@ -43,8 +50,30 @@
       </div>
     </div>
 
+    <% if (!_isStack) { %>
+    <!-- Resizer -->
+    <div
+      class="hidden sm:flex relative shrink-0 w-1.5 group cursor-col-resize touch-none select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize preview and code panes"
+      aria-valuemin="20"
+      aria-valuemax="80"
+      aria-valuenow="40"
+      tabindex="0"
+      title="Drag to resize · Double-click to reset"
+      data-split-resizer
+    >
+      <span aria-hidden="true" class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-px bg-border group-hover:bg-border-focus group-active:bg-border-focus transition-colors"></span>
+      <span aria-hidden="true" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-full bg-border-strong opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity"></span>
+    </div>
+    <% } %>
+
     <!-- Code panel -->
-    <div class="flex flex-col bg-surface-sunken overflow-x-auto <%= !_isStack ? 'flex-1' : '' %>">
+    <div
+      class="flex flex-col bg-surface-sunken overflow-x-auto <%= !_isStack ? 'flex-1 min-w-0' : '' %>"
+      data-split-code
+    >
       <div class="px-3 py-1.5 border-b border-border bg-surface-overlay">
         <span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Code</span>
       </div>
