@@ -1,0 +1,180 @@
+<%
+  // ─── Calendar — M1 (month / week / day) ─────────────────────────────────────
+  //
+  // Folder-scoped sibling of
+  //   /home/kuray/01_NextJS_Components/modules/app/Calendar/index.tsx
+  //
+  // File-for-file parallels:
+  //   partials/_header.ejs       ← parts/HeaderBar.tsx
+  //   partials/_month.ejs        ← views/MonthView.tsx
+  //   partials/_week.ejs         ← views/WeekView.tsx
+  //   partials/_day.ejs          ← views/DayView.tsx
+  //   partials/_agenda.ejs       ← views/AgendaView.tsx (M5 stub)
+  //   partials/_event-card.ejs   ← parts/EventCard.tsx
+  //   scripts/calendar.js        ← view-state + nav (parallel of index.tsx state)
+  //   scripts/keyboard.js        ← hooks/useKeyboardNav.ts
+  //
+  // M2-M6 stubs live next to their NextJS siblings as `// TODO M*` comments.
+
+  var _id           = locals.id           || ('cal-' + Math.random().toString(36).substr(2, 6));
+  var _events       = locals.events       || [];
+  var _view         = locals.view         || 'month';
+  var _defaultDate  = locals.defaultDate  ? new Date(locals.defaultDate) : new Date();
+  var _locale       = (locals.locale      || 'tr').toLowerCase().slice(0, 2);
+  var _workingHours = locals.workingHours || null;
+  var _slotMinutes  = Number(locals.slotMinutes) > 0 ? Number(locals.slotMinutes) : 30;
+  var _className    = locals.className    || '';
+
+  // Normalise events — accept ISO strings or Date instances.
+  _events = _events.map(function (e) {
+    return Object.assign({}, e, {
+      start: e.start instanceof Date ? e.start : new Date(e.start),
+      end:   e.end   instanceof Date ? e.end   : new Date(e.end),
+    });
+  });
+
+  // ── Locale bundles (mirror locale/tr.ts + en.ts) ──────────────────────────
+  var LOCALES = {
+    tr: {
+      messages: {
+        today: 'Bugün', previous: 'Önceki', next: 'Sonraki',
+        month: 'Ay', week: 'Hafta', day: 'Gün',
+        agenda: 'Ajanda', resource: 'Kaynak',
+        allDay: 'Tüm gün', noEvents: 'Etkinlik yok',
+      },
+      weekStart: 1,
+      monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
+      dayShort:   ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],
+      dayLong:    ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']
+    },
+    en: {
+      messages: {
+        today: 'Today', previous: 'Previous', next: 'Next',
+        month: 'Month', week: 'Week', day: 'Day',
+        agenda: 'Agenda', resource: 'Resource',
+        allDay: 'All-day', noEvents: 'No events',
+      },
+      weekStart: 0,
+      monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+      dayShort:   ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+      dayLong:    ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    }
+  };
+  var L = LOCALES[_locale] || LOCALES.tr;
+  if (locals.messages) {
+    L = Object.assign({}, L, { messages: Object.assign({}, L.messages, locals.messages) });
+  }
+
+  // ── Date helpers (mirror date-utils.ts) ───────────────────────────────────
+  function startOfDay(d) { var x = new Date(d); x.setHours(0,0,0,0); return x; }
+  function isSameDay(a, b) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+  function isSameMonth(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth(); }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function startOfWeek(d, ws) { var x = startOfDay(d); var diff = (x.getDay() - ws + 7) % 7; return addDays(x, -diff); }
+  function endOfWeek(d, ws) { return addDays(startOfWeek(d, ws), 6); }
+  function rangeDays(from, n) { var out = []; for (var i = 0; i < n; i++) out.push(addDays(from, i)); return out; }
+  function monthGrid(d, ws) {
+    var first = new Date(d.getFullYear(), d.getMonth(), 1);
+    return rangeDays(startOfWeek(first, ws), 42);
+  }
+  function eventOnDay(e, day) {
+    var ds = startOfDay(day).getTime();
+    return e.start.getTime() < ds + 24*60*60*1000 && e.end.getTime() > ds;
+  }
+  function fmtTime(d) {
+    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+  function minutesIntoDay(d) { return d.getHours() * 60 + d.getMinutes(); }
+
+  // Period label
+  function periodLabel() {
+    var d = _defaultDate;
+    var mn = L.monthNames[d.getMonth()];
+    if (_view === 'month' || _view === 'agenda' || _view === 'resource') {
+      return mn + ' ' + d.getFullYear();
+    }
+    if (_view === 'week') {
+      var s = startOfWeek(d, L.weekStart), e = endOfWeek(d, L.weekStart);
+      if (s.getMonth() === e.getMonth()) {
+        return s.getDate() + ' – ' + e.getDate() + ' ' + L.monthNames[s.getMonth()] + ' ' + s.getFullYear();
+      }
+      return s.getDate() + ' ' + L.monthNames[s.getMonth()] + ' – ' + e.getDate() + ' ' + L.monthNames[e.getMonth()] + ' ' + e.getFullYear();
+    }
+    return d.getDate() + ' ' + mn + ' ' + d.getFullYear();
+  }
+
+  var _today = new Date();
+
+  // ── Color tokens (mirror colors.ts) ───────────────────────────────────────
+  var COLOR_PILL = {
+    primary:   'bg-primary text-primary-fg',
+    success:   'bg-success text-success-fg',
+    warning:   'bg-warning text-text-primary',
+    error:     'bg-error text-primary-fg',
+    info:      'bg-info text-primary-fg',
+    secondary: 'bg-secondary text-primary-fg',
+    neutral:   'bg-surface-overlay text-text-primary border border-border'
+  };
+  function pillCls(c) { return COLOR_PILL[c || 'primary'] || COLOR_PILL.primary; }
+%>
+<div
+  id="<%= _id %>"
+  data-kui-calendar
+  data-view="<%= _view %>"
+  data-locale="<%= _locale %>"
+  tabindex="0"
+  aria-label="Calendar"
+  class="flex flex-col w-full rounded-lg border border-border bg-surface-base overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>"
+>
+  <%- include('./partials/_header', {
+    _id: _id, _view: _view, _label: periodLabel(), _msg: L.messages
+  }) %>
+
+  <% if (_view === 'month') { %>
+    <%- include('./partials/_month', {
+      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
+      _isSameDay: isSameDay, _isSameMonth: isSameMonth, _eventOnDay: eventOnDay,
+      _monthGrid: monthGrid, _pillCls: pillCls, _fmtTime: fmtTime
+    }) %>
+  <% } else if (_view === 'week') { %>
+    <%- include('./partials/_week', {
+      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
+      _workingHours: _workingHours, _slotMinutes: _slotMinutes,
+      _isSameDay: isSameDay, _eventOnDay: eventOnDay, _rangeDays: rangeDays,
+      _startOfWeek: startOfWeek, _pillCls: pillCls, _fmtTime: fmtTime,
+      _minutesIntoDay: minutesIntoDay
+    }) %>
+  <% } else if (_view === 'day') { %>
+    <%- include('./partials/_day', {
+      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
+      _workingHours: _workingHours, _slotMinutes: _slotMinutes,
+      _isSameDay: isSameDay, _eventOnDay: eventOnDay,
+      _pillCls: pillCls, _fmtTime: fmtTime, _minutesIntoDay: minutesIntoDay
+    }) %>
+  <% } else if (_view === 'agenda') { %>
+    <%- include('./partials/_agenda', { _id: _id }) %>
+  <% } else if (_view === 'resource') { %>
+    <div role="region" aria-label="Resource view" class="flex flex-col items-center justify-center gap-2 py-16 px-4 text-center">
+      <p class="text-sm font-medium text-text-primary">Resource view</p>
+      <p class="text-xs text-text-secondary max-w-sm">One column per resource lands in M4.</p>
+    </div>
+  <% } %>
+</div>
+
+<script>
+if (!window.__KuiCalendarLoaded) {
+  window.__KuiCalendarLoaded = true;
+  <%- include('./scripts/calendar.js') %>
+  <%- include('./scripts/keyboard.js') %>
+}
+(function () {
+  function go() {
+    if (!window.__KuiCalendar || !window.__KuiCalendar.boot) return setTimeout(go, 30);
+    window.__KuiCalendar.boot(<%- JSON.stringify(_id) %>);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
+})();
+</script>
