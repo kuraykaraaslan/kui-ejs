@@ -142,7 +142,7 @@ export function buildServerDataTableData(): ShowcaseItem[] {
       category: 'Organism',
       abbr: 'Sd',
       description: 'Server-side paginated table. Reads page/totalPages/total/pageSize from the Express route; supports title, toolbar, clickable rows, and empty/loading states.',
-      filePath: 'modules/ui/ServerDataTable.ejs',
+      filePath: 'modules/ui/Table/partials/server.ejs',
       sourceCode,
       variants: [
         {

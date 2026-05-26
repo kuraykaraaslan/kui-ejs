@@ -104,7 +104,7 @@ export function buildAdvancedDataTableData(): ShowcaseItem[] {
       category: 'Organism',
       abbr: 'At',
       description: 'Enhanced table with row selection (with indeterminate header), expandable rows, and optional sticky header.',
-      filePath: 'modules/ui/AdvancedDataTable.ejs',
+      filePath: 'modules/ui/Table/partials/advanced.ejs',
       sourceCode,
       status: 'beta',
       variants: [

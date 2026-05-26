@@ -1,0 +1,23 @@
+<%
+  // Unified Table family entry point.
+  //
+  // `mode`:
+  //   - 'plain'      → low-level dumb table (legacy `Table.ejs`)
+  //   - 'paginated'  → search + sort + pagination (legacy `DataTable.ejs`)
+  //   - 'advanced'   → selection + expand + sticky (legacy `AdvancedDataTable.ejs`)
+  //   - 'server'     → server-controlled card shell (legacy `ServerDataTable.ejs`)
+  //
+  // Routes to the matching partial. Older `Table.ejs`/`DataTable.ejs`/
+  // `AdvancedDataTable.ejs`/`ServerDataTable.ejs` are shims that include this
+  // with the appropriate `mode`.
+  var _mode = locals.mode || 'paginated';
+%>
+<% if (_mode === 'plain') { %>
+  <%- include('./partials/plain', locals) %>
+<% } else if (_mode === 'advanced') { %>
+  <%- include('./partials/advanced', locals) %>
+<% } else if (_mode === 'server') { %>
+  <%- include('./partials/server', locals) %>
+<% } else { %>
+  <%- include('./partials/paginated', locals) %>
+<% } %>

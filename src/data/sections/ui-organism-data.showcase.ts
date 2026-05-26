@@ -141,7 +141,7 @@ export function buildOrganismDataData(): ShowcaseItem[] {
       category: 'Organism',
       abbr: 'Tl',
       description: 'Responsive table. scope="col" headers, hover row highlight, empty-state message, and custom cell render support.',
-      filePath: 'modules/ui/Table.ejs',
+      filePath: 'modules/ui/Table/partials/plain.ejs',
       sourceCode: tableSource,
       variants: [
         {
@@ -204,7 +204,7 @@ export function buildOrganismDataData(): ShowcaseItem[] {
       category: 'Organism',
       abbr: 'DT',
       description: 'Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.',
-      filePath: 'modules/ui/DataTable.ejs',
+      filePath: 'modules/ui/Table/partials/paginated.ejs',
       sourceCode: dataTableSource,
       variants: [
         {

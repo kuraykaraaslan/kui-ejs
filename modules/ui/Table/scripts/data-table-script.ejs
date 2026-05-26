@@ -1,0 +1,369 @@
+<%
+  var _id           = locals.id;
+  var _columns      = locals.columns      || [];
+  var _rowsData     = locals.rowsData     || [];
+  var _rowsCount    = Number(locals.rowsCount) || 0;
+  var _emptyMessage = locals.emptyMessage || 'No results found.';
+  var _pageSize     = Number(locals.pageSize) || 10;
+  var _hasAnyFilter = !!locals.hasAnyFilter;
+  var _isStatic     = !!locals.isStatic;
+%>
+<script>
+(function () {
+  var root = document.getElementById('<%= _id %>');
+  if (!root) return;
+
+  var COLS         = <%- JSON.stringify(_columns.map(function (c) { return { key: c.key, sortable: !!c.sortable, hasRender: !!c.render, filter: c.filter ? { kind: c.filter.kind || 'text', options: c.filter.options || [] } : null }; })) %>;
+  var ROWS_DATA    = <%- JSON.stringify(_rowsData) %>;
+  var TOTAL_ROWS   = <%= _rowsCount %>;
+  var EMPTY_MSG    = <%- JSON.stringify(_emptyMessage) %>;
+  var COL_COUNT    = <%= _columns.length %>;
+  var IS_STATIC    = <%= _isStatic ? 'true' : 'false' %>;
+
+  var searchEl     = root.querySelector('[data-dt-search]');
+  var pageSizeEl   = root.querySelector('[data-dt-pagesize]');
+  var bodyEl       = root.querySelector('[data-dt-body]');
+  var statusEl     = root.querySelector('[data-dt-status]');
+  var pagerEl      = root.querySelector('[data-dt-pagination]');
+  var rowEls       = Array.prototype.slice.call(root.querySelectorAll('[data-dt-row]'));
+
+  var state = {
+    search:   '',
+    page:     1,
+    pageSize: <%= _pageSize %>,
+    sort:     [], // multi-column: [{ key, dir }, ...]
+    filters:  {}
+  };
+
+  function filteredIndices() {
+    var q = (state.search || '').trim().toLowerCase();
+    var keys = Object.keys(state.filters);
+    var out = [];
+    for (var i = 0; i < ROWS_DATA.length; i++) {
+      var matchSearch = !q;
+      if (!matchSearch) {
+        for (var c = 0; c < COLS.length; c++) {
+          if (COLS[c].hasRender) continue;
+          var v = ROWS_DATA[i][COLS[c].key] || '';
+          if (v.toLowerCase().indexOf(q) !== -1) { matchSearch = true; break; }
+        }
+      }
+      if (!matchSearch) continue;
+      var matchFilters = true;
+      for (var k = 0; k < keys.length; k++) {
+        var key = keys[k];
+        var col = null;
+        for (var cc = 0; cc < COLS.length; cc++) { if (COLS[cc].key === key) { col = COLS[cc]; break; } }
+        var fv = (state.filters[key] || '').toLowerCase();
+        if (!fv) continue;
+        var target = String(ROWS_DATA[i][key] || '').toLowerCase();
+        if (col && col.filter && col.filter.kind === 'select') {
+          if (target !== fv) { matchFilters = false; break; }
+        } else {
+          if (target.indexOf(fv) === -1) { matchFilters = false; break; }
+        }
+      }
+      if (matchFilters) out.push(i);
+    }
+    return out;
+  }
+
+  function sortedIndices(indices) {
+    if (!state.sort.length) return indices;
+    var sort = state.sort;
+    return indices.slice().sort(function (a, b) {
+      for (var s = 0; s < sort.length; s++) {
+        var key = sort[s].key;
+        var dir = sort[s].dir;
+        var av = ROWS_DATA[a][key] || '';
+        var bv = ROWS_DATA[b][key] || '';
+        var cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });
+        if (cmp !== 0) return dir === 'asc' ? cmp : -cmp;
+      }
+      return 0;
+    });
+  }
+
+  function renderRows() {
+    var idx = sortedIndices(filteredIndices());
+    var totalFiltered = idx.length;
+    var pageSize = IS_STATIC ? Math.max(totalFiltered, 1) : state.pageSize;
+    var totalPages    = Math.max(1, Math.ceil(totalFiltered / pageSize));
+    if (state.page > totalPages) state.page = totalPages;
+    var safePage = IS_STATIC ? 1 : state.page;
+    var start = totalFiltered === 0 ? 0 : (safePage - 1) * pageSize;
+    var end   = Math.min(start + pageSize, totalFiltered);
+    var pageIndices = idx.slice(start, end);
+
+    var existingEmpty = bodyEl.querySelector('[data-dt-empty]');
+    if (existingEmpty) existingEmpty.parentNode.removeChild(existingEmpty);
+    var existingState = bodyEl.querySelector('[data-dt-state-row]');
+    if (existingState) existingState.parentNode.removeChild(existingState);
+    rowEls.forEach(function (tr) { tr.style.display = 'none'; });
+
+    if (pageIndices.length === 0) {
+      var trEmpty = document.createElement('tr');
+      trEmpty.setAttribute('data-dt-empty', '');
+      var td = document.createElement('td');
+      td.colSpan = COL_COUNT;
+      td.className = 'px-4 py-10 text-center text-sm text-text-secondary';
+      td.textContent = (totalFiltered === 0 && state.search)
+        ? 'No results for "' + state.search + '"'
+        : EMPTY_MSG;
+      trEmpty.appendChild(td);
+      bodyEl.appendChild(trEmpty);
+    } else {
+      pageIndices.forEach(function (rowIdx) {
+        var tr = rowEls[rowIdx];
+        if (!tr) return;
+        tr.style.display = '';
+        bodyEl.appendChild(tr);
+      });
+    }
+
+    if (statusEl) {
+      var startDisp = totalFiltered === 0 ? 0 : start + 1;
+      var endDisp   = end;
+      statusEl.textContent = totalFiltered === 0
+        ? 'No results'
+        : 'Showing ' + startDisp + '–' + endDisp + ' of ' + totalFiltered
+          + (state.search ? ' (filtered from ' + TOTAL_ROWS + ')' : '');
+    }
+
+    if (!IS_STATIC) renderPager(safePage, totalPages);
+    renderSortIcons();
+  }
+
+  function renderPager(page, totalPages) {
+    if (!pagerEl) return;
+    pagerEl.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    var navBtn  = 'rounded-md font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus px-3 py-1.5 text-sm';
+    var enabled = ' border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary';
+    var disabledCls = ' border-border text-text-disabled cursor-not-allowed opacity-50';
+
+    function btn(label, target, isDisabled, aria) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', aria);
+      b.className = navBtn + (isDisabled ? disabledCls : enabled);
+      b.textContent = label;
+      if (isDisabled) b.disabled = true;
+      else b.addEventListener('click', function () { state.page = target; renderRows(); });
+      return b;
+    }
+
+    pagerEl.appendChild(btn('‹', page - 1, page <= 1, 'Previous page'));
+
+    var allPages = [];
+    for (var p = 1; p <= totalPages; p++) allPages.push(p);
+    var visible = allPages.filter(function (p) {
+      return p === 1 || p === totalPages || Math.abs(p - page) <= 1;
+    });
+    var withEll = [];
+    var prevP = null;
+    for (var k = 0; k < visible.length; k++) {
+      var vp = visible[k];
+      if (prevP !== null && vp - prevP > 1) withEll.push('ellipsis');
+      withEll.push(vp);
+      prevP = vp;
+    }
+
+    withEll.forEach(function (item) {
+      if (item === 'ellipsis') {
+        var s = document.createElement('span');
+        s.className = 'text-text-disabled px-3 py-1.5 text-sm';
+        s.textContent = '…';
+        pagerEl.appendChild(s);
+      } else {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Page ' + item);
+        if (item === page) b.setAttribute('aria-current', 'page');
+        b.className = 'rounded-md font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus flex items-center justify-center w-9 h-9 text-sm '
+          + (item === page
+            ? 'bg-primary text-primary-fg border-primary'
+            : 'border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary');
+        b.textContent = item;
+        b.addEventListener('click', function () { state.page = item; renderRows(); });
+        pagerEl.appendChild(b);
+      }
+    });
+
+    pagerEl.appendChild(btn('›', page + 1, page >= totalPages, 'Next page'));
+  }
+
+  function renderSortIcons() {
+    root.querySelectorAll('[data-dt-sort-key]').forEach(function (th) {
+      var key = th.getAttribute('data-dt-sort-key');
+      var iconWrap = th.querySelector('[data-dt-sort-icon]');
+      var orderBadge = th.querySelector('[data-dt-sort-order]');
+      var idx = -1;
+      var dir = null;
+      for (var i = 0; i < state.sort.length; i++) {
+        if (state.sort[i].key === key) { idx = i; dir = state.sort[i].dir; break; }
+      }
+      if (dir) {
+        th.setAttribute('aria-sort', dir === 'asc' ? 'ascending' : 'descending');
+      } else {
+        th.setAttribute('aria-sort', 'none');
+      }
+      if (iconWrap) {
+        var iconCls = dir
+          ? (dir === 'asc' ? 'fa-chevron-up' : 'fa-chevron-down')
+          : 'fa-sort';
+        iconWrap.innerHTML = '<i class="fa-solid ' + iconCls + '" style="font-size:10px"></i>';
+      }
+      if (orderBadge) {
+        if (idx >= 0 && state.sort.length > 1) {
+          orderBadge.textContent = String(idx + 1);
+          orderBadge.classList.remove('hidden');
+        } else {
+          orderBadge.textContent = '';
+          orderBadge.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  function nextSortState(curr, key, shiftKey) {
+    var idx = -1;
+    for (var i = 0; i < curr.length; i++) { if (curr[i].key === key) { idx = i; break; } }
+    if (!shiftKey) {
+      if (idx < 0) return [{ key: key, dir: 'asc' }];
+      var existing = curr[idx];
+      if (existing.dir === 'asc') return [{ key: key, dir: 'desc' }];
+      return [];
+    }
+    var next = curr.slice();
+    if (idx < 0) { next.push({ key: key, dir: 'asc' }); return next; }
+    var ex = next[idx];
+    if (ex.dir === 'asc') { next[idx] = { key: key, dir: 'desc' }; return next; }
+    next.splice(idx, 1);
+    return next;
+  }
+
+  if (searchEl) {
+    searchEl.addEventListener('input', function (e) {
+      state.search = e.target.value || '';
+      state.page = 1;
+      renderRows();
+    });
+  }
+  if (pageSizeEl) {
+    pageSizeEl.addEventListener('change', function (e) {
+      state.pageSize = Number(e.target.value) || 10;
+      state.page = 1;
+      renderRows();
+    });
+  }
+  root.querySelectorAll('[data-dt-sort-key]').forEach(function (th) {
+    th.addEventListener('click', function (e) {
+      var key = th.getAttribute('data-dt-sort-key');
+      state.sort = nextSortState(state.sort, key, !!e.shiftKey);
+      state.page = 1;
+      renderRows();
+    });
+  });
+
+  // Per-column filter popovers (M1: text + select).
+  <% if (_hasAnyFilter) { %>
+  function buildFilterPopover(triggerBtn) {
+    var key = triggerBtn.getAttribute('data-dt-filter-trigger');
+    var kind = triggerBtn.getAttribute('data-dt-filter-kind') || 'text';
+    var existing = document.getElementById('<%= _id %>-filter-' + key);
+    if (existing) {
+      existing.parentNode.removeChild(existing);
+      triggerBtn.setAttribute('aria-expanded', 'false');
+      return;
+    }
+    // Close any open popovers in this table.
+    root.querySelectorAll('[data-dt-filter-pop]').forEach(function (p) { p.parentNode.removeChild(p); });
+    root.querySelectorAll('[data-dt-filter-trigger]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+
+    var pop = document.createElement('div');
+    pop.id = '<%= _id %>-filter-' + key;
+    pop.setAttribute('data-dt-filter-pop', '');
+    pop.setAttribute('role', 'dialog');
+    pop.className = 'absolute top-full left-0 mt-1 z-[70] min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-xl p-3';
+
+    var col = null;
+    for (var i = 0; i < COLS.length; i++) { if (COLS[i].key === key) { col = COLS[i]; break; } }
+
+    var inputEl;
+    if (kind === 'select' && col && col.filter && col.filter.options) {
+      inputEl = document.createElement('select');
+      inputEl.className = 'w-full rounded-md border border-border bg-surface-base px-2 py-1.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
+      var opt0 = document.createElement('option'); opt0.value = ''; opt0.textContent = 'All';
+      inputEl.appendChild(opt0);
+      col.filter.options.forEach(function (o) {
+        var op = document.createElement('option'); op.value = o.value; op.textContent = o.label;
+        inputEl.appendChild(op);
+      });
+      inputEl.value = state.filters[key] || '';
+    } else {
+      inputEl = document.createElement('input');
+      inputEl.type = 'text';
+      inputEl.placeholder = (col && col.filter && col.filter.placeholder) || 'Contains…';
+      inputEl.value = state.filters[key] || '';
+      inputEl.className = 'w-full rounded-md border border-border bg-surface-base px-2 py-1.5 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
+      inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') applyBtn.click(); });
+    }
+    pop.appendChild(inputEl);
+
+    var actions = document.createElement('div');
+    actions.className = 'mt-2 flex items-center justify-end gap-2';
+    var clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.textContent = 'Clear';
+    clearBtn.className = 'rounded-md px-2 py-1 text-xs font-medium text-text-secondary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
+    var applyBtn = document.createElement('button');
+    applyBtn.type = 'button';
+    applyBtn.textContent = 'Apply';
+    applyBtn.className = 'rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-fg hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
+    clearBtn.addEventListener('click', function () { delete state.filters[key]; state.page = 1; renderRows(); close(); });
+    applyBtn.addEventListener('click', function () {
+      var v = (inputEl.value || '').trim();
+      if (!v) delete state.filters[key]; else state.filters[key] = v;
+      state.page = 1;
+      renderRows();
+      close();
+    });
+    actions.appendChild(clearBtn);
+    actions.appendChild(applyBtn);
+    pop.appendChild(actions);
+
+    // Position relative to trigger's parent span (already relative-positioned via inline-flex).
+    var span = triggerBtn.parentNode;
+    span.style.position = 'relative';
+    span.appendChild(pop);
+    triggerBtn.setAttribute('aria-expanded', 'true');
+    setTimeout(function () { inputEl.focus(); }, 0);
+
+    function close() { if (pop.parentNode) pop.parentNode.removeChild(pop); triggerBtn.setAttribute('aria-expanded', 'false'); }
+    document.addEventListener('mousedown', function onOutside(e) {
+      if (!pop.contains(e.target) && e.target !== triggerBtn) {
+        document.removeEventListener('mousedown', onOutside);
+        close();
+      }
+    });
+    document.addEventListener('keydown', function onEsc(e) {
+      if (e.key === 'Escape') {
+        document.removeEventListener('keydown', onEsc);
+        close();
+      }
+    });
+  }
+
+  root.querySelectorAll('[data-dt-filter-trigger]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      buildFilterPopover(btn);
+    });
+  });
+  <% } %>
+
+  renderRows();
+})();
+</script>
