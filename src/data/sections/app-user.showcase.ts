@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const userMenuSource     = fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/user/UserMenu.ejs'), 'utf-8');
 const globalSearchSource = fs.readFileSync(path.join(process.cwd(), 'modules/app/GlobalSearch.ejs'), 'utf-8');
-const commandBarSource   = fs.readFileSync(path.join(process.cwd(), 'modules/app/AppCommandBar.ejs'), 'utf-8');
+const commandBarSource   = fs.readFileSync(path.join(process.cwd(), 'modules/app/CommandPalette/CommandPalette.ejs'), 'utf-8');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -192,7 +192,7 @@ export function buildAppUserData(): ShowcaseItem[] {
       category: 'App',
       abbr: 'Cb',
       description: 'Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.',
-      filePath: 'modules/app/AppCommandBar.ejs',
+      filePath: 'modules/app/CommandPalette/CommandPalette.ejs',
       sourceCode: commandBarSource,
       variants: [
         {
@@ -245,6 +245,42 @@ export function buildAppUserData(): ShowcaseItem[] {
     { icon: 'fa-solid fa-file-export',     label: 'Export Report', shortcut: 'C E', category: 'Actions' },
     { icon: 'fa-solid fa-clock-rotate-left', label: 'Order #1042',      category: 'Recent', href: '/orders/1042' },
     { icon: 'fa-solid fa-clock-rotate-left', label: 'Customer: Acme Co', category: 'Recent', href: '/customers/acme' },
+  ]
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Fuzzy search + özel gruplar',
+          previewHtml: `<div class="p-4 w-full max-w-lg" style="padding-bottom:340px">
+  <div class="relative mx-auto w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-2xl overflow-hidden">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-border">
+      <i class="fa-solid fa-magnifying-glass text-text-disabled shrink-0 text-sm"></i>
+      <input type="search" placeholder="Try 'kbd', 'asgn' or 'rls'…" value="asgn"
+        class="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none">
+      <span class="rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-text-secondary">Esc</span>
+    </div>
+    <div class="max-h-72 overflow-y-auto py-2">
+      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Workflows</p>
+      ${cmdItem('fa-solid fa-screwdriver-wrench', 'Assign Reviewer to PR-42', 'A R', true)}
+      ${cmdItem('fa-solid fa-rocket', 'Release & Tag v1.4.0', 'R T')}
+      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Help</p>
+      ${cmdItem('fa-solid fa-keyboard', 'Open Keyboard Shortcuts', '?')}
+    </div>
+    <div class="flex items-center gap-4 border-t border-border px-4 py-2 text-[10px] text-text-disabled">
+      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">↑↓</kbd> Navigate</span>
+      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">↵</kbd> Select</span>
+      <span><kbd class="rounded border border-border px-1 py-0.5 font-mono text-[9px]">Esc</kbd> Close</span>
+    </div>
+  </div>
+</div>`,
+          code: `<%- include('modules/app/AppCommandBar', {
+  placeholder: 'Try "kbd", "asgn" or "rls"…',
+  items: [
+    { icon: 'fa-solid fa-keyboard',            label: 'Open Keyboard Shortcuts',  shortcut: '?',   category: 'Help',        keywords: ['kbd'] },
+    { icon: 'fa-solid fa-book',                label: 'Browse Documentation',     shortcut: 'G H', category: 'Help' },
+    { icon: 'fa-solid fa-bell',                label: 'Notification Preferences', shortcut: 'G N', category: 'Preferences' },
+    { icon: 'fa-solid fa-screwdriver-wrench',  label: 'Assign Reviewer to PR-42', shortcut: 'A R', category: 'Workflows',   keywords: ['asgn'] },
+    { icon: 'fa-solid fa-rocket',              label: 'Release & Tag v1.4.0',     shortcut: 'R T', category: 'Workflows',   keywords: ['rls'] },
   ]
 }) %>`,
           layout: 'stack',
