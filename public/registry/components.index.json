@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T11:35:22.298Z",
+  "generatedAt": "2026-05-26T12:57:33.937Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1052,15 +1052,14 @@
       "name": "VideoPlayer",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/VideoPlayer.ejs",
+      "filePath": "modules/ui/VideoPlayer/VideoPlayer.ejs",
       "abbr": "Vp",
       "description": "Custom HTML5 video player. Quality, subtitle, audio track, and playback rate selection; custom WebVTT subtitle overlay; auto-hiding controls; programmatic API. Keyboard shortcuts: Space/K=play, ←→=±10s, ↑↓=volume, M=mute, F=fullscreen.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
         "--border",
-        "--border-focus",
-        "--primary"
+        "--border-focus"
       ],
       "variantCount": 4
     },
@@ -1951,25 +1950,12 @@
       "name": "ImageGallery",
       "layer": "app",
       "category": "App",
-      "filePath": "modules/app/ImageGallery.ejs",
+      "filePath": "modules/app/ImageGallery/index.ejs",
       "abbr": "IG",
       "description": "Responsive image grid with a full-screen lightbox, right-click context menu (open, copy URL, move to first/last, remove), and drag-to-reorder. Supports 2–4 columns, square / video / portrait / auto aspect ratios, optional captions, zoom toggle, thumbnail strip, and full keyboard navigation (← → Escape).",
       "status": "stable",
       "since": "2026-05",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--error",
-        "--error-subtle",
-        "--primary",
-        "--secondary",
-        "--surface-overlay",
-        "--surface-raised",
-        "--surface-sunken",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
