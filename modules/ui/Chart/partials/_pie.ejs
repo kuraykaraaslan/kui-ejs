@@ -1,0 +1,43 @@
+<svg
+  data-kui-chart-svg
+  width="100%"
+  height="<%= _height %>"
+  role="img"
+  aria-label="<%= _ariaLabel %>"
+  preserveAspectRatio="none"
+></svg>
+<script>
+(function () {
+  var host = document.querySelector('[data-kui-chart="<%= _id %>"]');
+  if (!host || typeof KuiChart === 'undefined') return;
+  var svg = host.querySelector('[data-kui-chart-svg]');
+  var series = <%- JSON.stringify(_series) %>;
+  var innerRadius = <%- (typeof locals.innerRadius === 'number') ? locals.innerRadius : '0' %>;
+  var H = <%= _height %>;
+  function ns(n,a){var e=document.createElementNS('http://www.w3.org/2000/svg',n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function render(size){
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox', '0 0 ' + size.width + ' ' + H);
+    var W = size.width;
+    var cx = W / 2, cy = H / 2;
+    var radius = Math.max(0, Math.min(W, H) / 2 - 8);
+    var r0 = innerRadius > 0 ? radius * innerRadius : 0;
+    var first = series[0] || { data: [] };
+    var points = (first.data || []).filter(function(p){return p.y !== null && p.y !== undefined && p.y >= 0;});
+    var total = points.reduce(function(a,p){return a + p.y;}, 0) || 1;
+    var cursor = 0;
+    points.forEach(function(p, i){
+      var a0 = (cursor / total) * 360; cursor += p.y;
+      var a1 = (cursor / total) * 360;
+      var color = KuiChart.paletteColor(i, p.color);
+      svg.appendChild(ns('path', { d: KuiChart.arcPath(cx, cy, r0, radius, a0, a1), fill: color }));
+    });
+    if (r0 > 0) {
+      var t = ns('text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'middle', fill: 'var(--text-primary)', 'font-size': 14, 'font-weight': 600 });
+      t.textContent = String(Math.round(total));
+      svg.appendChild(t);
+    }
+  }
+  KuiChart.observeContainer(host.querySelector('[data-kui-chart-canvas]'), render);
+})();
+</script>

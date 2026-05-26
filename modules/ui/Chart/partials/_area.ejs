@@ -1,0 +1,52 @@
+<svg
+  data-kui-chart-svg
+  width="100%"
+  height="<%= _height %>"
+  role="img"
+  aria-label="<%= _ariaLabel %>"
+  preserveAspectRatio="none"
+></svg>
+<script>
+(function () {
+  var host = document.querySelector('[data-kui-chart="<%= _id %>"]');
+  if (!host || typeof KuiChart === 'undefined') return;
+  var svg = host.querySelector('[data-kui-chart-svg]');
+  var series = <%- JSON.stringify(_series) %>;
+  var showGrid = <%= _showGrid ? 'true' : 'false' %>;
+  var H = <%= _height %>;
+  function ns(n,a){var e=document.createElementNS('http://www.w3.org/2000/svg',n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function render(size){
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox', '0 0 ' + size.width + ' ' + H);
+    var W = size.width;
+    var P = KuiChart.padding;
+    var rect = { x: P.left, y: P.top, width: Math.max(0, W - P.left - P.right), height: Math.max(0, H - P.top - P.bottom) };
+    var cats = KuiChart.xCategories(series);
+    var ext = KuiChart.yExtent(series);
+    var ticks = KuiChart.niceTicks(ext.min, ext.max, 4);
+    var yPx = ticks.map(function(v){return KuiChart.yScale(v, ext.min, ext.max, rect);});
+    var baseY = KuiChart.yScale(0, ext.min, ext.max, rect);
+
+    if (showGrid) ticks.forEach(function(_,i){svg.appendChild(ns('line',{x1:rect.x,x2:rect.x+rect.width,y1:yPx[i],y2:yPx[i],stroke:KuiChart.theme.gridStroke,'stroke-dasharray':'2 4','stroke-width':1,opacity:0.5}));});
+    ticks.forEach(function(v,i){var t=ns('text',{x:rect.x-8,y:yPx[i]+4,'text-anchor':'end','font-size':11,fill:KuiChart.theme.axisText});t.textContent=String(Math.round(v*100)/100);svg.appendChild(t);});
+    cats.forEach(function(label,i){var cx=KuiChart.bandCenter(i,cats.length,rect);var t=ns('text',{x:cx,y:rect.y+rect.height+16,'text-anchor':'middle','font-size':11,fill:KuiChart.theme.axisText});t.textContent=label;svg.appendChild(t);});
+    svg.appendChild(ns('line',{x1:rect.x,x2:rect.x+rect.width,y1:rect.y+rect.height,y2:rect.y+rect.height,stroke:KuiChart.theme.axisStroke,'stroke-width':1}));
+
+    series.forEach(function(s, si){
+      var color = KuiChart.paletteColor(si, s.color);
+      var pts = s.data.map(function(p, i){
+        if (p.y === null || p.y === undefined) return null;
+        return { x: KuiChart.bandCenter(i, cats.length, rect), y: KuiChart.yScale(p.y, ext.min, ext.max, rect) };
+      });
+      var clean = pts.filter(Boolean);
+      var line = KuiChart.smoothPath(pts);
+      if (clean.length > 1) {
+        var area = line + ' L' + clean[clean.length-1].x + ' ' + baseY + ' L' + clean[0].x + ' ' + baseY + ' Z';
+        svg.appendChild(ns('path', { d: area, fill: color, opacity: 0.2 }));
+      }
+      svg.appendChild(ns('path', { d: line, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    });
+  }
+  KuiChart.observeContainer(host.querySelector('[data-kui-chart-canvas]'), render);
+})();
+</script>

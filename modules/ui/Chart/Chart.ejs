@@ -1,0 +1,109 @@
+<%
+  // ─── Chart (EJS) ───────────────────────────────────────────────────────────
+  //
+  // Pixel-identical sibling of
+  // /home/kuray/01_NextJS_Components/modules/ui/Chart/index.ts
+  //
+  // Single entry point that dispatches to the per-type partials below.
+  //
+  // Locals:
+  //   id        — required base id; the actual <svg> gets `${id}-svg`.
+  //   type      — 'line' | 'bar' | 'area' | 'pie' | 'donut' | 'sparkline'
+  //               ('scatter' is M2 in EJS; renders as 'line' for M1).
+  //   series    — Array<{ id, name, data: [{ x, y, color?, label? }] }>
+  //   height    — px (default 240; 24 for sparkline)
+  //   showLegend, showGrid, showTooltip — booleans (default true except tooltip)
+  //   ariaLabel — optional override of role="img" aria-label
+  //   className — extra classes on the outer wrapper
+  //
+  // The host page must `<script src="…/Chart/scripts/chart-helpers.js">`
+  // exactly once (idempotent; bail-out if already loaded).
+  //
+  // TODO M2: stacked bars, scatter, brush, empty + skeleton states.
+  // TODO M3: heatmap / treemap / radar / funnel / sankey / candlestick / gauge / bubble.
+  // TODO M4: brush + pan + zoom + synced tooltips + drilldown.
+  // TODO M5: a11y data table + keyboard nav + PNG / SVG / CSV export.
+  // TODO M6: annotations, forecast, streaming, threshold bands.
+
+  var _id        = locals.id        || ('chart-' + Math.random().toString(36).substr(2, 6));
+  var _type      = (locals.type     || 'line').toLowerCase();
+  var _series    = Array.isArray(locals.series) ? locals.series : [];
+  var _height    = typeof locals.height === 'number' ? locals.height : (_type === 'sparkline' ? 24 : 240);
+  var _showLegend  = locals.showLegend  === false ? false : true;
+  var _showGrid    = locals.showGrid    === false ? false : true;
+  var _showTooltip = locals.showTooltip === false ? false : true;
+  var _ariaLabel = locals.ariaLabel || (_type.charAt(0).toUpperCase() + _type.slice(1) + ' chart');
+  var _className = locals.className || '';
+
+  // Scatter in M1 EJS falls back to a line chart with markers — full
+  // SVG scatter logic ships in M2. (NextJS already has the proper M1
+  // implementation.)
+  if (_type === 'scatter') _type = 'line';
+
+  var _partial = '';
+  if (_type === 'line')      _partial = 'partials/_line';
+  else if (_type === 'bar')  _partial = 'partials/_bar';
+  else if (_type === 'area') _partial = 'partials/_area';
+  else if (_type === 'pie')  _partial = 'partials/_pie';
+  else if (_type === 'donut') _partial = 'partials/_donut';
+  else if (_type === 'sparkline') _partial = 'partials/_sparkline';
+%>
+<div
+  data-kui-chart="<%= _id %>"
+  data-kui-chart-type="<%= _type %>"
+  class="kui-chart relative w-full<%= _className ? ' ' + _className : '' %>"
+>
+  <div
+    data-kui-chart-canvas
+    class="relative w-full"
+    style="height: <%= _height %>px;"
+  >
+    <%- include(_partial, {
+      _id: _id,
+      _series: _series,
+      _height: _height,
+      _showGrid: _showGrid,
+      _showTooltip: _showTooltip,
+      _ariaLabel: _ariaLabel,
+    }) %>
+  </div>
+  <% if (_showLegend && _type !== 'sparkline' && _series.length) { %>
+  <ul
+    class="kui-chart-legend mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5"
+    style="font-size: 12px;"
+    role="list"
+  >
+    <% if (_type === 'pie' || _type === 'donut') { %>
+      <% (_series[0] && _series[0].data || []).forEach(function (p, i) {
+        var sw = 'var(--primary)';
+        var palette = ['var(--primary)','var(--secondary)','var(--success)','var(--warning)','var(--error)','var(--info)','var(--primary-active)','var(--text-secondary)'];
+        sw = p.color || palette[i % palette.length];
+      %>
+      <li class="flex items-center gap-2 text-text-secondary">
+        <span aria-hidden="true" class="inline-block w-2.5 h-2.5 rounded-sm" style="background-color: <%= sw %>; border: 1px solid var(--border);"></span>
+        <span><%= p.label || p.x %></span>
+      </li>
+      <% }); %>
+    <% } else { %>
+      <% _series.forEach(function (s, i) {
+        var palette = ['var(--primary)','var(--secondary)','var(--success)','var(--warning)','var(--error)','var(--info)','var(--primary-active)','var(--text-secondary)'];
+        var sw = s.color || palette[i % palette.length];
+      %>
+      <li class="flex items-center gap-2 text-text-secondary">
+        <span aria-hidden="true" class="inline-block w-2.5 h-2.5 rounded-sm" style="background-color: <%= sw %>; border: 1px solid var(--border);"></span>
+        <span><%= s.name %></span>
+      </li>
+      <% }); %>
+    <% } %>
+  </ul>
+  <% } %>
+</div>
+<script>
+(function () {
+  if (window.__kuiChartHelpersLoaded) return;
+  window.__kuiChartHelpersLoaded = true;
+  // The helper script is expected to be loaded once via a <script> tag on
+  // the host page. If not, the per-type partial scripts will gracefully
+  // bail out (typeof KuiChart === 'undefined').
+})();
+</script>

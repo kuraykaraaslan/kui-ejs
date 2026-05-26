@@ -1,0 +1,14 @@
+<%
+  // Donut is Pie with a non-zero inner radius. Pass-through to _pie with
+  // innerRadius default 0.6 (mirrors NextJS DonutChart).
+  var _innerRadius = (typeof locals.innerRadius === 'number') ? locals.innerRadius : 0.6;
+%>
+<%- include('./_pie', {
+  _id: _id,
+  _series: _series,
+  _height: _height,
+  _showGrid: _showGrid,
+  _showTooltip: _showTooltip,
+  _ariaLabel: _ariaLabel,
+  innerRadius: _innerRadius,
+}) %>
