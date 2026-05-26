@@ -3,7 +3,7 @@
 - **id:** `combo-box`
 - **layer:** ui
 - **category:** Molecule
-- **filePath:** `modules/ui/ComboBox.ejs`
+- **filePath:** `modules/ui/ComboBox/ComboBox.ejs`
 - **status:** beta
 - **since:** 2026-05
 
@@ -12,16 +12,12 @@ Searchable autocomplete single-select with keyboard navigation, described option
 ## Design tokens consumed
 
 - `--border`
-- `--border-focus`
 - `--error`
 - `--error-subtle`
 - `--primary`
 - `--secondary`
-- `--surface-base`
 - `--surface-overlay`
-- `--surface-raised`
 - `--surface-sunken`
-- `--text-disabled`
 - `--text-primary`
 - `--text-secondary`
 
@@ -73,6 +69,29 @@ Searchable autocomplete single-select with keyboard navigation, described option
 }) %>
 ```
 
+### Async loading (debounced)
+
+```ejs
+<%- include('modules/ui/ComboBox', {
+  id: 'cb-async',
+  label: 'Search',
+  options: [],
+  placeholder: 'Type to search…',
+  hint: 'Debounced 300ms, AbortController cancels in-flight.'
+}) %>
+
+<script>
+  // Wire an async resolver to the combobox root.
+  var root = document.getElementById('cb-async');
+  ComboBoxAsync.register(root, async function (query, signal) {
+    var res = await fetch('/api/suggest?q=' + encodeURIComponent(query), { signal });
+    var data = await res.json();
+    // Render <li data-combobox-option> nodes into root.querySelector('[data-combobox-list]')
+    return data;
+  });
+</script>
+```
+
 ### Disabled
 
 ```ejs
@@ -88,6 +107,9 @@ Searchable autocomplete single-select with keyboard navigation, described option
 
 ```ejs
 <%
+  // ComboBox (split entrypoint) — mirrors NextJS modules/ui/ComboBox/index.tsx.
+  // Includes _trigger + _listbox partials and emits an init script that wires
+  // filter.js / async.js / keyboard.js helpers.
   var _id            = locals.id            || 'combobox-' + Math.random().toString(36).substr(2, 9);
   var _label         = locals.label         || '';
   var _options       = locals.options       || [];
@@ -129,85 +151,44 @@ Searchable autocomplete single-select with keyboard navigation, described option
     <%= _label %><% if (_req) { %><span class="ml-1 text-error" aria-hidden="true">*</span><% } %>
   </label>
 
-  <div
-    role="combobox"
-    aria-expanded="false"
-    aria-haspopup="listbox"
-    aria-controls="<%= listboxId %>"
-    aria-labelledby="<%= labelId %>"
-    aria-disabled="<%= _dis ? 'true' : 'false' %>"
-    aria-invalid="<%= _error ? 'true' : 'false' %>"
-    data-combobox-shell
-    class="flex min-h-10 w-full items-center gap-2 rounded-md border bg-surface-base px-3 py-1.5 transition-colors focus-within:ring-2 focus-within:ring-border-focus <%= rootStateClass %><%= rootDisabledClass %>"
-  >
-    <input
-      id="<%= inputId %>"
-      type="text"
-      role="searchbox"
-      <% if (_dis) { %>disabled<% } %>
-      <% if (_req) { %>required<% } %>
-      value="<%= selectedLabel %>"
-      placeholder="<%= _placeholder %>"
-      <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %>
-      aria-autocomplete="list"
-      autocomplete="off"
-      data-combobox-input
-      class="w-full bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none"
-    />
+  <%- include('./partials/_trigger', {
+    _id: _id,
+    _value: _value,
+    _placeholder: _placeholder,
+    _dis: _dis,
+    _req: _req,
+    _error: _error,
+    _clearable: _clearable,
+    hintId: hintId,
+    errorId: errorId,
+    describedBy: describedBy,
+    listboxId: listboxId,
+    labelId: labelId,
+    inputId: inputId,
+    selectedLabel: selectedLabel,
+    rootStateClass: rootStateClass,
+    rootDisabledClass: rootDisabledClass
+  }) %>
 
-    <% if (_clearable) { %>
-      <button
-        type="button"
-        aria-label="Clear selection"
-        data-combobox-clear
-        class="rounded px-1 text-text-disabled transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= (!_value || _dis) ? ' hidden' : '' %>"
-      >x</button>
-    <% } %>
-
-    <span aria-hidden="true" data-combobox-caret class="select-none text-xs text-text-disabled">v</span>
-  </div>
-
-  <ul
-    id="<%= listboxId %>"
-    role="listbox"
-    data-combobox-list
-    class="z-20 max-h-60 w-full overflow-y-auto rounded-md border border-border bg-surface-raised py-1 shadow-lg hidden"
-  >
-    <% _options.forEach(function(option, index) {
-      var isSelected = option.value === _value;
-    %>
-      <li
-        id="<%= _id %>-option-<%= index %>"
-        role="option"
-        aria-selected="<%= isSelected ? 'true' : 'false' %>"
-        data-combobox-option
-        data-value="<%= option.value %>"
-        data-label="<%= option.label %>"
-        data-description="<%= option.description || '' %>"
-        data-index="<%= index %>"
-        <% if (option.disabled) { %>data-disabled="true"<% } %>
-      >
-        <button
-          type="button"
-          <% if (option.disabled) { %>disabled<% } %>
-          class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors focus-visible:outline-none hover:bg-surface-overlay<%= isSelected ? ' font-medium text-primary' : '' %><%= option.disabled ? ' cursor-not-allowed opacity-50' : '' %>"
-        >
-          <% if (option.icon) { %><span class="mt-0.5 shrink-0" aria-hidden="true"><%- option.icon %></span><% } %>
-          <span class="min-w-0 flex-1">
-            <span class="block truncate"><%= option.label %></span>
-            <% if (option.description) { %>
-              <span class="block truncate text-xs text-text-secondary"><%= option.description %></span>
-            <% } %>
-          </span>
-        </button>
-      </li>
-    <% }); %>
-    <li data-combobox-empty class="hidden px-3 py-3 text-sm text-text-secondary"><%= _noResultsText %></li>
-  </ul>
+  <%- include('./partials/_listbox', {
+    _id: _id,
+    _options: _options,
+    _value: _value,
+    listboxId: listboxId,
+    _noResultsText: _noResultsText
+  }) %>
 
   <% if (_hint && !_error) { %><p id="<%= hintId %>" class="text-xs text-text-secondary"><%= _hint %></p><% } %>
   <% if (_error) { %><p id="<%= errorId %>" class="text-xs text-error" role="alert"><%= _error %></p><% } %>
 </div>
+
+<%
+  // Inline the helper scripts on the first include so consumers don't have to
+  // remember to <script> them. Idempotent — the helpers self-guard.
+%>
+<script><%- include('./scripts/filter.js') %></script>
+<script><%- include('./scripts/async.js') %></script>
+<script><%- include('./scripts/keyboard.js') %></script>
 
 <script>
 (function () {
@@ -222,6 +203,8 @@ Searchable autocomplete single-select with keyboard navigation, described option
   var caret      = root.querySelector('[data-combobox-caret]');
   var clearBtn   = root.querySelector('[data-combobox-clear]');
   var emptyEl    = root.querySelector('[data-combobox-empty]');
+  var loadingEl  = root.querySelector('[data-combobox-loading]');
+  var sentinelEl = root.querySelector('[data-combobox-sentinel]');
   var optionEls  = Array.prototype.slice.call(root.querySelectorAll('[data-combobox-option]'));
   if (!shell || !input || !list) return;
 
@@ -230,13 +213,22 @@ Searchable autocomplete single-select with keyboard navigation, described option
   var disabled = shell.getAttribute('aria-disabled') === 'true';
 
   function getSelectedValue() { return root.dataset.value || ''; }
-  function setSelectedValue(v) { root.dataset.value = v; if (clearBtn) clearBtn.classList.toggle('hidden', !v || disabled); }
+  function setSelectedValue(v) {
+    root.dataset.value = v;
+    if (clearBtn) clearBtn.classList.toggle('hidden', !v || disabled);
+  }
+
+  function updateCaret() {
+    if (!caret) return;
+    caret.classList.toggle('fa-chevron-up', open);
+    caret.classList.toggle('fa-chevron-down', !open);
+  }
 
   function setOpen(next) {
     open = next;
     shell.setAttribute('aria-expanded', open ? 'true' : 'false');
     list.classList.toggle('hidden', !open);
-    if (caret) caret.textContent = open ? '^' : 'v';
+    updateCaret();
     if (!open) {
       highlighted = -1;
       var sel = getSelectedValue();
@@ -259,16 +251,8 @@ Searchable autocomplete single-select with keyboard navigation, described option
   }
 
   function applyFilter() {
-    var q = input.value.trim().toLowerCase();
-    var anyVisible = false;
-    optionEls.forEach(function (el) {
-      var label = (el.dataset.label || '').toLowerCase();
-      var desc  = (el.dataset.description || '').toLowerCase();
-      var visible = !q || label.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
-      el.classList.toggle('hidden', !visible);
-      if (visible) anyVisible = true;
-    });
-    if (emptyEl) emptyEl.classList.toggle('hidden', anyVisible);
+    if (window.ComboBoxAsync && window.ComboBoxAsync.has(root)) return; // async owns visibility
+    if (window.__cbFilter) window.__cbFilter.applyFilter(optionEls, input.value, emptyEl);
   }
 
   function visibleOptions() {
@@ -277,17 +261,20 @@ Searchable autocomplete single-select with keyboard navigation, described option
 
   function moveHighlight(dir) {
     var vis = visibleOptions();
-    if (vis.length === 0) return;
     var currentEl = highlighted >= 0 ? optionEls[highlighted] : null;
     var currentVis = currentEl ? vis.indexOf(currentEl) : -1;
-    for (var i = 0; i < vis.length; i++) {
-      currentVis = (currentVis + dir + vis.length) % vis.length;
-      if (!vis[currentVis].dataset.disabled) {
-        highlighted = optionEls.indexOf(vis[currentVis]);
-        refreshHighlight();
-        return;
-      }
-    }
+    var nextVis = window.__cbKeyboard ? window.__cbKeyboard.nextHighlight(vis, currentVis, dir) : -1;
+    if (nextVis === -1) return;
+    highlighted = optionEls.indexOf(vis[nextVis]);
+    refreshHighlight();
+  }
+
+  function jumpHighlight(where) {
+    var vis = visibleOptions();
+    var idx = window.__cbKeyboard ? window.__cbKeyboard.edgeHighlight(vis, where) : -1;
+    if (idx === -1) return;
+    highlighted = optionEls.indexOf(vis[idx]);
+    refreshHighlight();
   }
 
   function selectOption(el) {
@@ -306,6 +293,21 @@ Searchable autocomplete single-select with keyboard navigation, described option
     setOpen(false);
   }
 
+  function setLoading(state) {
+    if (loadingEl) loadingEl.classList.toggle('hidden', !state);
+    if (emptyEl)   emptyEl.classList.toggle('hidden', state);
+  }
+
+  function runAsync() {
+    if (!window.ComboBoxAsync || !window.ComboBoxAsync.has(root)) return;
+    window.ComboBoxAsync.search(root, input.value, {
+      onStart:  function () { setLoading(true); },
+      onResult: function () { /* result render handled by host registration */ },
+      onError:  function () { /* no-op */ },
+      onFinish: function () { setLoading(false); },
+    });
+  }
+
   shell.addEventListener('click', function () {
     if (disabled) return;
     input.focus();
@@ -318,10 +320,13 @@ Searchable autocomplete single-select with keyboard navigation, described option
     highlighted = -1;
     applyFilter();
     refreshHighlight();
+    runAsync();
   });
   input.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); moveHighlight(1); return; }
     if (e.key === 'ArrowUp')   { e.preventDefault(); if (!open) setOpen(true); moveHighlight(-1); return; }
+    if (e.key === 'Home')      { e.preventDefault(); if (!open) setOpen(true); jumpHighlight('first'); return; }
+    if (e.key === 'End')       { e.preventDefault(); if (!open) setOpen(true); jumpHighlight('last'); return; }
     if (e.key === 'Enter') {
       if (!open || highlighted < 0) return;
       e.preventDefault();
@@ -352,6 +357,16 @@ Searchable autocomplete single-select with keyboard navigation, described option
       setOpen(false);
       input.focus();
     });
+  }
+
+  // TODO M1: wire IntersectionObserver against sentinelEl to call onLoadMore.
+  // Hosts may attach their handler via root.addEventListener('combobox:loadmore', ...).
+  if (sentinelEl && typeof IntersectionObserver !== 'undefined') {
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0] || !entries[0].isIntersecting) return;
+      root.dispatchEvent(new CustomEvent('combobox:loadmore'));
+    }, { root: list, rootMargin: '40px' });
+    io.observe(sentinelEl);
   }
 
   document.addEventListener('mousedown', function (e) {

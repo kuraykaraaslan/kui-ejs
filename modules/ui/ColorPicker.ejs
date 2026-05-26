@@ -1,9 +1,1 @@
-<%# modules/ui/ColorPicker.ejs — thin shim %>
-<%#
-  Backwards-compatible entry point. The real implementation now lives in
-  `modules/ui/ColorPicker/ColorPicker.ejs`. Existing callers using
-  `<%- include('modules/ui/ColorPicker', { ... }) %>` continue to work.
-
-  M1 milestone — see PLANS/25-ColorPicker.md.
-%>
-<%- include('modules/ui/ColorPicker/ColorPicker', locals) %>
+<%- include('./ColorPicker/ColorPicker', locals) %>

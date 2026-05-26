@@ -1,9 +1,1 @@
-<%# modules/ui/Toast.ejs — thin shim %>
-<%#
-  Backwards-compatible entry point. The real implementation lives in
-  `modules/ui/Toast/Toast.ejs`. Existing callers using
-  `<%- include('modules/ui/Toast', { ... }) %>` continue to work.
-
-  M1 milestone — see PLANS/26-Toast.md.
-%>
-<%- include('modules/ui/Toast/Toast', locals) %>
+<%- include('./Toast/Toast', locals) %>

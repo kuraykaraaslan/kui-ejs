@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T13:31:28.319Z",
+  "generatedAt": "2026-05-26T14:18:15.045Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -579,7 +579,7 @@
       "name": "MultiSelect",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/MultiSelect.ejs",
+      "filePath": "modules/ui/ComboBox/MultiSelect.ejs",
       "abbr": "Ms",
       "description": "Chip-based multi-select popover with searchable filter, keyboard navigation, and disabled-option support.",
       "status": "stable",
@@ -608,27 +608,23 @@
       "name": "ComboBox",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/ComboBox.ejs",
+      "filePath": "modules/ui/ComboBox/ComboBox.ejs",
       "abbr": "Cm",
       "description": "Searchable autocomplete single-select with keyboard navigation, described options, and a clearable button.",
       "status": "beta",
       "since": "2026-05",
       "designTokens": [
         "--border",
-        "--border-focus",
         "--error",
         "--error-subtle",
         "--primary",
         "--secondary",
-        "--surface-base",
         "--surface-overlay",
-        "--surface-raised",
         "--surface-sunken",
-        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 5
+      "variantCount": 6
     },
     {
       "id": "date-range-picker",
@@ -737,19 +733,7 @@
       "description": "Color selection control with a 32-swatch preset palette plus optional hex input and native browser color picker for unlimited colors. Pixel-identical React sibling at modules/ui/ColorPicker.tsx. Used by RichTextEditor for text + highlight colors.",
       "status": "stable",
       "since": "2026-05",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--secondary",
-        "--surface-base",
-        "--surface-overlay",
-        "--surface-raised",
-        "--surface-sunken",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 3
     },
     {
@@ -808,30 +792,13 @@
       "name": "Toast",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/Toast.ejs",
+      "filePath": "modules/ui/Toast/Toast.ejs",
       "abbr": "Ts",
       "description": "Notification system with success/warning/error/info/loading variants. Hover-to-freeze, progress bar, title, actions, and promise support.",
       "status": "stable",
       "since": "2025-02",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--error",
-        "--error-subtle",
-        "--info",
-        "--info-subtle",
-        "--primary",
-        "--secondary",
-        "--success",
-        "--success-fg",
-        "--success-subtle",
-        "--surface-raised",
-        "--text-primary",
-        "--text-secondary",
-        "--warning",
-        "--warning-subtle"
-      ],
-      "variantCount": 5
+      "designTokens": [],
+      "variantCount": 6
     },
     {
       "id": "pagination",
@@ -1215,7 +1182,7 @@
       "name": "TreeView",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/TreeView.ejs",
+      "filePath": "modules/ui/TreeView/TreeView.ejs",
       "abbr": "Tv",
       "description": "Collapsible tree with keyboard navigation, selection, and aria-tree roles.",
       "status": "stable",
@@ -1223,12 +1190,11 @@
       "designTokens": [
         "--border",
         "--border-focus",
-        "--primary",
-        "--primary-subtle",
+        "--secondary",
         "--surface-overlay",
-        "--text-disabled"
+        "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "content-score-bar",

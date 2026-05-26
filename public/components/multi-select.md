@@ -3,7 +3,7 @@
 - **id:** `multi-select`
 - **layer:** ui
 - **category:** Molecule
-- **filePath:** `modules/ui/MultiSelect.ejs`
+- **filePath:** `modules/ui/ComboBox/MultiSelect.ejs`
 - **status:** stable
 - **since:** 2026-05
 
@@ -90,6 +90,9 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
 
 ```ejs
 <%
+  // MultiSelect (lives in the ComboBox folder so it can share _chip/_listbox
+  // partials and the filter/async/keyboard helpers). Mirrors NextJS
+  // modules/ui/MultiSelect.tsx M1.
   var _id          = locals.id          || 'multiselect-' + Math.random().toString(36).substr(2, 9);
   var _label       = locals.label       || '';
   var _options     = locals.options     || [];
@@ -105,6 +108,7 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
   var hintId      = _hint  ? (_id + '-hint')  : '';
   var errorId     = _error ? (_id + '-error') : '';
   var describedBy = [hintId, errorId].filter(Boolean).join(' ');
+  var listboxId   = _id + '-listbox';
 
   function isSelected(v) {
     for (var i = 0; i < _value.length; i++) { if (_value[i] === v) return true; }
@@ -129,6 +133,8 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
       tabindex="<%= _dis ? -1 : 0 %>"
       aria-haspopup="listbox"
       aria-expanded="false"
+      aria-controls="<%= listboxId %>"
+      aria-autocomplete="list"
       aria-labelledby="<%= labelId %>"
       <% if (describedBy) { %>aria-describedby="<%= describedBy %>"<% } %>
       aria-disabled="<%= _dis ? 'true' : 'false' %>"
@@ -141,24 +147,11 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
         <% _value.forEach(function(v) {
           var opt = null;
           for (var i = 0; i < _options.length; i++) { if (_options[i].value === v) { opt = _options[i]; break; } }
-          var label = opt ? opt.label : v;
+          var chipValue = v;
+          var chipLabel = opt ? opt.label : v;
+          var chipIcon  = (opt && opt.icon) ? opt.icon : '';
         %>
-          <span
-            data-multiselect-chip
-            data-value="<%= v %>"
-            class="inline-flex items-center gap-1 rounded-full bg-primary-subtle text-primary text-xs font-medium px-2 py-0.5"
-          >
-            <% if (opt && opt.icon) { %><span class="shrink-0"><%- opt.icon %></span><% } %>
-            <%= label %>
-            <button
-              type="button"
-              aria-label="Remove <%= label %>"
-              data-multiselect-chip-remove
-              class="hover:opacity-70 focus-visible:outline-none"
-            >
-              <i class="fa-solid fa-xmark" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
-            </button>
-          </span>
+          <%- include('./partials/_chip', { chipValue: chipValue, chipLabel: chipLabel, chipIcon: chipIcon }) %>
         <% }); %>
       </span>
       <i data-multiselect-caret class="fa-solid fa-chevron-down ml-auto text-text-disabled" style="width:0.75rem;height:0.75rem" aria-hidden="true"></i>
@@ -170,15 +163,21 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
     >
       <% if (_searchable) { %>
         <div class="p-2 border-b border-border">
-          <input
-            type="text"
-            data-multiselect-search
-            placeholder="Search…"
-            class="block w-full rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
-          />
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-text-disabled" style="width:0.75rem;height:0.75rem" aria-hidden="true"></i>
+            <input
+              type="text"
+              data-multiselect-search
+              placeholder="Search…"
+              aria-autocomplete="list"
+              aria-controls="<%= listboxId %>"
+              class="block w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+            />
+          </div>
         </div>
       <% } %>
       <ul
+        id="<%= listboxId %>"
         role="listbox"
         aria-labelledby="<%= labelId %>"
         aria-multiselectable="true"
@@ -210,7 +209,12 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
             <%= opt.label %>
           </li>
         <% }); %>
+        <li data-multiselect-loading class="hidden px-3 py-3 text-sm text-text-secondary" aria-live="polite">
+          <i class="fa-solid fa-spinner fa-spin" aria-hidden="true" style="width:0.75rem;height:0.75rem"></i>
+          <span class="ml-1">Loading…</span>
+        </li>
         <li data-multiselect-empty class="hidden px-3 py-4 text-sm text-center text-text-secondary">No results found.</li>
+        <li data-multiselect-sentinel aria-hidden="true" class="h-1"></li>
       </ul>
     </div>
   </div>
@@ -218,6 +222,10 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
   <% if (_hint && !_error) { %><p id="<%= hintId %>" class="text-xs text-text-secondary"><%= _hint %></p><% } %>
   <% if (_error) { %><p id="<%= errorId %>" class="text-xs text-error" role="alert"><%= _error %></p><% } %>
 </div>
+
+<script><%- include('./scripts/filter.js') %></script>
+<script><%- include('./scripts/async.js') %></script>
+<script><%- include('./scripts/keyboard.js') %></script>
 
 <script>
 (function () {
@@ -234,6 +242,8 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
   var caret       = root.querySelector('[data-multiselect-caret]');
   var search      = root.querySelector('[data-multiselect-search]');
   var emptyEl     = root.querySelector('[data-multiselect-empty]');
+  var loadingEl   = root.querySelector('[data-multiselect-loading]');
+  var sentinelEl  = root.querySelector('[data-multiselect-sentinel]');
   var optionEls   = Array.prototype.slice.call(root.querySelectorAll('[data-multiselect-option]'));
   if (!shell || !popover) return;
 
@@ -251,12 +261,8 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
       caret.classList.toggle('fa-chevron-up', open);
       caret.classList.toggle('fa-chevron-down', !open);
     }
-    if (open && search) {
-      setTimeout(function () { search.focus(); }, 30);
-    } else if (search) {
-      search.value = '';
-      applyFilter();
-    }
+    if (open && search) setTimeout(function () { search.focus(); }, 30);
+    else if (search) { search.value = ''; applyFilter(); }
   }
 
   function findOptionData(v) {
@@ -317,15 +323,24 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
   }
 
   function applyFilter() {
-    var q = search ? search.value.toLowerCase() : '';
-    var anyVisible = false;
-    optionEls.forEach(function (el) {
-      var label = (el.dataset.label || '').toLowerCase();
-      var visible = !q || label.indexOf(q) !== -1;
-      el.classList.toggle('hidden', !visible);
-      if (visible) anyVisible = true;
+    if (window.ComboBoxAsync && window.ComboBoxAsync.has(root)) return;
+    if (!window.__cbFilter) return;
+    window.__cbFilter.applyFilter(optionEls, search ? search.value : '', emptyEl);
+  }
+
+  function setLoading(state) {
+    if (loadingEl) loadingEl.classList.toggle('hidden', !state);
+    if (emptyEl)   emptyEl.classList.toggle('hidden', state);
+  }
+
+  function runAsync() {
+    if (!window.ComboBoxAsync || !window.ComboBoxAsync.has(root)) return;
+    window.ComboBoxAsync.search(root, search ? search.value : '', {
+      onStart:  function () { setLoading(true); },
+      onResult: function () { /* host registration handles render */ },
+      onError:  function () { /* no-op */ },
+      onFinish: function () { setLoading(false); },
     });
-    if (emptyEl) emptyEl.classList.toggle('hidden', anyVisible);
   }
 
   shell.addEventListener('click', function () { if (!disabled) setOpen(!open); });
@@ -348,7 +363,7 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
   });
 
   if (search) {
-    search.addEventListener('input', applyFilter);
+    search.addEventListener('input', function () { applyFilter(); runAsync(); });
     search.addEventListener('click', function (e) { e.stopPropagation(); });
   }
 
@@ -360,6 +375,15 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
       if (chip) toggle(chip.dataset.value);
     });
   });
+
+  // TODO M1: cursor pagination — emit combobox:loadmore on sentinel intersection.
+  if (sentinelEl && typeof IntersectionObserver !== 'undefined') {
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0] || !entries[0].isIntersecting) return;
+      root.dispatchEvent(new CustomEvent('multiselect:loadmore'));
+    }, { root: listEl, rootMargin: '40px' });
+    io.observe(sentinelEl);
+  }
 
   document.addEventListener('mousedown', function (e) {
     if (root.contains(e.target)) return;

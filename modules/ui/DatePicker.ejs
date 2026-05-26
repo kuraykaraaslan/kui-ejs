@@ -1,9 +1,1 @@
-<%# modules/ui/DatePicker.ejs — thin shim %>
-<%#
-  Backwards-compatible entry point. The real implementation lives in
-  `modules/ui/DatePicker/DatePicker.ejs`. Existing callers using
-  `<%- include('modules/ui/DatePicker', { ... }) %>` continue to work.
-
-  M1 milestone — see PLANS/22-DatePicker-suite.md.
-%>
-<%- include('modules/ui/DatePicker/DatePicker', locals) %>
+<%- include('./DatePicker/DatePicker', locals) %>

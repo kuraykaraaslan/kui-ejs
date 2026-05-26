@@ -3,7 +3,7 @@
 - **id:** `tree-view`
 - **layer:** ui
 - **category:** Organism
-- **filePath:** `modules/ui/TreeView.ejs`
+- **filePath:** `modules/ui/TreeView/TreeView.ejs`
 - **status:** stable
 - **since:** 2026-05
 
@@ -13,10 +13,9 @@ Collapsible tree with keyboard navigation, selection, and aria-tree roles.
 
 - `--border`
 - `--border-focus`
-- `--primary`
-- `--primary-subtle`
+- `--secondary`
 - `--surface-overlay`
-- `--text-disabled`
+- `--text-secondary`
 
 ## Variants
 
@@ -77,138 +76,109 @@ Collapsible tree with keyboard navigation, selection, and aria-tree roles.
 }) %>
 ```
 
+### Multi-select + type-ahead
+
+```ejs
+<%- include('modules/ui/TreeView', {
+  label: 'Project files',
+  selectionMode: 'multi',
+  selectedIds: ['Card'],
+  nodes: [
+    { id: 'docs', label: 'Documents', children: [
+      { id: 'spec',    label: 'spec.md' },
+      { id: 'roadmap', label: 'roadmap.md' },
+    ]},
+    { id: 'src', label: 'src', children: [
+      { id: 'Button',   label: 'Button.ejs' },
+      { id: 'Card',     label: 'Card.ejs' },
+      { id: 'Drawer',   label: 'Drawer.ejs' },
+      { id: 'TreeView', label: 'TreeView.ejs' },
+    ]},
+  ]
+}) %>
+
+<%# Try it:
+%   - Cmd/Ctrl-click       → toggle individual rows
+%   - Shift-click          → range-select between anchor and clicked row
+%   - Type "tre"           → focus jumps to "TreeView.ejs"
+%   - Cmd/Ctrl+A           → select all visible rows
+%   - Arrow keys / Home / End / Space / Enter — full keyboard nav.
+%>
+```
+
 ## Full EJS source
 
 ```ejs
 <%
-  var _nodes      = locals.nodes      || [];
-  var _selectedId = locals.selectedId || '';
-  var _label      = locals.label      || 'Tree';
-  var _className  = locals.className  || '';
-  var _depth      = (locals.depth !== undefined) ? locals.depth : 0;
-  var _isRoot     = _depth === 0;
-  var _id         = locals.id         || 'treeview-' + Math.random().toString(36).substr(2, 9);
+  // modules/ui/TreeView/TreeView.ejs — M1 entry point.
+  //
+  // Pixel-parity contract with `modules/ui/TreeView/index.tsx` (NextJS).
+  // Recursive node rendering lives in `partials/_node.ejs`; behaviour lives in
+  // `scripts/tree-state.js` + `scripts/keyboard.js`.
+  //
+  // Backwards-compat: legacy `modules/ui/TreeView.ejs` is a shim that
+  // forwards to this template, so existing callers keep working.
+  var _nodes         = locals.nodes         || [];
+  var _selectedId    = locals.selectedId    || '';
+  var _selectedIds   = locals.selectedIds   || (_selectedId ? [_selectedId] : []);
+  var _label         = locals.label         || 'Tree';
+  var _className     = locals.className     || '';
+  var _selectionMode = locals.selectionMode || 'single';
+  var _hideToolbar   = locals.hideToolbar   === true;
+  var _focusId       = locals.focusId       || (_selectedIds[0] || '');
+  var _id            = locals.id            || 'treeview-' + Math.random().toString(36).substr(2, 9);
+  var _expandAllLbl   = (locals.messages && locals.messages.expandAll)   || 'Expand all';
+  var _collapseAllLbl = (locals.messages && locals.messages.collapseAll) || 'Collapse all';
+
+  function _hasAnyChildren(arr) {
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].children && arr[i].children.length) return true;
+    }
+    return false;
+  }
+  var _showToolbar = !_hideToolbar && _hasAnyChildren(_nodes);
 %>
-<% if (_isRoot) { %>
-<ul
-  id="<%= _id %>"
-  role="tree"
-  aria-label="<%= _label %>"
-  data-selected-id="<%= _selectedId %>"
-  class="space-y-0.5<%= _className ? ' ' + _className : '' %>"
->
-<% } else { %>
-<ul role="group" class="ml-0">
-<% } %>
-  <% _nodes.forEach(function (node) { %>
-  <%
-    var hasChildren = node.children && node.children.length > 0;
-    var isSelected  = node.id === _selectedId;
-    var rowCls = 'flex items-center gap-1.5 px-2 py-1.5 text-sm rounded-md cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus hover:bg-surface-overlay transition-colors' + (isSelected ? ' bg-primary-subtle text-primary font-medium' : '');
-  %>
-  <li
-    role="treeitem"
-    data-tree-node-id="<%= node.id %>"
-    data-has-children="<%= hasChildren ? 'true' : 'false' %>"
-    <% if (hasChildren) { %>aria-expanded="true"<% } %>
-    aria-selected="<%= isSelected ? 'true' : 'false' %>"
+<div class="flex flex-col gap-1<%= _className ? ' ' + _className : '' %>">
+  <% if (_showToolbar) { %>
+  <div data-tree-toolbar class="flex items-center gap-1 px-1 pb-1 text-xs text-text-secondary">
+    <button type="button" data-tree-action="expand-all"
+      data-tree-target="<%= _id %>"
+      class="inline-flex items-center gap-1 px-2 py-1 rounded-md hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors">
+      <i class="fa-solid fa-angles-down w-3 h-3" aria-hidden="true"></i>
+      <span><%= _expandAllLbl %></span>
+    </button>
+    <button type="button" data-tree-action="collapse-all"
+      data-tree-target="<%= _id %>"
+      class="inline-flex items-center gap-1 px-2 py-1 rounded-md hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors">
+      <i class="fa-solid fa-angles-up w-3 h-3" aria-hidden="true"></i>
+      <span><%= _collapseAllLbl %></span>
+    </button>
+  </div>
+  <% } %>
+
+  <ul
+    id="<%= _id %>"
+    role="tree"
+    aria-label="<%= _label %>"
+    <% if (_selectionMode === 'multi') { %>aria-multiselectable="true"<% } %>
+    data-selected-id="<%= _selectedIds[_selectedIds.length - 1] || '' %>"
+    data-selection-mode="<%= _selectionMode %>"
+    class="space-y-0.5"
   >
-    <div
-      tabindex="0"
-      data-tree-row
-      style="padding-left: <%= _depth * 1.25 %>rem;"
-      class="<%= rowCls %>"
-    >
-      <% if (hasChildren) { %>
-      <span aria-hidden="true" data-tree-chevron class="text-text-disabled w-3 shrink-0 flex items-center justify-center">
-        <i class="fa-solid fa-chevron-down w-2.5 h-2.5" aria-hidden="true"></i>
-      </span>
-      <% } else { %>
-      <span class="w-3 shrink-0" aria-hidden="true"></span>
-      <% } %>
-      <span><%= node.label %></span>
-    </div>
+    <% _nodes.forEach(function (node, idx) { %>
+      <%- include('./partials/_node', {
+        node: node,
+        depth: 0,
+        selectedIds: _selectedIds,
+        focusId: _focusId,
+        siblings: _nodes.length,
+        posInSet: idx + 1
+      }) %>
+    <% }); %>
+  </ul>
+</div>
 
-    <% if (hasChildren) { %>
-    <%- include('TreeView', { nodes: node.children, depth: _depth + 1, selectedId: _selectedId, label: _label }) %>
-    <% } %>
-  </li>
-  <% }); %>
-</ul>
-
-<% if (_isRoot) { %>
-<script>
-(function () {
-  var root = document.getElementById('<%= _id %>');
-  if (!root || root.dataset.treeInit === '1') return;
-  root.dataset.treeInit = '1';
-
-  function toggleItem(item) {
-    var expanded = item.getAttribute('aria-expanded') === 'true';
-    var next = !expanded;
-    item.setAttribute('aria-expanded', next ? 'true' : 'false');
-    var group = item.querySelector(':scope > ul[role="group"]');
-    if (group) group.hidden = !next;
-    var chev = item.querySelector(':scope > [data-tree-row] > [data-tree-chevron] > i');
-    if (chev) {
-      chev.classList.toggle('fa-chevron-down', next);
-      chev.classList.toggle('fa-chevron-right', !next);
-    }
-  }
-
-  function selectItem(item) {
-    var id = item.getAttribute('data-tree-node-id');
-    root.querySelectorAll('[role="treeitem"]').forEach(function (it) {
-      var sel = it === item;
-      it.setAttribute('aria-selected', sel ? 'true' : 'false');
-      var row = it.querySelector(':scope > [data-tree-row]');
-      if (row) {
-        row.classList.toggle('bg-primary-subtle', sel);
-        row.classList.toggle('text-primary', sel);
-        row.classList.toggle('font-medium', sel);
-      }
-    });
-    root.dataset.selectedId = id;
-    root.dispatchEvent(new CustomEvent('treeview:select', { detail: { id: id }, bubbles: true }));
-  }
-
-  function handleActivate(row) {
-    var item = row.closest('[role="treeitem"]');
-    if (!item) return;
-    if (item.getAttribute('data-has-children') === 'true') {
-      toggleItem(item);
-    } else {
-      selectItem(item);
-    }
-  }
-
-  root.addEventListener('click', function (e) {
-    var row = e.target.closest('[data-tree-row]');
-    if (!row || !root.contains(row)) return;
-    handleActivate(row);
-  });
-
-  root.addEventListener('keydown', function (e) {
-    var row = e.target.closest('[data-tree-row]');
-    if (!row || !root.contains(row)) return;
-    var item = row.closest('[role="treeitem"]');
-    if (!item) return;
-    var hasChildren = item.getAttribute('data-has-children') === 'true';
-    var expanded = item.getAttribute('aria-expanded') === 'true';
-
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      handleActivate(row);
-    } else if (e.key === 'ArrowRight' && hasChildren && !expanded) {
-      e.preventDefault();
-      toggleItem(item);
-    } else if (e.key === 'ArrowLeft' && hasChildren && expanded) {
-      e.preventDefault();
-      toggleItem(item);
-    }
-  });
-})();
-</script>
-<% } %>
+<%- include('./scripts/tree-state', { _id: _id }) %>
+<%- include('./scripts/keyboard',    { _id: _id }) %>
 
 ```
