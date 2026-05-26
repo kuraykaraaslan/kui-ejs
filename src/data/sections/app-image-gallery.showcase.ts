@@ -3,7 +3,7 @@ import * as fs   from 'fs';
 import * as path from 'path';
 import * as ejs  from 'ejs';
 
-const galleryTemplatePath = path.join(process.cwd(), 'modules/app/ImageGallery.ejs');
+const galleryTemplatePath = path.join(process.cwd(), 'modules/app/ImageGallery/index.ejs');
 const sourceCode = fs.readFileSync(galleryTemplatePath, 'utf-8');
 
 function renderGallery(locals: Record<string, unknown>): string {
@@ -34,7 +34,7 @@ export function buildImageGalleryData(): ShowcaseItem[] {
       since: '2026-05',
       description:
         'Responsive image grid with a full-screen lightbox, right-click context menu (open, copy URL, move to first/last, remove), and drag-to-reorder. Supports 2–4 columns, square / video / portrait / auto aspect ratios, optional captions, zoom toggle, thumbnail strip, and full keyboard navigation (← → Escape).',
-      filePath: 'modules/app/ImageGallery.ejs',
+      filePath: 'modules/app/ImageGallery/index.ejs',
       sourceCode,
       variants: [
         {
