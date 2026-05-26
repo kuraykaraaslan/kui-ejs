@@ -20,7 +20,6 @@ import { buildContextMenuData }           from './app-context-menu.showcase';
 import { buildImageGalleryData }          from './app-image-gallery.showcase';
 import { buildAppKanbanBoardData }        from './app-kanban-board.showcase';
 import { buildAppCalendarData }           from './app-calendar.showcase';
-import { buildAppNotificationCenterData } from './app-notification-center.showcase';
 import { buildAppGanttData }              from './app-gantt.showcase';
 import { buildAppFormBuilderData }        from './app-form-builder.showcase';
 
@@ -47,7 +46,6 @@ export function buildAppPatternsData(): ShowcaseItem[] {
     ...buildImageGalleryData(),
     ...buildAppKanbanBoardData(),
     ...buildAppCalendarData(),
-    ...buildAppNotificationCenterData(),
     ...buildAppGanttData(),
     ...buildAppFormBuilderData(),
   ];
