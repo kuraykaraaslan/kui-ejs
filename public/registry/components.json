@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T17:40:37.724Z",
+  "generatedAt": "2026-05-26T18:47:57.252Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -266,6 +266,10 @@
         "--surface-overlay",
         "--text-inverse",
         "--text-primary"
+      ],
+      "usedBy": [
+        "form-builder",
+        "gantt"
       ]
     },
     {
@@ -687,6 +691,9 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
+      ],
+      "usedBy": [
+        "form-builder"
       ]
     },
     {
@@ -750,6 +757,9 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
+      ],
+      "usedBy": [
+        "form-builder"
       ]
     },
     {
@@ -805,6 +815,9 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
+      ],
+      "usedBy": [
+        "form-builder"
       ]
     },
     {
@@ -888,6 +901,9 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
+      ],
+      "usedBy": [
+        "form-builder"
       ]
     },
     {
@@ -3343,6 +3359,214 @@
         "--text-primary",
         "--text-secondary",
         "--text-disabled"
+      ]
+    },
+    {
+      "id": "notification-center",
+      "name": "NotificationCenter",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/NotificationCenter/NotificationCenter.ejs",
+      "abbr": "NC",
+      "description": "Inbox / activity feed with a bell trigger + unread badge, a popover panel listing notifications newest-first, mark-as-read on hover or click, and a toolbar \"Mark all as read\". Pixel-identical React sibling at modules/app/NotificationCenter/index.tsx. M2-M6 add filter tabs / grouping / per-notification actions / realtime / preferences / full a11y. Sibling of the toast layer (NotificationSystem) — both can co-exist.",
+      "source": "<%\n  // ─── NotificationCenter — M1 (Bell + panel) ─────────────────────────────────\n  //\n  // Folder-scoped sibling of\n  //   /home/kuray/01_NextJS_Components/modules/app/NotificationCenter/index.tsx\n  //\n  // File-for-file parallels:\n  //   partials/_bell.ejs    ← parts/Bell.tsx\n  //   partials/_panel.ejs   ← parts/Panel.tsx\n  //   partials/_item.ejs    ← parts/NotificationItem.tsx\n  //   partials/_empty.ejs   ← parts/EmptyState.tsx\n  //   scripts/store.js      ← React state (open + items + unread bookkeeping)\n  //   scripts/unread.js     ← hooks/useUnreadCount.ts (derives badge text)\n  //\n  // M2-M6 stubs live next to their NextJS siblings as // TODO M* markers.\n  // (Filter tabs / grouping / per-notification actions / realtime / preferences\n  //  / full a11y).\n  //\n  // Sibling of NotificationSystem.ejs (toast queue) — both can co-exist.\n\n  var _id          = locals.id          || ('nc-' + Math.random().toString(36).substr(2, 6));\n  var _items       = locals.items       || [];\n  var _unreadCount = (typeof locals.unreadCount === 'number') ? locals.unreadCount : null;\n  var _trigger     = locals.trigger     || 'popover';\n  var _className   = locals.className   || '';\n\n  var _messages = Object.assign({\n    bellLabel:     'Notifications',\n    panelTitle:    'Inbox',\n    unreadSuffix:  'unread notifications',\n    markAllRead:   'Mark all as read',\n    markRead:      'Mark as read',\n    emptyTitle:    \"You're all caught up\",\n    emptyMessage:  'New notifications will appear here.'\n  }, locals.messages || {});\n\n  // ── Normalise + sort items newest-first (mirror useNotifications). ─────────\n  function toMillis(value) {\n    if (value instanceof Date) return value.getTime();\n    return new Date(value).getTime();\n  }\n  _items = _items.slice().sort(function (a, b) {\n    return toMillis(b.createdAt) - toMillis(a.createdAt);\n  });\n\n  // ── Derive unread count when not overridden (mirror useUnreadCount). ──────\n  var unreadCount = (_unreadCount != null)\n    ? Math.max(0, _unreadCount)\n    : _items.reduce(function (n, item) { return item.read ? n : n + 1; }, 0);\n\n  // ── Relative time helper (mirror parts/NotificationItem.tsx). ─────────────\n  function formatRelativeTime(value) {\n    var d = (value instanceof Date) ? value : new Date(value);\n    var diff = Math.floor((Date.now() - d.getTime()) / 1000);\n    if (diff < 60)    return Math.max(0, diff) + 's ago';\n    if (diff < 3600)  return Math.floor(diff / 60) + 'm ago';\n    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';\n    var dDay = Math.floor(diff / 86400);\n    if (dDay < 7) return dDay + 'd ago';\n    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];\n    return months[d.getMonth()] + ' ' + d.getDate();\n  }\n\n  // ── Variant icon/color tables (mirror parts/NotificationItem.tsx). ────────\n  var VARIANT_ICON = {\n    info:    'fa-circle-info',\n    success: 'fa-circle-check',\n    warning: 'fa-triangle-exclamation',\n    error:   'fa-circle-xmark',\n    mention: 'fa-at',\n    system:  'fa-gear'\n  };\n  var VARIANT_COLOR = {\n    info:    'bg-info-subtle text-info',\n    success: 'bg-success-subtle text-success',\n    warning: 'bg-warning-subtle text-warning',\n    error:   'bg-error-subtle text-error',\n    mention: 'bg-primary-subtle text-primary',\n    system:  'bg-surface-overlay text-text-secondary'\n  };\n\n  var displayUnread = unreadCount > 99 ? '99+' : String(unreadCount);\n%>\n<div\n  id=\"<%= _id %>\"\n  data-kui-nc\n  data-trigger=\"<%= _trigger %>\"\n  class=\"relative inline-block<%= _className ? ' ' + _className : '' %>\"\n>\n  <%- include('./partials/_bell', {\n    id: _id,\n    unreadCount: unreadCount,\n    displayUnread: displayUnread,\n    bellLabel: _messages.bellLabel,\n    unreadSuffix: _messages.unreadSuffix\n  }) %>\n\n  <%- include('./partials/_panel', {\n    id: _id,\n    items: _items,\n    unreadCount: unreadCount,\n    displayUnread: displayUnread,\n    messages: _messages,\n    trigger: _trigger,\n    formatRelativeTime: formatRelativeTime,\n    VARIANT_ICON: VARIANT_ICON,\n    VARIANT_COLOR: VARIANT_COLOR\n  }) %>\n</div>\n\n<%- include('./scripts/store.js') %>\n<%- include('./scripts/unread.js') %>\n",
+      "variants": [
+        {
+          "title": "Bell + panel (default)",
+          "code": "<%- include('modules/app/NotificationCenter', {\n  id: 'inbox',\n  items: items\n}) %>"
+        },
+        {
+          "title": "Empty state",
+          "code": "<%- include('modules/app/NotificationCenter', {\n  id: 'inbox-empty',\n  items: []\n}) %>"
+        },
+        {
+          "title": "High unread count — badge caps at 99+",
+          "code": "<%- include('modules/app/NotificationCenter', {\n  id: 'inbox-many',\n  items: many /* 100+ unread */\n}) %>"
+        }
+      ],
+      "status": "beta",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "Button with aria-haspopup=\"dialog\" + aria-expanded (bell)",
+          "Region with aria-live=\"polite\" (panel)",
+          "Badge with aria-label=\"N unread notifications\""
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Enter / Space",
+            "action": "Toggle the panel from the bell"
+          },
+          {
+            "keys": "Escape",
+            "action": "Close the panel"
+          },
+          {
+            "keys": "Tab",
+            "action": "Move through notification rows + mark-read buttons"
+          }
+        ],
+        "notes": "Full keyboard nav (J/K row nav, M = mark read, A = archive) and screen-reader announcement of new notifications arrive in M6."
+      },
+      "designTokens": [
+        "--primary",
+        "--primary-subtle",
+        "--error",
+        "--text-inverse",
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--border",
+        "--border-focus",
+        "--text-primary",
+        "--text-secondary",
+        "--success",
+        "--success-subtle",
+        "--warning",
+        "--warning-subtle",
+        "--info",
+        "--info-subtle",
+        "--error-subtle"
+      ]
+    },
+    {
+      "id": "gantt",
+      "name": "Gantt",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/Gantt/Gantt.ejs",
+      "abbr": "Gt",
+      "description": "MS Project / GanttPRO / dhtmlxGantt-style project timeline. M1 ships the scale switcher (day / week / month / quarter / year), a vertical Today line (var(--warning)), WBS tree with expand/collapse on the left panel, sticky timeline header with synchronised horizontal + vertical scroll, and absolutely-positioned task bars with a %-progress fill (bg-primary over bg-primary-subtle). Public props for `dependencies`, `baselines`, `criticalPath`, `workingDays`, `holidays`, `messages`, and the M2 callbacks (`onTaskUpdate`, `onDependencyCreate/Delete`) are accepted but not yet visually wired — they become live in M2 (drag-to-schedule + dependency drawing), M3 (CPM critical-path highlight + hover tooltip), M4 (milestones + baselines + group rollup), M5 (resource leveling + export PNG/PDF/CSV + working-day calendar), and M6 (full keyboard nav + locale). Pixel-identical React sibling at modules/app/Gantt/index.tsx.",
+      "source": "<%\n  // ── Gantt EJS (M1 — Timeline + bars) ─────────────────────────────────\n  // Pixel-identical to modules/app/Gantt/index.tsx in 01_NextJS_Components.\n  // Scale switcher + today line + WBS tree + horizontally-scrolling timeline\n  // with absolutely-positioned task bars + progress fill.\n  // Future milestones (M2 drag, M3 deps + CPM, M4 milestones + baseline,\n  // M5 export + calendar, M6 a11y + i18n) extend without breaking the M1\n  // surface. Stubs for M2+ live alongside as comments.\n  var _id        = locals.id        || 'gt-' + Math.random().toString(36).substr(2, 9);\n  var _tasks     = locals.tasks     || [];\n  var _scale     = locals.scale     || 'week';\n  // dependencies (TODO M2 stub — accepted but not rendered).\n  // baselines    (TODO M4 stub).\n  // workingDays  (TODO M5 stub).\n  // holidays     (TODO M5 stub).\n  // criticalPath (TODO M3 stub).\n  var _ariaLabel = locals.ariaLabel || 'Gantt chart';\n  var _msg = Object.assign({\n    today: 'Today',\n    scaleDay: 'Day', scaleWeek: 'Week', scaleMonth: 'Month',\n    scaleQuarter: 'Quarter', scaleYear: 'Year',\n    taskColumn: 'Task', ownerColumn: 'Owner', progressColumn: '%'\n  }, locals.messages || {});\n\n  // ── Pixels-per-day per scale — must match types.ts PIXELS_PER_DAY. ──\n  var PPD = { day: 32, week: 14, month: 6, quarter: 2.5, year: 1.2 };\n  var BAR_HEIGHT = 24;\n  var ROW_HEIGHT = 36;\n  var SIDE_PANEL_WIDTH = 320;\n  var ppd = PPD[_scale] || PPD.week;\n\n  var MS_PER_DAY = 86400000;\n  function startOfDay(d) { var c = new Date(d); c.setHours(0,0,0,0); return c; }\n  function diffDays(a, b) { return Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / MS_PER_DAY); }\n  function addDays(d, n) { var c = new Date(d); c.setDate(c.getDate() + n); return c; }\n\n  // ── Range computation ────────────────────────────────────────────────\n  var rangeStart, rangeEnd;\n  if (_tasks.length === 0) {\n    var today = startOfDay(new Date());\n    rangeStart = addDays(today, -7);\n    rangeEnd   = addDays(today,  30);\n  } else {\n    var minMs = Infinity, maxMs = -Infinity;\n    _tasks.forEach(function (t) {\n      var s = new Date(t.start).getTime();\n      var e = new Date(t.end).getTime();\n      if (s < minMs) minMs = s;\n      if (e > maxMs) maxMs = e;\n    });\n    rangeStart = addDays(startOfDay(new Date(minMs)), -3);\n    rangeEnd   = addDays(startOfDay(new Date(maxMs)),  3);\n  }\n\n  var MONTH_NAMES_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];\n  function isoWeek(d) {\n    var target = new Date(d.valueOf());\n    var dayNr = (d.getDay() + 6) % 7;\n    target.setDate(target.getDate() - dayNr + 3);\n    var firstThursday = target.valueOf();\n    target.setMonth(0, 1);\n    if (target.getDay() !== 4) {\n      target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);\n    }\n    return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);\n  }\n\n  // ── Build header columns ─────────────────────────────────────────────\n  var columns = [];\n  var cur;\n  if (_scale === 'day') {\n    cur = new Date(rangeStart);\n    while (cur < rangeEnd) {\n      var next = addDays(cur, 1);\n      columns.push({ start: new Date(cur), end: next, label: String(cur.getDate()), subLabel: MONTH_NAMES_SHORT[cur.getMonth()], width: ppd });\n      cur = next;\n    }\n  } else if (_scale === 'week') {\n    cur = new Date(rangeStart);\n    var dow = (cur.getDay() + 6) % 7;\n    cur = addDays(cur, -dow);\n    while (cur < rangeEnd) {\n      var next = addDays(cur, 7);\n      var days = Math.min(7, diffDays(cur, rangeEnd));\n      columns.push({ start: new Date(cur), end: next, label: 'W' + isoWeek(cur), subLabel: MONTH_NAMES_SHORT[cur.getMonth()] + ' ' + cur.getDate(), width: days * ppd });\n      cur = next;\n    }\n  } else if (_scale === 'month') {\n    cur = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: MONTH_NAMES_SHORT[cur.getMonth()], subLabel: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  } else if (_scale === 'quarter') {\n    var startQ = Math.floor(rangeStart.getMonth() / 3);\n    cur = new Date(rangeStart.getFullYear(), startQ * 3, 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear(), cur.getMonth() + 3, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: 'Q' + (Math.floor(cur.getMonth() / 3) + 1), subLabel: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  } else { // year\n    cur = new Date(rangeStart.getFullYear(), 0, 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear() + 1, 0, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  }\n  var baselineStart = columns[0] ? columns[0].start : rangeStart;\n  var totalWidth = columns.reduce(function (sum, c) { return sum + c.width; }, 0);\n\n  // ── Flatten WBS tree (depth-first) ───────────────────────────────────\n  var ids = {};\n  _tasks.forEach(function (t) { ids[t.id] = true; });\n  var byParent = {};\n  _tasks.forEach(function (t) {\n    var key = (t.parentId && ids[t.parentId]) ? t.parentId : '__root__';\n    if (!byParent[key]) byParent[key] = [];\n    byParent[key].push(t);\n  });\n  var collapsedIds = {};\n  _tasks.forEach(function (t) { if (t.collapsed) collapsedIds[t.id] = true; });\n  var flatRows = [];\n  function walk(parentKey, depth) {\n    var children = byParent[parentKey] || [];\n    children.forEach(function (c) {\n      var hasChildren = !!(byParent[c.id] && byParent[c.id].length);\n      flatRows.push({ task: c, depth: depth, hasChildren: hasChildren });\n      if (hasChildren && !collapsedIds[c.id]) walk(c.id, depth + 1);\n    });\n  }\n  walk('__root__', 0);\n  var totalHeight = flatRows.length * ROW_HEIGHT;\n\n  // ── Today line position ──────────────────────────────────────────────\n  var todayDate = new Date();\n  var todayLeft = -1;\n  if (todayDate >= rangeStart && todayDate <= rangeEnd) {\n    todayLeft = diffDays(baselineStart, todayDate) * ppd;\n  }\n\n  var SCALES = ['day', 'week', 'month', 'quarter', 'year'];\n  var SCALE_LABEL = { day: _msg.scaleDay, week: _msg.scaleWeek, month: _msg.scaleMonth, quarter: _msg.scaleQuarter, year: _msg.scaleYear };\n%>\n<div\n  id=\"<%= _id %>\"\n  role=\"grid\"\n  aria-label=\"<%= _ariaLabel %>\"\n  aria-rowcount=\"<%= flatRows.length + 1 %>\"\n  aria-colcount=\"<%= columns.length %>\"\n  data-gantt-id=\"<%= _id %>\"\n  data-gantt-scale=\"<%= _scale %>\"\n  class=\"gantt-root w-full flex flex-col rounded-lg border border-border bg-surface-base overflow-hidden\"\n>\n  <!-- ── Toolbar: scale switcher + today label ──────────────────────── -->\n  <div class=\"flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-border bg-surface-raised\">\n    <div class=\"flex items-center gap-2 text-text-primary\">\n      <i class=\"fa-solid fa-calendar w-3.5 h-3.5 text-text-secondary\" aria-hidden=\"true\" style=\"font-size:0.875rem\"></i>\n      <h2 class=\"text-sm font-semibold\">\n        <%= _msg.today %>: <span class=\"tabular-nums font-normal text-text-secondary\"><%= todayDate.toLocaleDateString() %></span>\n      </h2>\n    </div>\n    <div role=\"tablist\" aria-label=\"Timeline scale\" class=\"inline-flex items-center rounded-md border border-border bg-surface-base p-0.5\">\n      <% SCALES.forEach(function (s) {\n           var active = s === _scale;\n           var cls = active ? 'bg-primary text-primary-fg' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay';\n      %>\n        <button type=\"button\"\n          role=\"tab\"\n          aria-selected=\"<%= active ? 'true' : 'false' %>\"\n          data-kui-gantt-scale=\"<%= s %>\"\n          class=\"px-2.5 py-1 text-xs font-medium rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= cls %>\">\n          <%= SCALE_LABEL[s] %>\n        </button>\n      <% }); %>\n    </div>\n    <%# TODO M5: export menu (PNG / PDF / CSV). %>\n    <%# TODO M3: critical-path toggle. %>\n  </div>\n\n  <!-- ── Body ───────────────────────────────────────────────────────── -->\n  <div class=\"flex w-full max-h-[32rem]\">\n    <!-- Left: WBS panel -->\n    <div data-gantt-side=\"1\" class=\"overflow-y-auto overflow-x-hidden scrollbar-hide\">\n      <%- include('./partials/_task-list', { _id: _id, flatRows: flatRows, _msg: _msg, ROW_HEIGHT: ROW_HEIGHT, SIDE_PANEL_WIDTH: SIDE_PANEL_WIDTH, totalHeight: totalHeight, collapsedIds: collapsedIds }) %>\n    </div>\n\n    <!-- Right: timeline -->\n    <div class=\"flex-1 min-w-0 flex flex-col\">\n      <!-- Sticky header (horizontal scroll mirrors body) -->\n      <div data-gantt-header=\"1\" class=\"overflow-hidden border-b border-border\">\n        <%- include('./partials/_timeline-header', { columns: columns, totalWidth: totalWidth }) %>\n      </div>\n      <!-- Scrollable body -->\n      <div data-gantt-timeline=\"1\" class=\"relative flex-1 overflow-auto\">\n        <div class=\"relative\" style=\"width: <%= totalWidth %>px; height: <%= totalHeight %>px;\">\n          <!-- Row backgrounds -->\n          <% flatRows.forEach(function (row, i) {\n               var bg = (i % 2 === 1) ? 'bg-surface-overlay/40' : 'bg-transparent';\n          %>\n            <div aria-hidden=\"true\"\n              class=\"absolute left-0 right-0 border-b border-border/60 <%= bg %>\"\n              style=\"top: <%= i * ROW_HEIGHT %>px; height: <%= ROW_HEIGHT %>px; width: <%= totalWidth %>px;\"></div>\n          <% }); %>\n\n          <!-- Today line -->\n          <%- include('./partials/_today-line', { todayLeft: todayLeft, totalHeight: totalHeight }) %>\n\n          <!-- Task bars -->\n          <% flatRows.forEach(function (row, i) {\n               var task = row.task;\n               var startOffsetDays = diffDays(baselineStart, new Date(task.start));\n               var durationDays    = Math.max(1, diffDays(new Date(task.start), new Date(task.end)));\n               var left            = startOffsetDays * ppd;\n               var width           = durationDays * ppd;\n               var top             = (i * ROW_HEIGHT) + (ROW_HEIGHT - BAR_HEIGHT) / 2;\n               var progress        = Math.max(0, Math.min(100, task.progress || 0));\n          %>\n            <%- include('./partials/_bar', { task: task, left: left, width: width, top: top, height: BAR_HEIGHT, progress: progress }) %>\n          <% }); %>\n\n          <%# TODO M2: <svg> overlay for dependency arrows. %>\n          <%# TODO M4: baseline ghost bars + milestone diamonds. %>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<script>\n(function () {\n  var GT_ID = '<%= _id %>';\n  var root = document.getElementById(GT_ID);\n  if (!root) return;\n\n  <%- include('./scripts/scale.js') %>\n  <%- include('./scripts/scroll.js') %>\n  <%- include('./scripts/zoom.js') %>\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Week scale (default)",
+          "code": "<%- include('modules/app/Gantt', {\n  id: 'launch-plan',\n  ariaLabel: 'Product launch plan',\n  scale: 'week',\n  tasks: [\n    { id: 'g1', name: 'Design phase',     isGroup: true, start: new Date('2026-05-01'), end: new Date('2026-05-15'), progress: 70 },\n    { id: 't1', name: 'Wireframes',       parentId: 'g1', start: new Date('2026-05-01'), end: new Date('2026-05-08'), progress: 100 },\n    { id: 't2', name: 'Visual design',    parentId: 'g1', start: new Date('2026-05-08'), end: new Date('2026-05-15'), progress: 80 },\n    { id: 'm1', name: 'Launch',           start: new Date('2026-06-01'), end: new Date('2026-06-01'), isMilestone: true }\n  ]\n}) %>"
+        },
+        {
+          "title": "Month scale",
+          "code": "<%- include('modules/app/Gantt', { id: 'roadmap', scale: 'month', tasks: tasks }) %>"
+        },
+        {
+          "title": "Collapsed group",
+          "code": "// Seed any group with `collapsed: true` to hide its children at first paint.\n<%- include('modules/app/Gantt', {\n  id: 'plan', scale: 'week',\n  tasks: tasks.map(function (t) { return t.id === 'impl' ? Object.assign({}, t, { collapsed: true }) : t; })\n}) %>"
+        }
+      ],
+      "status": "beta",
+      "since": "2026-05",
+      "composes": [
+        "button"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "grid",
+          "row",
+          "columnheader",
+          "gridcell",
+          "tablist",
+          "tab"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Tab",
+            "action": "Move focus across scale tabs and collapse buttons"
+          },
+          {
+            "keys": "Space / Enter",
+            "action": "Activate scale tab or expand/collapse a WBS group"
+          }
+        ],
+        "notes": "Root carries role=\"grid\" with aria-rowcount + aria-colcount. The timeline header row is role=\"row\" with aria-rowindex=\"1\" and each cell is role=\"columnheader\" with aria-colindex. Task bars are role=\"gridcell\" labelled with the task name, dates and % complete. Scale switcher is a role=\"tablist\"/role=\"tab\" pair. Full keyboard parity ships in M6."
+      },
+      "designTokens": [
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--text-primary",
+        "--text-secondary",
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--primary-subtle",
+        "--primary-fg",
+        "--warning"
+      ]
+    },
+    {
+      "id": "form-builder",
+      "name": "FormBuilder",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/FormBuilder/FormBuilder.ejs",
+      "abbr": "FB",
+      "description": "Typeform / JotForm-style drag-to-build form designer. M1 ships the field palette (text / email / number / textarea / select / radio / checkbox / date / file — multiselect / signature / rating are palette stubs), a draggable canvas with reorder + duplicate + delete, a right-hand settings panel (label, name, placeholder, helper text, required, default value, options), JSON schema export / import, and a paired FormRenderer with required + email-format validation. Future milestones: full validation engine + custom validators (M2), conditional logic editor + runtime AST eval (M3), multi-page + save & resume (M4), schema I/O + webhooks + signature / rating (M5), full WAI-ARIA / keyboard parity + i18n + theming (M6). Pixel-identical React sibling at modules/app/FormBuilder/index.tsx.",
+      "source": "<%\n  // ── FormBuilder EJS (M1 — Field palette + canvas + settings) ─────────\n  // Pixel-identical to modules/app/FormBuilder/index.tsx in 01_NextJS_Components.\n  // HTML5 native drag-and-drop palette → canvas + canvas reorder + duplicate\n  // + delete + JSON schema export / import. Per-field settings panel on right.\n  // TODO M2: validation rules editor inside FieldSettings.\n  // TODO M3: visual conditional-logic editor (LogicEditor.ejs).\n  // TODO M4: multi-page tabs (PagesPanel.ejs).\n  // TODO M5: PreviewToggle.ejs swapping editor ↔ FormRenderer.\n  // TODO M6: full keyboard reorder + LiveRegion announcements.\n  var _id     = locals.id     || 'fb-' + Math.random().toString(36).substr(2, 9);\n  var _schema = locals.schema || { id: 'form', title: 'Untitled form', description: '', fields: [] };\n  if (!_schema.fields) _schema.fields = [];\n\n  var FIELD_TYPES_M1 = [\n    { type: 'text',        label: 'Text',        icon: 'fa-font',         disabled: false },\n    { type: 'email',       label: 'Email',       icon: 'fa-at',           disabled: false },\n    { type: 'number',      label: 'Number',      icon: 'fa-hashtag',      disabled: false },\n    { type: 'textarea',    label: 'Textarea',    icon: 'fa-align-left',   disabled: false },\n    { type: 'select',      label: 'Select',      icon: 'fa-caret-down',   disabled: false },\n    { type: 'multiselect', label: 'Multiselect', icon: 'fa-square-check', disabled: true  },\n    { type: 'radio',       label: 'Radio',       icon: 'fa-circle-dot',   disabled: false },\n    { type: 'checkbox',    label: 'Checkbox',    icon: 'fa-square-check', disabled: false },\n    { type: 'date',        label: 'Date',        icon: 'fa-calendar',     disabled: false },\n    { type: 'file',        label: 'File',        icon: 'fa-paperclip',    disabled: false },\n    { type: 'signature',   label: 'Signature',   icon: 'fa-signature',    disabled: true  },\n    { type: 'rating',      label: 'Rating',      icon: 'fa-star',         disabled: true  }\n  ];\n%>\n<div\n  id=\"<%= _id %>\"\n  role=\"application\"\n  aria-label=\"Form builder\"\n  data-form-builder-id=\"<%= _id %>\"\n  class=\"fb-root flex flex-col gap-3 p-3 rounded-lg bg-surface-overlay border border-border\"\n>\n  <!-- ── Toolbar ───────────────────────────────────────────────────── -->\n  <div class=\"flex items-center gap-2\">\n    <span class=\"text-sm font-medium text-text-primary\" data-fb-title><%= _schema.title || 'Untitled form' %></span>\n    <span class=\"text-xs text-text-secondary\" data-fb-count>(<%= _schema.fields.length %> field<%= _schema.fields.length === 1 ? '' : 's' %>)</span>\n    <span class=\"flex-1\"></span>\n    <button type=\"button\" data-fb-action=\"import\"\n      class=\"inline-flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm bg-surface-base border border-border text-text-primary hover:bg-surface-overlay hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\">\n      <i class=\"fa-solid fa-file-import w-3.5 h-3.5\" aria-hidden=\"true\"></i>\n      <span>Import JSON</span>\n    </button>\n    <input type=\"file\" accept=\"application/json,.json\" data-fb-import-file class=\"hidden\" />\n    <button type=\"button\" data-fb-action=\"export\"\n      class=\"inline-flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm bg-surface-base border border-border text-text-primary hover:bg-surface-overlay hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\">\n      <i class=\"fa-solid fa-file-export w-3.5 h-3.5\" aria-hidden=\"true\"></i>\n      <span>Export JSON</span>\n    </button>\n  </div>\n\n  <!-- ── Three-pane workspace ──────────────────────────────────────── -->\n  <div class=\"flex gap-3 items-stretch min-h-[24rem]\">\n    <!-- Palette -->\n    <aside aria-label=\"Fields\" class=\"fb-palette w-56 shrink-0 rounded-lg border border-border bg-surface-raised flex flex-col\">\n      <h3 class=\"px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-secondary border-b border-border\">Fields</h3>\n      <ul role=\"list\" class=\"flex flex-col gap-1 p-2 overflow-y-auto\">\n        <% FIELD_TYPES_M1.forEach(function (m) { %>\n          <li role=\"listitem\">\n            <button type=\"button\"\n              draggable=\"<%= m.disabled ? 'false' : 'true' %>\"\n              data-fb-palette-type=\"<%= m.type %>\"\n              <%= m.disabled ? 'disabled aria-disabled=\"true\"' : '' %>\n              class=\"w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left text-sm bg-surface-base border border-border text-text-primary hover:bg-surface-overlay hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed transition-colors\">\n              <i class=\"fa-solid <%= m.icon %> w-4 h-4 text-text-secondary\" aria-hidden=\"true\"></i>\n              <span class=\"truncate\"><%= m.label %></span>\n              <% if (m.disabled) { %><span class=\"ml-auto text-[10px] uppercase text-text-disabled\">soon</span><% } %>\n            </button>\n          </li>\n        <% }); %>\n      </ul>\n    </aside>\n\n    <!-- Canvas -->\n    <section aria-label=\"Form\" class=\"fb-canvas flex-1 min-w-0 rounded-lg border border-border bg-surface-raised flex flex-col\">\n      <header class=\"px-3 py-2 border-b border-border\">\n        <h3 class=\"text-xs font-semibold uppercase tracking-wide text-text-secondary\">Form</h3>\n      </header>\n      <ul role=\"list\" aria-label=\"Form fields\" data-fb-canvas-list class=\"fb-canvas-list flex-1 flex flex-col gap-1.5 p-3 min-h-[12rem] overflow-y-auto\">\n        <div aria-hidden=\"true\" data-fb-slot=\"0\" class=\"fb-drop-indicator mx-1 h-0.5 rounded-full transition-colors bg-transparent\"></div>\n        <% _schema.fields.forEach(function (field, i) { %>\n          <%- include('./partials/_field-card', { field: field, index: i }) %>\n          <div aria-hidden=\"true\" data-fb-slot=\"<%= i + 1 %>\" class=\"fb-drop-indicator mx-1 h-0.5 rounded-full transition-colors bg-transparent\"></div>\n        <% }); %>\n        <% if (_schema.fields.length === 0) { %>\n          <li aria-hidden=\"true\" data-fb-empty class=\"fb-canvas-empty text-sm text-text-disabled italic text-center py-10 border border-dashed border-border rounded-md\">\n            Drag a field from the palette to start building.\n          </li>\n        <% } %>\n      </ul>\n    </section>\n\n    <!-- Settings panel -->\n    <aside aria-label=\"Settings\" class=\"fb-settings w-72 shrink-0 rounded-lg border border-border bg-surface-raised flex flex-col\">\n      <h3 class=\"px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-secondary border-b border-border\">Settings</h3>\n      <div data-fb-settings-body class=\"flex flex-col gap-3 p-3 overflow-y-auto\">\n        <p data-fb-settings-empty class=\"text-sm text-text-disabled italic px-3 py-6 text-center\">Select a field to edit its settings.</p>\n      </div>\n    </aside>\n  </div>\n</div>\n\n<script>\n(function () {\n  var FB_ID  = '<%= _id %>';\n  var root   = document.getElementById(FB_ID);\n  if (!root) return;\n  var schema = <%- JSON.stringify(_schema) %>;\n\n  /* ── Shared state ─────────────────────────────────────────────────── */\n  <%- include('./scripts/schema-state.js') %>\n\n  /* ── HTML5 drag-and-drop ──────────────────────────────────────────── */\n  <%- include('./scripts/drag-drop.js') %>\n\n  /* ── Init + public API ────────────────────────────────────────────── */\n  bindAll();\n  window.KuiFormBuilder = window.KuiFormBuilder || {};\n  window.KuiFormBuilder[FB_ID] = {\n    getSchema: function () { return JSON.parse(JSON.stringify(schema)); },\n    setSchema: function (next) { schema = next || { id: 'form', fields: [] }; render(); }\n  };\n  // TODO M3: window.KuiFormBuilder[FB_ID].setLogic(rules)\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Builder (drag + edit)",
+          "code": "<%- include('modules/app/FormBuilder', {\n  id: 'contact-builder',\n  schema: {\n    id: 'contact',\n    title: 'Contact form',\n    fields: [\n      { id: 'f1', type: 'text',  name: 'name',  label: 'Your name', required: true },\n      { id: 'f2', type: 'email', name: 'email', label: 'Email',     required: true }\n    ]\n  }\n}) %>\n\n<script>\n  // Read or replace the live schema:\n  var api = window.KuiFormBuilder['contact-builder'];\n  console.log(api.getSchema());\n</script>"
+        },
+        {
+          "title": "Builder + live FormRenderer",
+          "code": "<%- include('modules/app/FormBuilder', { id: 'b', schema: schema }) %>\n<%- include('modules/app/FormRenderer', { id: 'r', schema: schema }) %>\n\n<script>\n  document.getElementById('r').addEventListener('KuiFormRenderer:r:submit', function (e) {\n    fetch('/api/submit', { method: 'POST', body: JSON.stringify(e.detail.values) });\n  });\n</script>"
+        },
+        {
+          "title": "Standalone renderer (required + email validation)",
+          "code": "<%- include('modules/app/FormRenderer', {\n  id: 'contact-form',\n  schema: schema\n}) %>\n\n<script>\n  document.getElementById('contact-form')\n    .addEventListener('KuiFormRenderer:contact-form:submit', function (e) {\n      console.log('values', e.detail.values);\n    });\n</script>"
+        }
+      ],
+      "status": "beta",
+      "since": "2026-05",
+      "composes": [
+        "button",
+        "input",
+        "checkbox",
+        "select",
+        "textarea"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "application",
+          "list",
+          "listitem",
+          "radiogroup",
+          "alert"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Tab",
+            "action": "Move focus across palette / canvas / settings"
+          },
+          {
+            "keys": "Enter / Space",
+            "action": "Activate palette item to append a field"
+          },
+          {
+            "keys": "Drag (mouse)",
+            "action": "Drag from palette → drop into canvas; reorder by dragging the grip handle"
+          }
+        ],
+        "notes": "Builder root is role=\"application\" with aria-label. Canvas list is role=\"list\"; each draggable card is role=\"listitem\" with aria-current when selected. FormRenderer adds aria-required + aria-invalid + aria-describedby per field, and surfaces validation messages with role=\"alert\". Keyboard reorder + LiveRegion announcements land in M6."
+      },
+      "designTokens": [
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--text-primary",
+        "--text-secondary",
+        "--text-disabled",
+        "--border",
+        "--border-strong",
+        "--border-focus",
+        "--primary",
+        "--primary-hover",
+        "--primary-active",
+        "--primary-fg",
+        "--error",
+        "--error-subtle"
       ]
     },
     {

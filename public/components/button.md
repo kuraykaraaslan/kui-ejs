@@ -9,6 +9,11 @@
 
 Core interactive element. Supports 5 visual styles (variants) and 5 sizes. disabled, loading and selected states are built-in.
 
+## Used by
+
+- `form-builder`
+- `gantt`
+
 ## Design tokens consumed
 
 - `--border`
