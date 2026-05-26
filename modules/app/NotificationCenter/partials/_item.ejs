@@ -1,0 +1,76 @@
+<%
+  // NotificationItem — parallel of parts/NotificationItem.tsx.
+  // Locals: id, item, markReadLabel, formatRelativeTime, VARIANT_ICON, VARIANT_COLOR.
+  var variant   = item.variant || 'info';
+  var icon      = item.icon || VARIANT_ICON[variant] || 'fa-bell';
+  var colorCls  = VARIANT_COLOR[variant] || VARIANT_COLOR.info;
+  var isUnread  = !item.read;
+  var titleCls  = isUnread
+    ? 'font-semibold text-text-primary'
+    : 'font-medium text-text-secondary';
+  var rowExtra  = isUnread ? ' bg-primary-subtle/40' : '';
+  var rowAttrs  = item.href
+    ? 'href="' + item.href + '" '
+    : 'role="button" tabindex="0" ';
+  var rowTag    = item.href ? 'a' : 'div';
+  var iso       = new Date(item.createdAt).toISOString();
+  var ago       = formatRelativeTime(item.createdAt);
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+%>
+<li
+  data-kui-nc-row
+  data-notif-id="<%= item.id %>"
+  data-read="<%= isUnread ? 'false' : 'true' %>"
+  onmouseenter="window.__KuiNotificationCenter && window.__KuiNotificationCenter.markRead('<%= id %>', '<%= item.id %>')"
+  class="group relative flex gap-3 px-4 py-3 transition-colors border-b border-border last:border-b-0 hover:bg-surface-overlay focus-within:bg-surface-overlay<%= rowExtra %>"
+>
+  <% if (isUnread) { %>
+    <span aria-hidden="true" data-kui-nc-dot class="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary"></span>
+  <% } %>
+
+  <div class="shrink-0 mt-0.5">
+    <% if (item.actorAvatar) { %>
+      <img src="<%= item.actorAvatar %>" alt="" class="w-8 h-8 rounded-full object-cover border border-border" />
+    <% } else { %>
+      <div class="flex items-center justify-center w-8 h-8 rounded-full <%= colorCls %>">
+        <i class="fa-solid <%= icon %> w-3.5 h-3.5" aria-hidden="true" style="font-size:0.875rem"></i>
+      </div>
+    <% } %>
+  </div>
+
+  <<%= rowTag %> <%- rowAttrs %>
+    onclick="window.__KuiNotificationCenter && window.__KuiNotificationCenter.markRead('<%= id %>', '<%= item.id %>')"
+    class="flex-1 min-w-0 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-border-focus rounded<%= item.href ? ' no-underline' : '' %>"
+  >
+    <p class="text-sm leading-snug <%= titleCls %>" data-kui-nc-title><%- esc(item.title) %></p>
+    <% if (item.message) { %>
+      <p class="text-xs text-text-secondary leading-snug mt-0.5 line-clamp-2"><%- esc(item.message) %></p>
+    <% } %>
+    <p class="flex flex-wrap items-center gap-x-1.5 mt-1 text-[11px] text-text-secondary">
+      <% if (item.actor) { %>
+        <span class="font-medium text-text-primary"><%- esc(item.actor) %></span>
+      <% } %>
+      <% if (item.actor && item.source) { %><span aria-hidden="true">·</span><% } %>
+      <% if (item.source) { %><span><%- esc(item.source) %></span><% } %>
+      <% if (item.actor || item.source) { %><span aria-hidden="true">·</span><% } %>
+      <time datetime="<%= iso %>"><%= ago %></time>
+    </p>
+  </<%= rowTag %>>
+
+  <% if (isUnread) { %>
+    <button
+      type="button"
+      aria-label="<%= markReadLabel %>"
+      data-kui-nc-mark
+      onclick="event.stopPropagation(); window.__KuiNotificationCenter && window.__KuiNotificationCenter.markRead('<%= id %>', '<%= item.id %>')"
+      class="shrink-0 self-start w-6 h-6 rounded-md inline-flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-base opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-opacity"
+    >
+      <i class="fa-solid fa-circle-check w-3.5 h-3.5" aria-hidden="true" style="font-size:0.875rem"></i>
+    </button>
+  <% } %>
+</li>
