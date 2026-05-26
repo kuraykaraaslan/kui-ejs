@@ -129,15 +129,14 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
         type="button"
         id="<%= _id %>-lb-zoom"
         aria-label="Zoom in"
-        onclick="galleryLbZoom('<%= _id %>')"
         class="w-9 h-9 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <i id="<%= _id %>-lb-zoom-icon" class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
       </button>
       <button
         type="button"
+        id="<%= _id %>-lb-close"
         aria-label="Close lightbox"
-        onclick="galleryLbClose('<%= _id %>')"
         class="w-9 h-9 flex items-center justify-center rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
@@ -152,14 +151,12 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
       src=""
       alt=""
       draggable="false"
-      onclick="galleryLbZoom('<%= _id %>')"
       class="max-h-full max-w-full object-contain transition-transform duration-300 select-none cursor-zoom-in"
     />
     <button
       type="button"
       id="<%= _id %>-lb-prev"
       aria-label="Previous image"
-      onclick="galleryLbNav('<%= _id %>', -1)"
       class="absolute left-3 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
     >
       <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
@@ -168,7 +165,6 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
       type="button"
       id="<%= _id %>-lb-next"
       aria-label="Next image"
-      onclick="galleryLbNav('<%= _id %>', 1)"
       class="absolute right-3 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
     >
       <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
@@ -184,8 +180,8 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
   <!-- Backdrop -->
   <button
     type="button"
+    id="<%= _id %>-lb-bg"
     aria-label="Close lightbox"
-    onclick="galleryLbClose('<%= _id %>')"
     style="position:absolute;inset:0;z-index:-1"
     class="cursor-default focus-visible:outline-none"
     tabindex="-1"
@@ -197,7 +193,6 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
   var G_ID    = '<%= _id %>';
   var COLS    = <%= _columns %>;
   var ASPECT  = '<%= _aspClass %>';
-  var GAP     = '<%= _gapClass %>';
   var REORDER = <%= _reorderable ? 'true' : 'false' %>;
   var LIGHTBOX= <%= _lightbox    ? 'true' : 'false' %>;
   var CAPTIONS= <%= _showCaptions ? 'true' : 'false' %>;
@@ -228,7 +223,7 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
         item.addEventListener('dragleave',  function () { dndLeave(); });
         item.addEventListener('drop',       function () { dndDrop(i); });
         item.addEventListener('dragend',    function () { dndEnd(); });
-        item.addEventListener('contextmenu',function (e) { e.preventDefault(); openGalleryCtx(i, e); return false; });
+        item.addEventListener('contextmenu',function (e) { e.preventDefault(); e.stopPropagation(); openGalleryCtx(i, e); return false; });
       }
 
       /* Image */
@@ -252,12 +247,6 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
         grip.innerHTML = '<i class="fa-solid fa-grip-vertical text-xs" aria-hidden="true"></i>';
         item.appendChild(grip);
       }
-
-      /* Counter badge */
-      var counter = document.createElement('span');
-      counter.className = 'absolute bottom-1.5 right-1.5 z-10 rounded-full bg-black/50 px-2 py-0.5 text-[11px] font-medium text-white tabular-nums select-none pointer-events-none hidden';
-      counter.textContent = (i + 1) + ' / ' + images.length;
-      item.appendChild(counter);
 
       /* Hover overlay → lightbox */
       if (LIGHTBOX) {
@@ -297,8 +286,7 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
     lbUpdate();
   }
 
-  function galleryLbClose(gid) {
-    if (gid !== G_ID) return;
+  function lbClose() {
     var lb = document.getElementById(G_ID + '-lb');
     if (lb) lb.style.display = 'none';
     document.body.style.overflow = '';
@@ -307,15 +295,13 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
     if (lbImg) { lbImg.style.transform = ''; lbImg.className = lbImg.className.replace('cursor-zoom-out','cursor-zoom-in'); }
   }
 
-  function galleryLbNav(gid, dir) {
-    if (gid !== G_ID) return;
+  function lbNav(dir) {
     lbIndex  = (lbIndex + dir + images.length) % images.length;
     lbZoomed = false;
     lbUpdate();
   }
 
-  function galleryLbZoom(gid) {
-    if (gid !== G_ID) return;
+  function lbZoom() {
     lbZoomed = !lbZoomed;
     var lbImg  = document.getElementById(G_ID + '-lb-img');
     var lbZBtn = document.getElementById(G_ID + '-lb-zoom');
@@ -364,18 +350,30 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
     }
   }
 
+  /* Lightbox buttons → per-instance listeners (no shared window globals) */
+  function bindLbHandlers() {
+    var zoomBtn  = document.getElementById(G_ID + '-lb-zoom');
+    var closeBtn = document.getElementById(G_ID + '-lb-close');
+    var prevBtn  = document.getElementById(G_ID + '-lb-prev');
+    var nextBtn  = document.getElementById(G_ID + '-lb-next');
+    var bgBtn    = document.getElementById(G_ID + '-lb-bg');
+    var lbImg    = document.getElementById(G_ID + '-lb-img');
+    if (zoomBtn)  zoomBtn.addEventListener('click', lbZoom);
+    if (closeBtn) closeBtn.addEventListener('click', lbClose);
+    if (prevBtn)  prevBtn.addEventListener('click', function(){ lbNav(-1); });
+    if (nextBtn)  nextBtn.addEventListener('click', function(){ lbNav(1); });
+    if (bgBtn)    bgBtn.addEventListener('click', lbClose);
+    if (lbImg)    lbImg.addEventListener('click', lbZoom);
+  }
+
   /* Lightbox keyboard */
   document.addEventListener('keydown', function (e) {
     var lb = document.getElementById(G_ID + '-lb');
     if (!lb || lb.style.display === 'none') return;
-    if (e.key === 'Escape')      { galleryLbClose(G_ID); }
-    if (e.key === 'ArrowLeft')   { galleryLbNav(G_ID, -1); }
-    if (e.key === 'ArrowRight')  { galleryLbNav(G_ID,  1); }
+    if (e.key === 'Escape')      { lbClose(); }
+    if (e.key === 'ArrowLeft')   { lbNav(-1); }
+    if (e.key === 'ArrowRight')  { lbNav(1); }
   });
-
-  window.galleryLbClose = window.galleryLbClose || galleryLbClose;
-  window.galleryLbNav   = window.galleryLbNav   || galleryLbNav;
-  window.galleryLbZoom  = window.galleryLbZoom  || galleryLbZoom;
 
   /* ── Drag-and-drop reorder ──────────────────────────────────────────── */
   var dragFrom = null;
@@ -410,46 +408,53 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
   /* ── Context menu (gallery-specific, built by JS) ───────────────────── */
   var ctxMenu = document.getElementById(G_ID + '-ctx');
 
+  function ensureGlobalCtx() {
+    if (window._kuiCtx) return;
+    window._kuiCtx = { active: null };
+    document.addEventListener('mousedown', function (e) {
+      var id = window._kuiCtx.active;
+      if (!id) return;
+      var m = document.getElementById(id);
+      if (m && !m.contains(e.target)) window.closeContextMenu(id);
+    });
+    window.addEventListener('scroll', function () {
+      if (window._kuiCtx.active) window.closeContextMenu(window._kuiCtx.active);
+    }, { capture: true, passive: true });
+    document.addEventListener('keydown', function (e) {
+      var id = window._kuiCtx.active;
+      if (!id) return;
+      var m = document.getElementById(id);
+      if (!m || m.style.display === 'none') return;
+      if (e.key === 'Escape') { e.preventDefault(); window.closeContextMenu(id); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        var focusable = Array.from(m.querySelectorAll('[role="menuitem"]:not([disabled]):not([aria-disabled="true"])'));
+        if (!focusable.length) return;
+        var idx  = focusable.indexOf(document.activeElement);
+        var next = e.key === 'ArrowDown' ? (idx + 1) % focusable.length : (idx <= 0 ? focusable.length - 1 : idx - 1);
+        focusable[next].focus();
+      }
+    });
+    window.closeContextMenu = window.closeContextMenu || function (id) {
+      var m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+      if (window._kuiCtx.active === id) window._kuiCtx.active = null;
+    };
+    window.openContextMenu = window.openContextMenu || function () {};
+  }
+
   function openGalleryCtx(i, event) {
     if (!ctxMenu) return;
+    ensureGlobalCtx();
 
-    /* Ensure global context menu init */
-    if (!window._kuiCtx) {
-      window._kuiCtx = { active: null };
-      document.addEventListener('mousedown', function (e) {
-        var id = window._kuiCtx.active;
-        if (!id) return;
-        var m = document.getElementById(id);
-        if (m && !m.contains(e.target)) window.closeContextMenu(id);
-      });
-      window.addEventListener('scroll', function () {
-        if (window._kuiCtx.active) window.closeContextMenu(window._kuiCtx.active);
-      }, { capture: true, passive: true });
-      document.addEventListener('keydown', function (e) {
-        var id = window._kuiCtx.active;
-        if (!id) return;
-        var m = document.getElementById(id);
-        if (!m || m.style.display === 'none') return;
-        if (e.key === 'Escape') { e.preventDefault(); window.closeContextMenu(id); return; }
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          var focusable = Array.from(m.querySelectorAll('[role="menuitem"]:not([disabled]):not([aria-disabled="true"])'));
-          if (!focusable.length) return;
-          var idx  = focusable.indexOf(document.activeElement);
-          var next = e.key === 'ArrowDown' ? (idx + 1) % focusable.length : (idx <= 0 ? focusable.length - 1 : idx - 1);
-          focusable[next].focus();
-        }
-      });
-      window.closeContextMenu = window.closeContextMenu || function (id) {
-        var m = document.getElementById(id);
-        if (m) m.style.display = 'none';
-        if (window._kuiCtx.active === id) window._kuiCtx.active = null;
-      };
-      window.openContextMenu = window.openContextMenu || function () {};
+    /* Close any other open menu first */
+    if (window._kuiCtx.active && window._kuiCtx.active !== G_ID + '-ctx') {
+      window.closeContextMenu(window._kuiCtx.active);
     }
 
-    /* Build menu items */
-    ctxMenu.innerHTML = buildCtxItems(i);
+    /* Build menu items via DOM (keeps click handlers attached) */
+    ctxMenu.innerHTML = '';
+    appendCtxItems(ctxMenu, i);
 
     /* Position */
     ctxMenu.style.visibility = 'hidden';
@@ -466,34 +471,68 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
     if (first) first.focus();
   }
 
-  function buildCtxItems(i) {
+  function appendCtxItems(parent, i) {
     var total = images.length;
-    return ''
-      + ctxItem('<i class="fa-solid fa-expand text-xs" aria-hidden="true"></i>', 'Open in lightbox',  null,  false, false, function () { lbOpen(i); })
-      + ctxItem('<i class="fa-solid fa-copy text-xs" aria-hidden="true"></i>',   'Copy image URL',    '⌘C',  false, false, function () { if(navigator.clipboard) navigator.clipboard.writeText(images[i].src).catch(function(){}); })
-      + '<div role="separator" aria-orientation="horizontal" class="my-1 mx-2 border-t border-border"></div>'
-      + '<p role="presentation" class="px-3 pt-2 pb-0.5 text-[11px] font-semibold uppercase tracking-widest text-text-disabled select-none">Reorder</p>'
-      + ctxItem('<i class="fa-solid fa-angles-left text-xs" aria-hidden="true"></i>',  'Move to first', null, false, i === 0,       function () { moveToIdx(i, 0); })
-      + ctxItem('<i class="fa-solid fa-angles-right text-xs" aria-hidden="true"></i>', 'Move to last',  null, false, i === total-1, function () { moveToIdx(i, total-1); })
-      + '<div role="separator" aria-orientation="horizontal" class="my-1 mx-2 border-t border-border"></div>'
-      + ctxItem('<i class="fa-solid fa-trash text-xs" aria-hidden="true"></i>', 'Remove', null, true, false, function () { removeAt(i); });
+    appendCtxItem(parent, 'fa-expand',       'Open in lightbox', null, false, false, function () { lbOpen(i); });
+    appendCtxItem(parent, 'fa-copy',         'Copy image URL',   '⌘C', false, false, function () { if (navigator.clipboard) navigator.clipboard.writeText(images[i].src).catch(function(){}); });
+    appendCtxSeparator(parent);
+    appendCtxGroup(parent, 'Reorder');
+    appendCtxItem(parent, 'fa-angles-left',  'Move to first',    null, false, i === 0,          function () { moveToIdx(i, 0); });
+    appendCtxItem(parent, 'fa-angles-right', 'Move to last',     null, false, i === total - 1,  function () { moveToIdx(i, total - 1); });
+    appendCtxSeparator(parent);
+    appendCtxItem(parent, 'fa-trash',        'Remove',           null, true,  false, function () { removeAt(i); });
   }
 
-  function ctxItem(icon, label, shortcut, danger, disabled, fn) {
-    var col = danger ? 'text-error hover:bg-error-subtle focus-visible:bg-error-subtle' : 'text-text-primary hover:bg-surface-overlay focus-visible:bg-surface-overlay';
+  function appendCtxItem(parent, iconCls, label, shortcut, danger, disabled, fn) {
+    var col     = danger ? 'text-error hover:bg-error-subtle focus-visible:bg-error-subtle' : 'text-text-primary hover:bg-surface-overlay focus-visible:bg-surface-overlay';
     var iconCol = danger ? 'text-error' : 'text-text-secondary';
-    var dis = disabled ? ' opacity-40 cursor-not-allowed pointer-events-none' : '';
-    var sc  = shortcut ? '<kbd class="shrink-0 ml-6 text-[11px] font-mono text-text-disabled">' + shortcut + '</kbd>' : '';
+    var dis     = disabled ? ' opacity-40 cursor-not-allowed pointer-events-none' : '';
+
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.setAttribute('role', 'menuitem');
     btn.setAttribute('tabindex', '-1');
-    if (disabled) btn.setAttribute('disabled', '');
+    if (disabled) { btn.disabled = true; btn.setAttribute('aria-disabled', 'true'); }
     btn.className = 'flex w-full items-center gap-2.5 px-3 py-2 text-sm text-left transition-colors select-none focus-visible:outline-none ' + col + dis;
-    btn.innerHTML = '<span aria-hidden="true" class="w-4 flex items-center justify-center shrink-0 ' + iconCol + '">' + icon + '</span>'
-      + '<span class="flex-1 truncate">' + escHtml(label) + '</span>' + sc;
-    if (!disabled && fn) btn.addEventListener('click', function () { fn(); window.closeContextMenu(G_ID + '-ctx'); });
-    return btn.outerHTML;
+
+    var iconSpan = document.createElement('span');
+    iconSpan.setAttribute('aria-hidden', 'true');
+    iconSpan.className = 'w-4 flex items-center justify-center shrink-0 ' + iconCol;
+    iconSpan.innerHTML = '<i class="fa-solid ' + iconCls + ' text-xs" aria-hidden="true"></i>';
+    btn.appendChild(iconSpan);
+
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'flex-1 truncate';
+    labelSpan.textContent = label;
+    btn.appendChild(labelSpan);
+
+    if (shortcut) {
+      var kbd = document.createElement('kbd');
+      kbd.className = 'shrink-0 ml-6 text-[11px] font-mono text-text-disabled';
+      kbd.textContent = shortcut;
+      btn.appendChild(kbd);
+    }
+
+    if (!disabled && fn) {
+      btn.addEventListener('click', function () { fn(); if (window.closeContextMenu) window.closeContextMenu(G_ID + '-ctx'); });
+    }
+    parent.appendChild(btn);
+  }
+
+  function appendCtxSeparator(parent) {
+    var sep = document.createElement('div');
+    sep.setAttribute('role', 'separator');
+    sep.setAttribute('aria-orientation', 'horizontal');
+    sep.className = 'my-1 mx-2 border-t border-border';
+    parent.appendChild(sep);
+  }
+
+  function appendCtxGroup(parent, label) {
+    var p = document.createElement('p');
+    p.setAttribute('role', 'presentation');
+    p.className = 'px-3 pt-2 pb-0.5 text-[11px] font-semibold uppercase tracking-widest text-text-disabled select-none';
+    p.textContent = label;
+    parent.appendChild(p);
   }
 
   function moveToIdx(from, to) {
@@ -514,6 +553,7 @@ Responsive image grid with a full-screen lightbox, right-click context menu (ope
 
   /* ── Init ───────────────────────────────────────────────────────────── */
   renderGrid();
+  bindLbHandlers();
 })();
 </script>
 

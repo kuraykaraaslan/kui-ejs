@@ -14,14 +14,9 @@ function icon(name: string): string {
   return `<i class="fa-solid fa-${name} text-xs" aria-hidden="true"></i>`;
 }
 
-/* Render the component then make the menu always-visible for the static preview. */
+/* Render the live partial — right-click on the trigger opens the menu at the cursor. */
 function ctxPreview(children: string, items: unknown[]): string {
-  const raw = renderCtx({ children, items });
-  const visible = raw.replace(
-    'style="position:fixed;z-index:9999;display:none;min-width:13rem"',
-    'style="min-width:13rem;display:block;margin-top:8px"',
-  );
-  return `<div class="p-4 flex flex-col items-start">${visible}</div>`;
+  return `<div class="p-4 flex flex-col items-start gap-2 w-full">${renderCtx({ children, items })}</div>`;
 }
 
 export function buildContextMenuData(): ShowcaseItem[] {
@@ -41,7 +36,7 @@ export function buildContextMenuData(): ShowcaseItem[] {
           title: 'Text editor — clipboard + format actions',
           layout: 'stack',
           previewHtml: ctxPreview(
-            `<div class="rounded-xl border-2 border-dashed border-border bg-surface-raised p-8 text-center text-sm text-text-secondary select-none cursor-default hover:border-border-strong hover:bg-surface-overlay transition-colors">
+            `<div class="w-full rounded-xl border-2 border-dashed border-border bg-surface-raised p-8 text-center text-sm text-text-secondary select-none cursor-default hover:border-border-strong hover:bg-surface-overlay transition-colors">
               Right-click anywhere in this area
             </div>`,
             [
@@ -88,34 +83,31 @@ export function buildContextMenuData(): ShowcaseItem[] {
             const files = ['Report Q1.pdf', 'Design System.fig', 'README.md'];
             const cards = files.map(name => {
               const fa = name.endsWith('.fig') ? 'folder' : 'file';
-              return `<div class="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-surface-base cursor-default select-none text-center">
+              const card = `<div class="flex flex-col items-center gap-2 p-3 rounded-lg border border-border bg-surface-base cursor-default select-none text-center hover:bg-surface-overlay transition-colors">
                 <i class="fa-solid fa-${fa} text-2xl text-primary" aria-hidden="true"></i>
                 <span class="text-xs text-text-secondary truncate w-full">${name}</span>
               </div>`;
+              return renderCtx({ children: card, items: fileItems });
             }).join('');
-            const grid = `<div class="grid grid-cols-3 gap-3 p-4 bg-surface-raised rounded-xl border border-border">${cards}</div>`;
-            const raw = renderCtx({ children: grid, items: fileItems });
-            const visible = raw.replace(
-              'style="position:fixed;z-index:9999;display:none;min-width:13rem"',
-              'style="min-width:13rem;display:block;margin-top:8px"',
-            );
-            return `<div class="p-4 flex flex-col items-start">${visible}</div>`;
+            return `<div class="grid grid-cols-3 gap-3 p-4 bg-surface-raised rounded-xl border border-border w-full">${cards}</div>`;
           })(),
-          code: `<%- include('modules/app/ContextMenu', {
-  children: fileGridHtml,
-  items: [
-    { type: 'group', label: 'Actions' },
-    { label: 'Open',     icon: '<i class="fa-solid fa-eye         text-xs"></i>' },
-    { label: 'Download', icon: '<i class="fa-solid fa-download    text-xs"></i>', shortcut: '⌘D' },
-    { label: 'Share',    icon: '<i class="fa-solid fa-share-nodes text-xs"></i>', shortcut: '⌘⇧S' },
-    { type: 'separator' },
-    { type: 'group', label: 'Organise' },
-    { label: 'Move to…', icon: '<i class="fa-solid fa-arrow-right text-xs"></i>' },
-    { label: 'Add tag',  icon: '<i class="fa-solid fa-tag         text-xs"></i>' },
-    { type: 'separator' },
-    { label: 'Delete',   icon: '<i class="fa-solid fa-trash       text-xs"></i>', danger: true },
-  ]
-}) %>`,
+          code: `<% files.forEach(function(file) { %>
+  <%- include('modules/app/ContextMenu', {
+    children: fileCardHtml(file),
+    items: [
+      { type: 'group', label: 'Actions' },
+      { label: 'Open',     icon: '<i class="fa-solid fa-eye         text-xs"></i>' },
+      { label: 'Download', icon: '<i class="fa-solid fa-download    text-xs"></i>', shortcut: '⌘D' },
+      { label: 'Share',    icon: '<i class="fa-solid fa-share-nodes text-xs"></i>', shortcut: '⌘⇧S' },
+      { type: 'separator' },
+      { type: 'group', label: 'Organise' },
+      { label: 'Move to…', icon: '<i class="fa-solid fa-arrow-right text-xs"></i>' },
+      { label: 'Add tag',  icon: '<i class="fa-solid fa-tag         text-xs"></i>' },
+      { type: 'separator' },
+      { label: 'Delete',   icon: '<i class="fa-solid fa-trash       text-xs"></i>', danger: true },
+    ]
+  }) %>
+<% }); %>`,
         },
         {
           title: 'Code branch — some items disabled',

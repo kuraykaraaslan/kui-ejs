@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-25T21:21:31.458Z",
+  "generatedAt": "2026-05-26T11:35:22.298Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -737,6 +737,31 @@
         "--text-secondary"
       ],
       "variantCount": 4
+    },
+    {
+      "id": "color-picker",
+      "name": "ColorPicker",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/ColorPicker.ejs",
+      "abbr": "Cp",
+      "description": "Color selection control with a 32-swatch preset palette plus optional hex input and native browser color picker for unlimited colors. Pixel-identical React sibling at modules/ui/ColorPicker.tsx. Used by RichTextEditor for text + highlight colors.",
+      "status": "stable",
+      "since": "2026-05",
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ],
+      "variantCount": 3
     },
     {
       "id": "card",
@@ -1879,9 +1904,9 @@
       "name": "RichTextEditor",
       "layer": "app",
       "category": "App",
-      "filePath": "modules/app/RichTextEditor.ejs",
+      "filePath": "modules/app/RichTextEditor/index.ejs",
       "abbr": "RT",
-      "description": "WYSIWYG editor for long-form prose. Built on Quill 2.x — the same library powers the NextJS sibling so output HTML is identical. Toolbar covers bold/italic/underline/strike/inline code, headings, blockquote, code block, lists, link, image (via Modal + file upload as data URL), text align, clear formatting, undo/redo.",
+      "description": "Quill 2.x WYSIWYG with token-tinted snow theme. Production features: controlled value (via `kui-rte:set-html` event), imperative API via `window.KuiRte.get(id)`, name+hidden-form-sync, drag-and-drop image upload (with `imageUploadFn` global override), paste sanitization (Word / GDocs cleanup), char + word counter with maxLength, autosave to localStorage, markdown shortcuts, color + highlight, sub/sup, indent/outdent, horizontal rule, tables, emoji picker, @-mentions, /-slash command menu, selection bubble menu, image resize/align overlay, fullscreen mode. Pixel-identical React sibling at modules/app/RichTextEditor/index.tsx.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1889,17 +1914,13 @@
         "--border-focus",
         "--error",
         "--primary",
-        "--primary-fg",
-        "--primary-hover",
         "--secondary",
         "--surface-base",
-        "--surface-overlay",
         "--surface-sunken",
-        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 8
     },
     {
       "id": "context-menu",

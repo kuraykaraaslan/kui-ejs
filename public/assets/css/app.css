@@ -403,8 +403,8 @@
   .right-0\.5 {
     right: calc(var(--spacing) * 0.5);
   }
-  .right-1\.5 {
-    right: calc(var(--spacing) * 1.5);
+  .right-1 {
+    right: calc(var(--spacing) * 1);
   }
   .right-2 {
     right: calc(var(--spacing) * 2);
@@ -433,8 +433,8 @@
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
   }
-  .bottom-1\.5 {
-    bottom: calc(var(--spacing) * 1.5);
+  .bottom-0\.5 {
+    bottom: calc(var(--spacing) * 0.5);
   }
   .bottom-3 {
     bottom: calc(var(--spacing) * 3);
@@ -748,6 +748,9 @@
   .inline-flex {
     display: inline-flex;
   }
+  .inline-grid {
+    display: inline-grid;
+  }
   .table {
     display: table;
   }
@@ -867,6 +870,9 @@
   }
   .max-h-80 {
     max-height: calc(var(--spacing) * 80);
+  }
+  .max-h-\[200px\] {
+    max-height: 200px;
   }
   .max-h-full {
     max-height: 100%;
@@ -1156,6 +1162,9 @@
   .flex-1 {
     flex: 1;
   }
+  .flex-shrink {
+    flex-shrink: 1;
+  }
   .flex-shrink-0 {
     flex-shrink: 0;
   }
@@ -1258,6 +1267,9 @@
   .animate-spin {
     animation: var(--animate-spin);
   }
+  .cursor-col-resize {
+    cursor: col-resize;
+  }
   .cursor-default {
     cursor: default;
   }
@@ -1281,6 +1293,9 @@
   }
   .cursor-zoom-out {
     cursor: zoom-out;
+  }
+  .touch-none {
+    touch-action: none;
   }
   .resize {
     resize: both;
@@ -1311,6 +1326,9 @@
   }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid-cols-8 {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -1948,6 +1966,9 @@
   .bg-border {
     background-color: var(--border);
   }
+  .bg-border-strong {
+    background-color: var(--border-strong);
+  }
   .bg-cyan-50 {
     background-color: var(--color-cyan-50);
   }
@@ -2288,6 +2309,9 @@
   }
   .object-top {
     object-position: top;
+  }
+  .p-0 {
+    padding: calc(var(--spacing) * 0);
   }
   .p-0\.5 {
     padding: calc(var(--spacing) * 0.5);
@@ -3237,6 +3261,13 @@
       }
     }
   }
+  .group-hover\:bg-border-focus {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        background-color: var(--border-focus);
+      }
+    }
+  }
   .group-hover\:text-primary {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -3266,6 +3297,16 @@
       @media (hover: hover) {
         color: var(--text-secondary);
       }
+    }
+  }
+  .group-active\:bg-border-focus {
+    &:is(:where(.group):active *) {
+      background-color: var(--border-focus);
+    }
+  }
+  .group-active\:opacity-100 {
+    &:is(:where(.group):active *) {
+      opacity: 100%;
     }
   }
   .peer-checked\:translate-x-4 {
@@ -4026,6 +4067,11 @@
       display: block;
     }
   }
+  .sm\:flex {
+    @media (width >= 40rem) {
+      display: flex;
+    }
+  }
   .sm\:hidden {
     @media (width >= 40rem) {
       display: none;
@@ -4046,9 +4092,14 @@
       display: table-cell;
     }
   }
-  .sm\:w-2\/5 {
+  .sm\:h-7 {
     @media (width >= 40rem) {
-      width: calc(2 / 5 * 100%);
+      height: calc(var(--spacing) * 7);
+    }
+  }
+  .sm\:w-7 {
+    @media (width >= 40rem) {
+      width: calc(var(--spacing) * 7);
     }
   }
   .sm\:w-96 {
@@ -4081,25 +4132,10 @@
       align-items: center;
     }
   }
-  .sm\:divide-x {
+  .sm\:border-b-0 {
     @media (width >= 40rem) {
-      :where(& > :not(:last-child)) {
-        --tw-divide-x-reverse: 0;
-        border-inline-style: var(--tw-border-style);
-        border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-        border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-      }
-    }
-  }
-  .sm\:divide-y-0 {
-    @media (width >= 40rem) {
-      :where(& > :not(:last-child)) {
-        --tw-divide-y-reverse: 0;
-        border-bottom-style: var(--tw-border-style);
-        border-top-style: var(--tw-border-style);
-        border-top-width: calc(0px * var(--tw-divide-y-reverse));
-        border-bottom-width: calc(0px * calc(1 - var(--tw-divide-y-reverse)));
-      }
+      border-bottom-style: var(--tw-border-style);
+      border-bottom-width: 0px;
     }
   }
   .sm\:p-6 {

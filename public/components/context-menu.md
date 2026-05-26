@@ -45,21 +45,23 @@ Right-click context menu. Wraps any element as a trigger. Supports item groups, 
 ### File manager — groups + shortcut hint
 
 ```ejs
-<%- include('modules/app/ContextMenu', {
-  children: fileGridHtml,
-  items: [
-    { type: 'group', label: 'Actions' },
-    { label: 'Open',     icon: '<i class="fa-solid fa-eye         text-xs"></i>' },
-    { label: 'Download', icon: '<i class="fa-solid fa-download    text-xs"></i>', shortcut: '⌘D' },
-    { label: 'Share',    icon: '<i class="fa-solid fa-share-nodes text-xs"></i>', shortcut: '⌘⇧S' },
-    { type: 'separator' },
-    { type: 'group', label: 'Organise' },
-    { label: 'Move to…', icon: '<i class="fa-solid fa-arrow-right text-xs"></i>' },
-    { label: 'Add tag',  icon: '<i class="fa-solid fa-tag         text-xs"></i>' },
-    { type: 'separator' },
-    { label: 'Delete',   icon: '<i class="fa-solid fa-trash       text-xs"></i>', danger: true },
-  ]
-}) %>
+<% files.forEach(function(file) { %>
+  <%- include('modules/app/ContextMenu', {
+    children: fileCardHtml(file),
+    items: [
+      { type: 'group', label: 'Actions' },
+      { label: 'Open',     icon: '<i class="fa-solid fa-eye         text-xs"></i>' },
+      { label: 'Download', icon: '<i class="fa-solid fa-download    text-xs"></i>', shortcut: '⌘D' },
+      { label: 'Share',    icon: '<i class="fa-solid fa-share-nodes text-xs"></i>', shortcut: '⌘⇧S' },
+      { type: 'separator' },
+      { type: 'group', label: 'Organise' },
+      { label: 'Move to…', icon: '<i class="fa-solid fa-arrow-right text-xs"></i>' },
+      { label: 'Add tag',  icon: '<i class="fa-solid fa-tag         text-xs"></i>' },
+      { type: 'separator' },
+      { label: 'Delete',   icon: '<i class="fa-solid fa-trash       text-xs"></i>', danger: true },
+    ]
+  }) %>
+<% }); %>
 ```
 
 ### Code branch — some items disabled
@@ -90,7 +92,7 @@ Right-click context menu. Wraps any element as a trigger. Supports item groups, 
 %>
 <div
   id="<%= _id %>-wrap"
-  class="<%= _class %>"
+  class="relative <%= _class %>"
   oncontextmenu="<%= _disabled ? 'return false' : "openContextMenu('" + _id + "', event); return false;" %>"
 >
   <%- locals.children || '' %>

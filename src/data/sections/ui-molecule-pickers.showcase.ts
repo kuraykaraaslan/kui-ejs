@@ -1,9 +1,15 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as ejs from 'ejs';
 
 const datePickerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/DatePicker.ejs'), 'utf-8');
 const fileInputSource  = fs.readFileSync(path.join(process.cwd(), 'modules/ui/FileInput.ejs'), 'utf-8');
+const colorPickerPath  = path.join(process.cwd(), 'modules/ui/ColorPicker.ejs');
+const colorPickerSource = fs.readFileSync(colorPickerPath, 'utf-8');
+function renderColorPicker(locals: Record<string, unknown>): string {
+  return ejs.render(colorPickerSource, locals, { filename: colorPickerPath });
+}
 
 const wrapW = (inner: string) => `<div class="flex items-start justify-center p-4 w-full max-w-xs">${inner}</div>`;
 const wrapFull = (inner: string) => `<div class="p-4 w-full max-w-sm">${inner}</div>`;
@@ -138,6 +144,52 @@ export function buildMoleculePickersData(): ShowcaseItem[] {
   hint: 'PDF only',
   accept: '.pdf',
   error: 'Please upload a valid PDF file.'
+}) %>`,
+        },
+      ],
+    },
+    {
+      id: 'color-picker',
+      title: 'ColorPicker',
+      category: 'Molecule',
+      abbr: 'Cp',
+      description:
+        'Color selection control with a 32-swatch preset palette plus optional hex input and native browser color picker for unlimited colors. Pixel-identical React sibling at modules/ui/ColorPicker.tsx. Used by RichTextEditor for text + highlight colors.',
+      filePath: 'modules/ui/ColorPicker.ejs',
+      sourceCode: colorPickerSource,
+      since: '2026-05',
+      variants: [
+        {
+          title: 'Default',
+          previewHtml: wrapW(renderColorPicker({ id: 'cp-demo-default', label: 'Brand color', value: '#3b82f6', showNoColor: true })),
+          code: `<%- include('modules/ui/ColorPicker', {
+  id: 'brand',
+  name: 'brand',
+  label: 'Brand color',
+  value: '#3b82f6',
+  showNoColor: true
+}) %>`,
+        },
+        {
+          title: 'Compact (swatches only)',
+          previewHtml: wrapW(renderColorPicker({ id: 'cp-demo-compact', value: '#22c55e', showHexInput: false, showNativePicker: false })),
+          code: `<%- include('modules/ui/ColorPicker', {
+  id: 'compact',
+  value: '#22c55e',
+  showHexInput: false,
+  showNativePicker: false
+}) %>`,
+        },
+        {
+          title: 'Hex + native picker only (no swatches)',
+          previewHtml: wrapW(renderColorPicker({ id: 'cp-demo-native', label: 'Background', swatches: [], showHexInput: true, showNativePicker: true, showNoColor: true })),
+          code: `<%- include('modules/ui/ColorPicker', {
+  id: 'bg',
+  label: 'Background',
+  swatches: [],
+  showHexInput: true,
+  showNativePicker: true,
+  showNoColor: true
 }) %>`,
         },
       ],

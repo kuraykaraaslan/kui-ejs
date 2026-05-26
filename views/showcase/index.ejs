@@ -76,6 +76,46 @@
     .ql-snow .ql-tooltip { background: var(--surface-raised); border: 1px solid var(--border); color: var(--text-primary); box-shadow: 0 4px 12px rgb(0 0 0 / 0.08); border-radius: 6px; }
     .ql-snow .ql-tooltip input[type=text] { background: var(--surface-base); border: 1px solid var(--border); color: var(--text-primary); border-radius: 4px; }
     .ql-snow .ql-tooltip a.ql-action, .ql-snow .ql-tooltip a.ql-remove { color: var(--primary); }
+    /* Active state on the Tailwind-styled toolbar buttons */
+    .ql-snow .kui-rte-btn.ql-active { background: var(--primary-subtle); color: var(--primary); }
+    /* Tables emitted by the table modal */
+    .kui-rte-content table.kui-rte-table, .ql-editor table.kui-rte-table { width: 100%; border-collapse: collapse; margin: 0.5em 0; }
+    .kui-rte-content table.kui-rte-table th, .kui-rte-content table.kui-rte-table td, .ql-editor table.kui-rte-table th, .ql-editor table.kui-rte-table td { border: 1px solid var(--border); padding: 0.4em 0.6em; min-width: 3rem; vertical-align: top; }
+    .kui-rte-content table.kui-rte-table th, .ql-editor table.kui-rte-table th { background: var(--surface-overlay); font-weight: 600; text-align: left; }
+    /* Horizontal rule */
+    .kui-rte-content hr, .ql-editor hr { border: none; border-top: 1px solid var(--border); margin: 0.75em 0; }
+    /* Mention chip */
+    .kui-rte-content .kui-rte-mention, .ql-editor .kui-rte-mention { display: inline-block; padding: 0.05em 0.4em; border-radius: 9999px; background: var(--primary-subtle); color: var(--primary); font-weight: 500; font-size: 0.875em; white-space: nowrap; }
+    /* Images */
+    .kui-rte-content img, .ql-editor img { max-width: 100%; height: auto; }
+    /* Suggestion popups + bubble menu + image overlay (fixed-positioned, attached to body) */
+    .kui-rte-popup { background: var(--surface-raised); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgb(0 0 0 / 0.12); z-index: 60; }
+    .kui-rte-popup .kui-rte-item { padding: 0.5rem 0.75rem; cursor: pointer; display: flex; gap: 0.5rem; align-items: center; font-size: 0.875rem; color: var(--text-primary); }
+    .kui-rte-popup .kui-rte-item:hover, .kui-rte-popup .kui-rte-item[aria-selected="true"] { background: var(--primary-subtle); color: var(--primary); }
+    .kui-rte-popup .kui-rte-item .kui-rte-item-desc { color: var(--text-secondary); font-size: 0.75rem; }
+    .kui-rte-popup.kui-rte-bubble { display: inline-flex; gap: 0.125rem; padding: 0.25rem; align-items: center; }
+    .kui-rte-popup.kui-rte-bubble button { width: 1.75rem; height: 1.75rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 0.25rem; color: var(--text-primary); background: transparent; border: none; cursor: pointer; }
+    .kui-rte-popup.kui-rte-bubble button:hover, .kui-rte-popup.kui-rte-bubble button.is-active { background: var(--primary-subtle); color: var(--primary); }
+    .kui-rte-popup.kui-rte-emoji { display: grid; grid-template-columns: repeat(8, 1.75rem); gap: 0.125rem; padding: 0.5rem; max-height: 18rem; overflow-y: auto; }
+    .kui-rte-popup.kui-rte-emoji button { width: 1.75rem; height: 1.75rem; font-size: 1.125rem; line-height: 1; background: transparent; border: none; border-radius: 0.25rem; cursor: pointer; }
+    .kui-rte-popup.kui-rte-emoji button:hover { background: var(--surface-overlay); }
+    /* Counter footer */
+    .kui-rte-counter { display: flex; justify-content: flex-end; gap: 0.75rem; padding: 0.375rem 0.75rem; border-top: 1px solid var(--border); background: var(--surface-overlay); color: var(--text-secondary); font-size: 0.75rem; }
+    .kui-rte-counter.is-over { color: var(--error); }
+    /* Skeleton */
+    .kui-rte-skel { position: absolute; inset: 0; padding: 1rem; background: var(--surface-base); display: flex; flex-direction: column; gap: 0.5rem; }
+    .kui-rte-skel span { height: 0.75rem; border-radius: 0.25rem; background: var(--surface-sunken); animation: kuiRtePulse 1.4s ease-in-out infinite; }
+    @keyframes kuiRtePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    /* Fullscreen */
+    .kui-rte-fullscreen { position: fixed !important; inset: 0 !important; z-index: 60 !important; background: var(--surface-base); border: 0 !important; border-radius: 0 !important; display: flex !important; flex-direction: column; max-width: none !important; max-height: none !important; width: 100vw !important; height: 100vh !important; }
+    .kui-rte-fullscreen > .ql-toolbar { flex-shrink: 0; }
+    .kui-rte-fullscreen > .relative { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .kui-rte-fullscreen > .relative > .kui-rte-content,
+    .kui-rte-fullscreen > .relative > textarea { flex: 1 !important; min-height: 0 !important; height: auto !important; }
+    .kui-rte-fullscreen > .kui-rte-counter { flex-shrink: 0; }
+    /* Color & highlight popovers */
+    .kui-rte-swatches { position: absolute; top: 100%; left: 0; margin-top: 0.25rem; padding: 0.375rem; display: flex; gap: 0.25rem; background: var(--surface-raised); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 4px 12px rgb(0 0 0 / 0.08); z-index: 50; }
+    .kui-rte-swatches button { width: 1.25rem; height: 1.25rem; border-radius: 2px; border: 1px solid var(--border); cursor: pointer; padding: 0; }
   </style>
   <script>
     try {

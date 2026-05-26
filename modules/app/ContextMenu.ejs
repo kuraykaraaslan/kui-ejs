@@ -6,7 +6,7 @@
 %>
 <div
   id="<%= _id %>-wrap"
-  class="<%= _class %>"
+  class="relative <%= _class %>"
   oncontextmenu="<%= _disabled ? 'return false' : "openContextMenu('" + _id + "', event); return false;" %>"
 >
   <%- locals.children || '' %>

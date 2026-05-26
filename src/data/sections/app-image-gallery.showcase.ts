@@ -1,9 +1,14 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs   from 'fs';
 import * as path from 'path';
+import * as ejs  from 'ejs';
 
 const galleryTemplatePath = path.join(process.cwd(), 'modules/app/ImageGallery.ejs');
 const sourceCode = fs.readFileSync(galleryTemplatePath, 'utf-8');
+
+function renderGallery(locals: Record<string, unknown>): string {
+  return ejs.render(sourceCode, locals, { filename: galleryTemplatePath });
+}
 
 /* ── Sample images (same seeds as the Next.js showcase) ────────────────────── */
 const IMAGES = [
@@ -18,69 +23,6 @@ const IMAGES = [
 ];
 
 const SMALL_SET = IMAGES.slice(0, 4);
-
-/* ── Static grid preview ────────────────────────────────────────────────────
-   The ImageGallery grid is rendered by client-side JS. For the static preview
-   we build equivalent HTML so the showcase looks identical to the live component.
-   ─────────────────────────────────────────────────────────────────────────── */
-type GalleryAspect = 'square' | 'video' | 'portrait' | 'auto';
-type GalleryGap    = 'sm' | 'md' | 'lg';
-
-const COL_CLASS: Record<number, string> = {
-  2: 'grid-cols-2',
-  3: 'grid-cols-2 sm:grid-cols-3',
-  4: 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4',
-};
-const GAP_CLASS: Record<GalleryGap, string> = { sm: 'gap-1', md: 'gap-2', lg: 'gap-4' };
-const ASP_CLASS: Record<GalleryAspect, string> = {
-  square: 'aspect-square', video: 'aspect-video', portrait: 'aspect-[3/4]', auto: '',
-};
-
-function buildTile(
-  img: typeof IMAGES[0],
-  i: number,
-  total: number,
-  aspect: GalleryAspect,
-  showCaptions: boolean,
-  reorderable: boolean,
-): string {
-  const aspClass = ASP_CLASS[aspect];
-  const imgExtra = aspect === 'auto' ? 'aspect-square' : '';
-  const grabClass = reorderable ? 'cursor-grab' : '';
-  const grip = reorderable
-    ? `<div aria-hidden="true" class="absolute top-1.5 left-1.5 z-10 w-6 h-6 flex items-center justify-center rounded bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-        <i class="fa-solid fa-grip-vertical text-xs" aria-hidden="true"></i>
-       </div>`
-    : '';
-  const caption = showCaptions && img.caption
-    ? `<p class="absolute bottom-0 inset-x-0 bg-black/50 text-white text-xs px-2 py-1 pointer-events-none line-clamp-1">${img.caption}</p>`
-    : '';
-  return `<div role="listitem" class="group relative overflow-hidden rounded-lg bg-surface-sunken transition-all duration-200 ${aspClass} ${grabClass}">
-    <img src="${img.src}" alt="${img.alt}" loading="lazy" draggable="false"
-      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${imgExtra}" />
-    ${grip}
-    ${caption}
-  </div>`;
-}
-
-function buildGalleryPreview(
-  images: typeof IMAGES,
-  columns: 2 | 3 | 4,
-  aspect: GalleryAspect,
-  gap: GalleryGap,
-  showCaptions = false,
-  reorderable = false,
-  maxWidth = 'max-w-2xl',
-): string {
-  const tiles = images
-    .map((img, i) => buildTile(img, i, images.length, aspect, showCaptions, reorderable))
-    .join('');
-  return `<div class="w-full ${maxWidth}">
-    <div class="grid ${COL_CLASS[columns]} ${GAP_CLASS[gap]}" role="list" aria-label="Image gallery">
-      ${tiles}
-    </div>
-  </div>`;
-}
 
 export function buildImageGalleryData(): ShowcaseItem[] {
   return [
@@ -98,10 +40,11 @@ export function buildImageGalleryData(): ShowcaseItem[] {
         {
           title: 'Reorderable — drag + right-click menu',
           layout: 'stack',
-          previewHtml: (() => {
-            const hint = `<p class="text-xs text-text-secondary select-none mb-2">Drag images to reorder • Right-click for context menu</p>`;
-            return `<div class="w-full max-w-2xl space-y-2">${hint}${buildGalleryPreview(IMAGES, 3, 'square', 'md', false, true)}</div>`;
-          })(),
+          previewHtml: `
+            <div class="w-full max-w-2xl space-y-2">
+              <p class="text-xs text-text-secondary select-none mb-2">Drag images to reorder • Right-click for context menu</p>
+              ${renderGallery({ images: IMAGES, columns: 3, aspect: 'square', gap: 'md', reorderable: true })}
+            </div>`,
           code: `<%- include('modules/app/ImageGallery', {
   images: [
     { src: '/photo-1.jpg', alt: 'Mountain', caption: 'Sunrise over the Alps' },
@@ -117,7 +60,10 @@ export function buildImageGalleryData(): ShowcaseItem[] {
         {
           title: '3-column grid — lightbox only',
           layout: 'stack',
-          previewHtml: buildGalleryPreview(IMAGES, 3, 'square', 'md'),
+          previewHtml: `
+            <div class="w-full max-w-2xl">
+              ${renderGallery({ images: IMAGES, columns: 3, aspect: 'square', gap: 'md' })}
+            </div>`,
           code: `<%- include('modules/app/ImageGallery', {
   images: images,
   columns: 3,
@@ -128,7 +74,10 @@ export function buildImageGalleryData(): ShowcaseItem[] {
         {
           title: '2-column with captions',
           layout: 'stack',
-          previewHtml: buildGalleryPreview(SMALL_SET, 2, 'video', 'lg', true, false, 'max-w-lg'),
+          previewHtml: `
+            <div class="w-full max-w-lg">
+              ${renderGallery({ images: SMALL_SET, columns: 2, aspect: 'video', gap: 'lg', showCaptions: true })}
+            </div>`,
           code: `<%- include('modules/app/ImageGallery', {
   images:      images,
   columns:     2,
@@ -140,7 +89,10 @@ export function buildImageGalleryData(): ShowcaseItem[] {
         {
           title: '4-column compact',
           layout: 'stack',
-          previewHtml: buildGalleryPreview(IMAGES, 4, 'square', 'sm'),
+          previewHtml: `
+            <div class="w-full max-w-2xl">
+              ${renderGallery({ images: IMAGES, columns: 4, aspect: 'square', gap: 'sm' })}
+            </div>`,
           code: `<%- include('modules/app/ImageGallery', {
   images:  images,
   columns: 4,
