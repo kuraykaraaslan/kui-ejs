@@ -2,7 +2,7 @@ import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/ComboBox.ejs'), 'utf-8');
+const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/ComboBox/ComboBox.ejs'), 'utf-8');
 
 const wrap = (inner: string) => `<div class="p-4 w-full max-w-sm">${inner}</div>`;
 
@@ -22,6 +22,7 @@ function comboBoxEl(opts: {
   open?: boolean;
   highlightedIndex?: number;
   noResultsText?: string;
+  loading?: boolean;
 }) {
   const id = opts.id || `cb-${Math.random().toString(36).substr(2, 5)}`;
   const labelId = `${id}-label`;
@@ -58,11 +59,15 @@ function comboBoxEl(opts: {
   </label>
   <div role="combobox" aria-expanded="${opts.open ? 'true' : 'false'}" aria-haspopup="listbox" aria-controls="${listboxId}" aria-labelledby="${labelId}" aria-disabled="${opts.disabled ? 'true' : 'false'}" aria-invalid="${opts.error ? 'true' : 'false'}" data-combobox-shell class="flex min-h-10 w-full items-center gap-2 rounded-md border bg-surface-base px-3 py-1.5 transition-colors focus-within:ring-2 focus-within:ring-border-focus ${rootStateClass}${rootDisabledClass}">
     <input id="${inputId}" type="text" role="searchbox"${opts.disabled ? ' disabled' : ''}${opts.required ? ' required' : ''} value="${selectedLabel}" placeholder="${placeholder}" aria-autocomplete="list" autocomplete="off" data-combobox-input class="w-full bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none"/>
-    ${clearable ? `<button type="button" aria-label="Clear selection" data-combobox-clear class="rounded px-1 text-text-disabled transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus${(!opts.value || opts.disabled) ? ' hidden' : ''}">x</button>` : ''}
-    <span aria-hidden="true" data-combobox-caret class="select-none text-xs text-text-disabled">${opts.open ? '^' : 'v'}</span>
+    ${clearable ? `<button type="button" aria-label="Clear selection" data-combobox-clear class="rounded px-1 text-text-disabled transition-colors hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus${(!opts.value || opts.disabled) ? ' hidden' : ''}"><i class="fa-solid fa-xmark" aria-hidden="true" style="width:0.75rem;height:0.75rem"></i></button>` : ''}
+    <i aria-hidden="true" data-combobox-caret class="fa-solid fa-chevron-${opts.open ? 'up' : 'down'} select-none text-text-disabled" style="width:0.75rem;height:0.75rem"></i>
   </div>
   <ul id="${listboxId}" role="listbox" data-combobox-list class="z-20 max-h-60 w-full overflow-y-auto rounded-md border border-border bg-surface-raised py-1 shadow-lg${listHidden}">
-    ${optionItems}
+    ${opts.loading
+      ? `<li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
+         <li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
+         <li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>`
+      : optionItems}
     <li data-combobox-empty class="hidden px-3 py-3 text-sm text-text-secondary">${opts.noResultsText || 'No results found.'}</li>
   </ul>
   ${opts.hint && !opts.error ? `<p class="text-xs text-text-secondary">${opts.hint}</p>` : ''}
@@ -94,7 +99,7 @@ export function buildComboBoxData(): ShowcaseItem[] {
       category: 'Molecule',
       abbr: 'Cm',
       description: 'Searchable autocomplete single-select with keyboard navigation, described options, and a clearable button.',
-      filePath: 'modules/ui/ComboBox.ejs',
+      filePath: 'modules/ui/ComboBox/ComboBox.ejs',
       sourceCode,
       variants: [
         {
@@ -158,6 +163,35 @@ export function buildComboBoxData(): ShowcaseItem[] {
   error: 'Please select a country.',
   options: COUNTRIES
 }) %>`,
+        },
+        {
+          title: 'Async loading (debounced)',
+          previewHtml: wrap(comboBoxEl({
+            label: 'Search',
+            options: [],
+            open: true,
+            loading: true,
+            placeholder: 'Type to search…',
+            hint: 'Debounced 300ms, AbortController cancels in-flight, 5-min cache.',
+          })),
+          code: `<%- include('modules/ui/ComboBox', {
+  id: 'cb-async',
+  label: 'Search',
+  options: [],
+  placeholder: 'Type to search…',
+  hint: 'Debounced 300ms, AbortController cancels in-flight.'
+}) %>
+
+<script>
+  // Wire an async resolver to the combobox root.
+  var root = document.getElementById('cb-async');
+  ComboBoxAsync.register(root, async function (query, signal) {
+    var res = await fetch('/api/suggest?q=' + encodeURIComponent(query), { signal });
+    var data = await res.json();
+    // Render <li data-combobox-option> nodes into root.querySelector('[data-combobox-list]')
+    return data;
+  });
+</script>`,
         },
         {
           title: 'Disabled',

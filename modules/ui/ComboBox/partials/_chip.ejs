@@ -1,0 +1,20 @@
+<%
+  // Shared chip — used by MultiSelect.ejs for selected values.
+  // Required locals: chipValue, chipLabel, chipIcon (optional html).
+%>
+<span
+  data-multiselect-chip
+  data-value="<%= chipValue %>"
+  class="inline-flex items-center gap-1 rounded-full bg-primary-subtle text-primary text-xs font-medium px-2 py-0.5"
+>
+  <% if (typeof chipIcon !== 'undefined' && chipIcon) { %><span class="shrink-0"><%- chipIcon %></span><% } %>
+  <%= chipLabel %>
+  <button
+    type="button"
+    aria-label="Remove <%= chipLabel %>"
+    data-multiselect-chip-remove
+    class="hover:opacity-70 focus-visible:outline-none"
+  >
+    <i class="fa-solid fa-xmark" style="width:0.625rem;height:0.625rem" aria-hidden="true"></i>
+  </button>
+</span>

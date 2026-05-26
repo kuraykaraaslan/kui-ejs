@@ -2,7 +2,7 @@ import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/MultiSelect.ejs'), 'utf-8');
+const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/ComboBox/MultiSelect.ejs'), 'utf-8');
 
 const wrap = (inner: string) => `<div class="p-4 w-full max-w-sm">${inner}</div>`;
 
@@ -99,7 +99,7 @@ export function buildMultiSelectData(): ShowcaseItem[] {
       category: 'Molecule',
       abbr: 'Ms',
       description: 'Chip-based multi-select popover with searchable filter, keyboard navigation, and disabled-option support.',
-      filePath: 'modules/ui/MultiSelect.ejs',
+      filePath: 'modules/ui/ComboBox/MultiSelect.ejs',
       sourceCode,
       variants: [
         {
