@@ -3,10 +3,10 @@ import * as fs   from 'fs';
 import * as path from 'path';
 import * as ejs  from 'ejs';
 
-const videoPlayerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/VideoPlayer.ejs'), 'utf-8');
+const videoPlayerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/VideoPlayer/VideoPlayer.ejs'), 'utf-8');
 
 function renderVideoPlayer(locals: Record<string, unknown>): string {
-  return ejs.render(videoPlayerSource, locals, { filename: path.join(process.cwd(), 'modules/ui/VideoPlayer.ejs') });
+  return ejs.render(videoPlayerSource, locals, { filename: path.join(process.cwd(), 'modules/ui/VideoPlayer/VideoPlayer.ejs') });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
       category:    'Organism',
       abbr:        'Vp',
       description: 'Custom HTML5 video player. Quality, subtitle, audio track, and playback rate selection; custom WebVTT subtitle overlay; auto-hiding controls; programmatic API. Keyboard shortcuts: Space/K=play, ←→=±10s, ↑↓=volume, M=mute, F=fullscreen.',
-      filePath:    'modules/ui/VideoPlayer.ejs',
+      filePath:    'modules/ui/VideoPlayer/VideoPlayer.ejs',
       sourceCode:  videoPlayerSource,
       variants: [
         {
@@ -40,7 +40,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
             ],
             audioTracks:    [{ label: 'Türkçe' }, { label: 'English' }],
           }),
-          code: `<%- include('modules/ui/VideoPlayer', {
+          code: `<%- include('modules/ui/VideoPlayer/VideoPlayer', {
   src:         'https://placeholdervideo.dev/1920x1080',
   poster:      'https://example.com/poster.jpg',
   title:       'Big Buck Bunny',
@@ -70,7 +70,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
               { label: 'Türkçe', srclang: 'tr', src: '/subtitles/tr.vtt' },
             ],
           }),
-          code: `<%- include('modules/ui/VideoPlayer', {
+          code: `<%- include('modules/ui/VideoPlayer/VideoPlayer', {
   src:    'https://example.com/lecture.mp4',
   title:  'Lecture — Episode 1',
   subtitles: [
@@ -85,7 +85,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
             src:              'https://placeholdervideo.dev/1920x1080',
             autoHideControls: false,
           }),
-          code: `<%- include('modules/ui/VideoPlayer', {
+          code: `<%- include('modules/ui/VideoPlayer/VideoPlayer', {
   src:              'https://placeholdervideo.dev/1920x1080',
   autoHideControls: false,
 }) %>
@@ -107,7 +107,7 @@ export function buildOrganismMediaData(): ShowcaseItem[] {
             startMuted: true,
             loop:       true,
           }),
-          code: `<%- include('modules/ui/VideoPlayer', {
+          code: `<%- include('modules/ui/VideoPlayer/VideoPlayer', {
   src:          'https://example.com/promo.mp4',
   autoPlay:     true,
   startMuted:   true,
