@@ -1,0 +1,17 @@
+<%
+  // CodeEditor toolbar partial — M2 STUB. Sibling of NextJS parts/Toolbar.tsx.
+  //
+  // TODO M2: render language picker, theme switcher, format-on-save toggle,
+  //          find/replace toggle, copy button.
+
+  var _lang = _language || 'plaintext';
+  var _th   = _theme || 'light';
+  var _ro   = !!_readonly;
+%>
+<div
+  data-kui-codeeditor-toolbar
+  class="flex items-center justify-between gap-2 border-b border-border bg-surface-raised px-3 py-1.5 text-xs text-text-secondary"
+>
+  <span class="font-mono"><%= _lang %></span>
+  <span class="font-mono opacity-60"><%= _th %><%= _ro ? ' · read-only' : '' %></span>
+</div>

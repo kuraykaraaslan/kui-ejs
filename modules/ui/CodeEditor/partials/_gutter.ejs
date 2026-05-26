@@ -1,0 +1,17 @@
+<%
+  // Line-number gutter — sibling of NextJS parts/Gutter.tsx.
+  //
+  // TODO M2: breakpoint dots column (left of numbers), click-to-toggle.
+  // TODO M3: per-line diagnostic icon next to the number.
+  // TODO M4: code-folding chevrons.
+
+  var lineCount = Math.max(Number(_lineCount) || 1, 1);
+  var activeLine = Math.max(Number(_activeLine) || 1, 1);
+  var minHeight = Number(_minHeight) || 200;
+%>
+<div
+  data-kui-codeeditor-gutter
+  aria-hidden="true"
+  class="select-none overflow-hidden border-r border-border bg-surface-overlay px-2 py-2 text-right font-mono text-xs leading-5 text-text-disabled"
+  style="min-height: <%= minHeight %>px"
+><% for (var i = 1; i <= lineCount; i++) { %><div class="tabular-nums<%= i === activeLine ? ' text-text-primary font-semibold' : '' %>"><%= i %></div><% } %></div>

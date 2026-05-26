@@ -210,6 +210,7 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'accessibility-kit',   title: 'AccessibilityKit',   category: 'App', abbr: 'AK', since: '2026-05' },
       { id: 'theme-switcher',      title: 'ThemeSwitcher',      category: 'App', abbr: 'TS', since: '2026-05' },
       { id: 'rich-text-editor',    title: 'RichTextEditor',     category: 'App', abbr: 'RT', since: '2026-05' },
+      { id: 'code-editor',         title: 'CodeEditor',         category: 'App', abbr: 'CE', since: '2026-05' },
       { id: 'context-menu',        title: 'ContextMenu',        category: 'App', abbr: 'CM', since: '2026-05' },
       { id: 'image-gallery',       title: 'ImageGallery',       category: 'App', abbr: 'IG', since: '2026-05' },
       { id: 'error-state',         title: 'ErrorState',         category: 'App', abbr: 'Er', since: '2025-03' },
