@@ -18,6 +18,8 @@ import { buildAppRichTextEditorData }     from './app-rich-text-editor.showcase'
 import { buildAppCodeEditorData }         from './app-code-editor.showcase';
 import { buildContextMenuData }           from './app-context-menu.showcase';
 import { buildImageGalleryData }          from './app-image-gallery.showcase';
+import { buildAppKanbanBoardData }        from './app-kanban-board.showcase';
+import { buildAppCalendarData }           from './app-calendar.showcase';
 
 export function buildAppPatternsData(): ShowcaseItem[] {
   return [
@@ -40,5 +42,7 @@ export function buildAppPatternsData(): ShowcaseItem[] {
     ...buildAppCodeEditorData(),
     ...buildContextMenuData(),
     ...buildImageGalleryData(),
+    ...buildAppKanbanBoardData(),
+    ...buildAppCalendarData(),
   ];
 }

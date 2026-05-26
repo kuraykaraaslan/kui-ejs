@@ -35,6 +35,7 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'tag-input',         title: 'TagInput',       category: 'Molecule', abbr: 'Ti', since: '2026-05' },
       { id: 'file-input',        title: 'FileInput',      category: 'Molecule', abbr: 'Fi', since: '2025-02' },
       { id: 'color-picker',      title: 'ColorPicker',    category: 'Molecule', abbr: 'Cp', since: '2026-05' },
+      { id: 'diff-viewer',       title: 'DiffViewer',     category: 'Molecule', abbr: 'Dv', since: '2026-05' },
     ],
   },
   {
@@ -213,6 +214,8 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'code-editor',         title: 'CodeEditor',         category: 'App', abbr: 'CE', since: '2026-05' },
       { id: 'context-menu',        title: 'ContextMenu',        category: 'App', abbr: 'CM', since: '2026-05' },
       { id: 'image-gallery',       title: 'ImageGallery',       category: 'App', abbr: 'IG', since: '2026-05' },
+      { id: 'kanban-board',        title: 'KanbanBoard',        category: 'App', abbr: 'KB', since: '2026-05', status: 'beta' },
+      { id: 'calendar',            title: 'Calendar',           category: 'App', abbr: 'Cl', since: '2026-05', status: 'beta' },
       { id: 'error-state',         title: 'ErrorState',         category: 'App', abbr: 'Er', since: '2025-03' },
       { id: 'not-found-state',     title: 'NotFoundState',      category: 'App', abbr: 'Ns', since: '2025-03' },
       { id: 'loading-state',       title: 'LoadingState',       category: 'App', abbr: 'Lo', since: '2025-03' },
