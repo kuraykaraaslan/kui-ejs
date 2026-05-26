@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T14:37:45.854Z",
+  "generatedAt": "2026-05-26T17:21:33.036Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1363,7 +1363,7 @@
       "name": "AppCommandBar",
       "layer": "app",
       "category": "App",
-      "filePath": "modules/app/AppCommandBar.ejs",
+      "filePath": "modules/app/CommandPalette/CommandPalette.ejs",
       "abbr": "Cb",
       "description": "Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.",
       "status": "beta",
@@ -1376,15 +1376,13 @@
         "--info-subtle",
         "--primary",
         "--secondary",
-        "--surface-base",
         "--surface-overlay",
         "--surface-raised",
         "--surface-sunken",
-        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 2
+      "variantCount": 3
     },
     {
       "id": "form",
@@ -1792,6 +1790,51 @@
         "--text-secondary"
       ],
       "variantCount": 8
+    },
+    {
+      "id": "code-editor",
+      "name": "CodeEditor",
+      "layer": "ui",
+      "category": "App",
+      "filePath": "modules/ui/CodeEditor/CodeEditor.ejs",
+      "abbr": "CE",
+      "description": "Engine-agnostic code editor primitive. M1 ships a lightweight CodeMirror-style fallback engine (textarea + line-number gutter + active-line + theme + readonly + placeholder) so the public API is stable today. Future milestones: Monaco (VSCode) lazy engine, find/replace, multi-cursor, diagnostics (markers), custom autocomplete + hover, minimap, code folding, vim/emacs keymap. Pixel-identical React sibling at modules/ui/CodeEditor/index.tsx. Used by RulesetEditor M3 + RichTextEditor code-block insert (planned).",
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "textbox"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Tab",
+            "action": "Move focus into / out of the editor"
+          },
+          {
+            "keys": "Arrow keys",
+            "action": "Move caret + sync active line gutter"
+          },
+          {
+            "keys": "Ctrl/Cmd + Z",
+            "action": "Browser-native undo (M1 textarea fallback)"
+          }
+        ]
+      },
+      "designTokens": [
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--surface-sunken",
+        "--text-primary",
+        "--text-secondary",
+        "--text-disabled",
+        "--border",
+        "--border-strong",
+        "--border-focus",
+        "--error"
+      ],
+      "variantCount": 2
     },
     {
       "id": "context-menu",

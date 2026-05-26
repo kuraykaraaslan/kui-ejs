@@ -455,6 +455,12 @@
     "category": "App",
     "file": "rich-text-editor.md"
   },
+  "code-editor": {
+    "name": "CodeEditor",
+    "layer": "ui",
+    "category": "App",
+    "file": "code-editor.md"
+  },
   "context-menu": {
     "name": "ContextMenu",
     "layer": "app",
