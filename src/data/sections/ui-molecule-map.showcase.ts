@@ -2,7 +2,7 @@ import type { ShowcaseItem } from '../../types';
 import * as fs   from 'fs';
 import * as path from 'path';
 
-const mapViewSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/MapView.ejs'), 'utf-8');
+const mapViewSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/MapView/MapView.ejs'), 'utf-8');
 
 // ─── color tables (mirrors MapView.ejs) ──────────────────────────────────────
 
@@ -159,14 +159,14 @@ export function buildMapData(): ShowcaseItem[] {
       category:    'Molecule',
       abbr:        'Mp',
       description: 'Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygon), route lines (polyline), and click-to-add marker mode.',
-      filePath:    'modules/ui/MapView.ejs',
+      filePath:    'modules/ui/MapView/MapView.ejs',
       sourceCode:  mapViewSource,
       variants: [
         {
           title:       'Tam özellik — işaretçi + zone + rota',
           layout:      'stack',
           previewHtml: mapPreviewHtml({ center: [41.015, 28.979], zoom: 6, height: 400, markers: CITIES, zones: ZONES, routes: ROUTES }),
-          code: `<%- include('modules/ui/MapView', {
+          code: `<%- include('modules/ui/MapView/MapView', {
   center:  [41.015, 28.979],
   zoom:    6,
   height:  400,
@@ -179,7 +179,7 @@ export function buildMapData(): ShowcaseItem[] {
           title:       'Tıkla-ekle işaretçi modu',
           layout:      'stack',
           previewHtml: mapPreviewHtml({ center: [39.5, 35.0], zoom: 5, height: 360 }),
-          code: `<%- include('modules/ui/MapView', {
+          code: `<%- include('modules/ui/MapView/MapView', {
   center: [39.5, 35.0],
   zoom:   5,
   height: 360,
@@ -189,7 +189,7 @@ export function buildMapData(): ShowcaseItem[] {
           title:       'Yalnız zone ve rota',
           layout:      'stack',
           previewHtml: mapPreviewHtml({ center: [39.5, 35.0], zoom: 5, height: 360, zones: ZONES, routes: ROUTES }),
-          code: `<%- include('modules/ui/MapView', {
+          code: `<%- include('modules/ui/MapView/MapView', {
   center: [39.5, 35.0],
   zoom:   5,
   height: 360,
