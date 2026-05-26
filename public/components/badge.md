@@ -9,6 +9,10 @@
 
 Status, category or label indicator. 6 semantic variants, 3 sizes, dot and dismissible support.
 
+## Used by
+
+- `kanban-board`
+
 ## Design tokens consumed
 
 - `--error`

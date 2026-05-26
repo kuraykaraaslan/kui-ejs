@@ -9,6 +9,10 @@
 
 User profile photo or initials indicator. 5 sizes with optional status dot. When no image is provided, initials render on a bg-primary-subtle / text-primary tile.
 
+## Used by
+
+- `kanban-board`
+
 ## Design tokens consumed
 
 - `--border`

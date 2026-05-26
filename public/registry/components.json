@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T17:21:33.036Z",
+  "generatedAt": "2026-05-26T17:40:37.724Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -389,6 +389,9 @@
         "--warning",
         "--warning-fg",
         "--warning-subtle"
+      ],
+      "usedBy": [
+        "kanban-board"
       ]
     },
     {
@@ -432,6 +435,9 @@
         "--text-disabled",
         "--text-secondary",
         "--warning"
+      ],
+      "usedBy": [
+        "kanban-board"
       ]
     },
     {
@@ -1242,6 +1248,37 @@
         {
           "title": "Hex + native picker only (no swatches)",
           "code": "<%- include('modules/ui/ColorPicker', {\n  id: 'bg',\n  label: 'Background',\n  swatches: [],\n  showHexInput: true,\n  showNativePicker: true,\n  showNoColor: true\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "designTokens": []
+    },
+    {
+      "id": "diff-viewer",
+      "name": "DiffViewer",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/DiffViewer/DiffViewer.ejs",
+      "abbr": "Dv",
+      "description": "Line-based text diff viewer with unified (GitHub-style) and split (yan yana) modes. M1 ships a zero-dep LCS algorithm, hunk headers in `@@ -old,n +new,n @@` form, old/new line-number gutters, configurable context window, and optional collapsible unchanged regions. Pixel-identical React sibling at modules/ui/DiffViewer/index.tsx.",
+      "source": "<%- include('./DiffViewer/DiffViewer', locals) %>\n",
+      "variants": [
+        {
+          "title": "Unified (default)",
+          "code": "<%- include('modules/ui/DiffViewer', {\n  id: 'review',\n  oldText: oldSrc,\n  newText: newSrc\n}) %>"
+        },
+        {
+          "title": "Split (yan yana)",
+          "code": "<%- include('modules/ui/DiffViewer', {\n  id: 'review',\n  oldText: oldSrc,\n  newText: newSrc,\n  mode: 'split'\n}) %>"
+        },
+        {
+          "title": "With context=1",
+          "code": "<%- include('modules/ui/DiffViewer', {\n  id: 'review',\n  oldText: oldSrc,\n  newText: newSrc,\n  context: 1\n}) %>"
+        },
+        {
+          "title": "Collapsible unchanged context",
+          "code": "<%- include('modules/ui/DiffViewer', {\n  id: 'review',\n  oldText: oldSrc,\n  newText: newSrc,\n  context: 3,\n  collapsible: true\n}) %>"
         }
       ],
       "status": "stable",
@@ -3174,6 +3211,139 @@
       "status": "stable",
       "since": "2026-05",
       "designTokens": []
+    },
+    {
+      "id": "kanban-board",
+      "name": "KanbanBoard",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/KanbanBoard/KanbanBoard.ejs",
+      "abbr": "KB",
+      "description": "Trello / Linear-style kanban board. M1 ships HTML5-native drag and drop between columns with an inline drop-position indicator (thin line between cards) and full optimistic-UI rewind via window.KuiKanban.get(id).setMover() — throw / reject from the mover to revert. Future milestones: column reorder + collapse + WIP limits (M2), swimlanes + filters + search (M3), inline edit + bulk select + card detail panel (M4), keyboard nav + ARIA announcements (M5), virtualization + auto-archive + dependencies (M6). Pixel-identical React sibling at modules/app/KanbanBoard/index.tsx.",
+      "source": "<%\n  // ── KanbanBoard EJS (M1 — Core DnD) ─────────────────────────────────\n  // Pixel-identical to modules/app/KanbanBoard/index.tsx in 01_NextJS_Components.\n  // HTML5 native drag-and-drop between columns + thin drop-line insert hint\n  // + optimistic-UI rewind on rejected onCardMove (rejection signalled by\n  // a global Promise the caller can attach via window.KuiKanban.setMover).\n  var _id       = locals.id       || 'kb-' + Math.random().toString(36).substr(2, 9);\n  var _columns  = locals.columns  || [];\n  var _cards    = locals.cards    || [];\n  var _ariaLabel= locals.ariaLabel|| 'Kanban board';\n%>\n<div\n  id=\"<%= _id %>\"\n  role=\"application\"\n  aria-label=\"<%= _ariaLabel %>\"\n  data-kanban-id=\"<%= _id %>\"\n  class=\"kanban-board w-full overflow-x-auto flex gap-3 items-start p-2\"\n>\n  <% _columns.forEach(function (col) {\n       var colCards = _cards.filter(function (c) { return c.columnId === col.id; });\n  %>\n    <%- include('./partials/_column', { _id: _id, col: col, cards: colCards }) %>\n  <% }); %>\n  <%# TODO M2: trailing \"+ Add column\" button (onColumnAdd). %>\n  <%# TODO M3: filter/search bar + swimlane row wrappers. %>\n  <%# TODO M5: <span aria-live=\"polite\" /> announcing card moves. %>\n</div>\n\n<script>\n(function () {\n  var KB_ID  = '<%= _id %>';\n  var MIME   = 'application/x-kanban-card';\n  var cards  = <%- JSON.stringify(_cards) %>;\n  var snapshot = null;\n  var dropTarget = null; // { columnId, index }\n  var draggingId = null;\n\n  var root = document.getElementById(KB_ID);\n  if (!root) return;\n\n  /* ── Optimistic mover (rebuilds DOM after splice / rollback) ──────── */\n  <%- include('./scripts/dnd.js') %>\n\n  /* ── Init: bind once per card + column ────────────────────────────── */\n  bindAll();\n\n  /* ── Public API per board (window.KuiKanban.get(id)) ───────────────── */\n  window.KuiKanban = window.KuiKanban || {};\n  window.KuiKanban.get = window.KuiKanban.get || function (id) {\n    return window.KuiKanban[id] || null;\n  };\n  window.KuiKanban[KB_ID] = {\n    setMover: function (fn) { window.KuiKanban[KB_ID]._mover = fn; },\n    getCards: function ()   { return cards.slice(); },\n  };\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Three columns (basic)",
+          "code": "<%- include('modules/app/KanbanBoard', {\n  id: 'engineering-board',\n  ariaLabel: 'Engineering board',\n  columns: [\n    { id: 'todo',  title: 'To Do' },\n    { id: 'doing', title: 'In Progress' },\n    { id: 'done',  title: 'Done' }\n  ],\n  cards: [\n    { id: 'c1', columnId: 'todo',  title: 'Audit dark-mode tokens', priority: 'medium' },\n    { id: 'c2', columnId: 'doing', title: 'Refactor Quill toolbar' }\n  ]\n}) %>\n\n<script>\n  // Persist + revert hook (mover may throw to roll back the optimistic move).\n  window.KuiKanban.get('engineering-board').setMover(async function (card, from, to, index) {\n    var r = await fetch('/api/cards/' + card.id, {\n      method: 'PATCH', body: JSON.stringify({ columnId: to, index })\n    });\n    if (!r.ok) throw new Error(r.statusText);\n  });\n</script>"
+        },
+        {
+          "title": "canMove validation",
+          "code": "<%- include('modules/app/KanbanBoard', { id: 'board', columns, cards }) %>\n<script>\n  window.KuiKanban.get('board')._canMove = function (card, from, to) {\n    return from !== 'done' || to === 'done';\n  };\n</script>"
+        },
+        {
+          "title": "Async mover with rollback",
+          "code": "<%- include('modules/app/KanbanBoard', { id: 'board', columns, cards }) %>\n<script>\n  window.KuiKanban.get('board').setMover(async function (card, from, to, index) {\n    var r = await fetch('/api/move', {\n      method: 'POST',\n      body: JSON.stringify({ id: card.id, to: to, index: index })\n    });\n    if (!r.ok) throw new Error(r.statusText); // -> optimistic move rolls back\n  });\n</script>"
+        }
+      ],
+      "status": "beta",
+      "since": "2026-05",
+      "composes": [
+        "badge",
+        "avatar"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "region",
+          "list",
+          "listitem",
+          "application"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Tab",
+            "action": "Move focus across cards / columns"
+          },
+          {
+            "keys": "Drag (mouse)",
+            "action": "Pick up a card and drop on any column slot"
+          }
+        ],
+        "notes": "Each column is role=\"region\" with aria-label; the inner list is role=\"list\"; cards are role=\"listitem\". aria-grabbed flips on the active card; aria-dropeffect=\"move\" is set on all columns while a drag is in flight. Full keyboard parity ships in M5."
+      },
+      "designTokens": [
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--text-primary",
+        "--text-secondary",
+        "--text-disabled",
+        "--border",
+        "--border-strong",
+        "--border-focus",
+        "--primary",
+        "--primary-subtle",
+        "--info-subtle",
+        "--warning-subtle",
+        "--error-subtle",
+        "--success-subtle"
+      ]
+    },
+    {
+      "id": "calendar",
+      "name": "Calendar",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/Calendar/Calendar.ejs",
+      "abbr": "Cl",
+      "description": "Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, and TR/EN locales. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + resource view, drag-create/move/resize, RRULE recurrence, multi-calendar overlay and full a11y/i18n/perf polish land in M2-M6.",
+      "source": "<%\n  // ─── Calendar — M1 (month / week / day) ─────────────────────────────────────\n  //\n  // Folder-scoped sibling of\n  //   /home/kuray/01_NextJS_Components/modules/app/Calendar/index.tsx\n  //\n  // File-for-file parallels:\n  //   partials/_header.ejs       ← parts/HeaderBar.tsx\n  //   partials/_month.ejs        ← views/MonthView.tsx\n  //   partials/_week.ejs         ← views/WeekView.tsx\n  //   partials/_day.ejs          ← views/DayView.tsx\n  //   partials/_agenda.ejs       ← views/AgendaView.tsx (M5 stub)\n  //   partials/_event-card.ejs   ← parts/EventCard.tsx\n  //   scripts/calendar.js        ← view-state + nav (parallel of index.tsx state)\n  //   scripts/keyboard.js        ← hooks/useKeyboardNav.ts\n  //\n  // M2-M6 stubs live next to their NextJS siblings as `// TODO M*` comments.\n\n  var _id           = locals.id           || ('cal-' + Math.random().toString(36).substr(2, 6));\n  var _events       = locals.events       || [];\n  var _view         = locals.view         || 'month';\n  var _defaultDate  = locals.defaultDate  ? new Date(locals.defaultDate) : new Date();\n  var _locale       = (locals.locale      || 'tr').toLowerCase().slice(0, 2);\n  var _workingHours = locals.workingHours || null;\n  var _slotMinutes  = Number(locals.slotMinutes) > 0 ? Number(locals.slotMinutes) : 30;\n  var _className    = locals.className    || '';\n\n  // Normalise events — accept ISO strings or Date instances.\n  _events = _events.map(function (e) {\n    return Object.assign({}, e, {\n      start: e.start instanceof Date ? e.start : new Date(e.start),\n      end:   e.end   instanceof Date ? e.end   : new Date(e.end),\n    });\n  });\n\n  // ── Locale bundles (mirror locale/tr.ts + en.ts) ──────────────────────────\n  var LOCALES = {\n    tr: {\n      messages: {\n        today: 'Bugün', previous: 'Önceki', next: 'Sonraki',\n        month: 'Ay', week: 'Hafta', day: 'Gün',\n        agenda: 'Ajanda', resource: 'Kaynak',\n        allDay: 'Tüm gün', noEvents: 'Etkinlik yok',\n      },\n      weekStart: 1,\n      monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],\n      dayShort:   ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'],\n      dayLong:    ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi']\n    },\n    en: {\n      messages: {\n        today: 'Today', previous: 'Previous', next: 'Next',\n        month: 'Month', week: 'Week', day: 'Day',\n        agenda: 'Agenda', resource: 'Resource',\n        allDay: 'All-day', noEvents: 'No events',\n      },\n      weekStart: 0,\n      monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],\n      dayShort:   ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],\n      dayLong:    ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']\n    }\n  };\n  var L = LOCALES[_locale] || LOCALES.tr;\n  if (locals.messages) {\n    L = Object.assign({}, L, { messages: Object.assign({}, L.messages, locals.messages) });\n  }\n\n  // ── Date helpers (mirror date-utils.ts) ───────────────────────────────────\n  function startOfDay(d) { var x = new Date(d); x.setHours(0,0,0,0); return x; }\n  function isSameDay(a, b) {\n    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();\n  }\n  function isSameMonth(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth(); }\n  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }\n  function startOfWeek(d, ws) { var x = startOfDay(d); var diff = (x.getDay() - ws + 7) % 7; return addDays(x, -diff); }\n  function endOfWeek(d, ws) { return addDays(startOfWeek(d, ws), 6); }\n  function rangeDays(from, n) { var out = []; for (var i = 0; i < n; i++) out.push(addDays(from, i)); return out; }\n  function monthGrid(d, ws) {\n    var first = new Date(d.getFullYear(), d.getMonth(), 1);\n    return rangeDays(startOfWeek(first, ws), 42);\n  }\n  function eventOnDay(e, day) {\n    var ds = startOfDay(day).getTime();\n    return e.start.getTime() < ds + 24*60*60*1000 && e.end.getTime() > ds;\n  }\n  function fmtTime(d) {\n    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');\n  }\n  function minutesIntoDay(d) { return d.getHours() * 60 + d.getMinutes(); }\n\n  // Period label\n  function periodLabel() {\n    var d = _defaultDate;\n    var mn = L.monthNames[d.getMonth()];\n    if (_view === 'month' || _view === 'agenda' || _view === 'resource') {\n      return mn + ' ' + d.getFullYear();\n    }\n    if (_view === 'week') {\n      var s = startOfWeek(d, L.weekStart), e = endOfWeek(d, L.weekStart);\n      if (s.getMonth() === e.getMonth()) {\n        return s.getDate() + ' – ' + e.getDate() + ' ' + L.monthNames[s.getMonth()] + ' ' + s.getFullYear();\n      }\n      return s.getDate() + ' ' + L.monthNames[s.getMonth()] + ' – ' + e.getDate() + ' ' + L.monthNames[e.getMonth()] + ' ' + e.getFullYear();\n    }\n    return d.getDate() + ' ' + mn + ' ' + d.getFullYear();\n  }\n\n  var _today = new Date();\n\n  // ── Color tokens (mirror colors.ts) ───────────────────────────────────────\n  var COLOR_PILL = {\n    primary:   'bg-primary text-primary-fg',\n    success:   'bg-success text-success-fg',\n    warning:   'bg-warning text-text-primary',\n    error:     'bg-error text-primary-fg',\n    info:      'bg-info text-primary-fg',\n    secondary: 'bg-secondary text-primary-fg',\n    neutral:   'bg-surface-overlay text-text-primary border border-border'\n  };\n  function pillCls(c) { return COLOR_PILL[c || 'primary'] || COLOR_PILL.primary; }\n%>\n<div\n  id=\"<%= _id %>\"\n  data-kui-calendar\n  data-view=\"<%= _view %>\"\n  data-locale=\"<%= _locale %>\"\n  tabindex=\"0\"\n  aria-label=\"Calendar\"\n  class=\"flex flex-col w-full rounded-lg border border-border bg-surface-base overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>\"\n>\n  <%- include('./partials/_header', {\n    _id: _id, _view: _view, _label: periodLabel(), _msg: L.messages\n  }) %>\n\n  <% if (_view === 'month') { %>\n    <%- include('./partials/_month', {\n      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,\n      _isSameDay: isSameDay, _isSameMonth: isSameMonth, _eventOnDay: eventOnDay,\n      _monthGrid: monthGrid, _pillCls: pillCls, _fmtTime: fmtTime\n    }) %>\n  <% } else if (_view === 'week') { %>\n    <%- include('./partials/_week', {\n      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,\n      _workingHours: _workingHours, _slotMinutes: _slotMinutes,\n      _isSameDay: isSameDay, _eventOnDay: eventOnDay, _rangeDays: rangeDays,\n      _startOfWeek: startOfWeek, _pillCls: pillCls, _fmtTime: fmtTime,\n      _minutesIntoDay: minutesIntoDay\n    }) %>\n  <% } else if (_view === 'day') { %>\n    <%- include('./partials/_day', {\n      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,\n      _workingHours: _workingHours, _slotMinutes: _slotMinutes,\n      _isSameDay: isSameDay, _eventOnDay: eventOnDay,\n      _pillCls: pillCls, _fmtTime: fmtTime, _minutesIntoDay: minutesIntoDay\n    }) %>\n  <% } else if (_view === 'agenda') { %>\n    <%- include('./partials/_agenda', { _id: _id }) %>\n  <% } else if (_view === 'resource') { %>\n    <div role=\"region\" aria-label=\"Resource view\" class=\"flex flex-col items-center justify-center gap-2 py-16 px-4 text-center\">\n      <p class=\"text-sm font-medium text-text-primary\">Resource view</p>\n      <p class=\"text-xs text-text-secondary max-w-sm\">One column per resource lands in M4.</p>\n    </div>\n  <% } %>\n</div>\n\n<script>\nif (!window.__KuiCalendarLoaded) {\n  window.__KuiCalendarLoaded = true;\n  <%- include('./scripts/calendar.js') %>\n  <%- include('./scripts/keyboard.js') %>\n}\n(function () {\n  function go() {\n    if (!window.__KuiCalendar || !window.__KuiCalendar.boot) return setTimeout(go, 30);\n    window.__KuiCalendar.boot(<%- JSON.stringify(_id) %>);\n  }\n  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);\n  else go();\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Month view — Türkçe",
+          "code": "<%- include('modules/app/Calendar', {\n  id: 'main-cal',\n  view: 'month',\n  defaultDate: new Date(2026, 4, 13),\n  events: events,\n  locale: 'tr'\n}) %>"
+        },
+        {
+          "title": "Week view — working hours shading",
+          "code": "<%- include('modules/app/Calendar', {\n  id: 'main-cal',\n  view: 'week',\n  defaultDate: new Date(2026, 4, 13),\n  events: events,\n  locale: 'tr',\n  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] }\n}) %>"
+        },
+        {
+          "title": "Day view — English",
+          "code": "<%- include('modules/app/Calendar', {\n  id: 'main-cal',\n  view: 'day',\n  defaultDate: new Date(2026, 4, 13),\n  events: events,\n  locale: 'en',\n  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] }\n}) %>"
+        }
+      ],
+      "status": "beta",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "Grid (month)",
+          "Tablist (view switcher)",
+          "Region (week/day)"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "Page Up",
+            "action": "Previous period (month / week / day)"
+          },
+          {
+            "keys": "Page Down",
+            "action": "Next period (month / week / day)"
+          },
+          {
+            "keys": "T",
+            "action": "Jump to today"
+          }
+        ]
+      },
+      "designTokens": [
+        "--primary",
+        "--primary-fg",
+        "--success",
+        "--success-fg",
+        "--warning",
+        "--error",
+        "--info",
+        "--secondary",
+        "--surface-base",
+        "--surface-raised",
+        "--surface-overlay",
+        "--border",
+        "--border-focus",
+        "--text-primary",
+        "--text-secondary",
+        "--text-disabled"
+      ]
     },
     {
       "id": "login-form",
