@@ -4,7 +4,7 @@ import * as path from 'path';
 
 const cardSource        = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Card.ejs'), 'utf-8');
 const alertBannerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/AlertBanner.ejs'), 'utf-8');
-const toastSource       = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Toast.ejs'), 'utf-8');
+const toastSource       = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Toast/Toast.ejs'), 'utf-8');
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
@@ -291,7 +291,7 @@ export function buildOrganismContentData(): ShowcaseItem[] {
       category: 'Organism',
       abbr: 'Ts',
       description: 'Notification system with success/warning/error/info/loading variants. Hover-to-freeze, progress bar, title, actions, and promise support.',
-      filePath: 'modules/ui/Toast.ejs',
+      filePath: 'modules/ui/Toast/Toast.ejs',
       sourceCode: toastSource,
       variants: [
         {
@@ -338,6 +338,32 @@ export function buildOrganismContentData(): ShowcaseItem[] {
   message: 'Saving your changes…',
   persistent: true
 }) %>`,
+        },
+        {
+          title: 'toast.promise() API',
+          previewHtml: `<div class="p-4">${toastEl({ variant: 'loading', message: 'Kullanıcı yükleniyor…', persistent: true })}</div>`,
+          code: `<%# Mount once — store.js exposes window.toast() %>
+<%- include('modules/ui/Toast/scripts/store.js') %>
+
+<script>
+  // Same surface as the NextJS \`toast.promise()\` — drives one toast
+  // through loading → success | error in a single call.
+  window.toast.promise(
+    fetch('/api/user').then(function (r) { return r.json(); }),
+    {
+      loading: 'Kullanıcı yükleniyor…',
+      success: function (u) { return u.name + ' (#' + u.id + ') yüklendi.'; },
+      error:   function (e) { return 'Hata: ' + e.message; },
+    }
+  );
+
+  // String shortcuts for success/error are also accepted.
+  window.toast.promise(saveSettings(), {
+    loading: 'Kaydediliyor…',
+    success: 'Tamamlandı!',
+    error:   'Kaydetme başarısız oldu.',
+  });
+</script>`,
         },
       ],
     },
