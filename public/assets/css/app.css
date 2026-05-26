@@ -646,6 +646,9 @@
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
+  .mr-3 {
+    margin-right: calc(var(--spacing) * 3);
+  }
   .mr-auto {
     margin-right: auto;
   }
@@ -1036,6 +1039,9 @@
   .w-\[\.\.\.px\] {
     width: ...px;
   }
+  .w-\[15\.5rem\] {
+    width: 15.5rem;
+  }
   .w-fit {
     width: fit-content;
   }
@@ -1326,6 +1332,9 @@
   }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid-cols-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
   .grid-cols-8 {
     grid-template-columns: repeat(8, minmax(0, 1fr));

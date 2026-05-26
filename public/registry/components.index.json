@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T12:57:33.937Z",
+  "generatedAt": "2026-05-26T13:31:28.319Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -635,25 +635,19 @@
       "name": "DateRangePicker",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/DateRangePicker.ejs",
+      "filePath": "modules/ui/DatePicker/DateRangePicker.ejs",
       "abbr": "Dr",
-      "description": "fieldset-based dual native date inputs. Start/end auto-constrain each other (min/max) with accessible sr-only labels.",
+      "description": "Two-month popover for picking a start → end date range. Shares the same Calendar core as DatePicker; locale-aware, fully keyboard navigable, with min/max/disabledDates. Pixel-identical React sibling at modules/ui/DatePicker/index.tsx.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
-        "--border",
-        "--border-focus",
         "--error",
-        "--error-subtle",
         "--primary",
         "--secondary",
-        "--surface-base",
-        "--surface-sunken",
-        "--text-disabled",
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 4
+      "variantCount": 5
     },
     {
       "id": "tag-input",
@@ -686,24 +680,19 @@
       "name": "DatePicker",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/DatePicker.ejs",
+      "filePath": "modules/ui/DatePicker/DatePicker.ejs",
       "abbr": "Dp",
-      "description": "Native date input with label + hint + error anatomy. Supports min/max constraints and a disabled state.",
+      "description": "Popover-based date picker with a locale-aware calendar grid (TR / EN), quick month / year jump from the header, min / max / disabledDates support, and full keyboard navigation (Arrow / PageUp/Down / Shift+Page / Home / End / Enter / Esc). Pixel-identical React sibling at modules/ui/DatePicker/index.tsx.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
-        "--border",
-        "--border-focus",
         "--error",
-        "--error-subtle",
         "--primary",
         "--secondary",
-        "--surface-base",
-        "--surface-sunken",
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 5
+      "variantCount": 6
     },
     {
       "id": "file-input",
@@ -982,21 +971,12 @@
       "name": "Table",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/Table.ejs",
+      "filePath": "modules/ui/Table/partials/plain.ejs",
       "abbr": "Tl",
       "description": "Responsive table. scope=\"col\" headers, hover row highlight, empty-state message, and custom cell render support.",
       "status": "stable",
       "since": "2025-02",
-      "designTokens": [
-        "--border",
-        "--primary",
-        "--secondary",
-        "--surface-base",
-        "--surface-overlay",
-        "--surface-sunken",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 3
     },
     {
@@ -1004,25 +984,12 @@
       "name": "DataTable",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/DataTable.ejs",
+      "filePath": "modules/ui/Table/partials/paginated.ejs",
       "abbr": "DT",
       "description": "Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.",
       "status": "stable",
       "since": "2025-03",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--border-strong",
-        "--primary",
-        "--primary-fg",
-        "--secondary",
-        "--surface-base",
-        "--surface-overlay",
-        "--surface-sunken",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
@@ -1030,7 +997,7 @@
       "name": "MapView",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/MapView.ejs",
+      "filePath": "modules/ui/MapView/MapView.ejs",
       "abbr": "Mp",
       "description": "Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygon), route lines (polyline), and click-to-add marker mode.",
       "status": "beta",
@@ -1222,24 +1189,12 @@
       "name": "AdvancedDataTable",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/AdvancedDataTable.ejs",
+      "filePath": "modules/ui/Table/partials/advanced.ejs",
       "abbr": "At",
       "description": "Enhanced table with row selection (with indeterminate header), expandable rows, and optional sticky header.",
       "status": "beta",
       "since": "2026-05",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--primary-subtle",
-        "--secondary",
-        "--surface-base",
-        "--surface-overlay",
-        "--surface-sunken",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
@@ -1247,22 +1202,12 @@
       "name": "ServerDataTable",
       "layer": "ui",
       "category": "Organism",
-      "filePath": "modules/ui/ServerDataTable.ejs",
+      "filePath": "modules/ui/Table/partials/server.ejs",
       "abbr": "Sd",
       "description": "Server-side paginated table. Reads page/totalPages/total/pageSize from the Express route; supports title, toolbar, clickable rows, and empty/loading states.",
       "status": "beta",
       "since": "2026-05",
-      "designTokens": [
-        "--border",
-        "--primary",
-        "--secondary",
-        "--surface-base",
-        "--surface-overlay",
-        "--surface-raised",
-        "--surface-sunken",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
