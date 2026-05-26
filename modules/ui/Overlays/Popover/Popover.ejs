@@ -11,8 +11,8 @@
     right:  'left-full top-0 ml-2',
   }[_placement] || 'top-full left-0 mt-2';
 %>
-<%- include('../shared/focus-trap') %>
-<%- include('../shared/dismiss') %>
+<%- include('../shared/focus-trap.js') %>
+<%- include('../shared/dismiss.js') %>
 <div id="<%= _id %>" class="relative inline-block">
   <div
     id="<%= _id %>-trigger"

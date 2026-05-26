@@ -15,9 +15,9 @@ var panelTranslate = _open
   ? 'translate-x-0'
   : (_side === 'right' ? 'translate-x-full' : '-translate-x-full');
 %>
-<%- include('../shared/focus-trap') %>
-<%- include('../shared/scroll-lock') %>
-<%- include('../shared/dismiss') %>
+<%- include('../shared/focus-trap.js') %>
+<%- include('../shared/scroll-lock.js') %>
+<%- include('../shared/dismiss.js') %>
 
 <div
   id="<%= _id %>"

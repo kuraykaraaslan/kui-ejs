@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T14:18:15.045Z",
+  "generatedAt": "2026-05-26T14:37:45.854Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -700,27 +700,7 @@
       "description": "Drag-and-drop file upload with validation, file list, and individual remove actions.",
       "status": "stable",
       "since": "2025-02",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--error",
-        "--error-fg",
-        "--error-subtle",
-        "--primary",
-        "--primary-active",
-        "--primary-fg",
-        "--primary-hover",
-        "--primary-subtle",
-        "--secondary",
-        "--success",
-        "--success-fg",
-        "--surface-base",
-        "--surface-raised",
-        "--surface-sunken",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
@@ -901,16 +881,7 @@
       "description": "Focus-trapped dialog. Closes on Escape and backdrop click. Requires role=\"dialog\" + aria-modal + aria-labelledby; supports sm/md/lg sizes.",
       "status": "stable",
       "since": "2025-02",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--secondary",
-        "--surface-raised",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
-      ],
+      "designTokens": [],
       "variantCount": 4
     },
     {
@@ -923,14 +894,7 @@
       "description": "Side panel sliding in from the screen edge. Left / right placement with focus management and Escape close.",
       "status": "stable",
       "since": "2025-02",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--surface-raised",
-        "--text-disabled",
-        "--text-primary"
-      ],
+      "designTokens": [],
       "variantCount": 3
     },
     {
@@ -1145,10 +1109,7 @@
       "description": "Anchor-based contextual panel. Closes on outside click and Escape key. Supports top/bottom/left/right placement.",
       "status": "stable",
       "since": "2026-05",
-      "designTokens": [
-        "--border",
-        "--surface-raised"
-      ],
+      "designTokens": [],
       "variantCount": 3
     },
     {

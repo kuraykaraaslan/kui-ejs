@@ -14,9 +14,9 @@
   var titleId = _id + '-title';
   var descId  = _description ? (_id + '-desc') : '';
 %>
-<%- include('../shared/focus-trap') %>
-<%- include('../shared/scroll-lock') %>
-<%- include('../shared/dismiss') %>
+<%- include('../shared/focus-trap.js') %>
+<%- include('../shared/scroll-lock.js') %>
+<%- include('../shared/dismiss.js') %>
 <div
   id="<%= _id %>"
   data-state="<%= _open ? 'open' : 'closed' %>"
