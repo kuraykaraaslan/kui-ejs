@@ -1,0 +1,69 @@
+<%
+  // ── FormRenderer EJS (M1) ────────────────────────────────────────────
+  // Pixel-identical to modules/app/FormBuilder/renderer/FormRenderer.tsx in 01_NextJS_Components.
+  // Renders schema → live form; client-side required + email-format validation
+  // bubbles a `KuiFormRenderer:<id>:submit` CustomEvent on success.
+  var _id     = locals.id     || 'fr-' + Math.random().toString(36).substr(2, 9);
+  var _schema = locals.schema || { id: 'form', title: '', description: '', fields: [] };
+  if (!_schema.fields) _schema.fields = [];
+  var _values = locals.values || {};
+
+  function valueFor(field) {
+    if (typeof _values[field.name] !== 'undefined') return _values[field.name];
+    if (typeof field.defaultValue !== 'undefined' && field.defaultValue !== null) return field.defaultValue;
+    if (field.type === 'checkbox')     return false;
+    if (field.type === 'multiselect')  return [];
+    return '';
+  }
+%>
+<form
+  id="<%= _id %>"
+  novalidate
+  aria-label="<%= _schema.title || 'Form' %>"
+  data-form-renderer-id="<%= _id %>"
+  class="fb-renderer flex flex-col gap-4 p-4 rounded-lg border border-border bg-surface-base"
+>
+  <% if (_schema.title) { %>
+    <header class="flex flex-col gap-1">
+      <h2 class="text-lg font-semibold text-text-primary"><%= _schema.title %></h2>
+      <% if (_schema.description) { %>
+        <p class="text-sm text-text-secondary"><%= _schema.description %></p>
+      <% } %>
+    </header>
+  <% } %>
+
+  <% _schema.fields.forEach(function (field) {
+       var v = valueFor(field);
+       var partial = './partials/_field-text';
+       if      (field.type === 'email')    partial = './partials/_field-email';
+       else if (field.type === 'number')   partial = './partials/_field-number';
+       else if (field.type === 'textarea') partial = './partials/_field-textarea';
+       else if (field.type === 'select')   partial = './partials/_field-select';
+       else if (field.type === 'radio')    partial = './partials/_field-radio';
+       else if (field.type === 'checkbox') partial = './partials/_field-checkbox';
+       else if (field.type === 'date')     partial = './partials/_field-date';
+       else if (field.type === 'file')     partial = './partials/_field-file';
+       // multiselect / signature / rating are M3/M5 stubs — render nothing.
+       if (['multiselect','signature','rating'].indexOf(field.type) !== -1) return;
+  %>
+    <%- include(partial, { field: field, value: v, error: '' }) %>
+  <% }); %>
+
+  <div class="flex justify-end pt-2">
+    <button type="submit"
+      class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-fg hover:bg-primary-hover active:bg-primary-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus transition-colors">
+      Submit
+    </button>
+  </div>
+</form>
+
+<script>
+(function () {
+  var FR_ID  = '<%= _id %>';
+  var form   = document.getElementById(FR_ID);
+  if (!form) return;
+  var schema = <%- JSON.stringify(_schema) %>;
+  <%- include('./scripts/validation.js') %>
+  // TODO M3: include('./scripts/logic-eval.js') for visibility rules.
+})();
+</script>
