@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as ejs from 'ejs';
 
-const datePickerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/DatePicker.ejs'), 'utf-8');
+const datePickerSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/DatePicker/DatePicker.ejs'), 'utf-8');
 const fileInputSource  = fs.readFileSync(path.join(process.cwd(), 'modules/ui/FileInput.ejs'), 'utf-8');
 const colorPickerPath  = path.join(process.cwd(), 'modules/ui/ColorPicker.ejs');
 const colorPickerSource = fs.readFileSync(colorPickerPath, 'utf-8');
@@ -14,17 +14,69 @@ function renderColorPicker(locals: Record<string, unknown>): string {
 const wrapW = (inner: string) => `<div class="flex items-start justify-center p-4 w-full max-w-xs">${inner}</div>`;
 const wrapFull = (inner: string) => `<div class="p-4 w-full max-w-sm">${inner}</div>`;
 
-function datePickerEl(opts: { label?: string; hint?: string; error?: string; value?: string; disabled?: boolean; min?: string; max?: string; required?: boolean }) {
+function datePickerEl(opts: {
+  label?: string;
+  hint?: string;
+  error?: string;
+  value?: string;
+  disabled?: boolean;
+  min?: string;
+  max?: string;
+  required?: boolean;
+  locale?: 'tr' | 'en';
+  format?: string;
+  placeholder?: string;
+  clearLabel?: string;
+}) {
   const id = `dp-${Math.random().toString(36).substr(2, 5)}`;
-  const baseClass = "block w-full rounded-md border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-sunken transition-colors px-3 py-2 text-sm";
-  const stateClass = opts.error
-    ? "border-error focus:border-error focus:ring-error/20"
-    : "border-border focus:border-primary hover:border-text-tertiary";
-  return `<div class="w-full">
-  ${opts.label ? `<label for="${id}" class="block text-sm font-medium text-text-primary mb-1.5">${opts.label}${opts.required ? ' <span class="text-error">*</span>' : ''}</label>` : ''}
-  <input id="${id}" type="date" class="${baseClass} ${stateClass}"${opts.value ? ` value="${opts.value}"` : ''}${opts.disabled ? ' disabled' : ''}${opts.min ? ` min="${opts.min}"` : ''}${opts.max ? ` max="${opts.max}"` : ''} aria-invalid="${opts.error ? 'true' : 'false'}">
-  ${opts.hint && !opts.error ? `<p class="mt-1.5 text-sm text-text-secondary">${opts.hint}</p>` : ''}
-  ${opts.error ? `<p class="mt-1.5 text-sm text-error">${opts.error}</p>` : ''}
+  const locale = opts.locale || 'tr';
+  const placeholder = opts.placeholder || (locale === 'en' ? 'MM/DD/YYYY' : 'GG.AA.YYYY');
+  const format = opts.format || (locale === 'en' ? 'MM/DD/YYYY' : 'DD.MM.YYYY');
+  const clearLabel = opts.clearLabel || (locale === 'en' ? 'Clear date' : 'Tarihi temizle');
+
+  // Static SSR preview of the new popover trigger (the live JS bundle does
+  // not run inside the showcase iframe).
+  let triggerCls = 'group relative flex w-full items-center rounded-md border transition-colors '
+    + 'bg-surface-base text-text-primary '
+    + 'focus-within:ring-2 focus-within:ring-border-focus focus-within:border-border-focus ';
+  if (opts.disabled) triggerCls += 'opacity-50 cursor-not-allowed bg-surface-sunken ';
+  triggerCls += opts.error
+    ? 'border-error ring-1 ring-error bg-error-subtle'
+    : 'border-border';
+
+  // Format the value preview client-side-of-render — simple replace tokens.
+  function fmtPreview(v?: string): string {
+    if (!v) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    if (!m) return v;
+    const [, y, mo, d] = m;
+    return format.replace(/YYYY|YY|MM|M|DD|D/g, (tok) => {
+      switch (tok) {
+        case 'YYYY': return y;
+        case 'YY': return y.slice(-2);
+        case 'MM': return mo;
+        case 'M':  return String(Number(mo));
+        case 'DD': return d;
+        case 'D':  return String(Number(d));
+      }
+      return tok;
+    });
+  }
+  const displayText = fmtPreview(opts.value);
+
+  return `<div class="w-full space-y-1">
+  ${opts.label ? `<label for="${id}" class="block text-sm font-medium text-text-primary">${opts.label}${opts.required ? '<span class="text-error ml-1" aria-hidden="true">*</span>' : ''}</label>` : ''}
+  <div class="relative">
+    <div class="${triggerCls}">
+      <button type="button" id="${id}" class="flex-1 text-left px-3 py-2 text-sm bg-transparent rounded-l-md focus-visible:outline-none disabled:cursor-not-allowed" aria-haspopup="dialog" aria-expanded="false"${opts.disabled ? ' disabled' : ''}>
+        <span class="${displayText ? '' : 'text-text-disabled'}">${displayText || placeholder}</span>
+      </button>
+      ${displayText && !opts.disabled ? `<button type="button" aria-label="${clearLabel}" class="inline-flex h-7 w-7 items-center justify-center rounded-md mr-1 text-text-secondary hover:bg-surface-overlay hover:text-text-primary"><i class="fa-solid fa-xmark" style="font-size:11px" aria-hidden="true"></i></button>` : ''}
+      <span class="pointer-events-none mr-3 text-text-secondary" aria-hidden="true"><i class="fa-solid fa-calendar" style="font-size:13px"></i></span>
+    </div>
+  </div>
+  ${opts.hint && !opts.error ? `<p class="text-xs text-text-secondary">${opts.hint}</p>` : ''}
+  ${opts.error ? `<p class="text-xs text-error" role="alert">${opts.error}</p>` : ''}
 </div>`;
 }
 
@@ -54,52 +106,67 @@ export function buildMoleculePickersData(): ShowcaseItem[] {
       title: 'DatePicker',
       category: 'Molecule',
       abbr: 'Dp',
-      description: 'Native date input with label + hint + error anatomy. Supports min/max constraints and a disabled state.',
-      filePath: 'modules/ui/DatePicker.ejs',
+      description:
+        'Popover-based date picker with a locale-aware calendar grid (TR / EN), quick month / year jump from the header, min / max / disabledDates support, and full keyboard navigation (Arrow / PageUp/Down / Shift+Page / Home / End / Enter / Esc). Pixel-identical React sibling at modules/ui/DatePicker/index.tsx.',
+      filePath: 'modules/ui/DatePicker/DatePicker.ejs',
       sourceCode: datePickerSource,
       variants: [
         {
-          title: 'Default',
-          previewHtml: wrapW(datePickerEl({ label: 'Appointment date', hint: 'Select a future date.' })),
+          title: 'Default (TR locale)',
+          previewHtml: wrapW(datePickerEl({ label: 'Randevu tarihi', hint: 'İleri bir tarih seçin.', locale: 'tr' })),
           code: `<%- include('modules/ui/DatePicker', {
-  label: 'Appointment date',
-  hint: 'Select a future date.'
+  label: 'Randevu tarihi',
+  hint: 'İleri bir tarih seçin.'
 }) %>`,
         },
         {
           title: 'With value',
-          previewHtml: wrapW(datePickerEl({ label: 'Start date', value: '2026-06-15' })),
+          previewHtml: wrapW(datePickerEl({ label: 'Start date', value: '2026-06-15', locale: 'en' })),
           code: `<%- include('modules/ui/DatePicker', {
   label: 'Start date',
+  locale: 'en',
   value: '2026-06-15'
 }) %>`,
         },
         {
           title: 'Error state',
-          previewHtml: wrapW(datePickerEl({ label: 'Due date', error: 'Please select a date.', required: true })),
+          previewHtml: wrapW(datePickerEl({ label: 'Due date', error: 'Please select a date.', required: true, locale: 'en' })),
           code: `<%- include('modules/ui/DatePicker', {
   label: 'Due date',
+  locale: 'en',
   required: true,
   error: 'Please select a date.'
 }) %>`,
         },
         {
           title: 'Disabled',
-          previewHtml: wrapW(datePickerEl({ label: 'Locked date', value: '2026-01-01', disabled: true })),
+          previewHtml: wrapW(datePickerEl({ label: 'Locked date', value: '2026-01-01', disabled: true, locale: 'en' })),
           code: `<%- include('modules/ui/DatePicker', {
   label: 'Locked date',
+  locale: 'en',
   value: '2026-01-01',
   disabled: true
 }) %>`,
         },
         {
           title: 'With min / max',
-          previewHtml: wrapW(datePickerEl({ label: 'Booking date', hint: 'Available: Jun 1–30, 2026', min: '2026-06-01', max: '2026-06-30' })),
+          previewHtml: wrapW(datePickerEl({ label: 'Booking date', hint: 'Available: Jun 1–30, 2026', min: '2026-06-01', max: '2026-06-30', locale: 'en' })),
           code: `<%- include('modules/ui/DatePicker', {
   label: 'Booking date',
+  locale: 'en',
   hint: 'Available: Jun 1–30, 2026',
   min: '2026-06-01',
   max: '2026-06-30'
+}) %>`,
+        },
+        {
+          title: 'Locale: Türkçe + custom messages',
+          previewHtml: wrapW(datePickerEl({ label: 'Randevu tarihi', value: '2026-05-26', locale: 'tr', clearLabel: 'Temizle' })),
+          code: `<%- include('modules/ui/DatePicker', {
+  label: 'Randevu tarihi',
+  locale: 'tr',
+  value: '2026-05-26',
+  clear_label: 'Temizle'
 }) %>`,
         },
       ],

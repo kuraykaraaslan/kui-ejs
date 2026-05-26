@@ -1,39 +1,9 @@
-<%
-  var _id   = locals.id   || 'date-' + Math.random().toString(36).substr(2, 9);
-  var _dis  = !!locals.disabled;
-  var _req  = !!locals.required;
-  var _val  = locals.value || '';
+<%# modules/ui/DatePicker.ejs — thin shim %>
+<%#
+  Backwards-compatible entry point. The real implementation lives in
+  `modules/ui/DatePicker/DatePicker.ejs`. Existing callers using
+  `<%- include('modules/ui/DatePicker', { ... }) %>` continue to work.
 
-  var _hintId  = (locals.hint  && !locals.error) ? (_id + '-hint')  : '';
-  var _errorId = locals.error ? (_id + '-error') : '';
-  var _describedBy = [_hintId, _errorId].filter(function (x) { return !!x; }).join(' ');
-
-  var baseClass = 'block w-full rounded-md border px-3 py-2 text-sm transition-colors '
-    + 'text-text-primary bg-surface-base '
-    + 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus '
-    + 'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-sunken ';
-  baseClass += locals.error
-    ? 'border-error ring-1 ring-error bg-error-subtle'
-    : 'border-border';
+  M1 milestone — see PLANS/22-DatePicker-suite.md.
 %>
-<div class="space-y-1 <%= locals.className || '' %>">
-  <label for="<%= _id %>" class="block text-sm font-medium text-text-primary">
-    <%= locals.label || '' %><% if (_req) { %><span class="text-error ml-1" aria-hidden="true">*</span><span class="sr-only">(required)</span><% } %>
-  </label>
-  <input
-    id="<%= _id %>"
-    type="date"
-    class="<%= baseClass %>"
-    <% if (_dis) { %>disabled<% } %>
-    <% if (_req) { %>required<% } %>
-    <% if (_val) { %>value="<%= _val %>"<% } %>
-    <% if (locals.min) { %>min="<%= locals.min %>"<% } %>
-    <% if (locals.max) { %>max="<%= locals.max %>"<% } %>
-    <% if (locals.name) { %>name="<%= locals.name %>"<% } %>
-    aria-invalid="<%= locals.error ? 'true' : 'false' %>"
-    <% if (_describedBy) { %>aria-describedby="<%= _describedBy %>"<% } %>
-    data-testid="datepicker-<%= _id %>"
-  >
-  <% if (_hintId) { %><p id="<%= _hintId %>" class="text-xs text-text-secondary"><%= locals.hint %></p><% } %>
-  <% if (_errorId) { %><p id="<%= _errorId %>" class="text-xs text-error" role="alert"><%= locals.error %></p><% } %>
-</div>
+<%- include('modules/ui/DatePicker/DatePicker', locals) %>
