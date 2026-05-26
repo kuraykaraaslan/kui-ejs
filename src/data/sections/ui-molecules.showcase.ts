@@ -6,6 +6,7 @@ import { buildMultiSelectData }       from './ui-molecule-multi-select.showcase'
 import { buildComboBoxData }          from './ui-molecule-combo-box.showcase';
 import { buildDateRangePickerData }   from './ui-molecule-date-range-picker.showcase';
 import { buildTagInputData }          from './ui-molecule-tag-input.showcase';
+import { buildMoleculeDiffViewerData } from './ui-molecule-diff-viewer.showcase';
 
 // NextJS molecule order:
 // input, checkbox, radio-group, select, multi-select, combo-box, textarea,
@@ -28,5 +29,6 @@ export function buildMoleculesData(): ShowcaseItem[] {
     ...buildDateRangePickerData(),
     ...buildTagInputData(),
     ...buildMoleculePickersData(),
+    ...buildMoleculeDiffViewerData(),
   ];
 }
