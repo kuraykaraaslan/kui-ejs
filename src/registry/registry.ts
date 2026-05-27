@@ -136,7 +136,9 @@ export function buildRegistry(): Registry {
       abbr: c.abbr || menu?.abbr || '??',
       description: c.description,
       source: c.sourceCode,
-      variants: c.variants.map((v) => ({ title: v.title, code: v.code })),
+      variants: c.variants
+        .filter((v): v is typeof v & { code: string } => !!v.code)
+        .map((v) => ({ title: v.title, code: v.code })),
       status: c.status ?? menu?.status ?? 'stable',
       since: c.since ?? menu?.since,
       whenToUse: c.whenToUse,

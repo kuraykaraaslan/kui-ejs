@@ -216,6 +216,83 @@ if (mobileBackdrop) mobileBackdrop.addEventListener('click', closeMobileSidebar)
   });
 })();
 
+// ── Variant fullscreen ────────────────────────────────────
+(function VariantFullscreen() {
+  var ACTIVE = 'variant-fullscreen-active';
+  var activeBlock = null;
+  var prevBodyOverflow = '';
+
+  function setActive(block, on) {
+    if (!block) return;
+    var btn = block.querySelector('[data-fullscreen-btn]');
+    var icon = block.querySelector('[data-fullscreen-icon]');
+    if (on) {
+      activeBlock = block;
+      prevBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      block.classList.add(ACTIVE, 'fixed', 'inset-0', 'z-50', 'rounded-none', 'border-0');
+      block.classList.remove('rounded-xl');
+      var split = block.querySelector('[data-variant-split]');
+      if (split) split.classList.add('h-full', 'min-h-0', 'flex-1');
+      var preview = block.querySelector('[data-split-preview]');
+      if (preview) preview.classList.add('variant-fs-preview', 'flex-1', 'min-h-0', 'w-full');
+      // Hide code + resizer while fullscreen.
+      var code = block.querySelector('[data-split-code]');
+      if (code) code.classList.add('hidden');
+      var resizer = block.querySelector('[data-split-resizer]');
+      if (resizer) resizer.classList.add('hidden');
+      if (btn) {
+        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('aria-label', 'Exit fullscreen');
+        btn.setAttribute('title', 'Exit fullscreen (Esc)');
+      }
+      if (icon) {
+        icon.classList.remove('fa-expand');
+        icon.classList.add('fa-compress');
+      }
+    } else {
+      document.body.style.overflow = prevBodyOverflow;
+      block.classList.remove(ACTIVE, 'fixed', 'inset-0', 'z-50', 'rounded-none', 'border-0');
+      block.classList.add('rounded-xl');
+      var split2 = block.querySelector('[data-variant-split]');
+      if (split2) split2.classList.remove('h-full', 'min-h-0', 'flex-1');
+      var preview2 = block.querySelector('[data-split-preview]');
+      if (preview2) preview2.classList.remove('variant-fs-preview', 'flex-1', 'min-h-0');
+      // Restore w-full only if there was no code originally; we can detect that
+      // by checking whether a code pane element exists in the block.
+      var hasCode = !!block.querySelector('[data-split-code]');
+      if (preview2 && hasCode) preview2.classList.remove('w-full');
+      var code2 = block.querySelector('[data-split-code]');
+      if (code2) code2.classList.remove('hidden');
+      var resizer2 = block.querySelector('[data-split-resizer]');
+      if (resizer2) resizer2.classList.remove('hidden');
+      if (btn) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('aria-label', 'Enter fullscreen');
+        btn.setAttribute('title', 'Enter fullscreen');
+      }
+      if (icon) {
+        icon.classList.remove('fa-compress');
+        icon.classList.add('fa-expand');
+      }
+      if (activeBlock === block) activeBlock = null;
+    }
+  }
+
+  document.querySelectorAll('[data-fullscreen-btn]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var block = btn.closest('[data-variant-block]');
+      if (!block) return;
+      var on = !block.classList.contains(ACTIVE);
+      setActive(block, on);
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && activeBlock) setActive(activeBlock, false);
+  });
+})();
+
 // ── Copy buttons ──────────────────────────────────────────
 document.querySelectorAll('.copy-btn').forEach((btn) => {
   btn.addEventListener('click', async () => {

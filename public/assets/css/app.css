@@ -943,6 +943,9 @@
   .min-h-\[88px\] {
     min-height: 88px;
   }
+  .min-h-\[600px\] {
+    min-height: 600px;
+  }
   .min-h-\[calc\(100vh-8rem\)\] {
     min-height: calc(100vh - 8rem);
   }
@@ -1320,6 +1323,9 @@
   }
   .cursor-not-allowed {
     cursor: not-allowed;
+  }
+  .cursor-ns-resize {
+    cursor: ns-resize;
   }
   .cursor-pointer {
     cursor: pointer;
@@ -1711,6 +1717,10 @@
   .rounded-r-md {
     border-top-right-radius: var(--radius-md);
     border-bottom-right-radius: var(--radius-md);
+  }
+  .rounded-b {
+    border-bottom-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
   }
   .rounded-b-2xl {
     border-bottom-right-radius: var(--radius-2xl);
@@ -3421,6 +3431,13 @@
       }
     }
   }
+  .group-hover\:text-text-primary {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        color: var(--text-primary);
+      }
+    }
+  }
   .group-hover\:text-text-secondary {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
@@ -3691,6 +3708,16 @@
         border-color: var(--primary);
         @supports (color: color-mix(in lab, red, red)) {
           border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:bg-black\/10 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: color-mix(in srgb, #000 10%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--color-black) 10%, transparent);
         }
       }
     }

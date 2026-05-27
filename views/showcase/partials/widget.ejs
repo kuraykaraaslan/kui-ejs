@@ -5,9 +5,11 @@
   var _isStack = (_global === 'side' || _global === 'stack')
     ? _global === 'stack'
     : variant.layout === 'stack';
+  var _hasCode = !!variant.code;
+  var _previewCls = variant.previewClassName || '';
+  var _previewInnerCls = variant.previewInnerClassName || '';
 %>
-<div class="bg-surface-raised border border-border rounded-xl overflow-hidden">
-  <div class="flex flex-col">
+<div class="variant-block bg-surface-raised border border-border rounded-xl overflow-hidden flex flex-col" data-variant-block>
   <!-- Header -->
   <div class="widget-drag-handle flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-surface-overlay shrink-0">
     <div class="flex items-center gap-2 min-w-0">
@@ -15,12 +17,22 @@
       <h3 class="text-sm font-semibold text-text-primary truncate"><%= variant.title %></h3>
     </div>
     <div class="flex items-center gap-2 shrink-0">
+      <% if (_hasCode) { %>
       <button
         type="button"
         aria-label="Copy code"
         class="copy-btn px-2.5 py-1 text-xs rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken"
         data-code="<%- encodeURIComponent(variant.code) %>"
       >Copy</button>
+      <% } %>
+      <button
+        type="button"
+        aria-label="Enter fullscreen"
+        aria-pressed="false"
+        title="Enter fullscreen"
+        class="variant-fullscreen-btn px-2.5 py-1 text-xs rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken inline-flex items-center justify-center"
+        data-fullscreen-btn
+      ><i class="fa-solid fa-expand" aria-hidden="true" data-fullscreen-icon></i></button>
     </div>
   </div>
 
@@ -34,23 +46,23 @@
 
     <!-- Preview panel -->
     <div
-      class="flex flex-col <%= !_isStack ? 'border-b border-border sm:border-b-0' : '' %>"
+      class="flex flex-col <%= (_hasCode && !_isStack) ? 'border-b border-border sm:border-b-0' : '' %> <%= !_hasCode ? 'w-full' : '' %>"
       data-split-preview
     >
       <div class="px-3 py-1.5 border-b border-border bg-surface-overlay">
         <span class="text-xs font-medium text-text-secondary uppercase tracking-wider">Preview</span>
       </div>
       <div
-        class="flex items-start justify-center px-6 py-8 <%= _isStack ? 'min-h-40' : 'flex-1 min-h-28' %>"
+        class="flex items-start justify-center px-6 py-8 <%= _isStack ? 'min-h-40' : 'flex-1 min-h-28' %> <%= _previewCls %>"
         style="background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:16px 16px"
       >
-        <div class="w-full <%= !_isStack ? 'flex flex-wrap gap-2 items-center justify-center' : '' %>">
+        <div class="w-full <%= !_isStack ? 'flex flex-wrap gap-2 items-center justify-center' : '' %> <%= _previewInnerCls %>">
           <%- variant.previewHtml %>
         </div>
       </div>
     </div>
 
-    <% if (!_isStack) { %>
+    <% if (_hasCode && !_isStack) { %>
     <!-- Resizer -->
     <div
       class="hidden sm:flex relative shrink-0 w-1.5 group cursor-col-resize touch-none select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
@@ -69,6 +81,7 @@
     </div>
     <% } %>
 
+    <% if (_hasCode) { %>
     <!-- Code panel -->
     <div
       class="flex flex-col bg-surface-sunken overflow-x-auto <%= !_isStack ? 'flex-1 min-w-0' : '' %>"
@@ -79,8 +92,8 @@
       </div>
       <pre class="flex-1 px-4 py-5 text-sm font-mono text-text-primary leading-relaxed whitespace-pre-wrap"><code><%- variant.code %></code></pre>
     </div>
+    <% } %>
 
-  </div>
   </div>
   </div>
 </div>

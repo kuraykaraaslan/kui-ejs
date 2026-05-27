@@ -42,8 +42,13 @@ export type ShowcaseNavGroup = {
 export type ShowcaseVariant = {
   title: string;
   previewHtml: string;
-  code: string;
+  /** Source snippet for the right-hand "Code" pane. When null/undefined/empty the code pane is omitted and the preview takes the full width. */
+  code?: string | null;
   layout?: 'side' | 'stack';
+  /** Extra Tailwind classes appended to the outer preview area (height, padding, alignment). Use `!` prefix when you need to beat the defaults. */
+  previewClassName?: string;
+  /** Extra Tailwind classes appended to the inner wrapper around `previewHtml` (e.g. `h-full` for fill-the-pane content). */
+  previewInnerClassName?: string;
 };
 
 export type WcagLevel = 'A' | 'AA' | 'AAA';
