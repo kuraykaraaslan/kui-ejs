@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-27T14:11:00.334Z",
+  "generatedAt": "2026-05-27T14:30:39.380Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -212,9 +212,6 @@
         "--surface-overlay",
         "--text-inverse",
         "--text-primary"
-      ],
-      "usedBy": [
-        "form-builder"
       ],
       "variantCount": 13
     },
@@ -437,9 +434,6 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "usedBy": [
-        "form-builder"
-      ],
       "variantCount": 6
     },
     {
@@ -469,9 +463,6 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "usedBy": [
-        "form-builder"
-      ],
       "variantCount": 8
     },
     {
@@ -496,9 +487,6 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
-      ],
-      "usedBy": [
-        "form-builder"
       ],
       "variantCount": 7
     },
@@ -546,9 +534,6 @@
         "--text-disabled",
         "--text-primary",
         "--text-secondary"
-      ],
-      "usedBy": [
-        "form-builder"
       ],
       "variantCount": 4
     },
@@ -2010,67 +1995,6 @@
         "--text-primary",
         "--text-secondary",
         "--text-disabled"
-      ],
-      "variantCount": 3
-    },
-    {
-      "id": "form-builder",
-      "name": "FormBuilder",
-      "layer": "app",
-      "category": "App",
-      "filePath": "modules/app/FormBuilder/FormBuilder.ejs",
-      "abbr": "FB",
-      "description": "Typeform / JotForm-style drag-to-build form designer. M1 ships the field palette (text / email / number / textarea / select / radio / checkbox / date / file — multiselect / signature / rating are palette stubs), a draggable canvas with reorder + duplicate + delete, a right-hand settings panel (label, name, placeholder, helper text, required, default value, options), JSON schema export / import, and a paired FormRenderer with required + email-format validation. Future milestones: full validation engine + custom validators (M2), conditional logic editor + runtime AST eval (M3), multi-page + save & resume (M4), schema I/O + webhooks + signature / rating (M5), full WAI-ARIA / keyboard parity + i18n + theming (M6). Pixel-identical React sibling at modules/app/FormBuilder/index.tsx.",
-      "status": "beta",
-      "since": "2026-05",
-      "composes": [
-        "button",
-        "input",
-        "checkbox",
-        "select",
-        "textarea"
-      ],
-      "a11y": {
-        "wcagLevel": "AA",
-        "ariaPatterns": [
-          "application",
-          "list",
-          "listitem",
-          "radiogroup",
-          "alert"
-        ],
-        "keyboardInteractions": [
-          {
-            "keys": "Tab",
-            "action": "Move focus across palette / canvas / settings"
-          },
-          {
-            "keys": "Enter / Space",
-            "action": "Activate palette item to append a field"
-          },
-          {
-            "keys": "Drag (mouse)",
-            "action": "Drag from palette → drop into canvas; reorder by dragging the grip handle"
-          }
-        ],
-        "notes": "Builder root is role=\"application\" with aria-label. Canvas list is role=\"list\"; each draggable card is role=\"listitem\" with aria-current when selected. FormRenderer adds aria-required + aria-invalid + aria-describedby per field, and surfaces validation messages with role=\"alert\". Keyboard reorder + LiveRegion announcements land in M6."
-      },
-      "designTokens": [
-        "--surface-base",
-        "--surface-raised",
-        "--surface-overlay",
-        "--text-primary",
-        "--text-secondary",
-        "--text-disabled",
-        "--border",
-        "--border-strong",
-        "--border-focus",
-        "--primary",
-        "--primary-hover",
-        "--primary-active",
-        "--primary-fg",
-        "--error",
-        "--error-subtle"
       ],
       "variantCount": 3
     },

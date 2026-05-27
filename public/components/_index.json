@@ -491,12 +491,6 @@
     "category": "App",
     "file": "calendar.md"
   },
-  "form-builder": {
-    "name": "FormBuilder",
-    "layer": "app",
-    "category": "App",
-    "file": "form-builder.md"
-  },
   "maintenance-page": {
     "name": "MaintenancePage",
     "layer": "app",

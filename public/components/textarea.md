@@ -9,10 +9,6 @@
 
 Label + textarea + hint + error anatomy. Vertical resizing is enabled via resize-y and the parts are linked through aria-describedby.
 
-## Used by
-
-- `form-builder`
-
 ## Design tokens consumed
 
 - `--border`
