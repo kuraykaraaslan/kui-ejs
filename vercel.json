@@ -1,0 +1,37 @@
+{
+  "functions": {
+    "src/**/*.ts": {
+      "includeFiles": [
+        "modules/**",
+        "views/**",
+        "public/assets/**",
+        "public/registry/**",
+        "public/components/**",
+        "public/schemas/**",
+        "public/llms.txt"
+      ]
+    },
+    "src/**/*.js": {
+      "includeFiles": [
+        "modules/**",
+        "views/**",
+        "public/assets/**",
+        "public/registry/**",
+        "public/components/**",
+        "public/schemas/**",
+        "public/llms.txt"
+      ]
+    },
+    "api/**/*.ts": {
+      "includeFiles": [
+        "modules/**",
+        "views/**",
+        "public/assets/**",
+        "public/registry/**",
+        "public/components/**",
+        "public/schemas/**",
+        "public/llms.txt"
+      ]
+    }
+  }
+}
