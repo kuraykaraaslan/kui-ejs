@@ -1,15 +1,7 @@
 {
   "functions": {
     "api/index.ts": {
-      "includeFiles": [
-        "modules/**",
-        "views/**",
-        "public/assets/**",
-        "public/registry/**",
-        "public/components/**",
-        "public/schemas/**",
-        "public/llms.txt"
-      ]
+      "includeFiles": "{modules,views,public}/**"
     }
   },
   "rewrites": [
