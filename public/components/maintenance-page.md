@@ -1,0 +1,149 @@
+# MaintenancePage
+
+- **id:** `maintenance-page`
+- **layer:** app
+- **category:** App
+- **filePath:** `modules/app/MaintenancePage.ejs`
+- **status:** stable
+- **since:** 2026-05
+
+Full-page maintenance screen. Optional ETA countdown badge and external status-page link. Use for planned downtime or unplanned outages.
+
+## Design tokens consumed
+
+- `--border`
+- `--border-focus`
+- `--primary`
+- `--secondary`
+- `--surface-base`
+- `--surface-overlay`
+- `--text-disabled`
+- `--text-inverse`
+- `--text-primary`
+- `--text-secondary`
+- `--warning`
+- `--warning-fg`
+- `--warning-subtle`
+
+## Variants
+
+### Plain (no ETA)
+
+```ejs
+<%- include('modules/app/MaintenancePage', {
+  title: 'System Maintenance',
+  description: "We're performing a short maintenance."
+}) %>
+```
+
+### With ETA + status link
+
+```ejs
+<%- include('modules/app/MaintenancePage', {
+  title: 'System Maintenance',
+  description: "We're shipping new features.",
+  eta: new Date(Date.now() + 45 * 60 * 1000),
+  statusUrl: 'https://status.example.com',
+  statusLabel: 'Status Page'
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _title       = locals.title       || 'System Maintenance';
+  var _description = locals.description || "We're performing a short maintenance to improve service quality. We'll be back shortly.";
+  var _eta         = locals.eta         || null;
+  var _statusUrl   = locals.statusUrl   || '';
+  var _statusLabel = locals.statusLabel || 'Status Page';
+  var _className   = locals.className   ? ' ' + locals.className : '';
+  var _id          = locals.id          || ('maint-' + Math.random().toString(36).substr(2,6));
+  var _etaIso      = '';
+  if (_eta) {
+    var _etaDate = (_eta instanceof Date) ? _eta : new Date(_eta);
+    if (!isNaN(_etaDate.getTime())) _etaIso = _etaDate.toISOString();
+  }
+%>
+<div
+  id="<%= _id %>"
+  role="status"
+  aria-live="polite"
+  class="min-h-screen flex flex-col items-center justify-center px-4 bg-surface-base<%= _className %>"
+>
+  <div
+    class="flex h-20 w-20 mb-6 items-center justify-center rounded-2xl text-4xl shadow-lg"
+    style="background: linear-gradient(135deg, var(--warning) 0%, var(--primary) 100%); box-shadow: 0 8px 32px color-mix(in srgb, var(--warning) 30%, transparent);"
+  >
+    <i class="fa-solid fa-screwdriver-wrench text-text-inverse" style="font-size: 2rem;" aria-hidden="true"></i>
+  </div>
+
+  <h1 class="text-2xl sm:text-3xl font-bold text-text-primary text-center">
+    <%= _title %>
+  </h1>
+
+  <p class="mt-3 max-w-md text-center text-text-secondary text-sm sm:text-base leading-relaxed">
+    <%= _description %>
+  </p>
+
+  <% if (_etaIso) { %>
+  <div class="mt-6 flex flex-col items-center gap-2">
+    <span class="text-xs uppercase tracking-wide text-text-disabled">
+      Estimated Return
+    </span>
+    <span class="inline-flex items-center gap-1 rounded-full font-medium bg-warning-subtle text-warning-fg px-3 py-1 text-sm">
+      <i class="fa-solid fa-clock" style="font-size: 0.75rem;" aria-hidden="true"></i>
+      <span class="font-mono tabular-nums" data-maint-countdown="<%= _etaIso %>">00:00:00</span>
+    </span>
+  </div>
+  <% } %>
+
+  <% if (_statusUrl) { %>
+  <a
+    href="<%= _statusUrl %>"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="mt-8 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-text-primary border border-border transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+  >
+    <%= _statusLabel %>
+    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.875rem;" aria-hidden="true"></i>
+  </a>
+  <% } %>
+
+  <div class="mt-16 flex items-center gap-2 opacity-20" aria-hidden="true">
+    <span class="rounded-full bg-warning" style="width: 5px; height: 5px;"></span>
+    <span class="rounded-full bg-warning" style="width: 7px; height: 7px;"></span>
+    <span class="rounded-full bg-warning" style="width: 10px; height: 10px;"></span>
+    <span class="rounded-full bg-warning" style="width: 7px; height: 7px;"></span>
+    <span class="rounded-full bg-warning" style="width: 5px; height: 5px;"></span>
+  </div>
+</div>
+
+<% if (_etaIso) { %>
+<script>
+  (function () {
+    var nodes = document.querySelectorAll('[data-maint-countdown]');
+    if (!nodes.length) return;
+    function fmt(target) {
+      var ms = target - Date.now();
+      if (ms <= 0) return '00:00:00';
+      var t = Math.floor(ms / 1000);
+      var h = Math.floor(t / 3600);
+      var m = Math.floor((t % 3600) / 60);
+      var s = t % 60;
+      return [h, m, s].map(function (v) { return String(v).padStart(2, '0'); }).join(':');
+    }
+    function tick() {
+      nodes.forEach(function (node) {
+        var iso = node.getAttribute('data-maint-countdown');
+        var target = new Date(iso).getTime();
+        node.textContent = fmt(target);
+      });
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+<% } %>
+
+```

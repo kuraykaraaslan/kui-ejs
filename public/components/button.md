@@ -12,7 +12,6 @@ Core interactive element. Supports 5 visual styles (variants) and 5 sizes. disab
 ## Used by
 
 - `form-builder`
-- `gantt`
 
 ## Design tokens consumed
 

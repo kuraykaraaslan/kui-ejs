@@ -491,17 +491,41 @@
     "category": "App",
     "file": "calendar.md"
   },
-  "gantt": {
-    "name": "Gantt",
-    "layer": "app",
-    "category": "App",
-    "file": "gantt.md"
-  },
   "form-builder": {
     "name": "FormBuilder",
     "layer": "app",
     "category": "App",
     "file": "form-builder.md"
+  },
+  "maintenance-page": {
+    "name": "MaintenancePage",
+    "layer": "app",
+    "category": "App",
+    "file": "maintenance-page.md"
+  },
+  "share-dialog": {
+    "name": "ShareDialog",
+    "layer": "app",
+    "category": "App",
+    "file": "share-dialog.md"
+  },
+  "comment-thread": {
+    "name": "CommentThread",
+    "layer": "app",
+    "category": "App",
+    "file": "comment-thread.md"
+  },
+  "mention-picker": {
+    "name": "MentionPicker",
+    "layer": "app",
+    "category": "App",
+    "file": "mention-picker.md"
+  },
+  "onboarding-wizard": {
+    "name": "OnboardingWizard",
+    "layer": "app",
+    "category": "App",
+    "file": "onboarding-wizard.md"
   },
   "login-form": {
     "name": "LoginForm",

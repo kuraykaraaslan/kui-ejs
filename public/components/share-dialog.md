@@ -1,0 +1,298 @@
+# ShareDialog
+
+- **id:** `share-dialog`
+- **layer:** app
+- **category:** App
+- **filePath:** `modules/app/ShareDialog.ejs`
+- **status:** stable
+- **since:** 2026-05
+
+Share modal: copyable link, email invitation with permission picker, and a list of current invitees with permission/remove controls.
+
+## Accessibility
+
+- WCAG: AA
+- ARIA patterns: role="dialog", aria-modal="true", aria-labelledby, aria-describedby
+
+## Design tokens consumed
+
+- `--border`
+- `--border-focus`
+- `--error`
+- `--error-subtle`
+- `--info`
+- `--info-fg`
+- `--info-subtle`
+- `--primary`
+- `--primary-fg`
+- `--primary-hover`
+- `--primary-subtle`
+- `--secondary`
+- `--secondary-hover`
+- `--surface-base`
+- `--surface-raised`
+- `--surface-sunken`
+- `--text-disabled`
+- `--text-primary`
+- `--text-secondary`
+- `--warning`
+- `--warning-fg`
+- `--warning-subtle`
+
+## Variants
+
+### With invitees
+
+```ejs
+<%- include('modules/app/ShareDialog', {
+  open: true,
+  shareUrl: 'https://app.example.com/docs/x4y9-zk7',
+  invitees: [
+    { id: '1', name: 'Alice Brooks', email: 'alice@example.com',  permission: 'owner'  },
+    { id: '2', name: 'Marcus Reed',  email: 'marcus@example.com', permission: 'editor' },
+    { id: '3', name: 'Priya Sharma', email: 'priya@example.com',  permission: 'viewer' }
+  ]
+}) %>
+```
+
+### Empty / link only
+
+```ejs
+<%- include('modules/app/ShareDialog', {
+  open: true,
+  shareUrl: 'https://app.example.com/projects/empty-share',
+  invitees: []
+}) %>
+```
+
+## Full EJS source
+
+```ejs
+<%
+  var _id           = locals.id          || ('share-' + Math.random().toString(36).substr(2,6));
+  var _title        = locals.title       || 'Share';
+  var _description  = locals.description || 'Invite people or copy the link.';
+  var _shareUrl     = locals.shareUrl    || '';
+  var _open         = !!locals.open;
+  var _invitees     = locals.invitees    || [];
+  var _permissions  = locals.permissions || [
+    { value: 'viewer',    label: 'Viewer'    },
+    { value: 'commenter', label: 'Commenter' },
+    { value: 'editor',    label: 'Editor'    }
+  ];
+  var _defaultPermission = locals.defaultPermission || 'viewer';
+  var _inviteAction = locals.inviteAction || '#';
+  var _inviteMethod = locals.inviteMethod || 'post';
+  var _updatePermissionAction = locals.updatePermissionAction || '#';
+  var _removeInviteeAction = locals.removeInviteeAction || '#';
+
+  function _permBadgeClass(p) {
+    if (p === 'owner')     return 'bg-warning-subtle text-warning-fg';
+    if (p === 'editor')    return 'bg-primary-subtle text-primary';
+    if (p === 'commenter') return 'bg-info-subtle text-info-fg';
+    return 'bg-surface-sunken text-text-secondary';
+  }
+
+  function _initials(name) {
+    if (!name) return '?';
+    var parts = String(name).trim().split(/\s+/);
+    return (parts.slice(0,2).map(function(p){ return p[0]; }).join('') || '?').toUpperCase();
+  }
+%>
+
+<div
+  id="<%= _id %>"
+  data-share-dialog
+  class="fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-200<%= _open ? '' : ' opacity-0 pointer-events-none hidden' %>"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="<%= _id %>-title"
+  aria-describedby="<%= _id %>-desc"
+>
+  <div class="absolute inset-0 bg-black/50" data-share-backdrop aria-hidden="true"></div>
+  <div class="relative z-[101] w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-xl flex flex-col">
+    <div class="flex items-start justify-between gap-3 px-6 py-4 border-b border-border shrink-0">
+      <div>
+        <h2 id="<%= _id %>-title" class="text-base font-semibold text-text-primary"><%= _title %></h2>
+        <p id="<%= _id %>-desc" class="text-sm text-text-secondary mt-0.5"><%= _description %></p>
+      </div>
+      <button
+        type="button"
+        data-share-close
+        aria-label="Close dialog"
+        class="shrink-0 text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
+      >
+        <i class="fa-solid fa-xmark" style="font-size: 1rem;" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="px-6 py-4 flex-1 space-y-5">
+      <div class="space-y-1.5">
+        <label for="<%= _id %>-link" class="block text-sm font-medium text-text-primary">
+          Shareable Link
+        </label>
+        <div class="flex gap-2">
+          <div class="flex flex-1 items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm">
+            <i class="fa-solid fa-link text-text-disabled shrink-0" style="font-size: 0.875rem;" aria-hidden="true"></i>
+            <input
+              id="<%= _id %>-link"
+              type="text"
+              value="<%= _shareUrl %>"
+              readonly
+              onfocus="this.select()"
+              class="flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate"
+            />
+          </div>
+          <button
+            type="button"
+            data-share-copy
+            data-share-url="<%= _shareUrl %>"
+            class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm"
+          >
+            <span data-copy-icon aria-hidden="true" class="shrink-0">
+              <i class="fa-solid fa-copy" style="font-size: 0.875rem;"></i>
+            </span>
+            <span data-copy-label>Copy</span>
+          </button>
+        </div>
+      </div>
+
+      <form
+        action="<%= _inviteAction %>"
+        method="<%= _inviteMethod %>"
+        class="space-y-2"
+        data-share-invite-form
+      >
+        <label for="<%= _id %>-email" class="block text-sm font-medium text-text-primary">
+          Invite People
+        </label>
+        <div class="flex items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-border-focus">
+          <i class="fa-solid fa-envelope text-text-disabled shrink-0" style="font-size: 0.875rem;" aria-hidden="true"></i>
+          <input
+            id="<%= _id %>-email"
+            name="email"
+            type="email"
+            required
+            placeholder="name@example.com"
+            class="w-full bg-transparent text-text-primary placeholder:text-text-disabled focus-visible:outline-none"
+          />
+        </div>
+        <div class="flex items-center justify-end gap-2">
+          <select
+            id="<%= _id %>-permission"
+            name="permission"
+            aria-label="Select permission"
+            class="rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+          >
+            <% _permissions.forEach(function(p) { %>
+              <option value="<%= p.value %>"<%= p.value === _defaultPermission ? ' selected' : '' %>><%= p.label %></option>
+            <% }); %>
+          </select>
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm"
+          >
+            <i class="fa-solid fa-paper-plane" style="font-size: 0.875rem;" aria-hidden="true"></i>
+            Invite
+          </button>
+        </div>
+      </form>
+
+      <% if (_invitees.length > 0) { %>
+      <div class="space-y-2">
+        <p class="text-xs uppercase tracking-wide text-text-disabled font-medium">
+          People with access (<%= _invitees.length %>)
+        </p>
+        <ul class="divide-y divide-border rounded-md border border-border bg-surface-base">
+          <% _invitees.forEach(function(inv) { %>
+          <li class="flex items-center gap-3 px-3 py-2">
+            <% if (inv.avatarUrl) { %>
+              <img src="<%= inv.avatarUrl %>" alt="<%= inv.name %>" class="h-8 w-8 rounded-full object-cover border border-border shrink-0" />
+            <% } else { %>
+              <span aria-label="<%= inv.name %>" class="h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle select-none">
+                <%= _initials(inv.name) %>
+              </span>
+            <% } %>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-text-primary truncate"><%= inv.name %></p>
+              <p class="text-xs text-text-secondary truncate"><%= inv.email %></p>
+            </div>
+            <% if (inv.permission === 'owner') { %>
+              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium <%= _permBadgeClass(inv.permission) %>">Owner</span>
+            <% } else { %>
+              <form action="<%= _updatePermissionAction %>" method="post" class="inline" data-share-update-permission>
+                <input type="hidden" name="id" value="<%= inv.id %>" />
+                <select
+                  name="permission"
+                  aria-label="Permission for <%= inv.name %>"
+                  onchange="this.form.submit()"
+                  class="rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                >
+                  <% _permissions.forEach(function(p) { %>
+                    <option value="<%= p.value %>"<%= p.value === inv.permission ? ' selected' : '' %>><%= p.label %></option>
+                  <% }); %>
+                </select>
+              </form>
+              <form action="<%= _removeInviteeAction %>" method="post" class="inline" data-share-remove-invitee>
+                <input type="hidden" name="id" value="<%= inv.id %>" />
+                <button
+                  type="submit"
+                  aria-label="Remove <%= inv.name %>'s access"
+                  class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md text-text-disabled hover:text-error hover:bg-error-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+                >
+                  <i class="fa-solid fa-xmark" style="font-size: 0.75rem;" aria-hidden="true"></i>
+                </button>
+              </form>
+            <% } %>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var dialog = document.getElementById('<%= _id %>');
+    if (!dialog) return;
+
+    function close() {
+      dialog.classList.add('opacity-0', 'pointer-events-none', 'hidden');
+      dialog.dispatchEvent(new CustomEvent('share-dialog:close'));
+    }
+
+    dialog.querySelectorAll('[data-share-close], [data-share-backdrop]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+
+    dialog.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') close();
+    });
+
+    var copyBtn = dialog.querySelector('[data-share-copy]');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var url = copyBtn.getAttribute('data-share-url') || '';
+        var label = copyBtn.querySelector('[data-copy-label]');
+        var iconWrap = copyBtn.querySelector('[data-copy-icon]');
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(url).then(function () {
+          if (label) label.textContent = 'Copied';
+          if (iconWrap) iconWrap.innerHTML = '<i class="fa-solid fa-check" style="font-size: 0.875rem;"></i>';
+          copyBtn.classList.remove('bg-primary', 'hover:bg-primary-hover');
+          copyBtn.classList.add('bg-secondary', 'hover:bg-secondary-hover');
+          setTimeout(function () {
+            if (label) label.textContent = 'Copy';
+            if (iconWrap) iconWrap.innerHTML = '<i class="fa-solid fa-copy" style="font-size: 0.875rem;"></i>';
+            copyBtn.classList.add('bg-primary', 'hover:bg-primary-hover');
+            copyBtn.classList.remove('bg-secondary', 'hover:bg-secondary-hover');
+          }, 1500);
+        });
+      });
+    }
+  })();
+</script>
+
+```

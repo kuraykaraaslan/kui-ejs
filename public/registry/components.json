@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T18:50:21.775Z",
+  "generatedAt": "2026-05-27T12:57:27.311Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -268,8 +268,7 @@
         "--text-primary"
       ],
       "usedBy": [
-        "form-builder",
-        "gantt"
+        "form-builder"
       ]
     },
     {
@@ -3362,70 +3361,6 @@
       ]
     },
     {
-      "id": "gantt",
-      "name": "Gantt",
-      "layer": "app",
-      "category": "App",
-      "filePath": "modules/app/Gantt/Gantt.ejs",
-      "abbr": "Gt",
-      "description": "MS Project / GanttPRO / dhtmlxGantt-style project timeline. M1 ships the scale switcher (day / week / month / quarter / year), a vertical Today line (var(--warning)), WBS tree with expand/collapse on the left panel, sticky timeline header with synchronised horizontal + vertical scroll, and absolutely-positioned task bars with a %-progress fill (bg-primary over bg-primary-subtle). Public props for `dependencies`, `baselines`, `criticalPath`, `workingDays`, `holidays`, `messages`, and the M2 callbacks (`onTaskUpdate`, `onDependencyCreate/Delete`) are accepted but not yet visually wired — they become live in M2 (drag-to-schedule + dependency drawing), M3 (CPM critical-path highlight + hover tooltip), M4 (milestones + baselines + group rollup), M5 (resource leveling + export PNG/PDF/CSV + working-day calendar), and M6 (full keyboard nav + locale). Pixel-identical React sibling at modules/app/Gantt/index.tsx.",
-      "source": "<%\n  // ── Gantt EJS (M1 — Timeline + bars) ─────────────────────────────────\n  // Pixel-identical to modules/app/Gantt/index.tsx in 01_NextJS_Components.\n  // Scale switcher + today line + WBS tree + horizontally-scrolling timeline\n  // with absolutely-positioned task bars + progress fill.\n  // Future milestones (M2 drag, M3 deps + CPM, M4 milestones + baseline,\n  // M5 export + calendar, M6 a11y + i18n) extend without breaking the M1\n  // surface. Stubs for M2+ live alongside as comments.\n  var _id        = locals.id        || 'gt-' + Math.random().toString(36).substr(2, 9);\n  var _tasks     = locals.tasks     || [];\n  var _scale     = locals.scale     || 'week';\n  // dependencies (TODO M2 stub — accepted but not rendered).\n  // baselines    (TODO M4 stub).\n  // workingDays  (TODO M5 stub).\n  // holidays     (TODO M5 stub).\n  // criticalPath (TODO M3 stub).\n  var _ariaLabel = locals.ariaLabel || 'Gantt chart';\n  var _msg = Object.assign({\n    today: 'Today',\n    scaleDay: 'Day', scaleWeek: 'Week', scaleMonth: 'Month',\n    scaleQuarter: 'Quarter', scaleYear: 'Year',\n    taskColumn: 'Task', ownerColumn: 'Owner', progressColumn: '%'\n  }, locals.messages || {});\n\n  // ── Pixels-per-day per scale — must match types.ts PIXELS_PER_DAY. ──\n  var PPD = { day: 32, week: 14, month: 6, quarter: 2.5, year: 1.2 };\n  var BAR_HEIGHT = 24;\n  var ROW_HEIGHT = 36;\n  var SIDE_PANEL_WIDTH = 320;\n  var ppd = PPD[_scale] || PPD.week;\n\n  var MS_PER_DAY = 86400000;\n  function startOfDay(d) { var c = new Date(d); c.setHours(0,0,0,0); return c; }\n  function diffDays(a, b) { return Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / MS_PER_DAY); }\n  function addDays(d, n) { var c = new Date(d); c.setDate(c.getDate() + n); return c; }\n\n  // ── Range computation ────────────────────────────────────────────────\n  var rangeStart, rangeEnd;\n  if (_tasks.length === 0) {\n    var today = startOfDay(new Date());\n    rangeStart = addDays(today, -7);\n    rangeEnd   = addDays(today,  30);\n  } else {\n    var minMs = Infinity, maxMs = -Infinity;\n    _tasks.forEach(function (t) {\n      var s = new Date(t.start).getTime();\n      var e = new Date(t.end).getTime();\n      if (s < minMs) minMs = s;\n      if (e > maxMs) maxMs = e;\n    });\n    rangeStart = addDays(startOfDay(new Date(minMs)), -3);\n    rangeEnd   = addDays(startOfDay(new Date(maxMs)),  3);\n  }\n\n  var MONTH_NAMES_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];\n  function isoWeek(d) {\n    var target = new Date(d.valueOf());\n    var dayNr = (d.getDay() + 6) % 7;\n    target.setDate(target.getDate() - dayNr + 3);\n    var firstThursday = target.valueOf();\n    target.setMonth(0, 1);\n    if (target.getDay() !== 4) {\n      target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);\n    }\n    return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);\n  }\n\n  // ── Build header columns ─────────────────────────────────────────────\n  var columns = [];\n  var cur;\n  if (_scale === 'day') {\n    cur = new Date(rangeStart);\n    while (cur < rangeEnd) {\n      var next = addDays(cur, 1);\n      columns.push({ start: new Date(cur), end: next, label: String(cur.getDate()), subLabel: MONTH_NAMES_SHORT[cur.getMonth()], width: ppd });\n      cur = next;\n    }\n  } else if (_scale === 'week') {\n    cur = new Date(rangeStart);\n    var dow = (cur.getDay() + 6) % 7;\n    cur = addDays(cur, -dow);\n    while (cur < rangeEnd) {\n      var next = addDays(cur, 7);\n      var days = Math.min(7, diffDays(cur, rangeEnd));\n      columns.push({ start: new Date(cur), end: next, label: 'W' + isoWeek(cur), subLabel: MONTH_NAMES_SHORT[cur.getMonth()] + ' ' + cur.getDate(), width: days * ppd });\n      cur = next;\n    }\n  } else if (_scale === 'month') {\n    cur = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: MONTH_NAMES_SHORT[cur.getMonth()], subLabel: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  } else if (_scale === 'quarter') {\n    var startQ = Math.floor(rangeStart.getMonth() / 3);\n    cur = new Date(rangeStart.getFullYear(), startQ * 3, 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear(), cur.getMonth() + 3, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: 'Q' + (Math.floor(cur.getMonth() / 3) + 1), subLabel: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  } else { // year\n    cur = new Date(rangeStart.getFullYear(), 0, 1);\n    while (cur < rangeEnd) {\n      var next = new Date(cur.getFullYear() + 1, 0, 1);\n      var days = diffDays(cur, next);\n      columns.push({ start: new Date(cur), end: next, label: String(cur.getFullYear()), width: days * ppd });\n      cur = next;\n    }\n  }\n  var baselineStart = columns[0] ? columns[0].start : rangeStart;\n  var totalWidth = columns.reduce(function (sum, c) { return sum + c.width; }, 0);\n\n  // ── Flatten WBS tree (depth-first) ───────────────────────────────────\n  var ids = {};\n  _tasks.forEach(function (t) { ids[t.id] = true; });\n  var byParent = {};\n  _tasks.forEach(function (t) {\n    var key = (t.parentId && ids[t.parentId]) ? t.parentId : '__root__';\n    if (!byParent[key]) byParent[key] = [];\n    byParent[key].push(t);\n  });\n  var collapsedIds = {};\n  _tasks.forEach(function (t) { if (t.collapsed) collapsedIds[t.id] = true; });\n  var flatRows = [];\n  function walk(parentKey, depth) {\n    var children = byParent[parentKey] || [];\n    children.forEach(function (c) {\n      var hasChildren = !!(byParent[c.id] && byParent[c.id].length);\n      flatRows.push({ task: c, depth: depth, hasChildren: hasChildren });\n      if (hasChildren && !collapsedIds[c.id]) walk(c.id, depth + 1);\n    });\n  }\n  walk('__root__', 0);\n  var totalHeight = flatRows.length * ROW_HEIGHT;\n\n  // ── Today line position ──────────────────────────────────────────────\n  var todayDate = new Date();\n  var todayLeft = -1;\n  if (todayDate >= rangeStart && todayDate <= rangeEnd) {\n    todayLeft = diffDays(baselineStart, todayDate) * ppd;\n  }\n\n  var SCALES = ['day', 'week', 'month', 'quarter', 'year'];\n  var SCALE_LABEL = { day: _msg.scaleDay, week: _msg.scaleWeek, month: _msg.scaleMonth, quarter: _msg.scaleQuarter, year: _msg.scaleYear };\n%>\n<div\n  id=\"<%= _id %>\"\n  role=\"grid\"\n  aria-label=\"<%= _ariaLabel %>\"\n  aria-rowcount=\"<%= flatRows.length + 1 %>\"\n  aria-colcount=\"<%= columns.length %>\"\n  data-gantt-id=\"<%= _id %>\"\n  data-gantt-scale=\"<%= _scale %>\"\n  class=\"gantt-root w-full flex flex-col rounded-lg border border-border bg-surface-base overflow-hidden\"\n>\n  <!-- ── Toolbar: scale switcher + today label ──────────────────────── -->\n  <div class=\"flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 border-b border-border bg-surface-raised\">\n    <div class=\"flex items-center gap-2 text-text-primary\">\n      <i class=\"fa-solid fa-calendar w-3.5 h-3.5 text-text-secondary\" aria-hidden=\"true\" style=\"font-size:0.875rem\"></i>\n      <h2 class=\"text-sm font-semibold\">\n        <%= _msg.today %>: <span class=\"tabular-nums font-normal text-text-secondary\"><%= todayDate.toLocaleDateString() %></span>\n      </h2>\n    </div>\n    <div role=\"tablist\" aria-label=\"Timeline scale\" class=\"inline-flex items-center rounded-md border border-border bg-surface-base p-0.5\">\n      <% SCALES.forEach(function (s) {\n           var active = s === _scale;\n           var cls = active ? 'bg-primary text-primary-fg' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay';\n      %>\n        <button type=\"button\"\n          role=\"tab\"\n          aria-selected=\"<%= active ? 'true' : 'false' %>\"\n          data-kui-gantt-scale=\"<%= s %>\"\n          class=\"px-2.5 py-1 text-xs font-medium rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= cls %>\">\n          <%= SCALE_LABEL[s] %>\n        </button>\n      <% }); %>\n    </div>\n    <%# TODO M5: export menu (PNG / PDF / CSV). %>\n    <%# TODO M3: critical-path toggle. %>\n  </div>\n\n  <!-- ── Body ───────────────────────────────────────────────────────── -->\n  <div class=\"flex w-full max-h-[32rem]\">\n    <!-- Left: WBS panel -->\n    <div data-gantt-side=\"1\" class=\"overflow-y-auto overflow-x-hidden scrollbar-hide\">\n      <%- include('./partials/_task-list', { _id: _id, flatRows: flatRows, _msg: _msg, ROW_HEIGHT: ROW_HEIGHT, SIDE_PANEL_WIDTH: SIDE_PANEL_WIDTH, totalHeight: totalHeight, collapsedIds: collapsedIds }) %>\n    </div>\n\n    <!-- Right: timeline -->\n    <div class=\"flex-1 min-w-0 flex flex-col\">\n      <!-- Sticky header (horizontal scroll mirrors body) -->\n      <div data-gantt-header=\"1\" class=\"overflow-hidden border-b border-border\">\n        <%- include('./partials/_timeline-header', { columns: columns, totalWidth: totalWidth }) %>\n      </div>\n      <!-- Scrollable body -->\n      <div data-gantt-timeline=\"1\" class=\"relative flex-1 overflow-auto\">\n        <div class=\"relative\" style=\"width: <%= totalWidth %>px; height: <%= totalHeight %>px;\">\n          <!-- Row backgrounds -->\n          <% flatRows.forEach(function (row, i) {\n               var bg = (i % 2 === 1) ? 'bg-surface-overlay/40' : 'bg-transparent';\n          %>\n            <div aria-hidden=\"true\"\n              class=\"absolute left-0 right-0 border-b border-border/60 <%= bg %>\"\n              style=\"top: <%= i * ROW_HEIGHT %>px; height: <%= ROW_HEIGHT %>px; width: <%= totalWidth %>px;\"></div>\n          <% }); %>\n\n          <!-- Today line -->\n          <%- include('./partials/_today-line', { todayLeft: todayLeft, totalHeight: totalHeight }) %>\n\n          <!-- Task bars -->\n          <% flatRows.forEach(function (row, i) {\n               var task = row.task;\n               var startOffsetDays = diffDays(baselineStart, new Date(task.start));\n               var durationDays    = Math.max(1, diffDays(new Date(task.start), new Date(task.end)));\n               var left            = startOffsetDays * ppd;\n               var width           = durationDays * ppd;\n               var top             = (i * ROW_HEIGHT) + (ROW_HEIGHT - BAR_HEIGHT) / 2;\n               var progress        = Math.max(0, Math.min(100, task.progress || 0));\n          %>\n            <%- include('./partials/_bar', { task: task, left: left, width: width, top: top, height: BAR_HEIGHT, progress: progress }) %>\n          <% }); %>\n\n          <%# TODO M2: <svg> overlay for dependency arrows. %>\n          <%# TODO M4: baseline ghost bars + milestone diamonds. %>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n\n<script>\n(function () {\n  var GT_ID = '<%= _id %>';\n  var root = document.getElementById(GT_ID);\n  if (!root) return;\n\n  <%- include('./scripts/scale.js') %>\n  <%- include('./scripts/scroll.js') %>\n  <%- include('./scripts/zoom.js') %>\n})();\n</script>\n",
-      "variants": [
-        {
-          "title": "Week scale (default)",
-          "code": "<%- include('modules/app/Gantt', {\n  id: 'launch-plan',\n  ariaLabel: 'Product launch plan',\n  scale: 'week',\n  tasks: [\n    { id: 'g1', name: 'Design phase',     isGroup: true, start: new Date('2026-05-01'), end: new Date('2026-05-15'), progress: 70 },\n    { id: 't1', name: 'Wireframes',       parentId: 'g1', start: new Date('2026-05-01'), end: new Date('2026-05-08'), progress: 100 },\n    { id: 't2', name: 'Visual design',    parentId: 'g1', start: new Date('2026-05-08'), end: new Date('2026-05-15'), progress: 80 },\n    { id: 'm1', name: 'Launch',           start: new Date('2026-06-01'), end: new Date('2026-06-01'), isMilestone: true }\n  ]\n}) %>"
-        },
-        {
-          "title": "Month scale",
-          "code": "<%- include('modules/app/Gantt', { id: 'roadmap', scale: 'month', tasks: tasks }) %>"
-        },
-        {
-          "title": "Collapsed group",
-          "code": "// Seed any group with `collapsed: true` to hide its children at first paint.\n<%- include('modules/app/Gantt', {\n  id: 'plan', scale: 'week',\n  tasks: tasks.map(function (t) { return t.id === 'impl' ? Object.assign({}, t, { collapsed: true }) : t; })\n}) %>"
-        }
-      ],
-      "status": "beta",
-      "since": "2026-05",
-      "composes": [
-        "button"
-      ],
-      "a11y": {
-        "wcagLevel": "AA",
-        "ariaPatterns": [
-          "grid",
-          "row",
-          "columnheader",
-          "gridcell",
-          "tablist",
-          "tab"
-        ],
-        "keyboardInteractions": [
-          {
-            "keys": "Tab",
-            "action": "Move focus across scale tabs and collapse buttons"
-          },
-          {
-            "keys": "Space / Enter",
-            "action": "Activate scale tab or expand/collapse a WBS group"
-          }
-        ],
-        "notes": "Root carries role=\"grid\" with aria-rowcount + aria-colcount. The timeline header row is role=\"row\" with aria-rowindex=\"1\" and each cell is role=\"columnheader\" with aria-colindex. Task bars are role=\"gridcell\" labelled with the task name, dates and % complete. Scale switcher is a role=\"tablist\"/role=\"tab\" pair. Full keyboard parity ships in M6."
-      },
-      "designTokens": [
-        "--surface-base",
-        "--surface-raised",
-        "--surface-overlay",
-        "--text-primary",
-        "--text-secondary",
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--primary-subtle",
-        "--primary-fg",
-        "--warning"
-      ]
-    },
-    {
       "id": "form-builder",
       "name": "FormBuilder",
       "layer": "app",
@@ -3498,6 +3433,240 @@
         "--primary-fg",
         "--error",
         "--error-subtle"
+      ]
+    },
+    {
+      "id": "maintenance-page",
+      "name": "MaintenancePage",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/MaintenancePage.ejs",
+      "abbr": "Mp",
+      "description": "Full-page maintenance screen. Optional ETA countdown badge and external status-page link. Use for planned downtime or unplanned outages.",
+      "source": "<%\n  var _title       = locals.title       || 'System Maintenance';\n  var _description = locals.description || \"We're performing a short maintenance to improve service quality. We'll be back shortly.\";\n  var _eta         = locals.eta         || null;\n  var _statusUrl   = locals.statusUrl   || '';\n  var _statusLabel = locals.statusLabel || 'Status Page';\n  var _className   = locals.className   ? ' ' + locals.className : '';\n  var _id          = locals.id          || ('maint-' + Math.random().toString(36).substr(2,6));\n  var _etaIso      = '';\n  if (_eta) {\n    var _etaDate = (_eta instanceof Date) ? _eta : new Date(_eta);\n    if (!isNaN(_etaDate.getTime())) _etaIso = _etaDate.toISOString();\n  }\n%>\n<div\n  id=\"<%= _id %>\"\n  role=\"status\"\n  aria-live=\"polite\"\n  class=\"min-h-screen flex flex-col items-center justify-center px-4 bg-surface-base<%= _className %>\"\n>\n  <div\n    class=\"flex h-20 w-20 mb-6 items-center justify-center rounded-2xl text-4xl shadow-lg\"\n    style=\"background: linear-gradient(135deg, var(--warning) 0%, var(--primary) 100%); box-shadow: 0 8px 32px color-mix(in srgb, var(--warning) 30%, transparent);\"\n  >\n    <i class=\"fa-solid fa-screwdriver-wrench text-text-inverse\" style=\"font-size: 2rem;\" aria-hidden=\"true\"></i>\n  </div>\n\n  <h1 class=\"text-2xl sm:text-3xl font-bold text-text-primary text-center\">\n    <%= _title %>\n  </h1>\n\n  <p class=\"mt-3 max-w-md text-center text-text-secondary text-sm sm:text-base leading-relaxed\">\n    <%= _description %>\n  </p>\n\n  <% if (_etaIso) { %>\n  <div class=\"mt-6 flex flex-col items-center gap-2\">\n    <span class=\"text-xs uppercase tracking-wide text-text-disabled\">\n      Estimated Return\n    </span>\n    <span class=\"inline-flex items-center gap-1 rounded-full font-medium bg-warning-subtle text-warning-fg px-3 py-1 text-sm\">\n      <i class=\"fa-solid fa-clock\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n      <span class=\"font-mono tabular-nums\" data-maint-countdown=\"<%= _etaIso %>\">00:00:00</span>\n    </span>\n  </div>\n  <% } %>\n\n  <% if (_statusUrl) { %>\n  <a\n    href=\"<%= _statusUrl %>\"\n    target=\"_blank\"\n    rel=\"noopener noreferrer\"\n    class=\"mt-8 inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-text-primary border border-border transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\"\n  >\n    <%= _statusLabel %>\n    <i class=\"fa-solid fa-arrow-up-right-from-square\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n  </a>\n  <% } %>\n\n  <div class=\"mt-16 flex items-center gap-2 opacity-20\" aria-hidden=\"true\">\n    <span class=\"rounded-full bg-warning\" style=\"width: 5px; height: 5px;\"></span>\n    <span class=\"rounded-full bg-warning\" style=\"width: 7px; height: 7px;\"></span>\n    <span class=\"rounded-full bg-warning\" style=\"width: 10px; height: 10px;\"></span>\n    <span class=\"rounded-full bg-warning\" style=\"width: 7px; height: 7px;\"></span>\n    <span class=\"rounded-full bg-warning\" style=\"width: 5px; height: 5px;\"></span>\n  </div>\n</div>\n\n<% if (_etaIso) { %>\n<script>\n  (function () {\n    var nodes = document.querySelectorAll('[data-maint-countdown]');\n    if (!nodes.length) return;\n    function fmt(target) {\n      var ms = target - Date.now();\n      if (ms <= 0) return '00:00:00';\n      var t = Math.floor(ms / 1000);\n      var h = Math.floor(t / 3600);\n      var m = Math.floor((t % 3600) / 60);\n      var s = t % 60;\n      return [h, m, s].map(function (v) { return String(v).padStart(2, '0'); }).join(':');\n    }\n    function tick() {\n      nodes.forEach(function (node) {\n        var iso = node.getAttribute('data-maint-countdown');\n        var target = new Date(iso).getTime();\n        node.textContent = fmt(target);\n      });\n    }\n    tick();\n    setInterval(tick, 1000);\n  })();\n</script>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "Plain (no ETA)",
+          "code": "<%- include('modules/app/MaintenancePage', {\n  title: 'System Maintenance',\n  description: \"We're performing a short maintenance.\"\n}) %>"
+        },
+        {
+          "title": "With ETA + status link",
+          "code": "<%- include('modules/app/MaintenancePage', {\n  title: 'System Maintenance',\n  description: \"We're shipping new features.\",\n  eta: new Date(Date.now() + 45 * 60 * 1000),\n  statusUrl: 'https://status.example.com',\n  statusLabel: 'Status Page'\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--text-disabled",
+        "--text-inverse",
+        "--text-primary",
+        "--text-secondary",
+        "--warning",
+        "--warning-fg",
+        "--warning-subtle"
+      ]
+    },
+    {
+      "id": "share-dialog",
+      "name": "ShareDialog",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/ShareDialog.ejs",
+      "abbr": "SD",
+      "description": "Share modal: copyable link, email invitation with permission picker, and a list of current invitees with permission/remove controls.",
+      "source": "<%\n  var _id           = locals.id          || ('share-' + Math.random().toString(36).substr(2,6));\n  var _title        = locals.title       || 'Share';\n  var _description  = locals.description || 'Invite people or copy the link.';\n  var _shareUrl     = locals.shareUrl    || '';\n  var _open         = !!locals.open;\n  var _invitees     = locals.invitees    || [];\n  var _permissions  = locals.permissions || [\n    { value: 'viewer',    label: 'Viewer'    },\n    { value: 'commenter', label: 'Commenter' },\n    { value: 'editor',    label: 'Editor'    }\n  ];\n  var _defaultPermission = locals.defaultPermission || 'viewer';\n  var _inviteAction = locals.inviteAction || '#';\n  var _inviteMethod = locals.inviteMethod || 'post';\n  var _updatePermissionAction = locals.updatePermissionAction || '#';\n  var _removeInviteeAction = locals.removeInviteeAction || '#';\n\n  function _permBadgeClass(p) {\n    if (p === 'owner')     return 'bg-warning-subtle text-warning-fg';\n    if (p === 'editor')    return 'bg-primary-subtle text-primary';\n    if (p === 'commenter') return 'bg-info-subtle text-info-fg';\n    return 'bg-surface-sunken text-text-secondary';\n  }\n\n  function _initials(name) {\n    if (!name) return '?';\n    var parts = String(name).trim().split(/\\s+/);\n    return (parts.slice(0,2).map(function(p){ return p[0]; }).join('') || '?').toUpperCase();\n  }\n%>\n\n<div\n  id=\"<%= _id %>\"\n  data-share-dialog\n  class=\"fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-200<%= _open ? '' : ' opacity-0 pointer-events-none hidden' %>\"\n  role=\"dialog\"\n  aria-modal=\"true\"\n  aria-labelledby=\"<%= _id %>-title\"\n  aria-describedby=\"<%= _id %>-desc\"\n>\n  <div class=\"absolute inset-0 bg-black/50\" data-share-backdrop aria-hidden=\"true\"></div>\n  <div class=\"relative z-[101] w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-xl flex flex-col\">\n    <div class=\"flex items-start justify-between gap-3 px-6 py-4 border-b border-border shrink-0\">\n      <div>\n        <h2 id=\"<%= _id %>-title\" class=\"text-base font-semibold text-text-primary\"><%= _title %></h2>\n        <p id=\"<%= _id %>-desc\" class=\"text-sm text-text-secondary mt-0.5\"><%= _description %></p>\n      </div>\n      <button\n        type=\"button\"\n        data-share-close\n        aria-label=\"Close dialog\"\n        class=\"shrink-0 text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded\"\n      >\n        <i class=\"fa-solid fa-xmark\" style=\"font-size: 1rem;\" aria-hidden=\"true\"></i>\n      </button>\n    </div>\n\n    <div class=\"px-6 py-4 flex-1 space-y-5\">\n      <div class=\"space-y-1.5\">\n        <label for=\"<%= _id %>-link\" class=\"block text-sm font-medium text-text-primary\">\n          Shareable Link\n        </label>\n        <div class=\"flex gap-2\">\n          <div class=\"flex flex-1 items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm\">\n            <i class=\"fa-solid fa-link text-text-disabled shrink-0\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n            <input\n              id=\"<%= _id %>-link\"\n              type=\"text\"\n              value=\"<%= _shareUrl %>\"\n              readonly\n              onfocus=\"this.select()\"\n              class=\"flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate\"\n            />\n          </div>\n          <button\n            type=\"button\"\n            data-share-copy\n            data-share-url=\"<%= _shareUrl %>\"\n            class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm\"\n          >\n            <span data-copy-icon aria-hidden=\"true\" class=\"shrink-0\">\n              <i class=\"fa-solid fa-copy\" style=\"font-size: 0.875rem;\"></i>\n            </span>\n            <span data-copy-label>Copy</span>\n          </button>\n        </div>\n      </div>\n\n      <form\n        action=\"<%= _inviteAction %>\"\n        method=\"<%= _inviteMethod %>\"\n        class=\"space-y-2\"\n        data-share-invite-form\n      >\n        <label for=\"<%= _id %>-email\" class=\"block text-sm font-medium text-text-primary\">\n          Invite People\n        </label>\n        <div class=\"flex items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-border-focus\">\n          <i class=\"fa-solid fa-envelope text-text-disabled shrink-0\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n          <input\n            id=\"<%= _id %>-email\"\n            name=\"email\"\n            type=\"email\"\n            required\n            placeholder=\"name@example.com\"\n            class=\"w-full bg-transparent text-text-primary placeholder:text-text-disabled focus-visible:outline-none\"\n          />\n        </div>\n        <div class=\"flex items-center justify-end gap-2\">\n          <select\n            id=\"<%= _id %>-permission\"\n            name=\"permission\"\n            aria-label=\"Select permission\"\n            class=\"rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\"\n          >\n            <% _permissions.forEach(function(p) { %>\n              <option value=\"<%= p.value %>\"<%= p.value === _defaultPermission ? ' selected' : '' %>><%= p.label %></option>\n            <% }); %>\n          </select>\n          <button\n            type=\"submit\"\n            class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm\"\n          >\n            <i class=\"fa-solid fa-paper-plane\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n            Invite\n          </button>\n        </div>\n      </form>\n\n      <% if (_invitees.length > 0) { %>\n      <div class=\"space-y-2\">\n        <p class=\"text-xs uppercase tracking-wide text-text-disabled font-medium\">\n          People with access (<%= _invitees.length %>)\n        </p>\n        <ul class=\"divide-y divide-border rounded-md border border-border bg-surface-base\">\n          <% _invitees.forEach(function(inv) { %>\n          <li class=\"flex items-center gap-3 px-3 py-2\">\n            <% if (inv.avatarUrl) { %>\n              <img src=\"<%= inv.avatarUrl %>\" alt=\"<%= inv.name %>\" class=\"h-8 w-8 rounded-full object-cover border border-border shrink-0\" />\n            <% } else { %>\n              <span aria-label=\"<%= inv.name %>\" class=\"h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle select-none\">\n                <%= _initials(inv.name) %>\n              </span>\n            <% } %>\n            <div class=\"flex-1 min-w-0\">\n              <p class=\"text-sm font-medium text-text-primary truncate\"><%= inv.name %></p>\n              <p class=\"text-xs text-text-secondary truncate\"><%= inv.email %></p>\n            </div>\n            <% if (inv.permission === 'owner') { %>\n              <span class=\"inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium <%= _permBadgeClass(inv.permission) %>\">Owner</span>\n            <% } else { %>\n              <form action=\"<%= _updatePermissionAction %>\" method=\"post\" class=\"inline\" data-share-update-permission>\n                <input type=\"hidden\" name=\"id\" value=\"<%= inv.id %>\" />\n                <select\n                  name=\"permission\"\n                  aria-label=\"Permission for <%= inv.name %>\"\n                  onchange=\"this.form.submit()\"\n                  class=\"rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\"\n                >\n                  <% _permissions.forEach(function(p) { %>\n                    <option value=\"<%= p.value %>\"<%= p.value === inv.permission ? ' selected' : '' %>><%= p.label %></option>\n                  <% }); %>\n                </select>\n              </form>\n              <form action=\"<%= _removeInviteeAction %>\" method=\"post\" class=\"inline\" data-share-remove-invitee>\n                <input type=\"hidden\" name=\"id\" value=\"<%= inv.id %>\" />\n                <button\n                  type=\"submit\"\n                  aria-label=\"Remove <%= inv.name %>'s access\"\n                  class=\"shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md text-text-disabled hover:text-error hover:bg-error-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus\"\n                >\n                  <i class=\"fa-solid fa-xmark\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n                </button>\n              </form>\n            <% } %>\n          </li>\n          <% }); %>\n        </ul>\n      </div>\n      <% } %>\n    </div>\n  </div>\n</div>\n\n<script>\n  (function () {\n    var dialog = document.getElementById('<%= _id %>');\n    if (!dialog) return;\n\n    function close() {\n      dialog.classList.add('opacity-0', 'pointer-events-none', 'hidden');\n      dialog.dispatchEvent(new CustomEvent('share-dialog:close'));\n    }\n\n    dialog.querySelectorAll('[data-share-close], [data-share-backdrop]').forEach(function (el) {\n      el.addEventListener('click', close);\n    });\n\n    dialog.addEventListener('keydown', function (e) {\n      if (e.key === 'Escape') close();\n    });\n\n    var copyBtn = dialog.querySelector('[data-share-copy]');\n    if (copyBtn) {\n      copyBtn.addEventListener('click', function () {\n        var url = copyBtn.getAttribute('data-share-url') || '';\n        var label = copyBtn.querySelector('[data-copy-label]');\n        var iconWrap = copyBtn.querySelector('[data-copy-icon]');\n        if (!navigator.clipboard) return;\n        navigator.clipboard.writeText(url).then(function () {\n          if (label) label.textContent = 'Copied';\n          if (iconWrap) iconWrap.innerHTML = '<i class=\"fa-solid fa-check\" style=\"font-size: 0.875rem;\"></i>';\n          copyBtn.classList.remove('bg-primary', 'hover:bg-primary-hover');\n          copyBtn.classList.add('bg-secondary', 'hover:bg-secondary-hover');\n          setTimeout(function () {\n            if (label) label.textContent = 'Copy';\n            if (iconWrap) iconWrap.innerHTML = '<i class=\"fa-solid fa-copy\" style=\"font-size: 0.875rem;\"></i>';\n            copyBtn.classList.add('bg-primary', 'hover:bg-primary-hover');\n            copyBtn.classList.remove('bg-secondary', 'hover:bg-secondary-hover');\n          }, 1500);\n        });\n      });\n    }\n  })();\n</script>\n",
+      "variants": [
+        {
+          "title": "With invitees",
+          "code": "<%- include('modules/app/ShareDialog', {\n  open: true,\n  shareUrl: 'https://app.example.com/docs/x4y9-zk7',\n  invitees: [\n    { id: '1', name: 'Alice Brooks', email: 'alice@example.com',  permission: 'owner'  },\n    { id: '2', name: 'Marcus Reed',  email: 'marcus@example.com', permission: 'editor' },\n    { id: '3', name: 'Priya Sharma', email: 'priya@example.com',  permission: 'viewer' }\n  ]\n}) %>"
+        },
+        {
+          "title": "Empty / link only",
+          "code": "<%- include('modules/app/ShareDialog', {\n  open: true,\n  shareUrl: 'https://app.example.com/projects/empty-share',\n  invitees: []\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"dialog\"",
+          "aria-modal=\"true\"",
+          "aria-labelledby",
+          "aria-describedby"
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--error-subtle",
+        "--info",
+        "--info-fg",
+        "--info-subtle",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--primary-subtle",
+        "--secondary",
+        "--secondary-hover",
+        "--surface-base",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary",
+        "--warning",
+        "--warning-fg",
+        "--warning-subtle"
+      ]
+    },
+    {
+      "id": "comment-thread",
+      "name": "CommentThread",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/CommentThread.ejs",
+      "abbr": "CT",
+      "description": "Generic threaded comments with replies, like counts, delete-own actions, and a composer. Domain-agnostic — pass comments + handlers.",
+      "source": "<%\n  // Recursive partial. When called as a child (locals._isChild=true) it only\n  // renders the comment <li>s — the wrapping <section>+composer is skipped.\n  var _isChild        = !!locals._isChild;\n  var _depth          = (typeof locals._depth === 'number') ? locals._depth : 0;\n  var _comments       = locals.comments       || [];\n  var _currentUserId  = locals.currentUserId  || '';\n  var _maxDepth       = (typeof locals.maxDepth === 'number') ? locals.maxDepth : 3;\n  var _replyAction    = locals.replyAction    || '#';\n  var _replyMethod    = locals.replyMethod    || 'post';\n  var _deleteAction   = locals.deleteAction   || '#';\n  var _emptyMessage   = locals.emptyMessage   || 'No comments yet. Be the first to comment.';\n  var _placeholder    = locals.placeholder    || 'Write a comment…';\n  var _showComposer   = (locals.showComposer === undefined) ? true : !!locals.showComposer;\n  var _className      = locals.className      ? ' ' + locals.className : '';\n\n  function _initials(name) {\n    if (!name) return '?';\n    var parts = String(name).trim().split(/\\s+/);\n    return (parts.slice(0,2).map(function(p){ return p[0]; }).join('') || '?').toUpperCase();\n  }\n  function _relative(value) {\n    var d = (value instanceof Date) ? value : new Date(value);\n    if (isNaN(d.getTime())) return '';\n    var diff = (Date.now() - d.getTime()) / 1000;\n    if (diff < 60)    return Math.floor(diff) + 's';\n    if (diff < 3600)  return Math.floor(diff / 60) + 'm';\n    if (diff < 86400) return Math.floor(diff / 3600) + 'h';\n    return d.toLocaleDateString();\n  }\n  function _iso(value) {\n    var d = (value instanceof Date) ? value : new Date(value);\n    return isNaN(d.getTime()) ? '' : d.toISOString();\n  }\n%>\n\n<% if (!_isChild) { %>\n<section class=\"space-y-4<%= _className %>\" aria-label=\"Comments\">\n  <% if (_showComposer) { %>\n  <form action=\"<%= _replyAction %>\" method=\"<%= _replyMethod %>\" class=\"flex flex-col gap-2\" data-comment-form>\n    <input type=\"hidden\" name=\"parentId\" value=\"\" />\n    <label for=\"comment-root\" class=\"sr-only\">New comment</label>\n    <textarea\n      id=\"comment-root\"\n      name=\"body\"\n      placeholder=\"<%= _placeholder %>\"\n      rows=\"3\"\n      required\n      class=\"block w-full rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary placeholder:text-text-disabled resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus\"\n    ></textarea>\n    <div class=\"flex items-center justify-end\">\n      <button\n        type=\"submit\"\n        class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm\"\n      >\n        <i class=\"fa-solid fa-paper-plane\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n        Post Comment\n      </button>\n    </div>\n  </form>\n  <% } %>\n\n  <% if (_comments.length === 0) { %>\n  <p class=\"rounded-md border border-dashed border-border bg-surface-base px-4 py-6 text-center text-sm text-text-secondary\">\n    <%= _emptyMessage %>\n  </p>\n  <% } else { %>\n  <ul class=\"space-y-4\">\n<% } %>\n\n<% _comments.forEach(function(comment) {\n  var canReply = _depth < _maxDepth;\n  var isOwn = _currentUserId && comment.author && comment.author.id === _currentUserId;\n%>\n    <li class=\"flex gap-3\">\n      <% if (comment.author && comment.author.avatarUrl) { %>\n        <img src=\"<%= comment.author.avatarUrl %>\" alt=\"<%= comment.author.name %>\" class=\"h-8 w-8 rounded-full object-cover border border-border shrink-0\" />\n      <% } else { %>\n        <span aria-label=\"<%= comment.author ? comment.author.name : '?' %>\" class=\"h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle select-none\">\n          <%= _initials(comment.author && comment.author.name) %>\n        </span>\n      <% } %>\n      <div class=\"flex-1 min-w-0\">\n        <div class=\"rounded-lg bg-surface-overlay px-3 py-2\">\n          <div class=\"flex items-center justify-between gap-2\">\n            <span class=\"text-sm font-semibold text-text-primary truncate\"><%= comment.author && comment.author.name %></span>\n            <time datetime=\"<%= _iso(comment.createdAt) %>\" class=\"text-xs text-text-disabled shrink-0\">\n              <%= _relative(comment.createdAt) %>\n            </time>\n          </div>\n          <p class=\"mt-1 text-sm text-text-primary whitespace-pre-wrap break-words\"><%= comment.body %></p>\n        </div>\n\n        <div class=\"mt-1 flex items-center gap-3 px-1 text-xs text-text-secondary\">\n          <button type=\"button\" data-comment-like=\"<%= comment.id %>\" aria-pressed=\"<%= comment.likedByMe ? 'true' : 'false' %>\" class=\"inline-flex items-center gap-1 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded<%= comment.likedByMe ? ' text-primary' : '' %>\">\n            <i class=\"fa-solid fa-heart\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n            <span data-like-count=\"<%= comment.id %>\"><%= comment.likeCount || 0 %></span>\n          </button>\n          <% if (canReply) { %>\n          <button type=\"button\" data-comment-reply-toggle=\"<%= comment.id %>\" class=\"inline-flex items-center gap-1 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded\">\n            <i class=\"fa-solid fa-reply\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n            Reply\n          </button>\n          <% } %>\n          <% if (isOwn) { %>\n          <form action=\"<%= _deleteAction %>\" method=\"post\" class=\"ml-auto\" data-comment-delete>\n            <input type=\"hidden\" name=\"id\" value=\"<%= comment.id %>\" />\n            <button type=\"submit\" class=\"inline-flex items-center gap-1 transition-colors hover:text-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded\">\n              <i class=\"fa-solid fa-trash\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n              Delete\n            </button>\n          </form>\n          <% } %>\n        </div>\n\n        <% if (canReply) { %>\n        <form action=\"<%= _replyAction %>\" method=\"<%= _replyMethod %>\" data-comment-reply-form=\"<%= comment.id %>\" class=\"mt-2 flex flex-col gap-2 hidden\">\n          <input type=\"hidden\" name=\"parentId\" value=\"<%= comment.id %>\" />\n          <textarea name=\"body\" rows=\"2\" placeholder=\"<%= _placeholder %>\" required class=\"block w-full rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary placeholder:text-text-disabled resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus\"></textarea>\n          <div class=\"flex items-center justify-end gap-2\">\n            <button type=\"button\" data-comment-reply-cancel=\"<%= comment.id %>\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-transparent text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm\">\n              <i class=\"fa-solid fa-xmark\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n              Cancel\n            </button>\n            <button type=\"submit\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-primary text-primary-fg hover:bg-primary-hover px-3 py-1.5 text-sm\">\n              <i class=\"fa-solid fa-paper-plane\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n              Reply\n            </button>\n          </div>\n        </form>\n        <% } %>\n\n        <% if (comment.replies && comment.replies.length > 0) { %>\n        <ul class=\"mt-3 space-y-3 border-l border-border pl-4\">\n          <%- include('CommentThread', {\n            _isChild: true,\n            _depth: _depth + 1,\n            comments: comment.replies,\n            currentUserId: _currentUserId,\n            maxDepth: _maxDepth,\n            replyAction: _replyAction,\n            replyMethod: _replyMethod,\n            deleteAction: _deleteAction,\n            placeholder: _placeholder,\n            showComposer: false\n          }) %>\n        </ul>\n        <% } %>\n      </div>\n    </li>\n<% }); %>\n\n<% if (!_isChild) { %>\n  </ul>\n  <% } %>\n</section>\n\n<script>\n  (function () {\n    document.querySelectorAll('[data-comment-reply-toggle]').forEach(function (btn) {\n      btn.addEventListener('click', function () {\n        var id = btn.getAttribute('data-comment-reply-toggle');\n        var form = document.querySelector('[data-comment-reply-form=\"' + id + '\"]');\n        if (form) form.classList.toggle('hidden');\n      });\n    });\n    document.querySelectorAll('[data-comment-reply-cancel]').forEach(function (btn) {\n      btn.addEventListener('click', function () {\n        var id = btn.getAttribute('data-comment-reply-cancel');\n        var form = document.querySelector('[data-comment-reply-form=\"' + id + '\"]');\n        if (form) form.classList.add('hidden');\n      });\n    });\n  })();\n</script>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "With replies",
+          "code": "<%- include('modules/app/CommentThread', {\n  comments: comments,\n  currentUserId: 'me',\n  replyAction: '/comments/reply',\n  deleteAction: '/comments/delete'\n}) %>"
+        },
+        {
+          "title": "Empty state",
+          "code": "<%- include('modules/app/CommentThread', {\n  comments: [],\n  currentUserId: 'me'\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "aria-label=\"Comments\"",
+          "aria-pressed (like)",
+          "aria-expanded (reply)"
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--primary-subtle",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ]
+    },
+    {
+      "id": "mention-picker",
+      "name": "MentionPicker",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/MentionPicker.ejs",
+      "abbr": "MP",
+      "description": "@-trigger autocomplete picker. Headless: takes users + query + position, fires onSelect. Keyboard nav (ArrowUp/Down, Enter/Tab, Escape).",
+      "source": "<%\n  var _id            = locals.id            || ('mention-' + Math.random().toString(36).substr(2,6));\n  var _users         = locals.users         || [];\n  var _query         = locals.query         || '';\n  var _open          = (locals.open === undefined) ? true : !!locals.open;\n  var _position      = locals.position      || null;\n  var _maxItems      = (typeof locals.maxItems === 'number') ? locals.maxItems : 6;\n  var _emptyMessage  = locals.emptyMessage  || 'No matching users';\n  var _className     = locals.className     ? ' ' + locals.className : '';\n  var _anchorInputId = locals.anchorInputId || '';\n\n  function _initials(name) {\n    if (!name) return '?';\n    var parts = String(name).trim().split(/\\s+/);\n    return (parts.slice(0,2).map(function(p){ return p[0]; }).join('') || '?').toUpperCase();\n  }\n\n  function _filter(u, q) {\n    if (!q) return true;\n    var lq = String(q).toLowerCase();\n    return (u.name && u.name.toLowerCase().includes(lq)) ||\n           (u.handle && u.handle.toLowerCase().includes(lq));\n  }\n\n  var _filtered = _users.filter(function(u){ return _filter(u, _query); }).slice(0, _maxItems);\n\n  var _style = '';\n  if (_position) {\n    _style = 'position: absolute; top: ' + (_position.top || 0) + 'px; left: ' + (_position.left || 0) + 'px;';\n  }\n%>\n\n<div\n  id=\"<%= _id %>\"\n  data-mention-picker\n  data-anchor-input-id=\"<%= _anchorInputId %>\"\n  role=\"listbox\"\n  aria-label=\"Users to mention\"\n  style=\"<%= _style %>\"\n  class=\"z-50 w-72 rounded-lg border border-border bg-surface-raised shadow-lg overflow-hidden<%= _open ? '' : ' hidden' %><%= _className %>\"\n>\n  <div class=\"flex items-center gap-2 border-b border-border px-3 py-2 text-xs text-text-secondary\">\n    <i class=\"fa-solid fa-at text-text-disabled\" style=\"font-size: 0.75rem;\" aria-hidden=\"true\"></i>\n    <span class=\"font-medium\" data-mention-query>\n      <% if (_query) { %>\"<%= _query %>\"<% } else { %>Mention…<% } %>\n    </span>\n  </div>\n  <% if (_filtered.length === 0) { %>\n  <p class=\"px-3 py-4 text-sm text-center text-text-secondary\" data-mention-empty><%= _emptyMessage %></p>\n  <% } else { %>\n  <ul class=\"max-h-64 overflow-y-auto py-1\" data-mention-list>\n    <% _filtered.forEach(function(user, i) { %>\n    <li\n      role=\"option\"\n      aria-selected=\"<%= i === 0 ? 'true' : 'false' %>\"\n      data-mention-item\n      data-mention-id=\"<%= user.id %>\"\n      data-mention-name=\"<%= user.name %>\"\n      data-mention-handle=\"<%= user.handle || '' %>\"\n      class=\"flex items-center gap-3 px-3 py-2 cursor-pointer transition-colors hover:bg-surface-overlay<%= i === 0 ? ' bg-surface-overlay' : '' %>\"\n    >\n      <% if (user.avatarUrl) { %>\n        <img src=\"<%= user.avatarUrl %>\" alt=\"<%= user.name %>\" class=\"h-8 w-8 rounded-full object-cover border border-border shrink-0\" />\n      <% } else { %>\n        <span aria-label=\"<%= user.name %>\" class=\"h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle select-none\">\n          <%= _initials(user.name) %>\n        </span>\n      <% } %>\n      <div class=\"flex-1 min-w-0\">\n        <p class=\"text-sm font-medium text-text-primary truncate\"><%= user.name %></p>\n        <p class=\"text-xs text-text-secondary truncate\">\n          <% if (user.handle) { %>@<%= user.handle %><% } else if (user.subtitle) { %><%= user.subtitle %><% } %>\n        </p>\n      </div>\n    </li>\n    <% }); %>\n  </ul>\n  <% } %>\n</div>\n\n<script>\n  (function () {\n    var picker = document.getElementById('<%= _id %>');\n    if (!picker) return;\n    var items = Array.prototype.slice.call(picker.querySelectorAll('[data-mention-item]'));\n    var active = 0;\n    var anchorId = picker.getAttribute('data-anchor-input-id') || '';\n    var anchor = anchorId ? document.getElementById(anchorId) : null;\n\n    function setActive(i) {\n      items.forEach(function (el, idx) {\n        var on = idx === i;\n        el.setAttribute('aria-selected', on ? 'true' : 'false');\n        if (on) el.classList.add('bg-surface-overlay');\n        else el.classList.remove('bg-surface-overlay');\n        if (on) el.scrollIntoView({ block: 'nearest' });\n      });\n      active = i;\n    }\n\n    items.forEach(function (el, i) {\n      el.addEventListener('mouseenter', function () { setActive(i); });\n      el.addEventListener('mousedown', function (e) {\n        e.preventDefault();\n        picker.dispatchEvent(new CustomEvent('mention:select', {\n          detail: {\n            id:     el.getAttribute('data-mention-id'),\n            name:   el.getAttribute('data-mention-name'),\n            handle: el.getAttribute('data-mention-handle')\n          }\n        }));\n      });\n    });\n\n    function onKey(e) {\n      if (!items.length || picker.classList.contains('hidden')) return;\n      if (e.key === 'ArrowDown') { e.preventDefault(); setActive((active + 1) % items.length); }\n      else if (e.key === 'ArrowUp')   { e.preventDefault(); setActive((active - 1 + items.length) % items.length); }\n      else if (e.key === 'Enter' || e.key === 'Tab') {\n        e.preventDefault();\n        items[active].dispatchEvent(new MouseEvent('mousedown'));\n      } else if (e.key === 'Escape') {\n        picker.classList.add('hidden');\n        picker.dispatchEvent(new CustomEvent('mention:cancel'));\n      }\n    }\n\n    if (anchor) anchor.addEventListener('keydown', onKey);\n    else        window.addEventListener('keydown', onKey);\n  })();\n</script>\n",
+      "variants": [
+        {
+          "title": "Filtered list",
+          "code": "<%- include('modules/app/MentionPicker', {\n  users: candidates,\n  query: 'al',\n  anchorInputId: 'comment-input'\n}) %>"
+        },
+        {
+          "title": "Empty results",
+          "code": "<%- include('modules/app/MentionPicker', {\n  users: candidates,\n  query: 'zzz'\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"listbox\"",
+          "role=\"option\"",
+          "aria-selected"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "ArrowDown / ArrowUp",
+            "action": "Move selection"
+          },
+          {
+            "keys": "Enter / Tab",
+            "action": "Insert highlighted mention"
+          },
+          {
+            "keys": "Escape",
+            "action": "Cancel picker"
+          }
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--primary",
+        "--primary-subtle",
+        "--secondary",
+        "--surface-overlay",
+        "--surface-raised",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ]
+    },
+    {
+      "id": "onboarding-wizard",
+      "name": "OnboardingWizard",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/OnboardingWizard.ejs",
+      "abbr": "OW",
+      "description": "Multi-step onboarding flow with dots/bar progress, optional skip, and page or modal presentation. Server-rendered with ?step=N querystring.",
+      "source": "<%\n  // Server-rendered onboarding wizard. The current step is driven by\n  // querystring/locals (?step=N) so each next/back/skip submits a form.\n  var _id            = locals.id            || ('onb-' + Math.random().toString(36).substr(2,6));\n  var _steps         = locals.steps         || [];\n  var _current       = (typeof locals.current === 'number') ? locals.current : 0;\n  if (_current < 0) _current = 0;\n  if (_current >= _steps.length) _current = Math.max(0, _steps.length - 1);\n  var _mode          = locals.mode          || 'page';\n  var _open          = (locals.open === undefined) ? true : !!locals.open;\n  var _title         = locals.title         || 'Welcome';\n  var _allowSkip     = (locals.allowSkip === undefined) ? true : !!locals.allowSkip;\n  var _nextLabel     = locals.nextLabel     || 'Next';\n  var _prevLabel     = locals.prevLabel     || 'Back';\n  var _skipLabel     = locals.skipLabel     || 'Skip';\n  var _completeLabel = locals.completeLabel || 'Finish';\n  var _indicator     = locals.indicator     || 'dots';\n  var _stepAction    = locals.stepAction    || '?';\n  var _completeAction= locals.completeAction|| (locals.stepAction ? locals.stepAction + '&complete=1' : '?complete=1');\n  var _skipAction    = locals.skipAction    || (locals.stepAction ? locals.stepAction + '&skip=1'     : '?skip=1');\n  var _className     = locals.className     ? ' ' + locals.className : '';\n\n  var _step      = _steps[_current] || { title: '', description: '', content: '' };\n  var _isFirst   = _current === 0;\n  var _isLast    = _current === _steps.length - 1;\n  var _pct       = _steps.length > 0 ? Math.min(100, Math.max(0, ((_current + 1) / _steps.length) * 100)) : 0;\n%>\n\n<% if (_mode === 'modal') { %>\n<div\n  id=\"<%= _id %>\"\n  data-onboarding-wizard\n  class=\"fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-200<%= _open ? '' : ' opacity-0 pointer-events-none hidden' %>\"\n  role=\"dialog\"\n  aria-modal=\"true\"\n  aria-labelledby=\"<%= _id %>-title\"\n>\n  <div class=\"absolute inset-0 bg-black/50\" aria-hidden=\"true\"></div>\n  <div class=\"relative z-[101] w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-xl flex flex-col\">\n    <div class=\"flex items-start justify-between gap-3 px-6 py-4 border-b border-border shrink-0\">\n      <h2 id=\"<%= _id %>-title\" class=\"text-base font-semibold text-text-primary\"><%= _title %></h2>\n    </div>\n    <div class=\"px-6 py-4 flex-1\">\n<% } else { %>\n<div id=\"<%= _id %>\" class=\"mx-auto w-full max-w-2xl rounded-xl border border-border bg-surface-raised p-6 shadow-sm\">\n<% } %>\n\n  <div class=\"flex flex-col gap-6<%= _className %>\">\n    <div class=\"flex items-center gap-3\">\n      <span class=\"text-xs uppercase tracking-wide text-text-disabled font-medium shrink-0\">\n        <%= _current + 1 %> / <%= _steps.length %>\n      </span>\n      <div class=\"flex-1\">\n        <% if (_indicator === 'bar') { %>\n        <div class=\"h-1 w-full rounded-full bg-surface-sunken overflow-hidden\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"<%= _steps.length %>\" aria-valuenow=\"<%= _current + 1 %>\">\n          <div class=\"h-full bg-primary transition-[width] duration-300\" style=\"width: <%= _pct %>%;\"></div>\n        </div>\n        <% } else { %>\n        <div class=\"flex items-center gap-2\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"<%= _steps.length %>\" aria-valuenow=\"<%= _current + 1 %>\">\n          <% _steps.forEach(function(_s, i) { %>\n            <% var dotClass = (i === _current) ? 'w-6 bg-primary' : (i < _current ? 'w-2 bg-primary' : 'w-2 bg-surface-sunken'); %>\n            <span class=\"h-2 rounded-full transition-all <%= dotClass %>\" aria-hidden=\"true\"></span>\n          <% }); %>\n        </div>\n        <% } %>\n      </div>\n    </div>\n\n    <div>\n      <h2 class=\"text-lg font-semibold text-text-primary\"><%= _step.title %></h2>\n      <% if (_step.description) { %>\n        <p class=\"mt-1 text-sm text-text-secondary\"><%= _step.description %></p>\n      <% } %>\n    </div>\n\n    <div class=\"min-h-[8rem]\"><%- _step.content || '' %></div>\n\n    <div class=\"flex items-center justify-between gap-3 pt-4 border-t border-border\">\n      <div>\n        <% if (!_isFirst) { %>\n        <form action=\"<%= _stepAction %>\" method=\"get\" class=\"inline\">\n          <input type=\"hidden\" name=\"step\" value=\"<%= _current - 1 %>\" />\n          <button type=\"submit\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-4 py-2 text-sm\">\n            <i class=\"fa-solid fa-arrow-left\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n            <%= _prevLabel %>\n          </button>\n        </form>\n        <% } %>\n      </div>\n      <div class=\"flex items-center gap-2\">\n        <% if (_allowSkip && !_isLast) { %>\n        <form action=\"<%= _skipAction %>\" method=\"post\" class=\"inline\">\n          <button type=\"submit\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-transparent text-text-primary hover:bg-surface-overlay px-4 py-2 text-sm\">\n            <i class=\"fa-solid fa-xmark\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n            <%= _skipLabel %>\n          </button>\n        </form>\n        <% } %>\n        <% if (_isLast) { %>\n        <form action=\"<%= _completeAction %>\" method=\"post\" class=\"inline\">\n          <button type=\"submit\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm\">\n            <i class=\"fa-solid fa-check\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n            <%= _completeLabel %>\n          </button>\n        </form>\n        <% } else { %>\n        <form action=\"<%= _stepAction %>\" method=\"get\" class=\"inline\">\n          <input type=\"hidden\" name=\"step\" value=\"<%= _current + 1 %>\" />\n          <button type=\"submit\" class=\"inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm\">\n            <%= _nextLabel %>\n            <i class=\"fa-solid fa-arrow-right\" style=\"font-size: 0.875rem;\" aria-hidden=\"true\"></i>\n          </button>\n        </form>\n        <% } %>\n      </div>\n    </div>\n  </div>\n\n<% if (_mode === 'modal') { %>\n    </div>\n  </div>\n</div>\n<% } else { %>\n</div>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "Dots indicator (page mode)",
+          "code": "<%- include('modules/app/OnboardingWizard', {\n  steps: onboardingSteps,\n  current: 0,\n  indicator: 'dots',\n  allowSkip: true\n}) %>"
+        },
+        {
+          "title": "Progress bar indicator",
+          "code": "<%- include('modules/app/OnboardingWizard', {\n  steps: onboardingSteps,\n  current: 1,\n  indicator: 'bar',\n  allowSkip: false\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"progressbar\""
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--secondary",
+        "--surface-overlay",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
       ]
     },
     {

@@ -20,8 +20,12 @@ import { buildContextMenuData }           from './app-context-menu.showcase';
 import { buildImageGalleryData }          from './app-image-gallery.showcase';
 import { buildAppKanbanBoardData }        from './app-kanban-board.showcase';
 import { buildAppCalendarData }           from './app-calendar.showcase';
-import { buildAppGanttData }              from './app-gantt.showcase';
 import { buildAppFormBuilderData }        from './app-form-builder.showcase';
+import { buildMaintenancePageData }       from './app-maintenance-page.showcase';
+import { buildShareDialogData }           from './app-share-dialog.showcase';
+import { buildCommentThreadData }         from './app-comment-thread.showcase';
+import { buildMentionPickerData }         from './app-mention-picker.showcase';
+import { buildOnboardingWizardData }      from './app-onboarding-wizard.showcase';
 
 export function buildAppPatternsData(): ShowcaseItem[] {
   return [
@@ -46,7 +50,11 @@ export function buildAppPatternsData(): ShowcaseItem[] {
     ...buildImageGalleryData(),
     ...buildAppKanbanBoardData(),
     ...buildAppCalendarData(),
-    ...buildAppGanttData(),
     ...buildAppFormBuilderData(),
+    ...buildMaintenancePageData(),
+    ...buildShareDialogData(),
+    ...buildCommentThreadData(),
+    ...buildMentionPickerData(),
+    ...buildOnboardingWizardData(),
   ];
 }

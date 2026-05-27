@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-26T18:50:21.775Z",
+  "generatedAt": "2026-05-27T12:57:27.311Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -213,8 +213,7 @@
         "--text-primary"
       ],
       "usedBy": [
-        "form-builder",
-        "gantt"
+        "form-builder"
       ],
       "variantCount": 13
     },
@@ -2014,56 +2013,6 @@
       "variantCount": 3
     },
     {
-      "id": "gantt",
-      "name": "Gantt",
-      "layer": "app",
-      "category": "App",
-      "filePath": "modules/app/Gantt/Gantt.ejs",
-      "abbr": "Gt",
-      "description": "MS Project / GanttPRO / dhtmlxGantt-style project timeline. M1 ships the scale switcher (day / week / month / quarter / year), a vertical Today line (var(--warning)), WBS tree with expand/collapse on the left panel, sticky timeline header with synchronised horizontal + vertical scroll, and absolutely-positioned task bars with a %-progress fill (bg-primary over bg-primary-subtle). Public props for `dependencies`, `baselines`, `criticalPath`, `workingDays`, `holidays`, `messages`, and the M2 callbacks (`onTaskUpdate`, `onDependencyCreate/Delete`) are accepted but not yet visually wired — they become live in M2 (drag-to-schedule + dependency drawing), M3 (CPM critical-path highlight + hover tooltip), M4 (milestones + baselines + group rollup), M5 (resource leveling + export PNG/PDF/CSV + working-day calendar), and M6 (full keyboard nav + locale). Pixel-identical React sibling at modules/app/Gantt/index.tsx.",
-      "status": "beta",
-      "since": "2026-05",
-      "composes": [
-        "button"
-      ],
-      "a11y": {
-        "wcagLevel": "AA",
-        "ariaPatterns": [
-          "grid",
-          "row",
-          "columnheader",
-          "gridcell",
-          "tablist",
-          "tab"
-        ],
-        "keyboardInteractions": [
-          {
-            "keys": "Tab",
-            "action": "Move focus across scale tabs and collapse buttons"
-          },
-          {
-            "keys": "Space / Enter",
-            "action": "Activate scale tab or expand/collapse a WBS group"
-          }
-        ],
-        "notes": "Root carries role=\"grid\" with aria-rowcount + aria-colcount. The timeline header row is role=\"row\" with aria-rowindex=\"1\" and each cell is role=\"columnheader\" with aria-colindex. Task bars are role=\"gridcell\" labelled with the task name, dates and % complete. Scale switcher is a role=\"tablist\"/role=\"tab\" pair. Full keyboard parity ships in M6."
-      },
-      "designTokens": [
-        "--surface-base",
-        "--surface-raised",
-        "--surface-overlay",
-        "--text-primary",
-        "--text-secondary",
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--primary-subtle",
-        "--primary-fg",
-        "--warning"
-      ],
-      "variantCount": 3
-    },
-    {
       "id": "form-builder",
       "name": "FormBuilder",
       "layer": "app",
@@ -2123,6 +2072,190 @@
         "--error-subtle"
       ],
       "variantCount": 3
+    },
+    {
+      "id": "maintenance-page",
+      "name": "MaintenancePage",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/MaintenancePage.ejs",
+      "abbr": "Mp",
+      "description": "Full-page maintenance screen. Optional ETA countdown badge and external status-page link. Use for planned downtime or unplanned outages.",
+      "status": "stable",
+      "since": "2026-05",
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--text-disabled",
+        "--text-inverse",
+        "--text-primary",
+        "--text-secondary",
+        "--warning",
+        "--warning-fg",
+        "--warning-subtle"
+      ],
+      "variantCount": 2
+    },
+    {
+      "id": "share-dialog",
+      "name": "ShareDialog",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/ShareDialog.ejs",
+      "abbr": "SD",
+      "description": "Share modal: copyable link, email invitation with permission picker, and a list of current invitees with permission/remove controls.",
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"dialog\"",
+          "aria-modal=\"true\"",
+          "aria-labelledby",
+          "aria-describedby"
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--error-subtle",
+        "--info",
+        "--info-fg",
+        "--info-subtle",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--primary-subtle",
+        "--secondary",
+        "--secondary-hover",
+        "--surface-base",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary",
+        "--warning",
+        "--warning-fg",
+        "--warning-subtle"
+      ],
+      "variantCount": 2
+    },
+    {
+      "id": "comment-thread",
+      "name": "CommentThread",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/CommentThread.ejs",
+      "abbr": "CT",
+      "description": "Generic threaded comments with replies, like counts, delete-own actions, and a composer. Domain-agnostic — pass comments + handlers.",
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "aria-label=\"Comments\"",
+          "aria-pressed (like)",
+          "aria-expanded (reply)"
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--primary-subtle",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ],
+      "variantCount": 2
+    },
+    {
+      "id": "mention-picker",
+      "name": "MentionPicker",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/MentionPicker.ejs",
+      "abbr": "MP",
+      "description": "@-trigger autocomplete picker. Headless: takes users + query + position, fires onSelect. Keyboard nav (ArrowUp/Down, Enter/Tab, Escape).",
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"listbox\"",
+          "role=\"option\"",
+          "aria-selected"
+        ],
+        "keyboardInteractions": [
+          {
+            "keys": "ArrowDown / ArrowUp",
+            "action": "Move selection"
+          },
+          {
+            "keys": "Enter / Tab",
+            "action": "Insert highlighted mention"
+          },
+          {
+            "keys": "Escape",
+            "action": "Cancel picker"
+          }
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--primary",
+        "--primary-subtle",
+        "--secondary",
+        "--surface-overlay",
+        "--surface-raised",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ],
+      "variantCount": 2
+    },
+    {
+      "id": "onboarding-wizard",
+      "name": "OnboardingWizard",
+      "layer": "app",
+      "category": "App",
+      "filePath": "modules/app/OnboardingWizard.ejs",
+      "abbr": "OW",
+      "description": "Multi-step onboarding flow with dots/bar progress, optional skip, and page or modal presentation. Server-rendered with ?step=N querystring.",
+      "status": "stable",
+      "since": "2026-05",
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "role=\"progressbar\""
+        ]
+      },
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--primary-fg",
+        "--primary-hover",
+        "--secondary",
+        "--surface-overlay",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ],
+      "variantCount": 2
     },
     {
       "id": "login-form",
