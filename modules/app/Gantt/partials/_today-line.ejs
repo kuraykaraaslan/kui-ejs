@@ -1,9 +1,0 @@
-<%
-  // ── Today vertical line ─────────────────────────────────────────────
-  // Locals: todayLeft (number, -1 when outside range), totalHeight
-%>
-<% if (todayLeft >= 0) { %>
-  <div aria-hidden="true"
-    class="gantt-today-line absolute top-0 pointer-events-none z-10"
-    style="left: <%= todayLeft %>px; height: <%= totalHeight %>px; width: 2px; background-color: var(--warning);"></div>
-<% } %>
