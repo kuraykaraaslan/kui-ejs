@@ -1,28 +1,6 @@
 {
   "functions": {
-    "src/**/*.ts": {
-      "includeFiles": [
-        "modules/**",
-        "views/**",
-        "public/assets/**",
-        "public/registry/**",
-        "public/components/**",
-        "public/schemas/**",
-        "public/llms.txt"
-      ]
-    },
-    "src/**/*.js": {
-      "includeFiles": [
-        "modules/**",
-        "views/**",
-        "public/assets/**",
-        "public/registry/**",
-        "public/components/**",
-        "public/schemas/**",
-        "public/llms.txt"
-      ]
-    },
-    "api/**/*.ts": {
+    "api/index.ts": {
       "includeFiles": [
         "modules/**",
         "views/**",
@@ -33,5 +11,8 @@
         "public/llms.txt"
       ]
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
+  ]
 }
