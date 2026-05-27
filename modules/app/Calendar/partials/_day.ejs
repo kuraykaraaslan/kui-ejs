@@ -1,5 +1,5 @@
 <%
-  // Day view — parallel of views/DayView.tsx
+  // Day view — parallel of views/DayView.tsx (M1 + M2 drag/popover hooks)
   // Locals: _id, _date, _events, _today, _L, _workingHours, _slotMinutes,
   //         _isSameDay, _eventOnDay, _pillCls, _fmtTime, _minutesIntoDay
   var HOUR_HEIGHT = 48;
@@ -46,9 +46,9 @@
       <% }); %>
     </div>
 
-    <div class="flex-1 min-w-0 relative">
+    <div data-cal-day-index="0" data-cal-day-iso="<%= _date.toISOString() %>" class="flex-1 min-w-0 relative">
       <div class="h-8 border-b border-border bg-surface-raised"></div>
-      <div class="relative" style="height: <%= _totalHeight %>px">
+      <div data-cal-day-slots class="relative touch-none select-none" style="height: <%= _totalHeight %>px">
         <% _hours.forEach(function (h) {
              var inWorking = _isWorkingDay && _workingHours && h >= _workingHours.start && h < _workingHours.end;
              var cls = 'border-b border-border/60 ' + (inWorking ? 'bg-surface-base' : 'bg-surface-raised/60');
@@ -65,11 +65,19 @@
         %>
           <button type="button"
             data-event-id="<%= e.id %>"
+            data-event-title="<%= e.title %>"
+            data-event-start="<%= e.start.getTime() %>"
+            data-event-end="<%= e.end.getTime() %>"
+            data-event-color="<%= e.color || 'primary' %>"
+            <% if (e.description) { %>data-event-description="<%= e.description %>"<% } %>
             aria-label="<%= e.title %> <%= _fmtTime(e.start) %> – <%= _fmtTime(e.end) %>"
             style="top: <%= top %>px; height: <%= height %>px; left: 4px; right: 4px;"
-            class="absolute rounded-md px-2 py-1 text-left text-[11px] leading-tight overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= pill %>">
+            class="absolute rounded-md px-2 py-1 text-left text-[11px] leading-tight overflow-hidden cursor-grab active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= pill %>">
             <div class="font-semibold truncate"><%= e.title %></div>
             <div class="opacity-80 text-[10px] tabular-nums"><%= _fmtTime(e.start) %> – <%= _fmtTime(e.end) %></div>
+            <% if (height >= 24) { %>
+              <span data-resize-handle role="separator" aria-label="Resize" class="absolute left-1 right-1 bottom-0 h-1.5 rounded-b cursor-ns-resize bg-transparent hover:bg-black/10"></span>
+            <% } %>
           </button>
         <% }); %>
       </div>

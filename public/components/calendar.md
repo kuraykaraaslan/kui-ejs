@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, and TR/EN locales. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + resource view, drag-create/move/resize, RRULE recurrence, multi-calendar overlay and full a11y/i18n/perf polish land in M2-M6.
+Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create) and in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Resource/multi-calendar overlay, agenda + mini, and full a11y/i18n/perf polish land in M4-M6.
 
 ## Accessibility
 
@@ -77,11 +77,61 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
 }) %>
 ```
 
+### Recurring — RRULE expansion
+
+```ejs
+<%- include('modules/app/Calendar', {
+  id: 'main-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  slotMinutes: 15,
+  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] },
+  events: [
+    { id: 'standup', title: 'Daily standup',
+      start: new Date(2026, 4, 11, 9, 30), end: new Date(2026, 4, 11, 9, 45),
+      rrule: 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=20',
+      exceptions: [new Date(2026, 4, 13)] },
+    { id: 'coffee', title: 'Coffee with Ada',
+      start: new Date(2026, 4, 12, 8, 30), end: new Date(2026, 4, 12, 9, 0),
+      rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU;COUNT=5' }
+  ]
+}) %>
+```
+
+### Interactive — drag, resize, popover
+
+```ejs
+<!-- Listen for the CustomEvents the calendar fires on user actions -->
+<%- include('modules/app/Calendar', {
+  id: 'interactive-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  events: events,
+  slotMinutes: 30
+}) %>
+<script>
+  var cal = document.getElementById('interactive-cal');
+  cal.addEventListener('kui-calendar:event-create', function (ev) {
+    console.log('create', ev.detail); // { start, end, dayIndex }
+  });
+  cal.addEventListener('kui-calendar:event-update', function (ev) {
+    console.log('update', ev.detail); // { eventId, start, end }
+  });
+  cal.addEventListener('kui-calendar:event-delete', function (ev) {
+    console.log('delete', ev.detail); // { eventId }
+  });
+  cal.addEventListener('kui-calendar:event-edit', function (ev) {
+    // Open your own edit modal here, then call your API.
+    console.log('edit', ev.detail);
+  });
+</script>
+```
+
 ## Full EJS source
 
 ```ejs
 <%
-  // ─── Calendar — M1 (month / week / day) ─────────────────────────────────────
+  // ─── Calendar — M1 + M2 + M3 ────────────────────────────────────────────────
   //
   // Folder-scoped sibling of
   //   /home/kuray/01_NextJS_Components/modules/app/Calendar/index.tsx
@@ -95,8 +145,11 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   //   partials/_event-card.ejs   ← parts/EventCard.tsx
   //   scripts/calendar.js        ← view-state + nav (parallel of index.tsx state)
   //   scripts/keyboard.js        ← hooks/useKeyboardNav.ts
+  //   scripts/popover.js         ← parts/EventPopover.tsx          (M2)
+  //   scripts/drag.js            ← hooks/useDragMove + useResize + useDragCreate (M2)
+  //   RRULE expander (inline)    ← rrule.ts + hooks/useRecurrence.ts (M3, server-side)
   //
-  // M2-M6 stubs live next to their NextJS siblings as `// TODO M*` comments.
+  // M4-M6 still stubbed.
 
   var _id           = locals.id           || ('cal-' + Math.random().toString(36).substr(2, 6));
   var _events       = locals.events       || [];
@@ -107,11 +160,14 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   var _slotMinutes  = Number(locals.slotMinutes) > 0 ? Number(locals.slotMinutes) : 30;
   var _className    = locals.className    || '';
 
-  // Normalise events — accept ISO strings or Date instances.
+  // Normalise events — accept ISO strings or Date instances; preserve rrule + exceptions.
   _events = _events.map(function (e) {
     return Object.assign({}, e, {
       start: e.start instanceof Date ? e.start : new Date(e.start),
       end:   e.end   instanceof Date ? e.end   : new Date(e.end),
+      exceptions: Array.isArray(e.exceptions)
+        ? e.exceptions.map(function (x) { return x instanceof Date ? x : new Date(x); })
+        : undefined
     });
   });
 
@@ -123,6 +179,7 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
         month: 'Ay', week: 'Hafta', day: 'Gün',
         agenda: 'Ajanda', resource: 'Kaynak',
         allDay: 'Tüm gün', noEvents: 'Etkinlik yok',
+        edit: 'Düzenle', delete: 'Sil', confirmDelete: 'Silinsin mi?', close: 'Kapat'
       },
       weekStart: 1,
       monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -135,6 +192,7 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
         month: 'Month', week: 'Week', day: 'Day',
         agenda: 'Agenda', resource: 'Resource',
         allDay: 'All-day', noEvents: 'No events',
+        edit: 'Edit', delete: 'Delete', confirmDelete: 'Confirm delete?', close: 'Close'
       },
       weekStart: 0,
       monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -149,11 +207,13 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
 
   // ── Date helpers (mirror date-utils.ts) ───────────────────────────────────
   function startOfDay(d) { var x = new Date(d); x.setHours(0,0,0,0); return x; }
+  function endOfDay(d)   { var x = new Date(d); x.setHours(23,59,59,999); return x; }
   function isSameDay(a, b) {
     return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
   }
   function isSameMonth(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth(); }
   function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function addMonths(d, n) { var x = new Date(d); x.setMonth(x.getMonth() + n); return x; }
   function startOfWeek(d, ws) { var x = startOfDay(d); var diff = (x.getDay() - ws + 7) % 7; return addDays(x, -diff); }
   function endOfWeek(d, ws) { return addDays(startOfWeek(d, ws), 6); }
   function rangeDays(from, n) { var out = []; for (var i = 0; i < n; i++) out.push(addDays(from, i)); return out; }
@@ -169,6 +229,127 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
     return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
   }
   function minutesIntoDay(d) { return d.getHours() * 60 + d.getMinutes(); }
+
+  // ── RRULE expander (mirror rrule.ts) ──────────────────────────────────────
+  // Supports FREQ (DAILY/WEEKLY/MONTHLY/YEARLY) + INTERVAL + COUNT + UNTIL + BYDAY.
+  var DAY_MAP = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
+  function parseRRule(input) {
+    var parts = String(input).trim().split(';').map(function (p) { return p.trim(); }).filter(Boolean);
+    var map = {};
+    for (var i = 0; i < parts.length; i++) {
+      var eq = parts[i].indexOf('=');
+      if (eq < 0) continue;
+      map[parts[i].slice(0, eq).toUpperCase()] = parts[i].slice(eq + 1);
+    }
+    var freq = map.FREQ;
+    if (!freq || ['DAILY','WEEKLY','MONTHLY','YEARLY'].indexOf(freq) < 0) {
+      throw new Error('Invalid RRULE: ' + input);
+    }
+    var until;
+    if (map.UNTIL) {
+      var v = map.UNTIL.trim();
+      if (/^\d{8}$/.test(v)) {
+        until = new Date(+v.slice(0,4), +v.slice(4,6)-1, +v.slice(6,8), 23,59,59,999);
+      } else if (/^\d{8}T\d{6}Z?$/.test(v)) {
+        until = new Date(v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6,8)+'T'+v.slice(9,11)+':'+v.slice(11,13)+':'+v.slice(13,15)+(v.endsWith('Z')?'Z':''));
+      } else { until = new Date(v); }
+    }
+    var byDay;
+    if (map.BYDAY) {
+      byDay = map.BYDAY.split(',').map(function (d) { return DAY_MAP[d.trim().toUpperCase()]; }).filter(function (n) { return Number.isInteger(n); });
+    }
+    return {
+      freq: freq,
+      interval: Math.max(1, Number(map.INTERVAL || '1') || 1),
+      count: map.COUNT ? Math.max(1, Number(map.COUNT)) : undefined,
+      until: until,
+      byDay: byDay
+    };
+  }
+  function stepFreq(d, freq, interval) {
+    if (freq === 'DAILY')  return addDays(d, interval);
+    if (freq === 'WEEKLY') return addDays(d, 7 * interval);
+    if (freq === 'MONTHLY') return addMonths(d, interval);
+    var x = new Date(d); x.setFullYear(x.getFullYear() + interval); return x;
+  }
+  function withTimeOfDay(day, time) {
+    var x = new Date(day);
+    x.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), time.getMilliseconds());
+    return x;
+  }
+  function expandRRule(rule, dtstart, winStart, winEnd, hardCap) {
+    hardCap = hardCap || 1000;
+    var out = [];
+    var stopAt = (rule.until && rule.until.getTime() < winEnd.getTime()) ? rule.until : winEnd;
+    var produced = 0;
+    function emit(d) {
+      produced += 1;
+      if (d.getTime() >= winStart.getTime() && d.getTime() <= stopAt.getTime()) out.push(d);
+    }
+    if (rule.freq === 'WEEKLY' && rule.byDay && rule.byDay.length) {
+      var weekDays = rule.byDay.slice().sort(function (a,b){ return a-b; });
+      var anchor = addDays(startOfDay(dtstart), -dtstart.getDay());
+      while (out.length < hardCap && (!rule.count || produced < rule.count)) {
+        for (var j = 0; j < weekDays.length; j++) {
+          var occ = withTimeOfDay(addDays(anchor, weekDays[j]), dtstart);
+          if (occ.getTime() < dtstart.getTime()) continue;
+          if (occ.getTime() > stopAt.getTime()) return out;
+          emit(occ);
+          if (rule.count && produced >= rule.count) return out;
+        }
+        anchor = addDays(anchor, 7 * rule.interval);
+        if (anchor.getTime() > stopAt.getTime()) return out;
+      }
+      return out;
+    }
+    var cursor = new Date(dtstart);
+    while (out.length < hardCap && cursor.getTime() <= stopAt.getTime()) {
+      emit(cursor);
+      if (rule.count && produced >= rule.count) return out;
+      cursor = stepFreq(cursor, rule.freq, rule.interval);
+    }
+    return out;
+  }
+  function isException(d, exceptions) {
+    if (!exceptions || !exceptions.length) return false;
+    for (var i = 0; i < exceptions.length; i++) if (isSameDay(exceptions[i], d)) return true;
+    return false;
+  }
+
+  // ── Visible window + recurrence expansion (mirror useRecurrence + visibleWindow) ──
+  function visibleWindow(view, date, ws) {
+    if (view === 'month' || view === 'agenda' || view === 'resource') {
+      var cells = monthGrid(date, ws);
+      return [startOfDay(cells[0]), endOfDay(cells[cells.length - 1])];
+    }
+    if (view === 'week') {
+      var s = startOfWeek(date, ws);
+      return [startOfDay(s), endOfDay(rangeDays(s, 7)[6])];
+    }
+    return [startOfDay(date), endOfDay(date)];
+  }
+  var _win   = visibleWindow(_view, _defaultDate, L.weekStart);
+  var _wStart = _win[0], _wEnd = _win[1];
+  var _visibleEvents = [];
+  for (var _ei = 0; _ei < _events.length; _ei++) {
+    var _ev = _events[_ei];
+    if (!_ev.rrule) { _visibleEvents.push(_ev); continue; }
+    var _parsed;
+    try { _parsed = parseRRule(_ev.rrule); } catch (_err) { _visibleEvents.push(_ev); continue; }
+    var _dur  = _ev.end.getTime() - _ev.start.getTime();
+    var _occs = expandRRule(_parsed, _ev.start, _wStart, _wEnd);
+    for (var _oi = 0; _oi < _occs.length; _oi++) {
+      if (isException(_occs[_oi], _ev.exceptions)) continue;
+      _visibleEvents.push(Object.assign({}, _ev, {
+        id: _ev.id + '::' + _occs[_oi].toISOString(),
+        start: _occs[_oi],
+        end:   new Date(_occs[_oi].getTime() + _dur),
+        parentId: _ev.id,
+        isRecurrence: true
+      }));
+    }
+  }
+  _events = _visibleEvents;
 
   // Period label
   function periodLabel() {
@@ -206,6 +387,12 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   data-kui-calendar
   data-view="<%= _view %>"
   data-locale="<%= _locale %>"
+  data-slot-minutes="<%= _slotMinutes %>"
+  data-msg-edit="<%= L.messages.edit %>"
+  data-msg-delete="<%= L.messages.delete %>"
+  data-msg-confirm-delete="<%= L.messages.confirmDelete %>"
+  data-msg-close="<%= L.messages.close %>"
+  data-msg-all-day="<%= L.messages.allDay %>"
   tabindex="0"
   aria-label="Calendar"
   class="flex flex-col w-full rounded-lg border border-border bg-surface-base overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>"
@@ -250,6 +437,8 @@ if (!window.__KuiCalendarLoaded) {
   window.__KuiCalendarLoaded = true;
   <%- include('./scripts/calendar.js') %>
   <%- include('./scripts/keyboard.js') %>
+  <%- include('./scripts/popover.js') %>
+  <%- include('./scripts/drag.js') %>
 }
 (function () {
   function go() {

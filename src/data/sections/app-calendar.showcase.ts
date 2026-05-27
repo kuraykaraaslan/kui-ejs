@@ -58,7 +58,7 @@ export function buildAppCalendarData(): ShowcaseItem[] {
       category: 'App',
       abbr: 'Cl',
       description:
-        'Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, and TR/EN locales. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + resource view, drag-create/move/resize, RRULE recurrence, multi-calendar overlay and full a11y/i18n/perf polish land in M2-M6.',
+        'Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create) and in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Resource/multi-calendar overlay, agenda + mini, and full a11y/i18n/perf polish land in M4-M6.',
       filePath: 'modules/app/Calendar/Calendar.ejs',
       sourceCode,
       since: '2026-05',
@@ -138,6 +138,91 @@ export function buildAppCalendarData(): ShowcaseItem[] {
   locale: 'en',
   workingHours: { start: 9, end: 18, days: [1,2,3,4,5] }
 }) %>`,
+        },
+        {
+          title: 'Recurring — RRULE expansion',
+          layout: 'stack',
+          previewHtml: wrap(renderCalendar({
+            id: 'cal-demo-rec',
+            view: 'week',
+            defaultDate: DEMO_ANCHOR,
+            locale: 'en',
+            slotMinutes: 15,
+            workingHours: { start: 9, end: 18, days: [1, 2, 3, 4, 5] },
+            events: [
+              {
+                id: 'rec-standup', title: 'Daily standup',
+                start: new Date(Y, M, 11, 9, 30), end: new Date(Y, M, 11, 9, 45),
+                color: 'primary',
+                rrule: 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=20',
+                exceptions: [new Date(Y, M, 13)],
+              },
+              {
+                id: 'one-off', title: 'Roadmap review',
+                start: new Date(Y, M, 13, 14, 0), end: new Date(Y, M, 13, 15, 0),
+                color: 'info', icon: 'fa-video',
+              },
+              {
+                id: 'rec-coffee', title: 'Coffee with Ada',
+                start: new Date(Y, M, 12, 8, 30), end: new Date(Y, M, 12, 9, 0),
+                color: 'success', icon: 'fa-mug-hot',
+                rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU;COUNT=5',
+              },
+            ],
+          })),
+          code: `<%- include('modules/app/Calendar', {
+  id: 'main-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  slotMinutes: 15,
+  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] },
+  events: [
+    { id: 'standup', title: 'Daily standup',
+      start: new Date(2026, 4, 11, 9, 30), end: new Date(2026, 4, 11, 9, 45),
+      rrule: 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=20',
+      exceptions: [new Date(2026, 4, 13)] },
+    { id: 'coffee', title: 'Coffee with Ada',
+      start: new Date(2026, 4, 12, 8, 30), end: new Date(2026, 4, 12, 9, 0),
+      rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU;COUNT=5' }
+  ]
+}) %>`,
+        },
+        {
+          title: 'Interactive — drag, resize, popover',
+          layout: 'stack',
+          previewHtml: wrap(renderCalendar({
+            id: 'cal-demo-interactive',
+            view: 'week',
+            defaultDate: DEMO_ANCHOR,
+            events: makeEvents(),
+            locale: 'en',
+            slotMinutes: 30,
+            workingHours: { start: 9, end: 18, days: [1, 2, 3, 4, 5] },
+          })),
+          code: `<!-- Listen for the CustomEvents the calendar fires on user actions -->
+<%- include('modules/app/Calendar', {
+  id: 'interactive-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  events: events,
+  slotMinutes: 30
+}) %>
+<script>
+  var cal = document.getElementById('interactive-cal');
+  cal.addEventListener('kui-calendar:event-create', function (ev) {
+    console.log('create', ev.detail); // { start, end, dayIndex }
+  });
+  cal.addEventListener('kui-calendar:event-update', function (ev) {
+    console.log('update', ev.detail); // { eventId, start, end }
+  });
+  cal.addEventListener('kui-calendar:event-delete', function (ev) {
+    console.log('delete', ev.detail); // { eventId }
+  });
+  cal.addEventListener('kui-calendar:event-edit', function (ev) {
+    // Open your own edit modal here, then call your API.
+    console.log('edit', ev.detail);
+  });
+</script>`,
         },
       ],
     },
