@@ -2,7 +2,7 @@
   "framework": null,
   "functions": {
     "api/index.ts": {
-      "includeFiles": "modules/**"
+      "includeFiles": "modules/**/*"
     }
   },
   "rewrites": [
