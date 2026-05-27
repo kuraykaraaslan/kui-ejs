@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-27T14:30:39.380Z",
+  "generatedAt": "2026-05-27T18:15:52.708Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1953,7 +1953,7 @@
       "category": "App",
       "filePath": "modules/app/Calendar/Calendar.ejs",
       "abbr": "Cl",
-      "description": "Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, and TR/EN locales. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + resource view, drag-create/move/resize, RRULE recurrence, multi-calendar overlay and full a11y/i18n/perf polish land in M2-M6.",
+      "description": "Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create) and in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Resource/multi-calendar overlay, agenda + mini, and full a11y/i18n/perf polish land in M4-M6.",
       "status": "beta",
       "since": "2026-05",
       "a11y": {
@@ -1996,7 +1996,7 @@
         "--text-secondary",
         "--text-disabled"
       ],
-      "variantCount": 3
+      "variantCount": 5
     },
     {
       "id": "maintenance-page",
