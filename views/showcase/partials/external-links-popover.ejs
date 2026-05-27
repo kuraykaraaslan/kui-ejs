@@ -1,0 +1,68 @@
+<%
+  // Render an "External library links" popover next to the showcase title.
+  // Mirrors the NextJS sibling at modules/showcase/ui/ExternalLinksPopover.tsx.
+  //
+  // Expected locals:
+  //   external — ExternalLibraryLinks { packageName?, version?, homepage?, npm?, github? }
+  //   title    — fallback display label when packageName is missing
+  //
+  // Built on the native <details>/<summary> element so it works without any
+  // client-side JS. Clicking the chip toggles the panel; clicking outside
+  // closes it via the inline handler.
+
+  var _ext = locals.external || {};
+  var _pkg = _ext.packageName || locals.title || 'Library';
+  var _rows = [];
+  if (_ext.homepage) _rows.push({ key: 'homepage', label: 'Homepage', href: _ext.homepage, icon: 'fa-solid fa-globe' });
+  if (_ext.website)  _rows.push({ key: 'website',  label: 'Website',  href: _ext.website,  icon: 'fa-solid fa-earth-americas' });
+  if (_ext.npm)      _rows.push({ key: 'npm',      label: 'npm',      href: _ext.npm,      icon: 'fa-brands fa-npm'  });
+  if (_ext.github)   _rows.push({ key: 'github',   label: 'GitHub',   href: _ext.github,   icon: 'fa-brands fa-github' });
+%>
+<% if (_rows.length > 0) { %>
+<style>
+  /* Suppress the native disclosure triangle on the popover trigger. */
+  details.kui-external-links > summary::-webkit-details-marker { display: none; }
+  details.kui-external-links > summary { list-style: none; }
+</style>
+<details
+  class="kui-external-links relative inline-block"
+  data-external-links
+>
+  <summary
+    role="button"
+    aria-label="Open library links for <%= _pkg %>"
+    class="list-none inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-raised px-2.5 py-1 text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+    style="list-style: none;"
+  >
+    <i class="fa-solid fa-link w-3 h-3" aria-hidden="true"></i>
+    <span>Links</span>
+  </summary>
+  <div
+    role="dialog"
+    class="absolute z-50 mt-2 left-0 w-64 rounded-lg border border-border bg-surface-raised shadow-xl p-2"
+  >
+    <div class="px-2 py-1.5 border-b border-border mb-1">
+      <p class="text-xs font-semibold text-text-primary truncate"><%= _pkg %></p>
+      <% if (_ext.version) { %>
+        <p class="text-[11px] font-mono text-text-secondary">v<%= _ext.version %></p>
+      <% } %>
+    </div>
+    <ul class="space-y-0.5" role="list">
+      <% _rows.forEach(function(row) { %>
+        <li>
+          <a
+            href="<%= row.href %>"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+          >
+            <i class="<%= row.icon %> w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+            <span class="flex-1 font-medium"><%= row.label %></span>
+            <i class="fa-solid fa-arrow-up-right-from-square w-3 h-3 text-text-disabled group-hover:text-text-primary" aria-hidden="true"></i>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+</details>
+<% } %>

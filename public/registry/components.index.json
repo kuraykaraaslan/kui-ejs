@@ -3,13 +3,14 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-27T12:57:27.311Z",
+  "generatedAt": "2026-05-27T14:11:00.334Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
     "app": "modules/app/ — Application-level patterns (shells, navigation, drawers, search, state placeholders). Compose ui/ partials and own page-level structure.",
     "domain": "modules/domain/<vertical>/ — Industry-vertical partials (auth, payment, address, modem, invoice, ups, api-doc, …). Compose ui/ + app/. modules/domain/modem/ also exports a TypeScript types.ts.",
-    "theme": "views/theme/<vertical>/ — Full multi-page server-rendered demos. Each theme has its own Express router under src/routes/themes/<vertical>.ts."
+    "theme": "views/theme/<vertical>/ — Full multi-page server-rendered demos. Each theme has its own Express router under src/routes/themes/<vertical>.ts.",
+    "library": "External npm packages featured in the showcase. filePath points to the showcase entry, not first-party source; the `external` field carries homepage/npm/github links."
   },
   "conventions": {
     "templating": "EJS 3 server-rendered. All data passed via res.render(view, locals). Use <%= value %> for escaped output; reserve <%- html %> for trusted EJS includes only (audited in docs/raw-output-allowlist.md).",

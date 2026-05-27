@@ -31,6 +31,8 @@ const LAYER_DESCRIPTIONS: Record<RegistryLayer, string> = {
     'modules/domain/<vertical>/ — Industry-vertical partials (auth, payment, address, modem, invoice, ups, api-doc, …). Compose ui/ + app/. modules/domain/modem/ also exports a TypeScript types.ts.',
   theme:
     'views/theme/<vertical>/ — Full multi-page server-rendered demos. Each theme has its own Express router under src/routes/themes/<vertical>.ts.',
+  library:
+    'External npm packages featured in the showcase. filePath points to the showcase entry, not first-party source; the `external` field carries homepage/npm/github links.',
 };
 
 const CONVENTIONS = {
@@ -86,7 +88,8 @@ const DESIGN_TOKENS: RegistryToken[] = [
   { name: '--info-fg',         light: '#164e63', purpose: 'Text on info' },
 ];
 
-function inferLayer(filePath: string): RegistryLayer {
+function inferLayer(filePath: string, isExternal: boolean): RegistryLayer {
+  if (isExternal) return 'library';
   if (filePath.startsWith('modules/ui/')) return 'ui';
   if (filePath.startsWith('modules/app/')) return 'app';
   if (filePath.startsWith('modules/domain/')) return 'domain';
@@ -123,7 +126,7 @@ function findMenuEntry(id: string): ShowcaseNavItem | undefined {
 export function buildRegistry(): Registry {
   const components: RegistryComponent[] = SHOWCASE_DATA.map((c) => {
     const menu = findMenuEntry(c.id);
-    const layer = inferLayer(c.filePath);
+    const layer = inferLayer(c.filePath, Boolean(c.external));
     return {
       id: c.id,
       name: c.title,
@@ -143,6 +146,7 @@ export function buildRegistry(): Registry {
       a11y: c.a11y,
       designTokens: c.designTokens ?? inferDesignTokens(c.sourceCode),
       dependencies: c.dependencies,
+      external: c.external,
     };
   });
 

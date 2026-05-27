@@ -152,11 +152,14 @@
 
       <% } else { %>
         <div class="mb-2">
-          <div class="flex items-center gap-3 mb-1">
+          <div class="flex flex-wrap items-center gap-3 mb-1">
             <h2 class="text-2xl font-bold text-text-primary leading-tight"><%= selected.title %></h2>
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
               style="<%= catStyle[selected.category] || 'background:var(--surface-sunken);color:var(--text-secondary)' %>"
             ><%= selected.category %></span>
+            <% if (selected.external) { %>
+              <%- include('./partials/external-links-popover', { external: selected.external, title: selected.title }) %>
+            <% } %>
           </div>
           <p class="text-sm text-text-secondary max-w-2xl"><%= selected.description %></p>
         </div>

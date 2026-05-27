@@ -60,6 +60,26 @@ export type A11yMetadata = {
   notes?: string;
 };
 
+/**
+ * External library metadata. Set on showcase entries that wrap a third-party
+ * npm package. The detail header renders a small info popover with these
+ * links so users can jump to the upstream sources.
+ */
+export type ExternalLibraryLinks = {
+  /** Display label for the package, defaults to the showcase title. */
+  packageName?: string;
+  /** Published version (semver) — shown next to the package name. */
+  version?: string;
+  /** Generic homepage / project URL (often the README on GitHub). */
+  homepage?: string;
+  /** Standalone marketing / documentation site, distinct from `homepage`. */
+  website?: string;
+  /** npm registry page (https://www.npmjs.com/package/...). */
+  npm?: string;
+  /** GitHub repository URL. */
+  github?: string;
+};
+
 export type ShowcaseItem = {
   id: string;
   title: string;
@@ -84,4 +104,12 @@ export type ShowcaseItem = {
   a11y?: A11yMetadata;
   designTokens?: string[];    // CSS variable names consumed
   dependencies?: string[];    // npm packages required at runtime
+
+  /**
+   * Remote-library links. When set, the showcase detail header renders an
+   * info popover with clickable shortcuts to the upstream homepage, npm
+   * page, and GitHub repository. Use this for entries that wrap a
+   * third-party package rather than first-party code in this repo.
+   */
+  external?: ExternalLibraryLinks;
 };

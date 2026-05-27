@@ -39,6 +39,7 @@ app.locals.catStyle = {
   'Domain':         'background:var(--error-subtle);color:var(--error-fg)',
   'Domain · Modem': 'background:var(--secondary);color:var(--primary-fg)',
   'Theme':          'background:var(--surface-sunken);color:var(--text-secondary)',
+  'Library':        'background:var(--surface-sunken);color:var(--text-primary)',
 };
 
 app.set('view engine', 'ejs');

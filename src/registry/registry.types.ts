@@ -5,9 +5,9 @@
 // see `src/registry/registry.ts`. It is exposed at `/api/registry` and
 // `/llms-full.txt`.
 
-import type { ComponentStatus, A11yMetadata } from '../types';
+import type { ComponentStatus, A11yMetadata, ExternalLibraryLinks } from '../types';
 
-export type RegistryLayer = 'ui' | 'app' | 'domain' | 'theme';
+export type RegistryLayer = 'ui' | 'app' | 'domain' | 'theme' | 'library';
 
 export type RegistryCategory =
   | 'Atom'
@@ -15,7 +15,8 @@ export type RegistryCategory =
   | 'Organism'
   | 'App'
   | 'Domain'
-  | 'Theme';
+  | 'Theme'
+  | 'Library';
 
 export type RegistryVariant = {
   title: string;
@@ -61,6 +62,8 @@ export type RegistryComponent = {
   designTokens?: string[];
   /** npm packages required at runtime. */
   dependencies?: string[];
+  /** Upstream links when this entry wraps a third-party npm package. */
+  external?: ExternalLibraryLinks;
 };
 
 export type RegistryTheme = {
