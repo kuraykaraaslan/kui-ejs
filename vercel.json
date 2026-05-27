@@ -1,7 +1,8 @@
 {
+  "framework": null,
   "functions": {
     "api/index.ts": {
-      "includeFiles": "{modules,views,public}/**"
+      "includeFiles": "modules/**"
     }
   },
   "rewrites": [
