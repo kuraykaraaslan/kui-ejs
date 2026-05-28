@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-28T00:09:58.080Z",
+  "generatedAt": "2026-05-28T06:47:49.733Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1953,7 +1953,7 @@
       "category": "App",
       "filePath": "modules/app/Calendar/Calendar.ejs",
       "abbr": "Cl",
-      "description": "Month / week / day / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), and multi-calendar overlay with per-calendar visibility legend. ResourceView shows one column per resource with O(n²) conflict highlighting. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + mini and full a11y/i18n/perf polish land in M5-M6.",
+      "description": "Month / week / day / agenda / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping) and a composable MiniCalendar sibling (modules/app/MiniCalendar). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Full a11y / i18n / perf polish + IANA timezone land in M6.",
       "status": "beta",
       "since": "2026-05",
       "a11y": {
@@ -1996,7 +1996,7 @@
         "--text-secondary",
         "--text-disabled"
       ],
-      "variantCount": 7
+      "variantCount": 9
     },
     {
       "id": "maintenance-page",

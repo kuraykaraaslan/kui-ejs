@@ -325,7 +325,11 @@
       _pillCls: pillCls, _fmtTime: fmtTime, _minutesIntoDay: minutesIntoDay
     }) %>
   <% } else if (_view === 'agenda') { %>
-    <%- include('./partials/_agenda', { _id: _id }) %>
+    <%- include('./partials/_agenda', {
+      _id: _id, _events: _events, _today: _today, _L: L,
+      _windowStart: _wStart, _windowEnd: _wEnd,
+      _isSameDay: isSameDay, _fmtTime: fmtTime
+    }) %>
   <% } else if (_view === 'resource') { %>
     <%- include('./partials/_resource', {
       _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
@@ -344,6 +348,7 @@ if (!window.__KuiCalendarLoaded) {
   <%- include('./scripts/popover.js') %>
   <%- include('./scripts/drag.js') %>
   <%- include('./scripts/legend.js') %>
+  <%- include('./scripts/agenda.js') %>
 }
 (function () {
   function go() {

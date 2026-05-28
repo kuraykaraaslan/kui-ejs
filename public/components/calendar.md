@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Month / week / day / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), and multi-calendar overlay with per-calendar visibility legend. ResourceView shows one column per resource with O(n²) conflict highlighting. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + mini and full a11y/i18n/perf polish land in M5-M6.
+Month / week / day / agenda / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping) and a composable MiniCalendar sibling (modules/app/MiniCalendar). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Full a11y / i18n / perf polish + IANA timezone land in M6.
 
 ## Accessibility
 
@@ -143,6 +143,47 @@ Month / week / day / resource calendar with view switcher, today/prev/next nav (
   ],
   events: events // each carries a resourceId
 }) %>
+```
+
+### Agenda view — date-grouped + search
+
+```ejs
+<%- include('modules/app/Calendar', {
+  id: 'agenda-cal',
+  view: 'agenda',
+  defaultDate: new Date(2026, 4, 13),
+  events: events,
+  locale: 'en'
+}) %>
+```
+
+### MiniCalendar sidebar — composes with Calendar via CustomEvent
+
+```ejs
+<div class="grid grid-cols-[15rem_1fr] gap-3">
+  <%- include('modules/app/MiniCalendar', {
+    id: 'mini',
+    value: new Date(2026, 4, 13),
+    locale: 'en'
+  }) %>
+  <%- include('modules/app/Calendar', {
+    id: 'main',
+    view: 'week',
+    defaultDate: new Date(2026, 4, 13),
+    events: events
+  }) %>
+</div>
+<script>
+  // Listen to mini → drive main
+  document.getElementById('mini').addEventListener(
+    'kui-minicalendar:change',
+    function (ev) {
+      // Re-render or update the main calendar with the picked date.
+      // For SPA-style apps you'd call your route/state handler here.
+      console.log('picked', ev.detail.date);
+    }
+  );
+</script>
 ```
 
 ### Multi-calendar overlay — toggle visibility
@@ -498,7 +539,11 @@ Month / week / day / resource calendar with view switcher, today/prev/next nav (
       _pillCls: pillCls, _fmtTime: fmtTime, _minutesIntoDay: minutesIntoDay
     }) %>
   <% } else if (_view === 'agenda') { %>
-    <%- include('./partials/_agenda', { _id: _id }) %>
+    <%- include('./partials/_agenda', {
+      _id: _id, _events: _events, _today: _today, _L: L,
+      _windowStart: _wStart, _windowEnd: _wEnd,
+      _isSameDay: isSameDay, _fmtTime: fmtTime
+    }) %>
   <% } else if (_view === 'resource') { %>
     <%- include('./partials/_resource', {
       _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
@@ -517,6 +562,7 @@ if (!window.__KuiCalendarLoaded) {
   <%- include('./scripts/popover.js') %>
   <%- include('./scripts/drag.js') %>
   <%- include('./scripts/legend.js') %>
+  <%- include('./scripts/agenda.js') %>
 }
 (function () {
   function go() {

@@ -11,8 +11,15 @@ const calIndexPath    = path.join(process.cwd(), 'modules/app/Calendar/Calendar.
 const renderSource    = fs.readFileSync(calTemplatePath, 'utf-8');
 const sourceCode      = fs.readFileSync(calIndexPath,    'utf-8');
 
+const miniTemplatePath = path.join(process.cwd(), 'modules/app/MiniCalendar.ejs');
+const miniSource       = fs.readFileSync(miniTemplatePath, 'utf-8');
+
 function renderCalendar(locals: Record<string, unknown>): string {
   return ejs.render(renderSource, locals, { filename: calTemplatePath });
+}
+
+function renderMiniCalendar(locals: Record<string, unknown>): string {
+  return ejs.render(miniSource, locals, { filename: miniTemplatePath });
 }
 
 // Anchor to a stable date so the deterministic grid matches the NextJS demo.
@@ -58,7 +65,7 @@ export function buildAppCalendarData(): ShowcaseItem[] {
       category: 'App',
       abbr: 'Cl',
       description:
-        'Month / week / day / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), and multi-calendar overlay with per-calendar visibility legend. ResourceView shows one column per resource with O(n²) conflict highlighting. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + mini and full a11y/i18n/perf polish land in M5-M6.',
+        'Month / week / day / agenda / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping) and a composable MiniCalendar sibling (modules/app/MiniCalendar). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Full a11y / i18n / perf polish + IANA timezone land in M6.',
       filePath: 'modules/app/Calendar/Calendar.ejs',
       sourceCode,
       since: '2026-05',
@@ -270,6 +277,76 @@ export function buildAppCalendarData(): ShowcaseItem[] {
   ],
   events: events // each carries a resourceId
 }) %>`,
+        },
+        {
+          title: 'Agenda view — date-grouped + search',
+          layout: 'stack',
+          previewHtml: wrap(renderCalendar({
+            id: 'cal-demo-agenda',
+            view: 'agenda',
+            defaultDate: DEMO_ANCHOR,
+            events: makeEvents(),
+            locale: 'en',
+          })),
+          code: `<%- include('modules/app/Calendar', {
+  id: 'agenda-cal',
+  view: 'agenda',
+  defaultDate: new Date(2026, 4, 13),
+  events: events,
+  locale: 'en'
+}) %>`,
+        },
+        {
+          title: 'MiniCalendar sidebar — composes with Calendar via CustomEvent',
+          layout: 'stack',
+          previewHtml: `
+<div class="w-full grid grid-cols-1 md:grid-cols-[15rem_1fr] gap-3 items-start" id="mini-side-demo">
+  ${renderMiniCalendar({ id: 'mini-side-mini', value: DEMO_ANCHOR, locale: 'en' })}
+  ${renderCalendar({
+    id: 'mini-side-main',
+    view: 'week',
+    defaultDate: DEMO_ANCHOR,
+    events: makeEvents(),
+    locale: 'en',
+    workingHours: { start: 9, end: 18, days: [1, 2, 3, 4, 5] },
+  })}
+</div>
+<script>
+(function () {
+  var mini = document.getElementById('mini-side-mini');
+  var main = document.getElementById('mini-side-main');
+  if (!mini || !main) return;
+  mini.addEventListener('kui-minicalendar:change', function (ev) {
+    // Re-anchor the main calendar — simplest: set data-current-date + dispatch
+    // the date-change event so the existing nav code reuses its handler.
+    main.setAttribute('data-current-date', ev.detail.date.toISOString());
+  });
+})();
+</script>`,
+          code: `<div class="grid grid-cols-[15rem_1fr] gap-3">
+  <%- include('modules/app/MiniCalendar', {
+    id: 'mini',
+    value: new Date(2026, 4, 13),
+    locale: 'en'
+  }) %>
+  <%- include('modules/app/Calendar', {
+    id: 'main',
+    view: 'week',
+    defaultDate: new Date(2026, 4, 13),
+    events: events
+  }) %>
+</div>
+<script>
+  // Listen to mini → drive main
+  document.getElementById('mini').addEventListener(
+    'kui-minicalendar:change',
+    function (ev) {
+      // Re-render or update the main calendar with the picked date.
+      // For SPA-style apps you'd call your route/state handler here.
+      console.log('picked', ev.detail.date);
+    }
+  );
+</script>`,
         },
         {
           title: 'Multi-calendar overlay — toggle visibility',
