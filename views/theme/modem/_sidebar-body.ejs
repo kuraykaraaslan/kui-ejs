@@ -1,0 +1,51 @@
+<%
+  var _state      = locals.state      || {};
+  var _nav        = locals.nav        || [];
+  var _activePage = locals.activePage || '';
+  var _unread     = Number(locals.unread || 0);
+
+  var sysModel  = (_state.system && _state.system.model)    ? _state.system.model.model : 'Router';
+  var sysHost   = (_state.system && _state.system.hostname) ? _state.system.hostname    : '';
+  var wanStatus = (_state.wan    && _state.wan.status)      ? _state.wan.status         : 'DISCONNECTED';
+  var wanIp     = (_state.wan    && _state.wan.ipAddress)   ? _state.wan.ipAddress      : '—';
+%>
+<div class="flex h-14 items-center gap-3 border-b border-border px-4 shrink-0">
+  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-fg text-sm">
+    <i class="fa-solid fa-router" aria-hidden="true"></i>
+  </span>
+  <div class="min-w-0">
+    <p class="text-xs font-bold text-text-primary leading-none"><%= sysModel %></p>
+    <p class="text-xs text-text-secondary mt-0.5 truncate"><%= sysHost %></p>
+  </div>
+</div>
+
+<nav class="flex-1 overflow-y-auto py-3 px-2" aria-label="Router admin navigation">
+  <ul class="space-y-0.5" role="list">
+    <% _nav.forEach(function(item) { var isActive = item.id === _activePage; %>
+    <li role="listitem">
+      <a href="<%= item.href %>"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+          <%= isActive ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
+        <%= isActive ? 'aria-current="page"' : '' %>>
+        <i class="<%= item.icon %> w-4 shrink-0 text-xs" aria-hidden="true"></i>
+        <span class="truncate"><%= item.label %></span>
+        <% if (item.id === 'dashboard' && _unread > 0) { %>
+        <span class="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-error text-primary-fg text-xs font-bold leading-none px-1"
+              aria-label="<%= _unread %> unread alerts">
+          <%= _unread %>
+        </span>
+        <% } %>
+      </a>
+    </li>
+    <% }); %>
+  </ul>
+</nav>
+
+<div class="border-t border-border px-4 py-3 shrink-0">
+  <div class="flex items-center gap-2 text-xs">
+    <span class="h-2 w-2 rounded-full flex-shrink-0
+      <%= wanStatus === 'CONNECTED' ? 'bg-success' : wanStatus === 'CONNECTING' ? 'bg-warning animate-pulse' : 'bg-error' %>"
+      aria-hidden="true"></span>
+    <span class="font-mono text-text-primary truncate"><%= wanIp %></span>
+  </div>
+</div>

@@ -2,44 +2,7 @@
   var _spec       = locals.spec       || {};
   var _activePage = locals.activePage || 'index';
 
-  var info    = _spec.info     || {};
-  var servers = _spec.servers  || [];
-  var tags    = _spec.tags     || [];
-  var paths   = _spec.paths    || [];
-  var schemes = (_spec.components && _spec.components.securitySchemes)
-                  ? Object.values(_spec.components.securitySchemes)
-                  : [];
-
-  /* Build tag → operations map (one entry per operation, not per path) */
-  var tagOpsMap = {};
-  tags.forEach(function(tag) { tagOpsMap[tag.name] = []; });
-
-  paths.forEach(function(pathItem) {
-    var ops = pathItem.operations || [];
-    ops.forEach(function(op) {
-      var opTags = op.tags && op.tags.length ? op.tags : ['Default'];
-      opTags.forEach(function(tagName) {
-        if (!tagOpsMap[tagName]) tagOpsMap[tagName] = [];
-        tagOpsMap[tagName].push({
-          path:        pathItem.path,
-          operationId: op.operationId,
-          method:      op.method,
-          summary:     op.summary || null,
-        });
-      });
-    });
-  });
-
-  var methodColors = {
-    GET:     'bg-success-subtle text-success-fg border-success/30',
-    POST:    'bg-primary-subtle text-primary border-primary/30',
-    PUT:     'bg-warning-subtle text-warning-fg border-warning/30',
-    PATCH:   'bg-warning-subtle text-warning-fg border-warning/30',
-    DELETE:  'bg-error-subtle text-error-fg border-error/30',
-    HEAD:    'bg-surface-overlay text-text-secondary border-border',
-    OPTIONS: 'bg-surface-overlay text-text-secondary border-border',
-    TRACE:   'bg-surface-overlay text-text-secondary border-border',
-  };
+  var info = _spec.info || {};
 
   var statusVariant = {
     ACTIVE:     'bg-success-subtle text-success-fg',
@@ -48,154 +11,87 @@
     SUNSET:     'bg-surface-overlay text-text-secondary',
   };
   var statusCls = statusVariant[_spec.status] || 'bg-surface-overlay text-text-secondary';
+
+  var drawerId = 'api-doc-mobile-nav';
 %>
 
 <div class="flex h-screen overflow-hidden bg-surface-base">
 
-  <!-- Sidebar -->
+  <!-- Desktop sidebar -->
   <aside class="hidden lg:flex w-72 shrink-0 flex-col border-r border-border bg-surface-raised overflow-hidden">
-
-    <!-- Logo / brand -->
-    <div class="flex h-14 items-center gap-2.5 px-4 border-b border-border shrink-0">
-      <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-fg font-bold text-xs shrink-0 select-none">
-        API
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-semibold text-text-primary truncate leading-tight"><%= info.title || 'API Docs' %></p>
-        <p class="text-[10px] text-text-disabled font-mono leading-tight">v<%= info.version || '' %></p>
-      </div>
-      <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium shrink-0 <%= statusCls %>">
-        <%= _spec.status || 'DRAFT' %>
-      </span>
-    </div>
-
-    <!-- Server selector -->
-    <% if (servers.length > 0) { %>
-    <div class="px-3 py-3 border-b border-border shrink-0">
-      <%- include('../../../modules/domain/api-doc/ServerSelector', { servers: servers }) %>
-    </div>
-    <% } %>
-
-    <!-- Security schemes -->
-    <% if (schemes.length > 0) { %>
-    <div class="px-3 py-2.5 border-b border-border shrink-0">
-      <p class="text-[10px] font-semibold text-text-disabled uppercase tracking-widest mb-1.5">Security</p>
-      <div class="flex flex-wrap gap-1.5">
-        <% schemes.forEach(function(scheme) { %>
-          <%- include('../../../modules/domain/api-doc/SecuritySchemeBadge', { scheme: scheme }) %>
-        <% }); %>
-      </div>
-    </div>
-    <% } %>
-
-    <!-- Search -->
-    <div class="px-3 py-2.5 border-b border-border shrink-0">
-      <%- include('../../../modules/ui/SearchBar', {
-        id: 'api-nav-search',
-        placeholder: 'Filter endpoints…'
-      }) %>
-    </div>
-
-    <!-- Tag / endpoint nav -->
-    <nav class="flex-1 overflow-y-auto px-2 py-2 space-y-0.5" aria-label="API endpoints">
-      <% tags.forEach(function(tag) {
-        var tagOps  = tagOpsMap[tag.name] || [];
-        var tagDef  = tags.find(function(t) { return t.name === tag.name; });
-      %>
-      <details open class="group">
-        <summary class="flex items-center gap-1 px-2 py-1.5 rounded-lg cursor-pointer list-none hover:bg-surface-overlay transition-colors focus:outline-none">
-          <i class="fa-solid fa-tag w-3 h-3 text-text-disabled shrink-0 text-[10px]" aria-hidden="true"></i>
-          <span class="flex-1 text-xs font-semibold text-text-secondary uppercase tracking-wider truncate ml-1"><%= tag.name %></span>
-          <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-surface-sunken text-text-secondary shrink-0"><%= tagOps.length %></span>
-          <i class="fa-solid fa-chevron-right text-[9px] text-text-disabled group-open:rotate-90 transition-transform ml-1" aria-hidden="true"></i>
-        </summary>
-
-        <% if (tagDef && tagDef.description) { %>
-          <p class="px-2 pb-1 text-[10px] text-text-disabled leading-tight line-clamp-2 ml-5"><%= tagDef.description %></p>
-        <% } %>
-
-        <ul class="mt-0.5 mb-1 space-y-0.5 pl-1" role="list">
-          <% tagOps.forEach(function(entry) {
-            var methodCls = methodColors[entry.method] || 'bg-surface-overlay text-text-secondary border-border';
-          %>
-          <li role="listitem">
-            <a href="#op-<%= entry.operationId %>"
-               class="flex items-center gap-2 rounded-lg px-2 py-1 text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors group/ep">
-              <span class="inline-flex items-center rounded border font-mono font-bold uppercase text-[9px] px-1.5 py-px shrink-0 <%= methodCls %>"><%= entry.method %></span>
-              <div class="flex-1 min-w-0">
-                <p class="truncate font-mono text-[11px]"><%= entry.path %></p>
-                <% if (entry.summary) { %>
-                  <p class="truncate text-[10px] text-text-disabled leading-tight group-hover/ep:text-text-secondary"><%= entry.summary %></p>
-                <% } %>
-              </div>
-            </a>
-          </li>
-          <% }); %>
-        </ul>
-      </details>
-      <% }); %>
-    </nav>
-
-    <!-- Footer links -->
-    <% if (info.termsOfService || (info.contact && info.contact.url)) { %>
-    <div class="px-3 py-3 border-t border-border shrink-0 space-y-1">
-      <% if (info.termsOfService) { %>
-        <a href="<%= info.termsOfService %>" target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-1.5 text-xs text-text-disabled hover:text-text-primary transition-colors">
-          <i class="fa-solid fa-arrow-up-right-from-square w-2.5 h-2.5 text-[10px]" aria-hidden="true"></i>
-          Terms of Service
-        </a>
-      <% } %>
-      <% if (info.contact && info.contact.url) { %>
-        <a href="<%= info.contact.url %>" target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-1.5 text-xs text-text-disabled hover:text-text-primary transition-colors">
-          <i class="fa-solid fa-arrow-up-right-from-square w-2.5 h-2.5 text-[10px]" aria-hidden="true"></i>
-          Support
-        </a>
-      <% } %>
-    </div>
-    <% } %>
-
+    <%- include('./_sidebar-body', { spec: _spec, searchId: 'api-nav-search', navAriaLabel: 'API endpoints', showBrand: true }) %>
   </aside>
 
-  <!-- Endpoint filter: wires the two SearchBar inputs to the tag/endpoint nav -->
+  <!-- Mobile drawer -->
+  <div id="<%= drawerId %>"
+       class="fixed inset-0 z-[100] flex lg:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+       role="dialog" aria-modal="true" aria-label="API navigation">
+    <div class="absolute inset-0 bg-black/50" aria-hidden="true" onclick="closeDrawer('<%= drawerId %>')"></div>
+    <aside id="<%= drawerId %>-panel" tabindex="-1"
+           class="relative flex flex-col w-80 max-w-full h-full bg-surface-raised border-r border-border shadow-xl transition-transform duration-200 -translate-x-full overflow-hidden focus-visible:outline-none">
+      <button type="button" aria-label="Close navigation" onclick="closeDrawer('<%= drawerId %>')"
+              class="absolute top-2 right-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <%- include('./_sidebar-body', { spec: _spec, searchId: 'api-drawer-search', navAriaLabel: 'API endpoints (mobile)', showBrand: true }) %>
+    </aside>
+  </div>
+
+  <script>
+  (function(){
+    function openDrawer(id){var el=document.getElementById(id);var p=document.getElementById(id+'-panel');if(!el||!p)return;el.classList.remove('opacity-0','pointer-events-none');el.classList.add('opacity-100');p.classList.remove('translate-x-full','-translate-x-full');p.classList.add('translate-x-0');var first=p.querySelector('a,button,input,[tabindex]:not([tabindex="-1"])');if(first)first.focus();else p.focus();}
+    function closeDrawer(id){var el=document.getElementById(id);var p=document.getElementById(id+'-panel');if(!el||!p)return;var isRight=p.classList.contains('ml-auto');el.classList.add('opacity-0','pointer-events-none');el.classList.remove('opacity-100');p.classList.remove('translate-x-0');p.classList.add(isRight?'translate-x-full':'-translate-x-full');}
+    window.openDrawer=window.openDrawer||openDrawer;
+    window.closeDrawer=window.closeDrawer||closeDrawer;
+    document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;document.querySelectorAll('[role="dialog"][aria-modal="true"]').forEach(function(el){if(!el.classList.contains('opacity-0'))window.closeDrawer(el.id);});});
+  })();
+  </script>
+
+  <!-- Endpoint filter: wires every endpoint-search input to every API endpoints nav (desktop + mobile drawer) -->
   <script>(function(){
-    var nav = document.querySelector('nav[aria-label="API endpoints"]');
-    if (!nav) return;
-    var inputs = [document.getElementById('api-nav-search'), document.getElementById('api-topbar-search')].filter(Boolean);
+    var navs = Array.prototype.slice.call(document.querySelectorAll('nav[aria-label^="API endpoints"]'));
+    if (!navs.length) return;
+    var inputs = [
+      document.getElementById('api-nav-search'),
+      document.getElementById('api-drawer-search'),
+      document.getElementById('api-topbar-search'),
+    ].filter(Boolean);
     if (!inputs.length) return;
 
-    var emptyMsg = document.createElement('p');
-    emptyMsg.className = 'px-3 py-6 text-xs text-text-disabled text-center hidden';
-    emptyMsg.setAttribute('data-api-search-empty', '');
-    nav.insertBefore(emptyMsg, nav.firstChild);
+    navs.forEach(function(nav) {
+      var emptyMsg = document.createElement('p');
+      emptyMsg.className = 'px-3 py-6 text-xs text-text-disabled text-center hidden';
+      emptyMsg.setAttribute('data-api-search-empty', '');
+      nav.insertBefore(emptyMsg, nav.firstChild);
+      nav._apiEmpty = emptyMsg;
+    });
 
-    function apply(query) {
+    function applyOne(nav, query) {
       var q = (query || '').trim().toLowerCase();
       var anyMatch = false;
-
       nav.querySelectorAll('details').forEach(function(d) {
         var summaryText = (d.querySelector('summary span') || {}).textContent || '';
         var tagMatches = q === '' || summaryText.toLowerCase().indexOf(q) !== -1;
         var hasMatchingItem = false;
-
         d.querySelectorAll('li').forEach(function(li) {
-          var path    = (li.querySelector('p.font-mono')   || {}).textContent || '';
-          var summary = (li.querySelector('p.text-\\[10px\\]') || {}).textContent || '';
+          var path    = (li.querySelector('p.font-mono')         || {}).textContent || '';
+          var summary = (li.querySelector('p.text-\\[10px\\]')    || {}).textContent || '';
           var hit = q === '' || tagMatches || (path + ' ' + summary).toLowerCase().indexOf(q) !== -1;
           li.classList.toggle('hidden', !hit);
           if (hit) hasMatchingItem = true;
         });
-
         var visible = tagMatches || hasMatchingItem;
         d.classList.toggle('hidden', !visible);
         if (visible) anyMatch = true;
         if (q !== '' && !tagMatches && hasMatchingItem) d.setAttribute('open', '');
       });
-
-      emptyMsg.textContent = 'No results for "' + (query || '') + '"';
-      emptyMsg.classList.toggle('hidden', q === '' || anyMatch);
+      if (nav._apiEmpty) {
+        nav._apiEmpty.textContent = 'No results for "' + (query || '') + '"';
+        nav._apiEmpty.classList.toggle('hidden', q === '' || anyMatch);
+      }
     }
+
+    function apply(query) { navs.forEach(function(n){ applyOne(n, query); }); }
 
     inputs.forEach(function(input) {
       input.addEventListener('input', function(e) {
@@ -210,7 +106,14 @@
   <div class="flex-1 flex flex-col min-w-0">
 
     <!-- Top bar -->
-    <header class="flex h-14 items-center gap-3 px-6 border-b border-border bg-surface-raised">
+    <header class="flex h-14 items-center gap-3 px-4 sm:px-6 border-b border-border bg-surface-raised shrink-0">
+
+      <!-- Mobile hamburger -->
+      <button type="button" onclick="openDrawer('<%= drawerId %>')"
+              aria-label="Open navigation"
+              class="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus shrink-0">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
 
       <!-- Mobile title -->
       <div class="flex items-center gap-2 lg:hidden min-w-0">

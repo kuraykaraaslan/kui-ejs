@@ -17,69 +17,52 @@
     { id: 'settings',  label: 'Settings',           href: '/theme/modem/settings',  icon: 'fa-solid fa-gear'           },
   ];
 
-  var sysModel  = (_state.system && _state.system.model)   ? _state.system.model.model   : 'Router';
-  var sysHost   = (_state.system && _state.system.hostname) ? _state.system.hostname      : '';
-  var wanStatus = (_state.wan   && _state.wan.status)       ? _state.wan.status           : 'DISCONNECTED';
-  var wanIp     = (_state.wan   && _state.wan.ipAddress)    ? _state.wan.ipAddress        : '—';
-
   var activeNav = nav.find(function(n) { return n.id === _activePage; });
+  var drawerId  = 'modem-mobile-nav';
 %>
 
 <div class="flex h-screen overflow-hidden bg-surface-base">
 
-  <!-- Sidebar -->
+  <!-- Desktop sidebar -->
   <aside class="hidden md:flex w-56 shrink-0 flex-col border-r border-border bg-surface-raised">
-
-    <div class="flex h-14 items-center gap-3 border-b border-border px-4">
-      <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-fg text-sm">
-        <i class="fa-solid fa-router" aria-hidden="true"></i>
-      </span>
-      <div class="min-w-0">
-        <p class="text-xs font-bold text-text-primary leading-none"><%= sysModel %></p>
-        <p class="text-xs text-text-secondary mt-0.5 truncate"><%= sysHost %></p>
-      </div>
-    </div>
-
-    <nav class="flex-1 overflow-y-auto py-3 px-2" aria-label="Router admin navigation">
-      <ul class="space-y-0.5" role="list">
-        <% nav.forEach(function(item) {
-          var isActive = item.id === _activePage;
-        %>
-        <li role="listitem">
-          <a href="<%= item.href %>"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
-              <%= isActive ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-            <%= isActive ? 'aria-current="page"' : '' %>>
-            <i class="<%= item.icon %> w-4 shrink-0 text-xs" aria-hidden="true"></i>
-            <span class="truncate"><%= item.label %></span>
-            <% if (item.id === 'dashboard' && _unread > 0) { %>
-            <span class="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-error text-primary-fg text-xs font-bold leading-none px-1"
-                  aria-label="<%= _unread %> unread alerts">
-              <%= _unread %>
-            </span>
-            <% } %>
-          </a>
-        </li>
-        <% }); %>
-      </ul>
-    </nav>
-
-    <div class="border-t border-border px-4 py-3">
-      <div class="flex items-center gap-2 text-xs">
-        <span class="h-2 w-2 rounded-full flex-shrink-0
-          <%= wanStatus === 'CONNECTED' ? 'bg-success' : wanStatus === 'CONNECTING' ? 'bg-warning animate-pulse' : 'bg-error' %>"
-          aria-hidden="true"></span>
-        <span class="font-mono text-text-primary truncate"><%= wanIp %></span>
-      </div>
-    </div>
-
+    <%- include('./_sidebar-body', { state: _state, nav: nav, activePage: _activePage, unread: _unread }) %>
   </aside>
+
+  <!-- Mobile drawer (mirrors modules/app/AppDrawer wiring) -->
+  <div id="<%= drawerId %>"
+       class="fixed inset-0 z-[100] flex md:hidden opacity-0 pointer-events-none transition-opacity duration-200"
+       role="dialog" aria-modal="true" aria-label="Modem navigation">
+    <div class="absolute inset-0 bg-black/50" aria-hidden="true" onclick="closeDrawer('<%= drawerId %>')"></div>
+    <aside id="<%= drawerId %>-panel" tabindex="-1"
+           class="relative flex flex-col w-72 max-w-full h-full bg-surface-raised border-r border-border shadow-xl transition-transform duration-200 -translate-x-full focus-visible:outline-none">
+      <button type="button" aria-label="Close navigation" onclick="closeDrawer('<%= drawerId %>')"
+              class="absolute top-2 right-2 z-10 inline-flex h-9 w-9 items-center justify-center rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <%- include('./_sidebar-body', { state: _state, nav: nav, activePage: _activePage, unread: _unread }) %>
+    </aside>
+  </div>
+
+  <script>
+  (function(){
+    function openDrawer(id){var el=document.getElementById(id);var p=document.getElementById(id+'-panel');if(!el||!p)return;el.classList.remove('opacity-0','pointer-events-none');el.classList.add('opacity-100');p.classList.remove('translate-x-full','-translate-x-full');p.classList.add('translate-x-0');var first=p.querySelector('a,button,input,[tabindex]:not([tabindex="-1"])');if(first)first.focus();else p.focus();}
+    function closeDrawer(id){var el=document.getElementById(id);var p=document.getElementById(id+'-panel');if(!el||!p)return;var isRight=p.classList.contains('ml-auto');el.classList.add('opacity-0','pointer-events-none');el.classList.remove('opacity-100');p.classList.remove('translate-x-0');p.classList.add(isRight?'translate-x-full':'-translate-x-full');}
+    window.openDrawer=window.openDrawer||openDrawer;
+    window.closeDrawer=window.closeDrawer||closeDrawer;
+    document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;document.querySelectorAll('[role="dialog"][aria-modal="true"]').forEach(function(el){if(!el.classList.contains('opacity-0'))window.closeDrawer(el.id);});});
+  })();
+  </script>
 
   <!-- Main column -->
   <div class="flex-1 flex flex-col min-w-0">
 
-    <header class="flex h-14 items-center justify-between border-b border-border px-6 bg-surface-raised">
-      <div class="min-w-0">
+    <header class="flex h-14 items-center gap-3 border-b border-border px-4 sm:px-6 bg-surface-raised shrink-0">
+      <button type="button" onclick="openDrawer('<%= drawerId %>')"
+              aria-label="Open navigation"
+              class="inline-flex md:hidden items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus shrink-0">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+      <div class="min-w-0 flex-1">
         <a href="/theme/modem" class="text-xs text-text-secondary hover:text-text-primary transition-colors">
           <i class="fa-solid fa-arrow-left text-xs mr-1" aria-hidden="true"></i>Modem Theme
         </a>
@@ -89,11 +72,11 @@
       </div>
       <% if (_unread > 0) { %>
       <a href="/theme/modem"
-         class="flex items-center gap-2 rounded-lg bg-error/10 border border-error/20 px-3 py-1.5 text-xs font-medium text-error hover:bg-error/20 transition-colors">
+         class="flex items-center gap-2 rounded-lg bg-error/10 border border-error/20 px-3 py-1.5 text-xs font-medium text-error hover:bg-error/20 transition-colors shrink-0">
         <i class="fa-solid fa-bell" aria-hidden="true"></i>
         <%= _unread %> alert<%= _unread > 1 ? 's' : '' %>
       </a>
       <% } %>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6">
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6">

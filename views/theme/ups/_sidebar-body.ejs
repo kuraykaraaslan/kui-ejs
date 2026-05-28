@@ -1,0 +1,49 @@
+<%
+  var _state   = locals.state   || {};
+  var _nav     = locals.nav     || [];
+  var _active  = locals.activePage || '';
+  var _ups     = _state.ups     || {};
+  var _battery = _state.battery || {};
+
+  var upsStatus = _ups.status || 'OFFLINE';
+  var statusDot = upsStatus === 'ON_LINE' ? 'bg-success'
+                : upsStatus === 'ON_BATTERY' ? 'bg-warning animate-pulse'
+                : 'bg-error';
+%>
+<div class="flex h-14 items-center gap-3 border-b border-border px-4 shrink-0">
+  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 text-white text-sm">
+    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+  </span>
+  <div class="min-w-0">
+    <p class="text-xs font-bold text-text-primary leading-none truncate"><%= _ups.model || 'UPS' %></p>
+    <p class="text-xs text-text-secondary mt-0.5 truncate"><%= _ups.location || '' %></p>
+  </div>
+</div>
+
+<nav class="flex-1 overflow-y-auto py-3 px-2" aria-label="UPS navigation">
+  <ul class="space-y-0.5" role="list">
+    <% _nav.forEach(function(item) { var isActive = item.id === _active; %>
+    <li role="listitem">
+      <a href="<%= item.href %>"
+         class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors
+           <%= isActive ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
+         <%= isActive ? 'aria-current="page"' : '' %>>
+        <i class="<%= item.icon %> w-4 shrink-0 text-xs" aria-hidden="true"></i>
+        <span class="truncate"><%= item.label %></span>
+      </a>
+    </li>
+    <% }); %>
+  </ul>
+</nav>
+
+<div class="border-t border-border px-4 py-3 shrink-0">
+  <div class="flex items-center gap-2 text-xs">
+    <span class="h-2 w-2 rounded-full flex-shrink-0 <%= statusDot %>" aria-hidden="true"></span>
+    <span class="font-medium text-text-primary truncate"><%= upsStatus.replace('_', ' ') %></span>
+  </div>
+  <div class="mt-1.5 w-full h-1.5 rounded-full bg-surface-sunken overflow-hidden">
+    <div class="h-full rounded-full <%= _battery.percent > 50 ? 'bg-success' : _battery.percent > 20 ? 'bg-warning' : 'bg-error' %>"
+         style="width:<%= _battery.percent || 0 %>%"></div>
+  </div>
+  <p class="text-xs text-text-secondary mt-1"><%= _battery.percent || 0 %>% battery</p>
+</div>

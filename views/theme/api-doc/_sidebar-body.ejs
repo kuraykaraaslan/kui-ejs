@@ -1,0 +1,147 @@
+<%
+  var _spec         = locals.spec         || {};
+  var _searchId     = locals.searchId     || 'api-nav-search';
+  var _navAriaLabel = locals.navAriaLabel || 'API endpoints';
+  var _showBrand    = locals.showBrand !== false;
+
+  var info    = _spec.info     || {};
+  var servers = _spec.servers  || [];
+  var tags    = _spec.tags     || [];
+  var paths   = _spec.paths    || [];
+  var schemes = (_spec.components && _spec.components.securitySchemes)
+                  ? Object.values(_spec.components.securitySchemes)
+                  : [];
+
+  var tagOpsMap = {};
+  tags.forEach(function(tag) { tagOpsMap[tag.name] = []; });
+  paths.forEach(function(pathItem) {
+    (pathItem.operations || []).forEach(function(op) {
+      var opTags = op.tags && op.tags.length ? op.tags : ['Default'];
+      opTags.forEach(function(tagName) {
+        if (!tagOpsMap[tagName]) tagOpsMap[tagName] = [];
+        tagOpsMap[tagName].push({
+          path:        pathItem.path,
+          operationId: op.operationId,
+          method:      op.method,
+          summary:     op.summary || null,
+        });
+      });
+    });
+  });
+
+  var methodColors = {
+    GET:     'bg-success-subtle text-success-fg border-success/30',
+    POST:    'bg-primary-subtle text-primary border-primary/30',
+    PUT:     'bg-warning-subtle text-warning-fg border-warning/30',
+    PATCH:   'bg-warning-subtle text-warning-fg border-warning/30',
+    DELETE:  'bg-error-subtle text-error-fg border-error/30',
+    HEAD:    'bg-surface-overlay text-text-secondary border-border',
+    OPTIONS: 'bg-surface-overlay text-text-secondary border-border',
+    TRACE:   'bg-surface-overlay text-text-secondary border-border',
+  };
+
+  var statusVariant = {
+    ACTIVE:     'bg-success-subtle text-success-fg',
+    DRAFT:      'bg-warning-subtle text-warning-fg',
+    DEPRECATED: 'bg-error-subtle text-error-fg',
+    SUNSET:     'bg-surface-overlay text-text-secondary',
+  };
+  var statusCls = statusVariant[_spec.status] || 'bg-surface-overlay text-text-secondary';
+%>
+
+<% if (_showBrand) { %>
+<div class="flex h-14 items-center gap-2.5 px-4 border-b border-border shrink-0">
+  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-fg font-bold text-xs shrink-0 select-none">
+    API
+  </div>
+  <div class="flex-1 min-w-0">
+    <p class="text-sm font-semibold text-text-primary truncate leading-tight"><%= info.title || 'API Docs' %></p>
+    <p class="text-[10px] text-text-disabled font-mono leading-tight">v<%= info.version || '' %></p>
+  </div>
+  <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium shrink-0 <%= statusCls %>">
+    <%= _spec.status || 'DRAFT' %>
+  </span>
+</div>
+<% } %>
+
+<% if (servers.length > 0) { %>
+<div class="px-3 py-3 border-b border-border shrink-0">
+  <%- include('../../../modules/domain/api-doc/ServerSelector', { servers: servers }) %>
+</div>
+<% } %>
+
+<% if (schemes.length > 0) { %>
+<div class="px-3 py-2.5 border-b border-border shrink-0">
+  <p class="text-[10px] font-semibold text-text-disabled uppercase tracking-widest mb-1.5">Security</p>
+  <div class="flex flex-wrap gap-1.5">
+    <% schemes.forEach(function(scheme) { %>
+      <%- include('../../../modules/domain/api-doc/SecuritySchemeBadge', { scheme: scheme }) %>
+    <% }); %>
+  </div>
+</div>
+<% } %>
+
+<div class="px-3 py-2.5 border-b border-border shrink-0">
+  <%- include('../../../modules/ui/SearchBar', {
+    id: _searchId,
+    placeholder: 'Filter endpoints…'
+  }) %>
+</div>
+
+<nav class="flex-1 overflow-y-auto px-2 py-2 space-y-0.5" aria-label="<%= _navAriaLabel %>">
+  <% tags.forEach(function(tag) {
+    var tagOps  = tagOpsMap[tag.name] || [];
+    var tagDef  = tags.find(function(t) { return t.name === tag.name; });
+  %>
+  <details open class="group">
+    <summary class="flex items-center gap-1 px-2 py-1.5 rounded-lg cursor-pointer list-none hover:bg-surface-overlay transition-colors focus:outline-none">
+      <i class="fa-solid fa-tag w-3 h-3 text-text-disabled shrink-0 text-[10px]" aria-hidden="true"></i>
+      <span class="flex-1 text-xs font-semibold text-text-secondary uppercase tracking-wider truncate ml-1"><%= tag.name %></span>
+      <span class="inline-flex items-center rounded-full px-1.5 py-0 text-[10px] font-medium bg-surface-sunken text-text-secondary shrink-0"><%= tagOps.length %></span>
+      <i class="fa-solid fa-chevron-right text-[9px] text-text-disabled group-open:rotate-90 transition-transform ml-1" aria-hidden="true"></i>
+    </summary>
+
+    <% if (tagDef && tagDef.description) { %>
+      <p class="px-2 pb-1 text-[10px] text-text-disabled leading-tight line-clamp-2 ml-5"><%= tagDef.description %></p>
+    <% } %>
+
+    <ul class="mt-0.5 mb-1 space-y-0.5 pl-1" role="list">
+      <% tagOps.forEach(function(entry) {
+        var methodCls = methodColors[entry.method] || 'bg-surface-overlay text-text-secondary border-border';
+      %>
+      <li role="listitem">
+        <a href="#op-<%= entry.operationId %>"
+           class="flex items-center gap-2 rounded-lg px-2 py-1 text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors group/ep">
+          <span class="inline-flex items-center rounded border font-mono font-bold uppercase text-[9px] px-1.5 py-px shrink-0 <%= methodCls %>"><%= entry.method %></span>
+          <div class="flex-1 min-w-0">
+            <p class="truncate font-mono text-[11px]"><%= entry.path %></p>
+            <% if (entry.summary) { %>
+              <p class="truncate text-[10px] text-text-disabled leading-tight group-hover/ep:text-text-secondary"><%= entry.summary %></p>
+            <% } %>
+          </div>
+        </a>
+      </li>
+      <% }); %>
+    </ul>
+  </details>
+  <% }); %>
+</nav>
+
+<% if (info.termsOfService || (info.contact && info.contact.url)) { %>
+<div class="px-3 py-3 border-t border-border shrink-0 space-y-1">
+  <% if (info.termsOfService) { %>
+    <a href="<%= info.termsOfService %>" target="_blank" rel="noopener noreferrer"
+       class="flex items-center gap-1.5 text-xs text-text-disabled hover:text-text-primary transition-colors">
+      <i class="fa-solid fa-arrow-up-right-from-square w-2.5 h-2.5 text-[10px]" aria-hidden="true"></i>
+      Terms of Service
+    </a>
+  <% } %>
+  <% if (info.contact && info.contact.url) { %>
+    <a href="<%= info.contact.url %>" target="_blank" rel="noopener noreferrer"
+       class="flex items-center gap-1.5 text-xs text-text-disabled hover:text-text-primary transition-colors">
+      <i class="fa-solid fa-arrow-up-right-from-square w-2.5 h-2.5 text-[10px]" aria-hidden="true"></i>
+      Support
+    </a>
+  <% } %>
+</div>
+<% } %>
