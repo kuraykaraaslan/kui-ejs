@@ -65,7 +65,7 @@ export function buildAppCalendarData(): ShowcaseItem[] {
       category: 'App',
       abbr: 'Cl',
       description:
-        'Month / week / day / agenda / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping) and a composable MiniCalendar sibling (modules/app/MiniCalendar). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Full a11y / i18n / perf polish + IANA timezone land in M6.',
+        'Month / week / day / agenda / resource calendar with view switcher, full keyboard nav (PageUp/Down + T + arrow keys for day-step), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping), composable MiniCalendar sibling (modules/app/MiniCalendar), and WAI-ARIA grid pattern with live-region nav announcements + descriptive cell aria-labels. Pixel-identical React sibling at modules/app/Calendar/index.tsx.',
       filePath: 'modules/app/Calendar/Calendar.ejs',
       sourceCode,
       since: '2026-05',

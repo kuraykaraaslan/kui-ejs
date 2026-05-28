@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Month / week / day / agenda / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping) and a composable MiniCalendar sibling (modules/app/MiniCalendar). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Full a11y / i18n / perf polish + IANA timezone land in M6.
+Month / week / day / agenda / resource calendar with view switcher, full keyboard nav (PageUp/Down + T + arrow keys for day-step), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), multi-calendar overlay with per-calendar visibility legend, ResourceView lanes with O(n²) conflict highlighting, agenda list (search + date grouping), composable MiniCalendar sibling (modules/app/MiniCalendar), and WAI-ARIA grid pattern with live-region nav announcements + descriptive cell aria-labels. Pixel-identical React sibling at modules/app/Calendar/index.tsx.
 
 ## Accessibility
 
@@ -268,7 +268,12 @@ Month / week / day / agenda / resource calendar with view switcher, today/prev/n
         agenda: 'Ajanda', resource: 'Kaynak',
         allDay: 'Tüm gün', noEvents: 'Etkinlik yok',
         edit: 'Düzenle', delete: 'Sil', confirmDelete: 'Silinsin mi?', close: 'Kapat',
-        calendars: 'Takvimler', noResources: 'Kaynak tanımlı değil'
+        calendars: 'Takvimler', noResources: 'Kaynak tanımlı değil',
+        search: 'Etkinliklerde ara…',
+        showing: function (label) { return label + ' gösteriliyor'; },
+        cellLabel: function (date, count) {
+          return count > 0 ? date + ', ' + count + ' etkinlik' : date + ', etkinlik yok';
+        }
       },
       weekStart: 1,
       monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -282,7 +287,14 @@ Month / week / day / agenda / resource calendar with view switcher, today/prev/n
         agenda: 'Agenda', resource: 'Resource',
         allDay: 'All-day', noEvents: 'No events',
         edit: 'Edit', delete: 'Delete', confirmDelete: 'Confirm delete?', close: 'Close',
-        calendars: 'Calendars', noResources: 'No resources defined'
+        calendars: 'Calendars', noResources: 'No resources defined',
+        search: 'Search events…',
+        showing: function (label) { return 'Showing ' + label; },
+        cellLabel: function (date, count) {
+          return count === 0 ? date + ', no events'
+               : count === 1 ? date + ', 1 event'
+               : date + ', ' + count + ' events';
+        }
       },
       weekStart: 0,
       monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -505,6 +517,7 @@ Month / week / day / agenda / resource calendar with view switcher, today/prev/n
   data-msg-confirm-delete="<%= L.messages.confirmDelete %>"
   data-msg-close="<%= L.messages.close %>"
   data-msg-all-day="<%= L.messages.allDay %>"
+  data-msg-showing-prefix="<%= L.messages.showing('') %>"
   tabindex="0"
   aria-label="Calendar"
   class="flex flex-col w-full rounded-lg border border-border bg-surface-base overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>"
@@ -512,6 +525,10 @@ Month / week / day / agenda / resource calendar with view switcher, today/prev/n
   <%- include('./partials/_header', {
     _id: _id, _view: _view, _label: periodLabel(), _msg: L.messages
   }) %>
+
+  <%# Live regions for screen-reader nav announcements (M6) %>
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cal-live="a"></div>
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cal-live="b"></div>
 
   <% if (!_hideLegend && _calendars.length > 0) { %>
     <%- include('./partials/_legend', { _id: _id, _calendars: _calendars, _msg: L.messages, _dotCls: dotCls }) %>

@@ -54,7 +54,12 @@
         agenda: 'Ajanda', resource: 'Kaynak',
         allDay: 'Tüm gün', noEvents: 'Etkinlik yok',
         edit: 'Düzenle', delete: 'Sil', confirmDelete: 'Silinsin mi?', close: 'Kapat',
-        calendars: 'Takvimler', noResources: 'Kaynak tanımlı değil'
+        calendars: 'Takvimler', noResources: 'Kaynak tanımlı değil',
+        search: 'Etkinliklerde ara…',
+        showing: function (label) { return label + ' gösteriliyor'; },
+        cellLabel: function (date, count) {
+          return count > 0 ? date + ', ' + count + ' etkinlik' : date + ', etkinlik yok';
+        }
       },
       weekStart: 1,
       monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -68,7 +73,14 @@
         agenda: 'Agenda', resource: 'Resource',
         allDay: 'All-day', noEvents: 'No events',
         edit: 'Edit', delete: 'Delete', confirmDelete: 'Confirm delete?', close: 'Close',
-        calendars: 'Calendars', noResources: 'No resources defined'
+        calendars: 'Calendars', noResources: 'No resources defined',
+        search: 'Search events…',
+        showing: function (label) { return 'Showing ' + label; },
+        cellLabel: function (date, count) {
+          return count === 0 ? date + ', no events'
+               : count === 1 ? date + ', 1 event'
+               : date + ', ' + count + ' events';
+        }
       },
       weekStart: 0,
       monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -291,6 +303,7 @@
   data-msg-confirm-delete="<%= L.messages.confirmDelete %>"
   data-msg-close="<%= L.messages.close %>"
   data-msg-all-day="<%= L.messages.allDay %>"
+  data-msg-showing-prefix="<%= L.messages.showing('') %>"
   tabindex="0"
   aria-label="Calendar"
   class="flex flex-col w-full rounded-lg border border-border bg-surface-base overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= _className ? ' ' + _className : '' %>"
@@ -298,6 +311,10 @@
   <%- include('./partials/_header', {
     _id: _id, _view: _view, _label: periodLabel(), _msg: L.messages
   }) %>
+
+  <%# Live regions for screen-reader nav announcements (M6) %>
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cal-live="a"></div>
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cal-live="b"></div>
 
   <% if (!_hideLegend && _calendars.length > 0) { %>
     <%- include('./partials/_legend', { _id: _id, _calendars: _calendars, _msg: L.messages, _dotCls: dotCls }) %>

@@ -16,5 +16,15 @@
       e.preventDefault();
       window.__KuiCalendar.step(root, 'today');
     }
+    // M6: arrow keys step the anchor date — Left/Right = ±1 day, Up/Down = ±7 days.
+    else if (!e.ctrlKey && !e.metaKey && !e.altKey && (
+      e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown'
+    )) {
+      var delta = e.key === 'ArrowLeft' ? -1
+                : e.key === 'ArrowRight' ? 1
+                : e.key === 'ArrowUp' ? -7 : 7;
+      e.preventDefault();
+      window.__KuiCalendar.stepDays(root, delta);
+    }
   });
 })();

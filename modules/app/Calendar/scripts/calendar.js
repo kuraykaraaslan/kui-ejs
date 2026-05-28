@@ -36,7 +36,31 @@ window.__KuiCalendar = window.__KuiCalendar || (function () {
       next = addDays(d, direction === 'next' ? 1 : -1);
     }
     writeDate(root, next);
+    announce(root, next);
     root.dispatchEvent(new CustomEvent('kui-calendar:date-change', { detail: { date: next, direction: direction }, bubbles: true }));
+  }
+
+  /** Step the anchor by N days. Used by arrow keys (M6). */
+  function stepDays(root, delta) {
+    var next = addDays(readDate(root), delta);
+    writeDate(root, next);
+    announce(root, next);
+    root.dispatchEvent(new CustomEvent('kui-calendar:date-change', { detail: { date: next, direction: delta < 0 ? 'prev' : 'next' }, bubbles: true }));
+  }
+
+  /** Push a polite live-region message ("Showing May 2026") (M6). */
+  var _liveAlt = false;
+  function announce(root, date) {
+    var label = root.querySelector('[data-kui-cal-label]');
+    if (!label) return;
+    // We don't have access to the locale's month names client-side, so reuse
+    // the rendered header label which already reflects the previous nav.
+    // It updates a tick after writeDate via the next render — here we just
+    // mirror whatever's currently in the header.
+    var msg = (root.getAttribute('data-msg-showing-prefix') || '').trim() + ' ' + (label.textContent || '');
+    var slot = root.querySelector('[data-cal-live="' + (_liveAlt ? 'b' : 'a') + '"]');
+    if (slot) slot.textContent = msg.trim();
+    _liveAlt = !_liveAlt;
   }
 
   function bindNav(root) {
@@ -65,5 +89,5 @@ window.__KuiCalendar = window.__KuiCalendar || (function () {
     // TODO M5: render mini-calendar + agenda after boot.
   }
 
-  return { boot: boot, step: step, setView: setView };
+  return { boot: boot, step: step, stepDays: stepDays, setView: setView };
 })();

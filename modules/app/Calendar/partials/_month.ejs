@@ -28,6 +28,8 @@
          var dayEvents = _events.filter(function (e) { return _eventOnDay(e, cell); });
          var visible   = dayEvents.slice(0, _maxPerDay);
          var overflow  = dayEvents.length - visible.length;
+         var dateLabel = _L.dayLong[cell.getDay()] + ' ' + cell.getDate() + ' ' + _L.monthNames[cell.getMonth()];
+         var ariaLabel = _L.messages.cellLabel ? _L.messages.cellLabel(dateLabel, dayEvents.length) : dateLabel;
          var cellCls = 'min-h-[88px] border-b border-r border-border p-1 flex flex-col gap-0.5 last-of-type:border-r-0'
                      + ((i + 1) % 7 === 0 ? ' border-r-0' : '')
                      + (!inMonth ? ' bg-surface-raised/50' : '');
@@ -40,7 +42,7 @@
            dayNumCls = 'text-xs font-medium tabular-nums text-text-primary';
          }
     %>
-      <div role="gridcell" aria-selected="<%= isToday ? 'true' : 'false' %>" class="<%= cellCls %>">
+      <div role="gridcell" aria-selected="<%= isToday ? 'true' : 'false' %>" aria-label="<%= ariaLabel %>" class="<%= cellCls %>">
         <div class="flex items-center justify-between">
           <span class="<%= dayNumCls %>"><%= cell.getDate() %></span>
         </div>
