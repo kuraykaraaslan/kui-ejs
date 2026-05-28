@@ -58,7 +58,7 @@ export function buildAppCalendarData(): ShowcaseItem[] {
       category: 'App',
       abbr: 'Cl',
       description:
-        'Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create) and in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Resource/multi-calendar overlay, agenda + mini, and full a11y/i18n/perf polish land in M4-M6.',
+        'Month / week / day / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), and multi-calendar overlay with per-calendar visibility legend. ResourceView shows one column per resource with O(n²) conflict highlighting. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + mini and full a11y/i18n/perf polish land in M5-M6.',
       filePath: 'modules/app/Calendar/Calendar.ejs',
       sourceCode,
       since: '2026-05',
@@ -222,6 +222,105 @@ export function buildAppCalendarData(): ShowcaseItem[] {
     // Open your own edit modal here, then call your API.
     console.log('edit', ev.detail);
   });
+</script>`,
+        },
+        {
+          title: 'Resource view — rooms with conflict highlight',
+          layout: 'stack',
+          previewHtml: wrap(renderCalendar({
+            id: 'cal-demo-resource',
+            view: 'resource',
+            defaultDate: DEMO_ANCHOR,
+            locale: 'en',
+            slotMinutes: 15,
+            workingHours: { start: 9, end: 18, days: [1, 2, 3, 4, 5] },
+            resources: [
+              { id: 'room-a', name: 'Studio A',  color: 'primary' },
+              { id: 'room-b', name: 'Studio B',  color: 'success' },
+              { id: 'room-c', name: 'Boardroom', color: 'warning' },
+            ],
+            events: [
+              { id: 'r1', title: 'Sprint planning',
+                start: new Date(Y, M, 13, 9, 0),  end: new Date(Y, M, 13, 11, 0),
+                resourceId: 'room-a' },
+              { id: 'r2', title: 'Design crit',
+                start: new Date(Y, M, 13, 10, 30), end: new Date(Y, M, 13, 12, 0),
+                resourceId: 'room-a' }, // overlaps r1 → ring-error
+              { id: 'r3', title: 'Client demo',
+                start: new Date(Y, M, 13, 13, 0), end: new Date(Y, M, 13, 14, 0),
+                resourceId: 'room-b', icon: 'fa-video' },
+              { id: 'r4', title: 'Budget review',
+                start: new Date(Y, M, 13, 15, 0), end: new Date(Y, M, 13, 16, 30),
+                resourceId: 'room-c' },
+              { id: 'r5', title: 'Coffee chat',
+                start: new Date(Y, M, 13, 9, 30), end: new Date(Y, M, 13, 10, 0),
+                resourceId: 'room-b', icon: 'fa-mug-hot' },
+            ],
+          })),
+          code: `<%- include('modules/app/Calendar', {
+  id: 'rooms-cal',
+  view: 'resource',
+  defaultDate: new Date(2026, 4, 13),
+  slotMinutes: 15,
+  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] },
+  resources: [
+    { id: 'room-a', name: 'Studio A',  color: 'primary' },
+    { id: 'room-b', name: 'Studio B',  color: 'success' },
+    { id: 'room-c', name: 'Boardroom', color: 'warning' }
+  ],
+  events: events // each carries a resourceId
+}) %>`,
+        },
+        {
+          title: 'Multi-calendar overlay — toggle visibility',
+          layout: 'stack',
+          previewHtml: wrap(renderCalendar({
+            id: 'cal-demo-multi',
+            view: 'week',
+            defaultDate: DEMO_ANCHOR,
+            locale: 'en',
+            slotMinutes: 30,
+            workingHours: { start: 9, end: 18, days: [1, 2, 3, 4, 5] },
+            calendars: [
+              { id: 'work',     name: 'Work',     color: 'primary' },
+              { id: 'personal', name: 'Personal', color: 'success' },
+              { id: 'family',   name: 'Family',   color: 'warning' },
+            ],
+            events: [
+              { id: 'm1', title: 'Design sync',
+                start: new Date(Y, M, 11, 10, 0), end: new Date(Y, M, 11, 11, 0),
+                calendarId: 'work', icon: 'fa-video' },
+              { id: 'm2', title: 'Standup',
+                start: new Date(Y, M, 12, 9, 30), end: new Date(Y, M, 12, 10, 0),
+                calendarId: 'work' },
+              { id: 'm3', title: 'Yoga',
+                start: new Date(Y, M, 12, 18, 30), end: new Date(Y, M, 12, 19, 30),
+                calendarId: 'personal' },
+              { id: 'm4', title: 'Dinner — parents',
+                start: new Date(Y, M, 14, 19, 0), end: new Date(Y, M, 14, 21, 0),
+                calendarId: 'family', icon: 'fa-mug-hot' },
+              { id: 'm5', title: 'Doctor',
+                start: new Date(Y, M, 13, 14, 0), end: new Date(Y, M, 13, 15, 0),
+                calendarId: 'personal' },
+            ],
+          })),
+          code: `<%- include('modules/app/Calendar', {
+  id: 'multi-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  calendars: [
+    { id: 'work',     name: 'Work',     color: 'primary' },
+    { id: 'personal', name: 'Personal', color: 'success' },
+    { id: 'family',   name: 'Family',   color: 'warning' }
+  ],
+  events: events // each carries a calendarId
+}) %>
+<script>
+  // Listen for visibility toggles fired by the chip-style legend.
+  document.getElementById('multi-cal').addEventListener(
+    'kui-calendar:calendar-toggle',
+    function (ev) { console.log(ev.detail); /* { calendarId, visible } */ }
+  );
 </script>`,
         },
       ],

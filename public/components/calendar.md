@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create) and in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side). Pixel-identical React sibling at modules/app/Calendar/index.tsx. Resource/multi-calendar overlay, agenda + mini, and full a11y/i18n/perf polish land in M4-M6.
+Month / week / day / resource calendar with view switcher, today/prev/next nav (Page Up/Down + T keyboard), per-event color and icon, all-day bars + timed pills, TR/EN locales, full interactions (anchored popover with Edit/Delete, drag-move, edge-resize, drag-create), in-house RRULE expansion (FREQ/INTERVAL/COUNT/UNTIL/BYDAY + exceptions, server-side), and multi-calendar overlay with per-calendar visibility legend. ResourceView shows one column per resource with O(n²) conflict highlighting. Pixel-identical React sibling at modules/app/Calendar/index.tsx. Agenda + mini and full a11y/i18n/perf polish land in M5-M6.
 
 ## Accessibility
 
@@ -127,6 +127,47 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
 </script>
 ```
 
+### Resource view — rooms with conflict highlight
+
+```ejs
+<%- include('modules/app/Calendar', {
+  id: 'rooms-cal',
+  view: 'resource',
+  defaultDate: new Date(2026, 4, 13),
+  slotMinutes: 15,
+  workingHours: { start: 9, end: 18, days: [1,2,3,4,5] },
+  resources: [
+    { id: 'room-a', name: 'Studio A',  color: 'primary' },
+    { id: 'room-b', name: 'Studio B',  color: 'success' },
+    { id: 'room-c', name: 'Boardroom', color: 'warning' }
+  ],
+  events: events // each carries a resourceId
+}) %>
+```
+
+### Multi-calendar overlay — toggle visibility
+
+```ejs
+<%- include('modules/app/Calendar', {
+  id: 'multi-cal',
+  view: 'week',
+  defaultDate: new Date(2026, 4, 13),
+  calendars: [
+    { id: 'work',     name: 'Work',     color: 'primary' },
+    { id: 'personal', name: 'Personal', color: 'success' },
+    { id: 'family',   name: 'Family',   color: 'warning' }
+  ],
+  events: events // each carries a calendarId
+}) %>
+<script>
+  // Listen for visibility toggles fired by the chip-style legend.
+  document.getElementById('multi-cal').addEventListener(
+    'kui-calendar:calendar-toggle',
+    function (ev) { console.log(ev.detail); /* { calendarId, visible } */ }
+  );
+</script>
+```
+
 ## Full EJS source
 
 ```ejs
@@ -148,8 +189,11 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   //   scripts/popover.js         ← parts/EventPopover.tsx          (M2)
   //   scripts/drag.js            ← hooks/useDragMove + useResize + useDragCreate (M2)
   //   RRULE expander (inline)    ← rrule.ts + hooks/useRecurrence.ts (M3, server-side)
+  //   partials/_legend.ejs       ← parts/CalendarLegend.tsx                       (M4)
+  //   partials/_resource.ejs     ← views/ResourceView.tsx                         (M4)
+  //   scripts/legend.js          ← multi-calendar visibility toggle               (M4)
   //
-  // M4-M6 still stubbed.
+  // M5-M6 still stubbed.
 
   var _id           = locals.id           || ('cal-' + Math.random().toString(36).substr(2, 6));
   var _events       = locals.events       || [];
@@ -159,6 +203,9 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   var _workingHours = locals.workingHours || null;
   var _slotMinutes  = Number(locals.slotMinutes) > 0 ? Number(locals.slotMinutes) : 30;
   var _className    = locals.className    || '';
+  var _resources    = Array.isArray(locals.resources) ? locals.resources : [];
+  var _calendars    = Array.isArray(locals.calendars) ? locals.calendars : [];
+  var _hideLegend   = !!locals.hideCalendarLegend;
 
   // Normalise events — accept ISO strings or Date instances; preserve rrule + exceptions.
   _events = _events.map(function (e) {
@@ -179,7 +226,8 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
         month: 'Ay', week: 'Hafta', day: 'Gün',
         agenda: 'Ajanda', resource: 'Kaynak',
         allDay: 'Tüm gün', noEvents: 'Etkinlik yok',
-        edit: 'Düzenle', delete: 'Sil', confirmDelete: 'Silinsin mi?', close: 'Kapat'
+        edit: 'Düzenle', delete: 'Sil', confirmDelete: 'Silinsin mi?', close: 'Kapat',
+        calendars: 'Takvimler', noResources: 'Kaynak tanımlı değil'
       },
       weekStart: 1,
       monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
@@ -192,7 +240,8 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
         month: 'Month', week: 'Week', day: 'Day',
         agenda: 'Agenda', resource: 'Resource',
         allDay: 'All-day', noEvents: 'No events',
-        edit: 'Edit', delete: 'Delete', confirmDelete: 'Confirm delete?', close: 'Close'
+        edit: 'Edit', delete: 'Delete', confirmDelete: 'Confirm delete?', close: 'Close',
+        calendars: 'Calendars', noResources: 'No resources defined'
       },
       weekStart: 0,
       monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -380,7 +429,29 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
     secondary: 'bg-secondary text-primary-fg',
     neutral:   'bg-surface-overlay text-text-primary border border-border'
   };
+  var COLOR_DOT = {
+    primary:'bg-primary', success:'bg-success', warning:'bg-warning',
+    error:'bg-error', info:'bg-info', secondary:'bg-secondary', neutral:'bg-text-secondary'
+  };
   function pillCls(c) { return COLOR_PILL[c || 'primary'] || COLOR_PILL.primary; }
+  function dotCls(c)  { return COLOR_DOT[c || 'primary'] || COLOR_DOT.primary; }
+
+  // ── effectiveColor (mirror colors.ts) — event.color → calendar.color → 'primary'
+  function calendarById(id) {
+    for (var i = 0; i < _calendars.length; i++) if (_calendars[i].id === id) return _calendars[i];
+    return null;
+  }
+  function effectiveColor(e) {
+    if (e.color) return e.color;
+    if (e.calendarId) {
+      var c = calendarById(e.calendarId);
+      if (c && c.color) return c.color;
+    }
+    return 'primary';
+  }
+  // Resolve each event's effective color once so downstream partials don't
+  // need access to the _calendars list.
+  _events = _events.map(function (e) { return Object.assign({}, e, { color: effectiveColor(e) }); });
 %>
 <div
   id="<%= _id %>"
@@ -400,6 +471,10 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   <%- include('./partials/_header', {
     _id: _id, _view: _view, _label: periodLabel(), _msg: L.messages
   }) %>
+
+  <% if (!_hideLegend && _calendars.length > 0) { %>
+    <%- include('./partials/_legend', { _id: _id, _calendars: _calendars, _msg: L.messages, _dotCls: dotCls }) %>
+  <% } %>
 
   <% if (_view === 'month') { %>
     <%- include('./partials/_month', {
@@ -425,10 +500,12 @@ Month / week / day calendar with view switcher, today/prev/next nav (Page Up/Dow
   <% } else if (_view === 'agenda') { %>
     <%- include('./partials/_agenda', { _id: _id }) %>
   <% } else if (_view === 'resource') { %>
-    <div role="region" aria-label="Resource view" class="flex flex-col items-center justify-center gap-2 py-16 px-4 text-center">
-      <p class="text-sm font-medium text-text-primary">Resource view</p>
-      <p class="text-xs text-text-secondary max-w-sm">One column per resource lands in M4.</p>
-    </div>
+    <%- include('./partials/_resource', {
+      _id: _id, _date: _defaultDate, _events: _events, _today: _today, _L: L,
+      _resources: _resources, _workingHours: _workingHours, _slotMinutes: _slotMinutes,
+      _isSameDay: isSameDay, _pillCls: pillCls, _fmtTime: fmtTime,
+      _minutesIntoDay: minutesIntoDay
+    }) %>
   <% } %>
 </div>
 
@@ -439,6 +516,7 @@ if (!window.__KuiCalendarLoaded) {
   <%- include('./scripts/keyboard.js') %>
   <%- include('./scripts/popover.js') %>
   <%- include('./scripts/drag.js') %>
+  <%- include('./scripts/legend.js') %>
 }
 (function () {
   function go() {

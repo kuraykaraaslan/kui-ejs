@@ -81,6 +81,7 @@
                 data-event-start="<%= e.start.getTime() %>"
                 data-event-end="<%= e.end.getTime() %>"
                 data-event-color="<%= e.color || 'primary' %>"
+                <% if (e.calendarId) { %>data-event-calendar-id="<%= e.calendarId %>"<% } %>
                 <% if (e.description) { %>data-event-description="<%= e.description %>"<% } %>
                 aria-label="<%= e.title %> <%= _fmtTime(e.start) %> – <%= _fmtTime(e.end) %>"
                 style="top: <%= top %>px; height: <%= height %>px; left: 4px; right: 4px;"

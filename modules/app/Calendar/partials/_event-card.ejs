@@ -21,6 +21,7 @@
   data-event-start="<%= _event.start.getTime() %>"
   data-event-end="<%= _event.end.getTime() %>"
   data-event-color="<%= _color %>"
+  <% if (_event.calendarId) { %>data-event-calendar-id="<%= _event.calendarId %>"<% } %>
   <% if (_event.allDay) { %>data-event-all-day="1"<% } %>
   <% if (_event.description) { %>data-event-description="<%= _event.description %>"<% } %>
   aria-label="<%= _ariaLbl %>"
