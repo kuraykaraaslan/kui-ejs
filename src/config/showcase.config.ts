@@ -37,6 +37,8 @@ export const SHOWCASE_LINKS = {
   siteUrl: pick(process.env.SITE_URL, 'https://ejs-components.kuray.dev'),
   github: pick(process.env.GITHUB_URL, 'https://github.com/kuraykaraaslan/KUIejs'),
   twitterHandle: pick(process.env.TWITTER_HANDLE, '@kuraykaraaslan'),
+  /** Google Analytics (gtag.js) measurement ID. Null disables analytics. */
+  googleTag: pickOptional(process.env.NEXT_PUBLIC_GOOGLE_TAG),
   author: {
     name: pick(process.env.AUTHOR_NAME, 'Kuray Karaaslan'),
     url: pick(process.env.AUTHOR_URL, 'https://kuray.dev'),
@@ -177,6 +179,7 @@ export const SITE_LOCALS = {
   keywords: SHOWCASE_KEYWORDS,
   author: SHOWCASE_LINKS.author.name,
   authorUrl: SHOWCASE_LINKS.author.url,
+  googleTag: SHOWCASE_LINKS.googleTag,
 };
 
 /**
