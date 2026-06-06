@@ -17,6 +17,23 @@ npm run dev          # http://localhost:3003
 
 `npm run dev` runs the Express server (with auto-reload) and the PostCSS/Tailwind watcher in parallel.
 
+## Theme demos
+
+Five full-page demos — one per industry vertical — built entirely from the partial library.
+
+<table>
+  <tr>
+    <td align="center"><b>API docs</b><br/><img src="https://raw.githubusercontent.com/kuraykaraaslan/kui-ejs/main/public/assets/img/screenshot-api-doc.png" alt="API docs" width="380"/></td>
+    <td align="center"><b>Common (auth / account)</b><br/><img src="https://raw.githubusercontent.com/kuraykaraaslan/kui-ejs/main/public/assets/img/screenshot-common.png" alt="Common" width="380"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Invoice</b><br/><img src="https://raw.githubusercontent.com/kuraykaraaslan/kui-ejs/main/public/assets/img/screenshot-invoice.png" alt="Invoice" width="380"/></td>
+    <td align="center"><b>Modem / UPS dashboard</b><br/><img src="https://raw.githubusercontent.com/kuraykaraaslan/kui-ejs/main/public/assets/img/screenshot-modem.png" alt="Modem / UPS dashboard" width="380"/></td>
+  </tr>
+</table>
+
+---
+
 ## Module layers
 
 ```
