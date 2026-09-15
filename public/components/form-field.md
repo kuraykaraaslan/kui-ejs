@@ -50,7 +50,7 @@ Form field wrapper: label + slot + hint + error. Exposes computed `id`, `aria-de
 
 ```ejs
 <%
-  // ─── FormField (EJS) ────────────────────────────────────────────────────────
+  // ─── FormField (EJS) ──────────────────────────��─────────────────────────────
   //
   // NextJS counterpart uses react-hook-form: it pulls `errors[name]` from the
   // form context and exposes id/aria attributes via a render-prop child.

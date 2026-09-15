@@ -95,6 +95,7 @@ line number, the expression rendered raw, and its justification.
 | `modules/ui/MapView.ejs` | 149 | `_id` | developer-controlled JS config | Same element-ID wiring as line 102. |
 | `modules/ui/Modal.ejs` | 52 | `locals.children` | slot / composition | Modal body HTML built by the calling template; never user input. |
 | `modules/ui/Modal.ejs` | 55 | `locals.footer` | slot / composition | Modal footer HTML built by the calling template; never user input. |
+| `modules/ui/ScrollArea.ejs` | 14 | `locals.children` | slot / composition | Scrollable-area body HTML built by the calling template; never user input. |
 | `modules/ui/TabGroup.ejs` | 23 | `tab.badge` | developer-controlled | Badge HTML (typically a `<span>` with a count) defined in a TypeScript data file; never user-supplied. |
 | `modules/ui/TabGroup.ejs` | 37 | `tab.content \|\| ''` | developer-controlled | Tab panel HTML defined in a TypeScript data file; never user-supplied. |
 
@@ -411,4 +412,4 @@ bash scripts/audit-raw-output.sh
 
 ---
 
-*Last updated: 2026-05-08. Grep result: 58 raw output sites documented, 255 include() calls listed.*
+*Last updated: 2026-09-15. Grep result: 59 raw output sites documented, 255 include() calls listed.*

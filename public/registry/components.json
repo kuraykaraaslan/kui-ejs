@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-05-28T06:58:17.915Z",
+  "generatedAt": "2026-09-15T12:24:08.243Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -809,6 +809,150 @@
       ]
     },
     {
+      "id": "label",
+      "name": "Label",
+      "layer": "ui",
+      "category": "Atom",
+      "filePath": "modules/ui/Label.ejs",
+      "abbr": "Lb",
+      "description": "Standalone form label with an optional required indicator and disabled state, for pairing with custom controls that do not manage their own label.",
+      "source": "<%\n  var _for       = locals.for       || '';\n  var _label     = locals.label     || '';\n  var _required  = !!locals.required;\n  var _disabled  = !!locals.disabled;\n  var _className = locals.className || '';\n%>\n<label\n  <% if (_for) { %>for=\"<%= _for %>\"<% } %>\n  class=\"block text-sm font-medium text-text-primary select-none<%= _disabled ? ' text-text-disabled cursor-not-allowed' : '' %><%= _className ? ' ' + _className : '' %>\"\n><%= _label %><% if (_required) { %><span class=\"text-error ml-1\" aria-hidden=\"true\">*</span><span class=\"sr-only\">(required)</span><% } %></label>\n",
+      "variants": [
+        {
+          "title": "Basic + required",
+          "code": "<%- include('modules/ui/Label', { for: 'name', label: 'Full name' }) %>\n<%- include('modules/ui/Label', { for: 'email', label: 'Email address', required: true }) %>"
+        },
+        {
+          "title": "Disabled",
+          "code": "<%- include('modules/ui/Label', { for: 'handle', label: 'Handle (disabled)', disabled: true }) %>\n<input id=\"handle\" disabled placeholder=\"@handle\" />"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--error",
+        "--primary",
+        "--text-disabled",
+        "--text-primary"
+      ]
+    },
+    {
+      "id": "separator",
+      "name": "Separator",
+      "layer": "ui",
+      "category": "Atom",
+      "filePath": "modules/ui/Separator.ejs",
+      "abbr": "Se",
+      "description": "Visual divider between sections of content. Supports horizontal and vertical orientation, and an optional centered label for horizontal dividers.",
+      "source": "<%\n  var _orientation = locals.orientation || 'horizontal';\n  var _decorative  = (locals.decorative === undefined) ? true : !!locals.decorative;\n  var _label       = locals.label     || '';\n  var _className   = locals.className || '';\n  var _role        = _decorative ? 'none' : 'separator';\n%>\n<% if (_label && _orientation === 'horizontal') { %>\n  <div role=\"<%= _role %>\" <% if (!_decorative) { %>aria-orientation=\"horizontal\"<% } %> class=\"flex items-center gap-3 text-xs font-medium text-text-secondary<%= _className ? ' ' + _className : '' %>\">\n    <span class=\"h-px flex-1 bg-border\"></span>\n    <%= _label %>\n    <span class=\"h-px flex-1 bg-border\"></span>\n  </div>\n<% } else { %>\n  <div\n    role=\"<%= _role %>\"\n    <% if (!_decorative) { %>aria-orientation=\"<%= _orientation %>\"<% } %>\n    class=\"shrink-0 bg-border <%= _orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px' %><%= _className ? ' ' + _className : '' %>\"\n  ></div>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "Horizontal",
+          "code": "<p>Section one content</p>\n<%- include('modules/ui/Separator') %>\n<p>Section two content</p>"
+        },
+        {
+          "title": "Vertical + labeled",
+          "code": "<span>Profile</span>\n<%- include('modules/ui/Separator', { orientation: 'vertical' }) %>\n<span>Settings</span>\n\n<%- include('modules/ui/Separator', { label: 'OR' }) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--border",
+        "--secondary",
+        "--text-secondary"
+      ]
+    },
+    {
+      "id": "scroll-area",
+      "name": "ScrollArea",
+      "layer": "ui",
+      "category": "Atom",
+      "filePath": "modules/ui/ScrollArea.ejs",
+      "abbr": "SA",
+      "description": "Scrollable container with a themed, thin scrollbar (Firefox scrollbar-color + WebKit pseudo-elements) instead of the bulky native default. Supports vertical, horizontal, or both-axis scrolling.",
+      "source": "<%\n  var _orientation = locals.orientation || 'vertical';\n  var _className   = locals.className || '';\n\n  var overflowClasses = {\n    vertical:   'overflow-y-auto overflow-x-hidden',\n    horizontal: 'overflow-x-auto overflow-y-hidden',\n    both:       'overflow-auto',\n  };\n  var _overflow = overflowClasses[_orientation] || overflowClasses.vertical;\n%>\n<div\n  class=\"relative rounded-md <%= _overflow %> [scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-full<%= _className ? ' ' + _className : '' %>\"\n><% if (locals.children) { %><%- locals.children %><% } %></div>\n",
+      "variants": [
+        {
+          "title": "Vertical list",
+          "code": "<%- include('modules/ui/ScrollArea', {\n  className: 'h-40 w-64 border border-border p-3',\n  children: itemListHtml\n}) %>"
+        },
+        {
+          "title": "Horizontal",
+          "code": "<%- include('modules/ui/ScrollArea', {\n  orientation: 'horizontal',\n  className: 'w-full border border-border p-3',\n  children: cardsRowHtml\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--border",
+        "--border-strong"
+      ]
+    },
+    {
+      "id": "progress",
+      "name": "Progress",
+      "layer": "ui",
+      "category": "Atom",
+      "filePath": "modules/ui/Progress.ejs",
+      "abbr": "Pr",
+      "description": "Progress indicator in bar or circle shape. Server-rendered only — the bar fill width and circle stroke-dasharray/dashoffset are computed from `value` at render time. Variant maps to semantic tokens (primary/success/warning/error); `showLabel` renders the current percentage.",
+      "source": "<%\n  var _rawValue  = Number(locals.value);\n  var _value     = isNaN(_rawValue) ? 0 : Math.min(100, Math.max(0, _rawValue));\n  var _variant   = locals.variant   || 'primary';\n  var _size      = locals.size      || 'md';\n  var _shape     = locals.shape     || 'bar';\n  var _showLabel = !!locals.showLabel;\n  var _label     = locals.label     || 'Progress';\n  var _className = locals.className || '';\n\n  var barFillClass = {\n    primary: 'bg-primary',\n    success: 'bg-success',\n    warning: 'bg-warning',\n    error:   'bg-error',\n  }[_variant] || 'bg-primary';\n\n  var circleStrokeClass = {\n    primary: 'stroke-[var(--primary)]',\n    success: 'stroke-[var(--success)]',\n    warning: 'stroke-[var(--warning)]',\n    error:   'stroke-[var(--error)]',\n  }[_variant] || 'stroke-[var(--primary)]';\n\n  var barHeightClass = {\n    sm: 'h-1.5',\n    md: 'h-2.5',\n    lg: 'h-4',\n  }[_size] || 'h-2.5';\n\n  var circleDiameter = { sm: 40, md: 56, lg: 80 }[_size] || 56;\n  var circleStrokeWidth = { sm: 4, md: 5, lg: 6 }[_size] || 5;\n  var circleTextClass = { sm: 'text-[10px]', md: 'text-xs', lg: 'text-sm' }[_size] || 'text-xs';\n\n  var _radius = (circleDiameter - circleStrokeWidth) / 2;\n  var _circumference = 2 * Math.PI * _radius;\n  var _dashOffset = _circumference * (1 - _value / 100);\n%>\n<% if (_shape === 'circle') { %>\n  <div\n    role=\"progressbar\"\n    aria-valuenow=\"<%= _value %>\"\n    aria-valuemin=\"0\"\n    aria-valuemax=\"100\"\n    aria-label=\"<%= _label %>\"\n    class=\"relative inline-flex items-center justify-center<%= _className ? ' ' + _className : '' %>\"\n    style=\"width: <%= circleDiameter %>px; height: <%= circleDiameter %>px;\"\n  >\n    <svg width=\"<%= circleDiameter %>\" height=\"<%= circleDiameter %>\" viewBox=\"0 0 <%= circleDiameter %> <%= circleDiameter %>\" class=\"-rotate-90\">\n      <circle\n        cx=\"<%= circleDiameter / 2 %>\"\n        cy=\"<%= circleDiameter / 2 %>\"\n        r=\"<%= _radius %>\"\n        fill=\"none\"\n        stroke-width=\"<%= circleStrokeWidth %>\"\n        class=\"stroke-[var(--surface-sunken)]\"\n      ></circle>\n      <circle\n        cx=\"<%= circleDiameter / 2 %>\"\n        cy=\"<%= circleDiameter / 2 %>\"\n        r=\"<%= _radius %>\"\n        fill=\"none\"\n        stroke-width=\"<%= circleStrokeWidth %>\"\n        stroke-linecap=\"round\"\n        class=\"<%= circleStrokeClass %> transition-[stroke-dashoffset] duration-300\"\n        style=\"stroke-dasharray: <%= _circumference %>; stroke-dashoffset: <%= _dashOffset %>;\"\n      ></circle>\n    </svg>\n    <% if (_showLabel) { %>\n      <span class=\"absolute inset-0 flex items-center justify-center font-medium tabular-nums text-text-primary <%= circleTextClass %>\"><%= Math.round(_value) %>%</span>\n    <% } %>\n  </div>\n<% } else { %>\n  <div class=\"w-full<%= _className ? ' ' + _className : '' %>\">\n    <% if (_showLabel) { %>\n      <div class=\"mb-1 flex items-center justify-between text-xs text-text-secondary\">\n        <span class=\"sr-only\"><%= _label %></span>\n        <span aria-hidden=\"true\" class=\"ml-auto tabular-nums\"><%= Math.round(_value) %>%</span>\n      </div>\n    <% } %>\n    <div\n      role=\"progressbar\"\n      aria-valuenow=\"<%= _value %>\"\n      aria-valuemin=\"0\"\n      aria-valuemax=\"100\"\n      <% if (!_showLabel) { %>aria-label=\"<%= _label %>\"<% } %>\n      class=\"w-full overflow-hidden rounded-full bg-surface-sunken <%= barHeightClass %>\"\n    >\n      <div class=\"h-full rounded-full transition-[width] duration-300 <%= barFillClass %>\" style=\"width: <%= _value %>%;\"></div>\n    </div>\n  </div>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "Bar — variants",
+          "code": "<%- include('modules/ui/Progress', {\n  value: 72,\n  variant: 'primary',\n  showLabel: true,\n  label: 'Upload progress',\n}) %>"
+        },
+        {
+          "title": "Circle shape",
+          "code": "<%- include('modules/ui/Progress', {\n  value: 66,\n  shape: 'circle',\n  size: 'lg',\n  showLabel: true,\n  label: 'Profile completeness',\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--error",
+        "--primary",
+        "--secondary",
+        "--success",
+        "--surface-sunken",
+        "--text-primary",
+        "--text-secondary",
+        "--warning"
+      ]
+    },
+    {
+      "id": "statistic",
+      "name": "Statistic",
+      "layer": "ui",
+      "category": "Atom",
+      "filePath": "modules/ui/Statistic.ejs",
+      "abbr": "St",
+      "description": "Bare KPI number with label, no card chrome — see StatCard for the card-wrapped sibling. Supports numeric `precision`, HTML `prefix`/`suffix`, an up/down `trend` indicator, and a pulsing skeleton via `loading`.",
+      "source": "<%\n  var _label     = locals.label     || '';\n  var _value     = (locals.value !== undefined && locals.value !== null) ? locals.value : '';\n  var _precision = locals.precision;\n  var _prefix    = locals.prefix    || '';\n  var _suffix    = locals.suffix    || '';\n  var _trend     = locals.trend     || '';\n  var _trendValue = locals.trendValue || '';\n  var _loading   = !!locals.loading;\n  var _className = locals.className || '';\n\n  var _displayValue = _value;\n  if (_precision !== undefined && _precision !== null && typeof _value === 'number' && !isNaN(_value)) {\n    _displayValue = _value.toFixed(_precision);\n  } else if (_precision !== undefined && _precision !== null && typeof _value === 'string' && _value !== '' && !isNaN(Number(_value))) {\n    _displayValue = Number(_value).toFixed(_precision);\n  }\n\n  var trendIconClass = _trend === 'down' ? 'fa-arrow-down' : 'fa-arrow-up';\n  var trendColorClass = _trend === 'down' ? 'text-error' : 'text-success';\n%>\n<div class=\"flex flex-col gap-1<%= _className ? ' ' + _className : '' %>\">\n  <span class=\"text-xs text-text-secondary\"><%= _label %></span>\n  <% if (_loading) { %>\n    <span class=\"h-7 w-24 animate-pulse rounded bg-surface-sunken\" aria-hidden=\"true\"></span>\n    <span class=\"sr-only\">Loading <%= _label %></span>\n  <% } else { %>\n    <div class=\"flex items-baseline gap-1\">\n      <% if (_prefix) { %><span class=\"text-lg font-semibold text-text-secondary\"><%- _prefix %></span><% } %>\n      <span class=\"text-2xl font-bold tabular-nums text-text-primary\"><%= _displayValue %></span>\n      <% if (_suffix) { %><span class=\"text-lg font-semibold text-text-secondary\"><%- _suffix %></span><% } %>\n      <% if (_trend && _trendValue) { %>\n        <span class=\"ml-1 inline-flex items-center gap-1 text-xs font-medium <%= trendColorClass %>\">\n          <i class=\"fa-solid <%= trendIconClass %>\" aria-hidden=\"true\" style=\"font-size:10px\"></i>\n          <%= _trendValue %>\n        </span>\n      <% } %>\n    </div>\n  <% } %>\n</div>\n",
+      "variants": [
+        {
+          "title": "Basic + trend",
+          "code": "<%- include('modules/ui/Statistic', {\n  label: 'Revenue',\n  value: 128400,\n  precision: 2,\n  prefix: '$',\n  trend: 'up',\n  trendValue: '+12.4%',\n}) %>"
+        },
+        {
+          "title": "Loading",
+          "code": "<%- include('modules/ui/Statistic', {\n  label: 'Active users',\n  loading: true,\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--error",
+        "--primary",
+        "--secondary",
+        "--success",
+        "--surface-sunken",
+        "--text-primary",
+        "--text-secondary"
+      ]
+    },
+    {
       "id": "search-bar",
       "name": "SearchBar",
       "layer": "ui",
@@ -1285,6 +1429,135 @@
       "status": "stable",
       "since": "2026-05",
       "designTokens": []
+    },
+    {
+      "id": "accordion",
+      "name": "Accordion",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/Accordion.ejs",
+      "abbr": "Ac",
+      "description": "Collapsible panel group for progressively disclosing content. Server-renders the initial open/closed state from `defaultOpenIds` (no client JS needed for first paint), then a scoped inline script wires up click handlers. Supports single-open or `allowMultiple` mode.",
+      "source": "<%\n  var _id            = locals.id            || 'accordion-' + Math.random().toString(36).substr(2, 9);\n  var _items         = locals.items         || [];\n  var _defaultOpenIds = locals.defaultOpenIds || [];\n  var _allowMultiple = !!locals.allowMultiple;\n  var _className     = locals.className     || '';\n\n  function isOpen(itemId) {\n    return _defaultOpenIds.indexOf(itemId) !== -1;\n  }\n%>\n<div id=\"<%= _id %>\" data-accordion data-allow-multiple=\"<%= _allowMultiple ? 'true' : 'false' %>\" class=\"divide-y divide-border rounded-lg border border-border bg-surface-base<%= _className ? ' ' + _className : '' %>\">\n  <% _items.forEach(function (item) { %>\n    <%\n      var _headerId  = _id + '-header-' + item.id;\n      var _panelId   = _id + '-panel-' + item.id;\n      var _itemOpen  = isOpen(item.id);\n      var _disabled  = !!item.disabled;\n    %>\n    <h3 class=\"m-0\">\n      <button\n        type=\"button\"\n        id=\"<%= _headerId %>\"\n        aria-expanded=\"<%= _itemOpen ? 'true' : 'false' %>\"\n        aria-controls=\"<%= _panelId %>\"\n        data-accordion-trigger=\"<%= item.id %>\"\n        <% if (_disabled) { %>disabled<% } %>\n        class=\"flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-text-primary transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed\"\n      >\n        <span><%= item.title %></span>\n        <span\n          aria-hidden=\"true\"\n          data-accordion-chevron\n          class=\"shrink-0 text-text-secondary transition-transform duration-200<%= _itemOpen ? ' rotate-180' : '' %>\"\n        >\n          <i class=\"fa-solid fa-chevron-down\" style=\"font-size:12px\"></i>\n        </span>\n      </button>\n    </h3>\n    <div\n      id=\"<%= _panelId %>\"\n      role=\"region\"\n      aria-labelledby=\"<%= _headerId %>\"\n      data-accordion-panel=\"<%= item.id %>\"\n      <% if (!_itemOpen) { %>hidden<% } %>\n      class=\"px-4 py-3 text-sm text-text-secondary\"\n    >\n      <%= item.content %>\n    </div>\n  <% }); %>\n</div>\n\n<script>\n(function () {\n  var rootId = '<%= _id %>';\n  var root = document.getElementById(rootId);\n  if (!root) return;\n\n  var allowMultiple = root.getAttribute('data-allow-multiple') === 'true';\n\n  function closeItem(itemId) {\n    var trigger = root.querySelector('[data-accordion-trigger=\"' + itemId + '\"]');\n    var panel   = root.querySelector('[data-accordion-panel=\"' + itemId + '\"]');\n    if (!trigger || !panel) return;\n    panel.hidden = true;\n    trigger.setAttribute('aria-expanded', 'false');\n    var chevron = trigger.querySelector('[data-accordion-chevron]');\n    if (chevron) chevron.classList.remove('rotate-180');\n  }\n\n  function openItem(itemId) {\n    var trigger = root.querySelector('[data-accordion-trigger=\"' + itemId + '\"]');\n    var panel   = root.querySelector('[data-accordion-panel=\"' + itemId + '\"]');\n    if (!trigger || !panel) return;\n    panel.hidden = false;\n    trigger.setAttribute('aria-expanded', 'true');\n    var chevron = trigger.querySelector('[data-accordion-chevron]');\n    if (chevron) chevron.classList.add('rotate-180');\n  }\n\n  root.addEventListener('click', function (ev) {\n    var trigger = ev.target.closest('[data-accordion-trigger]');\n    if (!trigger || !root.contains(trigger) || trigger.disabled) return;\n\n    var itemId = trigger.getAttribute('data-accordion-trigger');\n    var panel  = root.querySelector('[data-accordion-panel=\"' + itemId + '\"]');\n    if (!panel) return;\n\n    var willOpen = panel.hidden;\n\n    if (willOpen && !allowMultiple) {\n      var triggers = root.querySelectorAll('[data-accordion-trigger]');\n      Array.prototype.forEach.call(triggers, function (t) {\n        var id = t.getAttribute('data-accordion-trigger');\n        if (id !== itemId) closeItem(id);\n      });\n    }\n\n    if (willOpen) openItem(itemId); else closeItem(itemId);\n  });\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Single open (default)",
+          "code": "<%- include('modules/ui/Accordion', {\n  items: [\n    { id: 'shipping', title: 'How long does shipping take?', content: '...' },\n    { id: 'returns',  title: 'What is your return policy?',  content: '...' },\n    { id: 'support',  title: 'How do I contact support?',    content: '...' },\n  ],\n  defaultOpenIds: ['shipping'],\n}) %>"
+        },
+        {
+          "title": "Allow multiple + disabled item",
+          "code": "<%- include('modules/ui/Accordion', {\n  allowMultiple: true,\n  defaultOpenIds: ['shipping', 'returns'],\n  items: [\n    { id: 'shipping', title: 'How long does shipping take?', content: '...' },\n    { id: 'returns',  title: 'What is your return policy?',  content: '...' },\n    { id: 'legal',    title: 'Legal (coming soon)', content: '', disabled: true },\n  ],\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-overlay",
+        "--text-primary",
+        "--text-secondary"
+      ]
+    },
+    {
+      "id": "popconfirm",
+      "name": "Popconfirm",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/Popconfirm.ejs",
+      "abbr": "Pc",
+      "description": "\"Are you sure?\" confirmation popover: trigger + absolutely-positioned alertdialog panel with title, optional description, and Cancel/Confirm buttons. Built standalone (not a Popover wrapper). Since EJS cannot take a JS closure, confirming or cancelling dispatches a `popconfirm:confirm` / `popconfirm:cancel` CustomEvent on the root element for the host page to listen for.",
+      "source": "<%#\n  modules/ui/Popconfirm.ejs — \"are you sure?\" confirmation popover.\n\n  Built the same way as modules/ui/Overlays/Popover/Popover.ejs (self-contained\n  trigger + absolutely-positioned panel + inline <script>), NOT a wrapper\n  around Popover — Popover has no confirm/cancel footer or onConfirm callback\n  concept in a server-rendered context.\n\n  EJS has no live JS closures, so `onConfirm`/`onCancel` cannot be passed as\n  functions. Instead:\n    - `confirmAction` / `cancelAction` locals are rendered as\n      `data-popconfirm-confirm-action` / `data-popconfirm-cancel-action`\n      attributes on the root element — read them yourself in a page-level\n      <script> if you prefer a data-attribute lookup.\n    - Confirming or cancelling always dispatches a bubbling CustomEvent\n      (`popconfirm:confirm` / `popconfirm:cancel`) on the root `#<id>` element\n      with `{ detail: { id } }`. Host pages should add a listener:\n\n        document.getElementById('my-popconfirm').addEventListener('popconfirm:confirm', function (ev) {\n          // ev.detail.id === 'my-popconfirm'\n        });\n%>\n<%\n  var _id          = locals.id          || 'popconfirm-' + Math.random().toString(36).substr(2, 9);\n  var _placement   = locals.placement   || 'bottom';\n  var _trigger     = locals.trigger     || '';\n  var _title       = locals.title       || '';\n  var _description = locals.description || '';\n  var _confirmLabel = locals.confirmLabel || 'Confirm';\n  var _cancelLabel  = locals.cancelLabel  || 'Cancel';\n  var _danger       = !!locals.danger;\n  var _className    = locals.className    || '';\n\n  var placementClass = {\n    bottom: 'top-full left-0 mt-2',\n    top:    'bottom-full left-0 mb-2',\n    left:   'right-full top-0 mr-2',\n    right:  'left-full top-0 ml-2',\n  }[_placement] || 'top-full left-0 mt-2';\n\n  var iconClass = _danger ? 'text-error' : 'text-warning';\n%>\n<%- include('./Overlays/shared/focus-trap.js') %>\n<div\n  id=\"<%= _id %>\"\n  class=\"relative inline-block<%= _className ? ' ' + _className : '' %>\"\n  data-popconfirm-confirm-action=\"<%= locals.confirmAction || '' %>\"\n  data-popconfirm-cancel-action=\"<%= locals.cancelAction || '' %>\"\n>\n  <div\n    id=\"<%= _id %>-trigger\"\n    aria-haspopup=\"dialog\"\n    aria-expanded=\"false\"\n    aria-controls=\"<%= _id %>-panel\"\n    onclick=\"togglePopconfirm('<%= _id %>')\"\n  >\n    <%- _trigger %>\n  </div>\n  <div\n    id=\"<%= _id %>-panel\"\n    role=\"alertdialog\"\n    aria-labelledby=\"<%= _id %>-title\"\n    <% if (_description) { %>aria-describedby=\"<%= _id %>-description\"<% } %>\n    tabindex=\"-1\"\n    hidden\n    data-state=\"closed\"\n    class=\"absolute z-[70] w-72 rounded-lg border border-border bg-surface-raised p-4 shadow-xl focus-visible:outline-none <%= placementClass %>\"\n  >\n    <div class=\"flex gap-3\">\n      <span aria-hidden=\"true\" class=\"shrink-0 <%= iconClass %>\">\n        <i class=\"fa-solid fa-circle-question\" style=\"font-size:16px\"></i>\n      </span>\n      <div class=\"min-w-0 flex-1\">\n        <p id=\"<%= _id %>-title\" class=\"text-sm font-semibold text-text-primary\"><%= _title %></p>\n        <% if (_description) { %>\n          <p id=\"<%= _id %>-description\" class=\"mt-1 text-xs text-text-secondary\"><%= _description %></p>\n        <% } %>\n      </div>\n    </div>\n    <div class=\"mt-3 flex justify-end gap-2\">\n      <span data-popconfirm-cancel>\n        <%- include('./Button', { variant: 'outline', size: 'sm', children: _cancelLabel }) %>\n      </span>\n      <span data-popconfirm-confirm>\n        <%- include('./Button', { variant: _danger ? 'danger' : 'primary', size: 'sm', children: _confirmLabel }) %>\n      </span>\n    </div>\n  </div>\n</div>\n\n<script>\n(function () {\n  function getEls(id) {\n    return {\n      root:    document.getElementById(id),\n      trigger: document.getElementById(id + '-trigger'),\n      panel:   document.getElementById(id + '-panel'),\n    };\n  }\n\n  function openPopconfirm(id) {\n    var e = getEls(id);\n    if (!e.root || !e.panel || !e.trigger) return;\n    e.panel.hidden = false;\n    e.panel.setAttribute('data-state', 'open');\n    e.trigger.setAttribute('aria-expanded', 'true');\n    if (window.__overlayFocusTrap) window.__overlayFocusTrap.activate(id, e.panel);\n    else e.panel.focus();\n  }\n\n  function closePopconfirm(id) {\n    var e = getEls(id);\n    if (!e.root || !e.panel || !e.trigger) return;\n    e.panel.hidden = true;\n    e.panel.setAttribute('data-state', 'closed');\n    e.trigger.setAttribute('aria-expanded', 'false');\n    if (window.__overlayFocusTrap) window.__overlayFocusTrap.deactivate(id);\n  }\n\n  function togglePopconfirm(id) {\n    var e = getEls(id);\n    if (!e.panel) return;\n    if (e.panel.hidden) openPopconfirm(id); else closePopconfirm(id);\n  }\n\n  window.openPopconfirm   = window.openPopconfirm   || openPopconfirm;\n  window.closePopconfirm  = window.closePopconfirm  || closePopconfirm;\n  window.togglePopconfirm = window.togglePopconfirm || togglePopconfirm;\n\n  var popconfirmId = '<%= _id %>';\n  var root = document.getElementById(popconfirmId);\n  if (!root) return;\n\n  root.addEventListener('click', function (ev) {\n    var confirmBtn = ev.target.closest('[data-popconfirm-confirm] button, [data-popconfirm-confirm] a');\n    var cancelBtn  = ev.target.closest('[data-popconfirm-cancel] button, [data-popconfirm-cancel] a');\n\n    if (confirmBtn) {\n      closePopconfirm(popconfirmId);\n      root.dispatchEvent(new CustomEvent('popconfirm:confirm', { bubbles: true, detail: { id: popconfirmId } }));\n      return;\n    }\n    if (cancelBtn) {\n      closePopconfirm(popconfirmId);\n      root.dispatchEvent(new CustomEvent('popconfirm:cancel', { bubbles: true, detail: { id: popconfirmId } }));\n      return;\n    }\n  });\n\n  document.addEventListener('pointerdown', function (ev) {\n    var panel = document.getElementById(popconfirmId + '-panel');\n    if (!panel || panel.hidden) return;\n    if (!root.contains(ev.target)) closePopconfirm(popconfirmId);\n  }, true);\n\n  document.addEventListener('keydown', function (ev) {\n    var panel = document.getElementById(popconfirmId + '-panel');\n    if (!panel || panel.hidden) return;\n    var ft = window.__overlayFocusTrap;\n    if (ft && !ft.isTop(popconfirmId)) return;\n    if (ev.key === 'Escape') {\n      closePopconfirm(popconfirmId);\n      root.dispatchEvent(new CustomEvent('popconfirm:cancel', { bubbles: true, detail: { id: popconfirmId } }));\n      return;\n    }\n    if (ft) ft.handleKey(popconfirmId, panel, ev);\n  });\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Default",
+          "code": "<%- include('modules/ui/Popconfirm', {\n  trigger: '<button type=\"button\">Delete item</button>',\n  title: 'Delete this item?',\n  description: 'This action cannot be undone.',\n}) %>"
+        },
+        {
+          "title": "Danger + custom labels",
+          "code": "<%- include('modules/ui/Popconfirm', {\n  danger: true,\n  trigger: '<button type=\"button\">Remove account</button>',\n  title: 'Permanently remove this account?',\n  description: 'All data associated with this account will be deleted.',\n  confirmLabel: 'Remove',\n  cancelLabel: 'Keep account',\n  confirmAction: 'removeAccount()',\n}) %>\n\n<script>\ndocument.getElementById('my-popconfirm').addEventListener('popconfirm:confirm', function (ev) {\n  // ev.detail.id === 'my-popconfirm'\n});\n</script>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--border",
+        "--error",
+        "--primary",
+        "--secondary",
+        "--surface-raised",
+        "--text-primary",
+        "--text-secondary",
+        "--warning"
+      ]
+    },
+    {
+      "id": "range-slider",
+      "name": "RangeSlider",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/RangeSlider.ejs",
+      "abbr": "Rs",
+      "description": "Numeric slider input, distinct from Slider (a carousel). Single mode renders one native `<input type=\"range\">` with a server-computed token gradient fill. Range (dual-handle) mode overlays two native range inputs with a shared fill bar and a small inline script that clamps the handles against each other and keeps the fill in sync while dragging.",
+      "source": "<%#\n  modules/ui/RangeSlider.ejs — numeric slider input.\n\n  Distinct from modules/ui/Slider.ejs, which is a carousel — this is a\n  numeric <input type=\"range\"> control. Named RangeSlider (not Slider) to\n  avoid colliding with the carousel.\n%>\n<%\n  var _id        = locals.id        || 'range-' + Math.random().toString(36).substr(2, 9);\n  var _label     = locals.label     || '';\n  var _hint      = locals.hint      || '';\n  var _min       = (locals.min !== undefined) ? Number(locals.min) : 0;\n  var _max       = (locals.max !== undefined) ? Number(locals.max) : 100;\n  var _step      = (locals.step !== undefined) ? Number(locals.step) : 1;\n  var _disabled  = !!locals.disabled;\n  var _showValue = (locals.showValue === undefined) ? true : !!locals.showValue;\n  var _isRange   = !!locals.range;\n  var _className = locals.className || '';\n\n  var _hintId = _hint ? (_id + '-hint') : '';\n\n  var _rangeVal = Array.isArray(locals.value) ? locals.value : [_min, _max];\n  var _lo = (_rangeVal[0] !== undefined) ? Number(_rangeVal[0]) : _min;\n  var _hi = (_rangeVal[1] !== undefined) ? Number(_rangeVal[1]) : _max;\n  var _singleVal = (!Array.isArray(locals.value) && locals.value !== undefined) ? Number(locals.value) : _min;\n\n  var thumbClass = '[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 '\n    + '[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer '\n    + '[&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-surface-base '\n    + '[&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary '\n    + '[&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-surface-base [&::-moz-range-thumb]:shadow '\n    + 'disabled:[&::-webkit-slider-thumb]:bg-text-disabled disabled:[&::-moz-range-thumb]:bg-text-disabled';\n\n  function pct(v) {\n    if (_max === _min) return 0;\n    return Math.min(100, Math.max(0, ((v - _min) / (_max - _min)) * 100));\n  }\n%>\n<div id=\"<%= _id %>\" data-rangeslider data-range=\"<%= _isRange ? 'true' : 'false' %>\" data-min=\"<%= _min %>\" data-max=\"<%= _max %>\" class=\"w-full<%= _className ? ' ' + _className : '' %>\">\n  <% if (_label || _showValue) { %>\n    <div class=\"mb-2 flex items-center justify-between gap-2\">\n      <% if (_label) { %><span class=\"text-sm font-medium text-text-primary\"><%= _label %></span><% } %>\n      <% if (_showValue) { %>\n        <% if (_isRange) { %>\n          <span class=\"text-xs tabular-nums text-text-secondary\">\n            <span data-rangeslider-value-min><%= _lo %></span> – <span data-rangeslider-value-max><%= _hi %></span>\n          </span>\n        <% } else { %>\n          <span class=\"text-xs tabular-nums text-text-secondary\" data-rangeslider-value-single><%= _singleVal %></span>\n        <% } %>\n      <% } %>\n    </div>\n  <% } %>\n\n  <% if (_isRange) { %>\n    <div class=\"relative h-4 flex items-center\">\n      <div class=\"absolute inset-x-0 h-1.5 rounded-full bg-surface-sunken\"></div>\n      <div\n        data-rangeslider-fill\n        class=\"absolute h-1.5 rounded-full bg-primary\"\n        style=\"left: <%= pct(_lo) %>%; right: <%= 100 - pct(_hi) %>%;\"\n      ></div>\n      <input\n        type=\"range\"\n        id=\"<%= _id %>-min\"\n        aria-label=\"<%= _label ? _label + ' minimum' : 'Minimum' %>\"\n        min=\"<%= _min %>\"\n        max=\"<%= _max %>\"\n        step=\"<%= _step %>\"\n        value=\"<%= _lo %>\"\n        <% if (locals.nameMin) { %>name=\"<%= locals.nameMin %>\"<% } %>\n        <% if (_disabled) { %>disabled<% } %>\n        data-rangeslider-handle=\"min\"\n        class=\"pointer-events-none absolute inset-x-0 h-1.5 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto disabled:cursor-not-allowed <%= thumbClass %>\"\n      >\n      <input\n        type=\"range\"\n        id=\"<%= _id %>-max\"\n        aria-label=\"<%= _label ? _label + ' maximum' : 'Maximum' %>\"\n        min=\"<%= _min %>\"\n        max=\"<%= _max %>\"\n        step=\"<%= _step %>\"\n        value=\"<%= _hi %>\"\n        <% if (locals.nameMax) { %>name=\"<%= locals.nameMax %>\"<% } %>\n        <% if (_disabled) { %>disabled<% } %>\n        data-rangeslider-handle=\"max\"\n        class=\"pointer-events-none absolute inset-x-0 h-1.5 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-moz-range-thumb]:pointer-events-auto disabled:cursor-not-allowed <%= thumbClass %>\"\n      >\n    </div>\n  <% } else { %>\n    <input\n      type=\"range\"\n      id=\"<%= _id %>-input\"\n      <% if (_label) { %>aria-label=\"<%= _label %>\"<% } %>\n      min=\"<%= _min %>\"\n      max=\"<%= _max %>\"\n      step=\"<%= _step %>\"\n      value=\"<%= _singleVal %>\"\n      <% if (locals.name) { %>name=\"<%= locals.name %>\"<% } %>\n      <% if (_disabled) { %>disabled<% } %>\n      <% if (_hintId) { %>aria-describedby=\"<%= _hintId %>\"<% } %>\n      data-rangeslider-handle=\"single\"\n      class=\"h-1.5 w-full cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed <%= thumbClass %>\"\n      style=\"background-image: linear-gradient(to right, var(--primary) 0%, var(--primary) <%= pct(_singleVal) %>%, var(--surface-sunken) <%= pct(_singleVal) %>%, var(--surface-sunken) 100%);\"\n    >\n  <% } %>\n\n  <% if (_hintId) { %><p id=\"<%= _hintId %>\" class=\"mt-1 text-xs text-text-secondary\"><%= _hint %></p><% } %>\n</div>\n\n<script>\n(function () {\n  var rootId = '<%= _id %>';\n  var root = document.getElementById(rootId);\n  if (!root) return;\n\n  var isRange = root.getAttribute('data-range') === 'true';\n  var min = Number(root.getAttribute('data-min'));\n  var max = Number(root.getAttribute('data-max'));\n\n  function pct(v) {\n    if (max === min) return 0;\n    return Math.min(100, Math.max(0, ((v - min) / (max - min)) * 100));\n  }\n\n  if (!isRange) {\n    var single = document.getElementById(rootId + '-input');\n    var singleLabel = root.querySelector('[data-rangeslider-value-single]');\n    if (!single) return;\n    single.addEventListener('input', function () {\n      var v = Number(single.value);\n      single.style.backgroundImage = 'linear-gradient(to right, var(--primary) 0%, var(--primary) ' + pct(v) + '%, var(--surface-sunken) ' + pct(v) + '%, var(--surface-sunken) 100%)';\n      if (singleLabel) singleLabel.textContent = String(v);\n    });\n    return;\n  }\n\n  var minHandle = document.getElementById(rootId + '-min');\n  var maxHandle = document.getElementById(rootId + '-max');\n  var fill      = root.querySelector('[data-rangeslider-fill]');\n  var minLabel  = root.querySelector('[data-rangeslider-value-min]');\n  var maxLabel  = root.querySelector('[data-rangeslider-value-max]');\n  if (!minHandle || !maxHandle) return;\n\n  function updateFill() {\n    var lo = Number(minHandle.value);\n    var hi = Number(maxHandle.value);\n    if (fill) {\n      fill.style.left  = pct(lo) + '%';\n      fill.style.right = (100 - pct(hi)) + '%';\n    }\n    if (minLabel) minLabel.textContent = String(lo);\n    if (maxLabel) maxLabel.textContent = String(hi);\n  }\n\n  minHandle.addEventListener('input', function () {\n    if (Number(minHandle.value) > Number(maxHandle.value)) {\n      minHandle.value = maxHandle.value;\n    }\n    updateFill();\n  });\n\n  maxHandle.addEventListener('input', function () {\n    if (Number(maxHandle.value) < Number(minHandle.value)) {\n      maxHandle.value = minHandle.value;\n    }\n    updateFill();\n  });\n})();\n</script>\n",
+      "variants": [
+        {
+          "title": "Single value",
+          "code": "<%- include('modules/ui/RangeSlider', {\n  label: 'Volume',\n  value: 65,\n  min: 0,\n  max: 100,\n  name: 'volume',\n}) %>"
+        },
+        {
+          "title": "Dual-handle range",
+          "code": "<%- include('modules/ui/RangeSlider', {\n  label: 'Price range',\n  range: true,\n  value: [20, 80],\n  min: 0,\n  max: 100,\n  nameMin: 'priceMin',\n  nameMax: 'priceMax',\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-sunken",
+        "--text-disabled",
+        "--text-primary",
+        "--text-secondary"
+      ]
+    },
+    {
+      "id": "time-picker",
+      "name": "TimePicker",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/DateRangePicker.ejs",
+      "abbr": "Tp",
+      "description": "Native time input with the standard label/hint/error markup, reached via `include('modules/ui/DateRangePicker', { kind: 'time', ... })`. Lives inline in the DateRangePicker shim rather than its own file, but is functionally independent — this entry makes it discoverable on its own.",
+      "source": "<%# modules/ui/DateRangePicker.ejs — thin shim %>\n<%#\n  Backwards-compatible entry point. The real DateRangePicker lives at\n  `modules/ui/DatePicker/DateRangePicker.ejs`; the TimePicker (kind === 'time')\n  flow stays inline here because the time picker belongs to milestone M4.\n\n  When the caller passes `kind: 'time'` we keep the legacy native-input\n  behaviour — otherwise we delegate to the new popover.\n%>\n<% if (locals.kind === 'time') { %>\n  <%\n    var _id    = locals.id || 'time-' + Math.random().toString(36).substr(2, 9);\n    var _label = locals.label || '';\n    var _hint  = locals.hint  || '';\n    var _error = locals.error || '';\n    var _dis   = !!locals.disabled;\n    var _req   = !!locals.required;\n    var _className = locals.className || '';\n    var _timeVal = locals.value || '';\n    var _step    = locals.step  || 60;\n\n    var _hintId  = (_hint  && !_error) ? (_id + '-hint')  : '';\n    var _errorId = _error ? (_id + '-error') : '';\n    var _describedBy = [_hintId, _errorId].filter(function (x) { return !!x; }).join(' ');\n\n    var inputClass = 'block w-full rounded-md border px-3 py-2 text-sm transition-colors '\n      + 'text-text-primary bg-surface-base '\n      + 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus '\n      + 'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-sunken ';\n    inputClass += _error\n      ? 'border-error ring-1 ring-error bg-error-subtle'\n      : 'border-border';\n  %>\n  <div class=\"space-y-1<%= _className ? ' ' + _className : '' %>\">\n    <label for=\"<%= _id %>\" class=\"block text-sm font-medium text-text-primary\">\n      <%= _label %><% if (_req) { %><span class=\"text-error ml-1\" aria-hidden=\"true\">*</span><span class=\"sr-only\">(required)</span><% } %>\n    </label>\n    <input\n      id=\"<%= _id %>\"\n      type=\"time\"\n      value=\"<%= _timeVal %>\"\n      step=\"<%= _step %>\"\n      class=\"<%= inputClass %>\"\n      <% if (_dis) { %>disabled<% } %>\n      <% if (_req) { %>required<% } %>\n      <% if (locals.name) { %>name=\"<%= locals.name %>\"<% } %>\n      aria-invalid=\"<%= _error ? 'true' : 'false' %>\"\n      <% if (_describedBy) { %>aria-describedby=\"<%= _describedBy %>\"<% } %>\n      data-testid=\"timepicker-<%= _id %>\"\n    />\n    <% if (_hintId) { %><p id=\"<%= _hintId %>\" class=\"text-xs text-text-secondary\"><%= _hint %></p><% } %>\n    <% if (_errorId) { %><p id=\"<%= _errorId %>\" class=\"text-xs text-error\" role=\"alert\"><%= _error %></p><% } %>\n  </div>\n<% } else { %>\n  <%- include('modules/ui/DatePicker/DateRangePicker', locals) %>\n<% } %>\n",
+      "variants": [
+        {
+          "title": "Default",
+          "code": "<%- include('modules/ui/DateRangePicker', {\n  kind: 'time',\n  label: 'Appointment time',\n  hint: 'Business hours are 9am–6pm.',\n  value: '14:30',\n}) %>"
+        },
+        {
+          "title": "Required + error",
+          "code": "<%- include('modules/ui/DateRangePicker', {\n  kind: 'time',\n  label: 'Pickup time',\n  required: true,\n  error: 'Please choose a pickup time.',\n}) %>"
+        }
+      ],
+      "status": "stable",
+      "since": "2026-09",
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--error-subtle",
+        "--primary",
+        "--secondary",
+        "--surface-base",
+        "--surface-sunken",
+        "--text-primary",
+        "--text-secondary"
+      ]
     },
     {
       "id": "card",
@@ -2775,7 +3048,7 @@
       "filePath": "modules/app/FormField.ejs",
       "abbr": "FF",
       "description": "Form field wrapper: label + slot + hint + error. Exposes computed `id`, `aria-describedby` and `aria-invalid` via the `data-form-field` container — the static EJS counterpart of the NextJS react-hook-form binding.",
-      "source": "<%\n  // ─── FormField (EJS) ────────────────────────────────────────────────────────\n  //\n  // NextJS counterpart uses react-hook-form: it pulls `errors[name]` from the\n  // form context and exposes id/aria attributes via a render-prop child.\n  //\n  // EJS has no form context and no render-prop pattern, so:\n  //   • Callers pass static `error` / `hint` props per render (no live validation).\n  //   • The caller embeds the input markup directly inside `children`; this\n  //     template wraps it in a slot whose root element carries the computed\n  //     `id`, `aria-describedby`, and `aria-invalid` attributes via a\n  //     `data-form-field` data-attribute pattern. Real inputs should mirror\n  //     these on themselves (e.g. `id=\"<%= name %>\"`) — the surrounding wrapper\n  //     exposes them for tests / scripts that walk the DOM.\n  //\n  //   <%- include('FormField', {\n  //         name: 'email', label: 'Email', error: errors.email,\n  //         children: `<input id=\"email\" name=\"email\" aria-invalid=\"${!!errors.email}\" …>`\n  //       }) %>\n  //\n  // The computed `_inputId` (== `name`) is mirrored onto the slot wrapper as\n  // `data-input-id` so consumers can locate the input without re-deriving it.\n\n  var _name      = locals.name      || locals.id || ('field-' + Math.random().toString(36).substr(2, 6));\n  var _label     = locals.label     || '';\n  var _hint      = locals.hint      || '';\n  var _error     = locals.error     || '';\n  var _required  = !!locals.required;\n  var _className = locals.className || '';\n\n  var _inputId     = _name;\n  var _hintId      = _hint  ? (_inputId + '-hint')  : '';\n  var _errorId     = _error ? (_inputId + '-error') : '';\n  var _describedBy = [_hintId, _errorId].filter(Boolean).join(' ');\n%>\n<div class=\"flex flex-col gap-1.5<%= _className ? ' ' + _className : '' %>\">\n  <label\n    for=\"<%= _inputId %>\"\n    class=\"text-sm font-medium text-text-primary<%= _required ? \" after:content-['*'] after:ml-0.5 after:text-error\" : '' %>\"\n  >\n    <%= _label %>\n  </label>\n\n  <div\n    data-form-field\n    data-input-id=\"<%= _inputId %>\"\n    <% if (_describedBy) { %>aria-describedby=\"<%= _describedBy %>\"<% } %>\n    aria-invalid=\"<%= _error ? 'true' : 'false' %>\"\n  >\n    <%- locals.children || '' %>\n  </div>\n\n  <% if (_hint && !_error) { %>\n  <p id=\"<%= _hintId %>\" class=\"text-xs text-text-secondary\"><%= _hint %></p>\n  <% } %>\n\n  <% if (_error) { %>\n  <p id=\"<%= _errorId %>\" role=\"alert\" class=\"text-xs text-error\"><%= _error %></p>\n  <% } %>\n</div>\n",
+      "source": "<%\n  // ─── FormField (EJS) ──────────────────────────��─────────────────────────────\n  //\n  // NextJS counterpart uses react-hook-form: it pulls `errors[name]` from the\n  // form context and exposes id/aria attributes via a render-prop child.\n  //\n  // EJS has no form context and no render-prop pattern, so:\n  //   • Callers pass static `error` / `hint` props per render (no live validation).\n  //   • The caller embeds the input markup directly inside `children`; this\n  //     template wraps it in a slot whose root element carries the computed\n  //     `id`, `aria-describedby`, and `aria-invalid` attributes via a\n  //     `data-form-field` data-attribute pattern. Real inputs should mirror\n  //     these on themselves (e.g. `id=\"<%= name %>\"`) — the surrounding wrapper\n  //     exposes them for tests / scripts that walk the DOM.\n  //\n  //   <%- include('FormField', {\n  //         name: 'email', label: 'Email', error: errors.email,\n  //         children: `<input id=\"email\" name=\"email\" aria-invalid=\"${!!errors.email}\" …>`\n  //       }) %>\n  //\n  // The computed `_inputId` (== `name`) is mirrored onto the slot wrapper as\n  // `data-input-id` so consumers can locate the input without re-deriving it.\n\n  var _name      = locals.name      || locals.id || ('field-' + Math.random().toString(36).substr(2, 6));\n  var _label     = locals.label     || '';\n  var _hint      = locals.hint      || '';\n  var _error     = locals.error     || '';\n  var _required  = !!locals.required;\n  var _className = locals.className || '';\n\n  var _inputId     = _name;\n  var _hintId      = _hint  ? (_inputId + '-hint')  : '';\n  var _errorId     = _error ? (_inputId + '-error') : '';\n  var _describedBy = [_hintId, _errorId].filter(Boolean).join(' ');\n%>\n<div class=\"flex flex-col gap-1.5<%= _className ? ' ' + _className : '' %>\">\n  <label\n    for=\"<%= _inputId %>\"\n    class=\"text-sm font-medium text-text-primary<%= _required ? \" after:content-['*'] after:ml-0.5 after:text-error\" : '' %>\"\n  >\n    <%= _label %>\n  </label>\n\n  <div\n    data-form-field\n    data-input-id=\"<%= _inputId %>\"\n    <% if (_describedBy) { %>aria-describedby=\"<%= _describedBy %>\"<% } %>\n    aria-invalid=\"<%= _error ? 'true' : 'false' %>\"\n  >\n    <%- locals.children || '' %>\n  </div>\n\n  <% if (_hint && !_error) { %>\n  <p id=\"<%= _hintId %>\" class=\"text-xs text-text-secondary\"><%= _hint %></p>\n  <% } %>\n\n  <% if (_error) { %>\n  <p id=\"<%= _errorId %>\" role=\"alert\" class=\"text-xs text-error\"><%= _error %></p>\n  <% } %>\n</div>\n",
       "variants": [
         {
           "title": "With hint",

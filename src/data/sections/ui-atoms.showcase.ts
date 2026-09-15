@@ -12,6 +12,11 @@ import { buildToggleData }      from './ui-atom-toggle.showcase';
 import { buildCheckboxData }    from './ui-atom-checkbox.showcase';
 import { buildInputData }       from './ui-atom-input.showcase';
 import { buildTextareaData }    from './ui-atom-textarea.showcase';
+import { buildLabelData }       from './ui-atom-label.showcase';
+import { buildSeparatorData }   from './ui-atom-separator.showcase';
+import { buildScrollAreaData }  from './ui-atom-scroll-area.showcase';
+import { buildProgressData }    from './ui-atom-progress.showcase';
+import { buildStatisticData }   from './ui-atom-statistic.showcase';
 
 export function buildAtomsData(): ShowcaseItem[] {
   return [
@@ -28,5 +33,10 @@ export function buildAtomsData(): ShowcaseItem[] {
     ...buildCheckboxData(),
     ...buildInputData(),
     ...buildTextareaData(),
+    ...buildLabelData(),
+    ...buildSeparatorData(),
+    ...buildScrollAreaData(),
+    ...buildProgressData(),
+    ...buildStatisticData(),
   ];
 }

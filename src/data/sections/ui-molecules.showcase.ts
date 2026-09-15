@@ -7,6 +7,10 @@ import { buildComboBoxData }          from './ui-molecule-combo-box.showcase';
 import { buildDateRangePickerData }   from './ui-molecule-date-range-picker.showcase';
 import { buildTagInputData }          from './ui-molecule-tag-input.showcase';
 import { buildMoleculeDiffViewerData } from './ui-molecule-diff-viewer.showcase';
+import { buildAccordionData }         from './ui-molecule-accordion.showcase';
+import { buildPopconfirmData }        from './ui-molecule-popconfirm.showcase';
+import { buildRangeSliderData }       from './ui-molecule-range-slider.showcase';
+import { buildTimePickerData }        from './ui-molecule-time-picker.showcase';
 
 // NextJS molecule order:
 // input, checkbox, radio-group, select, multi-select, combo-box, textarea,
@@ -30,5 +34,9 @@ export function buildMoleculesData(): ShowcaseItem[] {
     ...buildTagInputData(),
     ...buildMoleculePickersData(),
     ...buildMoleculeDiffViewerData(),
+    ...buildAccordionData(),
+    ...buildPopconfirmData(),
+    ...buildRangeSliderData(),
+    ...buildTimePickerData(),
   ];
 }
