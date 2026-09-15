@@ -17,7 +17,8 @@
     "screenshots": "node scripts/take-screenshots.js",
     "registry:snapshot": "node scripts/build-registry-snapshot.mjs",
     "mcp:server": "node scripts/mcp-server.mjs",
-    "ci": "npm run build && npm run audit:tokens && npm run audit:raw && npm run lint:spacing && npm run dead-partials"
+    "ci": "npm run build && npm run audit:tokens && npm run audit:raw && npm run lint:spacing && npm run dead-partials",
+    "debt:check": "node scripts/debt-ratchet.mjs"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
