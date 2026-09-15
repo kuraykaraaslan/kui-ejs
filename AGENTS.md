@@ -150,6 +150,19 @@ kui-ejs/
 
 ---
 
+## Parity with kui-react (`$KUIREACT_ROOT`)
+
+kui-ejs and kui-react are two implementations of the same design system (see `$KUIREACT_ROOT/docs/adr/0003-react-ejs-parity-contract.md`). Parity is **not** all-or-nothing — the exceptions below are deliberate, not gaps to silently close:
+
+- Shared verticals, kept in parity: `common`, `api-doc`.
+- EJS-only by design: `invoice`, `modem`, `ups` — device/admin-panel demos with no React counterpart.
+- React-only by design (13 verticals, no EJS counterpart): `ai`, `blog`, `commerce`, `event`, `fintech`, `food`, `forum`, `iot`, `jobs`, `landing`, `media`, `nft`, `real-estate`, `reviews`, `social`, `travel`.
+- App-layer exceptions: `Gantt` and `FormBuilder` were shipped here and then deliberately reverted ("moved out of scope" commits) — do not re-add without deciding scope first.
+
+Before adding a partial to only one repo, check whether it belongs in the other too. When it is deliberately one-sided, say so in the PR description.
+
+---
+
 ## Theme Architecture
 
 Each theme is a self-contained multi-page website demo for a specific vertical (e.g. landing page, blog, portfolio, corporate site).
