@@ -1,0 +1,3 @@
+{
+  "modules/**/*.ejs": ["bash scripts/audit-tokens.sh", "bash scripts/lint-spacing.sh"]
+}
