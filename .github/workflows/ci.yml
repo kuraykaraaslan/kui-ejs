@@ -39,6 +39,11 @@ jobs:
         continue-on-error: true
       - name: Dead-partial scan (informational by design)
         run: npm run dead-partials
+      # 15 vulnerabilities today (2 critical, 10 high), same transitive
+      # `ws` (via puppeteer) as kui-react — see that repo's ci.yml comment.
+      - name: Dependency audit (report-only — see comment above)
+        run: npm audit --audit-level=high
+        continue-on-error: true
 
   stale-strings:
     name: no stale internal paths
