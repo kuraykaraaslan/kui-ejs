@@ -18,7 +18,7 @@ See each vertical's README for its full file list and parity status.
 
 Mixed:
 
-- `api-doc/`, `common/` — shared with NextJS at `/home/kuray/01_NextJS_Components/modules/domains/<vertical>/`. Keep parity (naming, props, DOM).
+- `api-doc/`, `common/` — shared with NextJS at `$KUIREACT_ROOT/modules/domains/<vertical>/`. Keep parity (naming, props, DOM).
 - `invoice/`, `modem/`, `ups/` — **EJS-only, no NextJS counterpart**. These are demos that exist solely in this repo.
 
 ## Conventions
@@ -32,5 +32,5 @@ Mixed:
 
 ## See also
 
-- Repo conventions: [`/home/kuray/02_EJS_Components/AGENTS.md`](../../AGENTS.md)
-- Parity contract & pixel-perfect rule: `../../../00_Config_and_AI_Rules`
+- Repo conventions: [`$KUIEJS_ROOT/AGENTS.md`](../../AGENTS.md)
+- Parity contract & pixel-perfect rule: the rulesets referenced for `$KUIEJS_ROOT` in `internal-ai-rules/LOCAL_PATHS.json`

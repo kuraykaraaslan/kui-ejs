@@ -1,4 +1,4 @@
-> **Note:** `../00_Config_and_AI_Rules` is always tagged and must be loaded before any work begins.
+> **Note:** the rulesets referenced for `$KUIEJS_ROOT` in `internal-ai-rules/LOCAL_PATHS.json` are always tagged and must be loaded before any work begins.
 
 # KUI EJS Showcase
 
@@ -203,7 +203,7 @@ A view can override the default layout by setting `layout` in locals (done in th
 
 ## Design Tokens
 
-CSS variables defined in `public/assets/css/input.css`. Map 1:1 with `01_NextJS_Components` tokens. For the full and always-up-to-date list, fetch `/api/registry` and inspect `designTokens[]`.
+CSS variables defined in `public/assets/css/input.css`. Map 1:1 with `$KUIREACT_ROOT` tokens. For the full and always-up-to-date list, fetch `/api/registry` and inspect `designTokens[]`.
 
 | Token | Value (light) | Purpose |
 |-------|--------------|---------|

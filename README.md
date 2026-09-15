@@ -1,6 +1,6 @@
 # kui-ejs
 
-A server-rendered EJS / Express / Tailwind 4 component library organised the same way as its React sibling [`kui-react`](../01_NextJS_Components/) — atoms → molecules → organisms → app patterns → industry-vertical domain partials → full-page theme demos. Every partial is **copy-paste-ready** from the live showcase; no npm install required.
+A server-rendered EJS / Express / Tailwind 4 component library organised the same way as its React sibling [`kui-react`](https://github.com/kuraykaraaslan/kui-react) — atoms → molecules → organisms → app patterns → industry-vertical domain partials → full-page theme demos. Every partial is **copy-paste-ready** from the live showcase; no npm install required.
 
 > **AI assistants:** start at `/llms.txt` or fetch `/api/registry` for a machine-readable catalog of every partial. See the [AI agent quick reference](#ai-agent-quick-reference) below.
 

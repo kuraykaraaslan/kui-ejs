@@ -26,7 +26,7 @@ ViewToggle.ejs          lazy.ejs
 
 ## Parity
 
-Shared with NextJS: yes — counterpart is `/home/kuray/01_NextJS_Components/modules/ui/`. Component names, props, and visual output must remain pixel-perfect. When you add or change a primitive in either repo, mirror it here.
+Shared with NextJS: yes — counterpart is `$KUIREACT_ROOT/modules/ui/`. Component names, props, and visual output must remain pixel-perfect. When you add or change a primitive in either repo, mirror it here.
 
 ## Conventions
 
@@ -39,5 +39,5 @@ Shared with NextJS: yes — counterpart is `/home/kuray/01_NextJS_Components/mod
 
 ## See also
 
-- Repo conventions: [`/home/kuray/02_EJS_Components/AGENTS.md`](../../AGENTS.md)
-- Parity contract & pixel-perfect rule: `../../../00_Config_and_AI_Rules`
+- Repo conventions: [`$KUIEJS_ROOT/AGENTS.md`](../../AGENTS.md)
+- Parity contract & pixel-perfect rule: the rulesets referenced for `$KUIEJS_ROOT` in `internal-ai-rules/LOCAL_PATHS.json`

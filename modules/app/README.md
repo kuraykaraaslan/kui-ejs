@@ -18,7 +18,7 @@ StepShell.ejs          ThemeSwitcher.ejs
 
 ## Parity
 
-Shared with NextJS: yes — counterpart is `/home/kuray/01_NextJS_Components/modules/app/`. Naming, props (locals), and rendered DOM must match the React versions. Mirror any add/rename/remove in both repos.
+Shared with NextJS: yes — counterpart is `$KUIREACT_ROOT/modules/app/`. Naming, props (locals), and rendered DOM must match the React versions. Mirror any add/rename/remove in both repos.
 
 ## Conventions
 
@@ -31,5 +31,5 @@ Shared with NextJS: yes — counterpart is `/home/kuray/01_NextJS_Components/mod
 
 ## See also
 
-- Repo conventions: [`/home/kuray/02_EJS_Components/AGENTS.md`](../../AGENTS.md)
-- Parity contract & pixel-perfect rule: `../../../00_Config_and_AI_Rules`
+- Repo conventions: [`$KUIEJS_ROOT/AGENTS.md`](../../AGENTS.md)
+- Parity contract & pixel-perfect rule: the rulesets referenced for `$KUIEJS_ROOT` in `internal-ai-rules/LOCAL_PATHS.json`

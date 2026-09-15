@@ -20,14 +20,12 @@
     "ci": "npm run build && npm run audit:tokens && npm run audit:raw && npm run lint:spacing && npm run dead-partials"
   },
   "dependencies": {
-    "@types/qrcode": "^1.5.6",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-ejs-layouts": "^2.5.1",
     "helmet": "^8.1.0",
-    "puppeteer": "^24.43.0",
     "qrcode": "^1.5.4",
     "zod": "^3.23.0"
   },
@@ -35,14 +33,19 @@
     "@tailwindcss/postcss": "^4",
     "@types/cookie-parser": "^1.4.10",
     "@types/ejs": "^3.1.5",
-    "@types/express": "^5.0.1",
+    "@types/express": "^4.17.21",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
     "postcss": "^8",
     "postcss-cli": "^11",
+    "puppeteer": "^24.43.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.4",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
