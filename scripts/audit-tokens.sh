@@ -22,14 +22,34 @@
 #     Payment card brand gradients (VISA, Mastercard, AMEX, etc.).
 #     Official brand colors — cannot be replaced with design-system tokens.
 #
-#   modules/ui/MapView.ejs
+#   modules/ui/MapView/partials/_popup.ejs
 #   src/data/sections/ui-molecule-map.showcase.ts
 #     Leaflet popup/tooltip innerHTML is built as a JS string; CSS classes and
 #     custom properties cannot be used inside Leaflet's popup HTML API.
 #
+#   modules/domain/common/charts/Charts.ejs
 #   src/data/sections/domain-common-charts.showcase.ts
 #     Chart.js dataset options (borderColor etc.) require hex — the library
 #     reads these values before the browser resolves CSS variables.
+#
+#   modules/ui/ColorPicker/ColorPicker.ejs
+#   modules/ui/ColorPicker/partials/_inputs.ejs
+#   src/data/sections/ui-molecule-pickers.showcase.ts
+#     The swatch palette and hex input placeholder/default of a color-picker
+#     component are, by definition, arbitrary colors the user can choose —
+#     not design-system tokens.
+#
+#   src/registry/registry.ts
+#     DESIGN_TOKENS: this *is* the token contract — the file that declares
+#     what each --token-name resolves to. It must contain the hex values;
+#     every other file in the audit exists to make sure they reference this
+#     one instead of repeating themselves.
+#
+#   modules/domain/common/seo/SeoPreview.ejs
+#     `text-[#1a0dab]` mimics Google's actual search-result link color so the
+#     preview reads as a real SERP snippet. Spec-mandated for the same reason
+#     as the OAuth/card brand colors above — it represents a third party's
+#     real, fixed UI, not this design system's.
 
 set -euo pipefail
 
@@ -48,9 +68,15 @@ ALLOWLIST=(
   "src/data/sections/domain-common-auth.showcase.ts"
   "modules/domain/common/payment/CreditCardVisual.ejs"
   "src/data/sections/domain-common-payment.showcase.ts"
-  "modules/ui/MapView.ejs"
+  "modules/ui/MapView/partials/_popup.ejs"
   "src/data/sections/ui-molecule-map.showcase.ts"
+  "modules/domain/common/charts/Charts.ejs"
   "src/data/sections/domain-common-charts.showcase.ts"
+  "modules/ui/ColorPicker/ColorPicker.ejs"
+  "modules/ui/ColorPicker/partials/_inputs.ejs"
+  "src/data/sections/ui-molecule-pickers.showcase.ts"
+  "src/registry/registry.ts"
+  "modules/domain/common/seo/SeoPreview.ejs"
 )
 
 violations=$(

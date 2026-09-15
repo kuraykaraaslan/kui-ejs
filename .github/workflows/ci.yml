@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: build, token/spacing audits, raw-output audit (report-only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build (CSS + tsc)
+        run: npm run build
+      - name: Token audit
+        run: npm run audit:tokens
+      - name: Spacing lint
+        run: npm run lint:spacing
+      # 138 pre-existing <%- %> sites aren't on the pattern-based allowlist
+      # yet (grew from the ~46 noted in ROADMAP.md). Most look like
+      # legitimate component-slot passthroughs (locals.children, _trigger,
+      # icon slots, col.render(row)), but a few — e.g. MapView.ejs building
+      # a <script> literal from _id/_center/_zoom — need a real per-site XSS
+      # review before they're blessed, not a blind pattern-list append.
+      # That review is docs/dev/phase-6-architecture-refactors.md section
+      # 6.9. Report-only until it lands; remove continue-on-error then.
+      - name: Raw-output audit (report-only — see comment above)
+        run: npm run audit:raw
+        continue-on-error: true
+      - name: Dead-partial scan (informational by design)
+        run: npm run dead-partials
+
+  stale-strings:
+    name: no stale internal paths
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Grep for stale absolute-path references
+        run: |
+          ! grep -rn '02_EJS_Components\|01_NextJS_Components\|00_Config_and_AI_Rules\|next_js_components' \
+            --include='*.md' --include='*.ts' --include='*.tsx' --include='.env.example' . \
+            --exclude-dir=node_modules --exclude-dir=dist
+
+  snapshot-drift:
+    name: registry snapshot is up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Regenerate registry snapshot
+        run: npm run registry:snapshot
+      - name: Fail if the committed snapshot is stale
+        # -I'"generatedAt"' ignores the one line that legitimately changes
+        # on every run (the regeneration timestamp) so this job only fails
+        # on a real content difference — verified: a clean regeneration
+        # only touches that one field.
+        run: |
+          git diff --exit-code -I'"generatedAt"' -- public/registry public/components || {
+            echo "::error::public/registry/** or public/components/** is out of date. Run 'npm run registry:snapshot' and commit the result.";
+            exit 1;
+          }
