@@ -22,6 +22,12 @@ jobs:
       - run: npm ci
       - name: Build (CSS + tsc)
         run: npm run build
+      # Boots the app in-process (supertest, no real listen()) and requests
+      # every fixed endpoint, every theme route, and every showcase
+      # component slug from the registry — 219 requests today. Genuinely
+      # green on the first real run. See tests/routes.smoke.test.ts.
+      - name: Route smoke tests
+        run: npm test
       - name: Token audit
         run: npm run audit:tokens
       - name: Spacing lint

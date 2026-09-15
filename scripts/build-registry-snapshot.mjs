@@ -106,8 +106,19 @@ process.stdout.write('::REG_BEGIN::' + JSON.stringify(reg) + '::REG_END::');
     });
     let stdout = '';
     let stderr = '';
-    child.stdout.on('data', (b) => { stdout += b.toString(); });
-    child.stderr.on('data', (b) => { stderr += b.toString(); });
+    // setEncoding('utf8') on the stream itself (not b.toString() per chunk)
+    // matters: a 'data' event Buffer can end mid-character for any
+    // multi-byte UTF-8 sequence, and decoding each chunk independently
+    // mangles it into U+FFFD replacement characters at the split point.
+    // Node's stream StringDecoder holds back an incomplete trailing
+    // sequence until the next chunk instead. Found via a real, intermittent
+    // corruption of a box-drawing comment in FormField.ejs's captured
+    // source that only appeared on some snapshot runs — see
+    // $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.2.
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (chunk) => { stdout += chunk; });
+    child.stderr.on('data', (chunk) => { stderr += chunk; });
     child.on('error', reject);
     child.on('exit', (code) => {
       if (code !== 0) reject(new Error(`tsx exited ${code}: ${stderr}`));
