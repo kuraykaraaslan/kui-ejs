@@ -38,8 +38,8 @@ Five full-page demos — one per industry vertical — built entirely from the p
 
 ```
 modules/
-├── ui/           ← ~29 primitive EJS partials (atoms + molecules)
-├── app/          ← ~16 application patterns (shells, navigation, states)
+├── ui/           ← primitive EJS partials (atoms + molecules)
+├── app/          ← application patterns (shells, navigation, states)
 └── domain/       ← Industry verticals: common, modem, invoice, ups, api-doc
 views/
 ├── layouts/      ← main.ejs, blank.ejs
@@ -56,6 +56,8 @@ src/
 public/
 └── assets/css/   ← Tailwind source (input.css) + compiled output
 ```
+
+Counts drift as partials ship, so this README doesn't hardcode them — see the live registry: `GET /api/registry?index=1`. As of the last snapshot: 61 ui, 34 app, 81 domain partials across 5 verticals, 5 full-page themes.
 
 ## Using a partial (copy-paste path)
 

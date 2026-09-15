@@ -66,44 +66,85 @@ const matches = reg.components.filter(c =>
 ## Project Structure
 
 ```
-KUIejs/
-├── src/
-│   ├── server.ts              ← Entry point
-│   ├── app.ts                 ← Express setup, middleware, routes
-│   ├── routes/
-│   │   ├── index.ts           ← Showcase homepage (/)
-│   │   ├── themes.ts          ← Theme route aggregator (/theme/*)
-│   │   └── themes/            ← One router file per theme
-│   │       └── <vertical>.ts
-│   ├── data/
-│   │   ├── showcase.ts        ← Theme registry (ThemeMeta list)
-│   │   └── <vertical>.data.ts ← Static sample data per theme
-│   └── types/
-│       └── index.ts           ← Shared TypeScript types
+kui-ejs/
+├── api/
+│   └── index.ts                ← Vercel serverless entry, re-exports src/app
+├── brand/                      ← Logo/wordmark SVG source + build.mjs generator
+├── docs/
+│   └── raw-output-allowlist.md ← Every justified <%- %> site, enumerated
+├── modules/
+│   ├── ui/                     ← Primitive partials (atoms + molecules), one
+│   │                              .ejs per component, some with a parts/
+│   │                              subdir (Chart/, CodeEditor/, ColorPicker/,
+│   │                              ComboBox/, DatePicker/, DiffViewer/,
+│   │                              FileInput/, MapView/, Overlays/, Slider/,
+│   │                              Table/, Toast/, TreeView/, VideoPlayer/)
+│   ├── app/                    ← Application patterns (organisms, page
+│   │                              shells), some with a parts/ subdir
+│   │                              (Calendar/, CommandPalette/,
+│   │                              FileUploadSection/, ImageGallery/,
+│   │                              KanbanBoard/, RichTextEditor/)
+│   └── domain/                 ← Industry verticals: api-doc/, common/,
+│                                  invoice/, modem/, ups/
 ├── views/
 │   ├── layouts/
-│   │   ├── main.ejs           ← Default layout (navbar + footer)
-│   │   └── blank.ejs          ← Bare layout (no nav/footer)
+│   │   ├── main.ejs            ← Default layout (skip-link + navbar + footer)
+│   │   └── blank.ejs           ← Bare layout for self-chromed theme demos
 │   ├── partials/
-│   │   ├── head.ejs           ← <head> element
-│   │   ├── navbar.ejs         ← Top navigation bar
-│   │   └── footer.ejs         ← Site footer
+│   │   ├── _head.ejs           ← <head> element (SEO, fonts, anti-FOUC script)
+│   │   ├── _navbar.ejs         ← Top navigation bar
+│   │   ├── _footer.ejs         ← Site footer
+│   │   ├── _flash.ejs          ← Server-side flash message
+│   │   └── _theme_toggle.ejs   ← Light/dark/system toggle
 │   ├── showcase/
-│   │   └── index.ejs          ← Theme listing page
-│   ├── themes/
-│   │   └── <vertical>/        ← EJS views per theme
-│   │       ├── index.ejs      ← Theme homepage
-│   │       └── *.ejs          ← Additional pages
+│   │   ├── index.ejs           ← Component browser
+│   │   └── partials/           ← copy-button, props-editor, sidebar, topbar, …
+│   ├── theme/
+│   │   └── <vertical>/         ← EJS views per theme (api-doc, common,
+│   │                              invoice, modem, ups)
 │   └── 404.ejs
 ├── public/
-│   ├── css/
-│   │   ├── input.css          ← Tailwind source + design tokens
-│   │   └── main.css           ← Compiled output (git-ignored)
-│   └── js/
-│       └── main.js            ← Dark mode toggle, shared JS
+│   ├── assets/
+│   │   ├── css/
+│   │   │   ├── input.css       ← Tailwind source + design tokens
+│   │   │   └── app.css         ← Compiled output (build artifact, not
+│   │   │                          tracked — see .gitignore)
+│   │   ├── js/                 ← main.js (theme/modal), showcase.js,
+│   │   │                          video-player/
+│   │   └── img/
+│   ├── components/             ← Per-partial markdown, one file per id
+│   ├── registry/                ← components.json + components.index.json
+│   ├── schemas/                 ← registry-v1.json JSON Schema
+│   └── llms.txt
+├── src/
+│   ├── server.ts                ← Entry point (npm start / npm run dev:server)
+│   ├── app.ts                   ← Express setup, middleware, route mounting
+│   ├── config/
+│   │   └── showcase.config.ts   ← Site locals, env-driven color overrides
+│   ├── middleware/
+│   │   ├── error.ts             ← Global error handler
+│   │   └── validateBody.ts      ← Zod-backed form validation middleware
+│   ├── registry/
+│   │   ├── registry.ts          ← Derives the catalog from showcase data
+│   │   └── registry.types.ts
+│   ├── routes/
+│   │   ├── index.ts             ← Showcase homepage (/)
+│   │   ├── api.ts                ← /api/registry, /llms-full.txt
+│   │   ├── themes.ts             ← Theme route aggregator (/theme/*)
+│   │   └── themes/               ← One router file per theme
+│   ├── data/
+│   │   ├── showcase.data.ts      ← Aggregator: calls all section builders
+│   │   ├── showcase.menu.ts      ← Sidebar navigation source of truth
+│   │   ├── sections/              ← One builder file per component/group
+│   │   └── <vertical>.data.ts    ← Static sample data per theme
+│   └── types/
+├── scripts/                     ← audit-tokens.sh, audit-raw-output.sh,
+│                                   lint-spacing.sh, find-dead-partials.sh,
+│                                   build-registry-snapshot.mjs, mcp-server.mjs
 ├── package.json
 ├── tsconfig.json
 ├── postcss.config.mjs
+├── vercel.json
 └── AGENTS.md
 ```
 
@@ -126,7 +167,7 @@ Each theme is a self-contained multi-page website demo for a specific vertical (
 
 ### Adding a New Theme
 
-1. **Create views**: `views/themes/<vertical>/index.ejs` (and any sub-pages).
+1. **Create views**: `views/theme/<vertical>/index.ejs` (and any sub-pages).
 
 2. **Create data file**: `src/data/<vertical>.data.ts` with all static sample data.
 
@@ -255,7 +296,7 @@ npm run dev        # starts server + CSS watcher in parallel
 ```
 
 - Server: `http://localhost:3000`
-- CSS auto-recompiles on `public/css/input.css` changes
+- CSS auto-recompiles on `public/assets/css/input.css` changes
 - Server auto-restarts on `src/**/*.ts` and `views/**/*.ejs` changes
 
 ### Build for production
@@ -282,7 +323,7 @@ npm start          # runs dist/server.js
 
 ## Adding Theme-Specific Partials
 
-Reusable pieces within a theme live in `views/themes/<vertical>/partials/`:
+Reusable pieces within a theme live in `views/theme/<vertical>/partials/`:
 
 ```ejs
 <%- include('../partials/hero') %>
