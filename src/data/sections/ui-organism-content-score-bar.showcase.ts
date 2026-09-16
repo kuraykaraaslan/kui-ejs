@@ -15,6 +15,16 @@ const TIER_MAP: Record<Tier, TierStyles> = {
   poor:  { bar: 'bg-error',   text: 'text-error-fg',   bg: 'bg-error-subtle',   border: 'border-error',   dot: 'bg-error',   label: 'Poor' },
 };
 
+// This preview is hand-built with string interpolation rather than
+// ejs.render() (ContentScoreBar's real markup needs live JS-driven state
+// this static demo doesn't have), so unlike the real .ejs it has no
+// automatic HTML-escaping — attribute values need it applied explicitly.
+// Caught by tests/html-validate.test.ts: a hint containing literal `"`
+// characters broke the `title` attribute it was interpolated into.
+function escapeAttr(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&#34;');
+}
+
 function tierFor(score: number): Tier {
   if (score >= 70) return 'great';
   if (score >= 40) return 'ok';
@@ -38,7 +48,7 @@ function contentScoreBarEl(opts: { score: number; results: Result[]; label?: str
       const pillClass = r.pass
         ? `${t.bg} ${t.text} border ${t.border}`
         : 'bg-surface-sunken text-text-disabled border border-border';
-      const titleAttr = r.hint ? ` title="${r.hint}"` : '';
+      const titleAttr = r.hint ? ` title="${escapeAttr(r.hint)}"` : '';
       const check = r.pass
         ? `<span class="w-2.5 h-2.5 inline-flex items-center justify-center" aria-hidden="true"><i class="fa-solid fa-check" style="font-size:10px"></i></span>`
         : '';

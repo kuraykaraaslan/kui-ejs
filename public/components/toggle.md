@@ -32,10 +32,10 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
 <%- include('modules/ui/Toggle', { id: 'dark', label: 'Dark mode' }) %>
 ```
 
-### No label
+### No visible label
 
 ```ejs
-<%- include('modules/ui/Toggle', { id: 't', checked: true }) %>
+<%- include('modules/ui/Toggle', { id: 't', checked: true, ariaLabel: 'Enable notifications' }) %>
 ```
 
 ### Disabled
@@ -84,6 +84,7 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
       role="switch"
       class="sr-only"
       aria-checked="<%= _ch ? 'true' : 'false' %>"
+      <% if (!locals.label && locals.ariaLabel) { %>aria-label="<%= locals.ariaLabel %>"<% } %>
       data-toggle-input
       <% if (_ch)  { %>checked<% } %>
       <% if (_dis) { %>disabled<% } %>

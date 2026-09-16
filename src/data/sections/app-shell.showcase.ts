@@ -57,12 +57,12 @@ const miniTopbar = `
 </header>`;
 
 const miniContent = `
-<main class="flex-1 p-3 space-y-2 overflow-hidden">
+<div class="flex-1 p-3 space-y-2 overflow-hidden">
   <div class="h-3 rounded bg-surface-sunken/60 w-1/3 animate-none"></div>
   <div class="h-2 rounded bg-surface-sunken/40 w-full"></div>
   <div class="h-2 rounded bg-surface-sunken/40 w-5/6"></div>
   <div class="h-14 rounded-lg bg-surface-sunken/40 mt-2"></div>
-</main>`;
+</div>`;
 
 // ─── Sidebar preview helpers ─────────────────────────────────────────────────
 

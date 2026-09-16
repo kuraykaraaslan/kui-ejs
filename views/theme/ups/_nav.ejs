@@ -61,4 +61,7 @@
         </h1>
       </div>
     </header>
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+    <!-- Not a <main> landmark: the outer layouts/blank.ejs already provides
+         the page's one <main id="main-content">; nesting another one here
+         produced duplicate landmarks (caught by tests/html-validate.test.ts). -->
+    <div class="flex-1 overflow-y-auto p-4 sm:p-6">

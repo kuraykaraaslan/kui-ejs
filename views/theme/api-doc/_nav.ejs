@@ -143,4 +143,8 @@
       </div>
     </header>
 
-    <main id="main-content" class="flex-1 overflow-y-auto">
+    <!-- Not a <main> landmark: the outer layouts/blank.ejs already provides
+         the page's one <main id="main-content">; nesting another one here
+         produced duplicate landmarks + a duplicate id (caught by
+         tests/html-validate.test.ts). -->
+    <div class="flex-1 overflow-y-auto">

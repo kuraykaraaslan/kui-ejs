@@ -10,6 +10,7 @@ function toggle(opts: {
   checked?: boolean;
   disabled?: boolean;
   label?: string;
+  ariaLabel?: string;
   wClass?: string;
   dotClass?: string;
 }) {
@@ -18,13 +19,15 @@ function toggle(opts: {
     checked = false,
     disabled = false,
     label,
+    ariaLabel,
     wClass = 'w-11 h-6',
     dotClass = 'h-5 w-5 peer-checked:translate-x-5',
   } = opts;
   const cursor = disabled ? 'opacity-50 cursor-not-allowed' : '';
+  const ariaLabelAttr = !label && ariaLabel ? ` aria-label="${ariaLabel}"` : '';
   return `<label class="inline-flex items-center cursor-pointer ${cursor}">
   <div class="relative">
-    <input type="checkbox" id="${id}" class="sr-only peer" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''}>
+    <input type="checkbox" id="${id}" class="sr-only peer"${ariaLabelAttr} ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''}>
     <div class="bg-surface-active rounded-full peer peer-focus:ring-2 peer-focus:ring-primary/20 peer-checked:bg-primary transition-all ${wClass}"></div>
     <div class="absolute left-0.5 top-0.5 bg-white rounded-full transition-all peer-checked:bg-primary-fg ${dotClass}"></div>
   </div>
@@ -54,9 +57,9 @@ export function buildToggleData(): ShowcaseItem[] {
           code: `<%- include('modules/ui/Toggle', { id: 'dark', label: 'Dark mode' }) %>`,
         },
         {
-          title: 'No label',
-          previewHtml: `<div class="flex justify-center p-4">${toggle({ checked: true })}</div>`,
-          code: `<%- include('modules/ui/Toggle', { id: 't', checked: true }) %>`,
+          title: 'No visible label',
+          previewHtml: `<div class="flex justify-center p-4">${toggle({ checked: true, ariaLabel: 'Enable notifications' })}</div>`,
+          code: `<%- include('modules/ui/Toggle', { id: 't', checked: true, ariaLabel: 'Enable notifications' }) %>`,
         },
         {
           title: 'Disabled',

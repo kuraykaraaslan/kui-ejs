@@ -26,6 +26,7 @@
       role="switch"
       class="sr-only"
       aria-checked="<%= _ch ? 'true' : 'false' %>"
+      <% if (!locals.label && locals.ariaLabel) { %>aria-label="<%= locals.ariaLabel %>"<% } %>
       data-toggle-input
       <% if (_ch)  { %>checked<% } %>
       <% if (_dis) { %>disabled<% } %>
