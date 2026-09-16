@@ -170,11 +170,11 @@
             : 'grid-cols-1';
         %>
         <div class="grid <%= _gridClass %> gap-4">
-          <% selected.variants.forEach(function(variant) {
+          <% selected.variants.forEach(function(variant, variantIndex) {
             var _spanClass = (locals.variantLayout === 'grid' && variant.layout === 'stack') ? 'xl:col-span-2' : '';
           %>
             <div class="<%= _spanClass %>">
-              <%- include('./partials/widget', { variant: variant, variantLayout: locals.variantLayout }) %>
+              <%- include('./partials/widget', { variant: variant, variantIndex: variantIndex, variantLayout: locals.variantLayout }) %>
             </div>
           <% }); %>
         </div>

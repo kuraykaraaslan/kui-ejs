@@ -9,7 +9,7 @@
   var _previewCls = variant.previewClassName || '';
   var _previewInnerCls = variant.previewInnerClassName || '';
 %>
-<div class="variant-block bg-surface-raised border border-border rounded-xl overflow-hidden flex flex-col" data-variant-block>
+<div class="variant-block bg-surface-raised border border-border rounded-xl overflow-hidden flex flex-col" data-variant-block data-variant-index="<%= locals.variantIndex %>">
   <!-- Header -->
   <div class="widget-drag-handle flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-surface-overlay shrink-0">
     <div class="flex items-center gap-2 min-w-0">
