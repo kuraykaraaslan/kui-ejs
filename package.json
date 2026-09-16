@@ -22,7 +22,9 @@
     "prepare": "husky",
     "snapshot:check": "bash scripts/check-snapshot-fresh.sh",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/cookie-parser": "^1.4.10",
     "@types/ejs": "^3.1.5",

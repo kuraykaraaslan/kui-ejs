@@ -389,12 +389,6 @@
     "category": "App",
     "file": "nav-drawer.md"
   },
-  "user-menu": {
-    "name": "UserMenu",
-    "layer": "domain",
-    "category": "Domain",
-    "file": "user-menu.md"
-  },
   "global-search": {
     "name": "GlobalSearch",
     "layer": "app",
@@ -610,6 +604,12 @@
     "layer": "domain",
     "category": "Domain",
     "file": "user-status-badge.md"
+  },
+  "user-menu": {
+    "name": "UserMenu",
+    "layer": "domain",
+    "category": "Domain",
+    "file": "user-menu.md"
   },
   "price-display": {
     "name": "PriceDisplay",

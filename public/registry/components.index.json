@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-09-16T15:49:40.087Z",
+  "generatedAt": "2026-09-16T16:20:41.720Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1513,28 +1513,6 @@
         "--primary-subtle",
         "--surface-overlay",
         "--text-primary"
-      ],
-      "variantCount": 2
-    },
-    {
-      "id": "user-menu",
-      "name": "UserMenu",
-      "layer": "domain",
-      "category": "App",
-      "filePath": "modules/domain/common/user/UserMenu.ejs",
-      "abbr": "Um",
-      "description": "User dropdown opened by a trigger showing avatar, name and role. Accepts a SafeUser prop; the dropdown header shows the name and email.",
-      "status": "stable",
-      "since": "2025-03",
-      "designTokens": [
-        "--border",
-        "--border-focus",
-        "--primary",
-        "--secondary",
-        "--surface-overlay",
-        "--text-disabled",
-        "--text-primary",
-        "--text-secondary"
       ],
       "variantCount": 2
     },

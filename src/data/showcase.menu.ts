@@ -205,7 +205,6 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'app-breadcrumbs',     title: 'AppBreadcrumbs',     category: 'App', abbr: 'ABc',since: '2026-05' },
       { id: 'app-footer',          title: 'AppFooter',          category: 'App', abbr: 'AFt',since: '2026-05' },
       { id: 'nav-drawer',          title: 'NavDrawer',          category: 'App', abbr: 'ND', since: '2025-03' },
-      { id: 'user-menu',           title: 'UserMenu',           category: 'App', abbr: 'UM', since: '2025-03' },
       { id: 'global-search',       title: 'GlobalSearch',       category: 'App', abbr: 'GS', since: '2025-04' },
       { id: 'app-command-bar',     title: 'AppCommandBar',      category: 'App', abbr: 'CB', since: '2025-04', status: 'beta' },
       { id: 'form',                title: 'Form',               category: 'App', abbr: 'Fm', since: '2025-03' },

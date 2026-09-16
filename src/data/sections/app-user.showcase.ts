@@ -2,7 +2,6 @@ import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const userMenuSource     = fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/user/UserMenu.ejs'), 'utf-8');
 const globalSearchSource = fs.readFileSync(path.join(process.cwd(), 'modules/app/GlobalSearch.ejs'), 'utf-8');
 const commandBarSource   = fs.readFileSync(path.join(process.cwd(), 'modules/app/CommandPalette/CommandPalette.ejs'), 'utf-8');
 
@@ -28,105 +27,6 @@ const cmdItem = (icon: string, label: string, shortcut?: string, active = false)
 
 export function buildAppUserData(): ShowcaseItem[] {
   return [
-    // ── UserMenu ──────────────────────────────────────────────────────────────
-    {
-      id: 'user-menu',
-      title: 'UserMenu',
-      category: 'App',
-      abbr: 'Um',
-      description: 'User dropdown opened by a trigger showing avatar, name and role. Accepts a SafeUser prop; the dropdown header shows the name and email.',
-      filePath: 'modules/domain/common/user/UserMenu.ejs',
-      sourceCode: userMenuSource,
-      variants: [
-        {
-          title: 'Varsayılan (isim + e-posta + rol)',
-          previewHtml: `<div class="flex items-center justify-center p-8" style="padding-bottom:220px">
-  <div class="relative inline-block">
-    <button type="button"
-      class="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
-      <span class="h-8 w-8 rounded-full bg-primary-subtle text-primary text-sm flex items-center justify-center font-bold shrink-0">JD</span>
-      <div class="hidden sm:block text-left min-w-0">
-        <p class="text-sm font-medium text-text-primary truncate max-w-[8rem]">Jane Doe</p>
-        <p class="text-xs text-text-secondary truncate">Admin</p>
-      </div>
-      <i class="fa-solid fa-chevron-down w-3 h-3 text-text-disabled hidden sm:block text-xs" aria-hidden="true"></i>
-    </button>
-    <div class="absolute right-0 top-full mt-1 w-56 rounded-xl border border-border bg-surface-raised shadow-lg z-50 overflow-hidden">
-      <div class="px-3 py-2.5 border-b border-border">
-        <p class="text-sm font-semibold text-text-primary truncate">Jane Doe</p>
-        <p class="text-xs text-text-secondary truncate">jane@acme.com</p>
-      </div>
-      <div class="py-1">
-        <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-          <i class="fa-solid fa-user w-3.5 h-3.5 text-text-secondary text-xs shrink-0" aria-hidden="true"></i>Profile
-        </a>
-        <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-          <i class="fa-solid fa-gear w-3.5 h-3.5 text-text-secondary text-xs shrink-0" aria-hidden="true"></i>Settings
-        </a>
-      </div>
-      <div class="py-1 border-t border-border">
-        <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-error hover:bg-error-subtle transition-colors">
-          <i class="fa-solid fa-arrow-right-from-bracket w-3.5 h-3.5 shrink-0 text-xs" aria-hidden="true"></i>Sign out
-        </a>
-      </div>
-    </div>
-  </div>
-</div>`,
-          code: `<%- include('modules/domain/common/user/UserMenu', {
-  name: user.name,
-  email: user.email,
-  role: user.role,
-  profileHref: '/profile',
-  settingsHref: '/settings',
-  signOutHref: '/auth/logout'
-}) %>`,
-          layout: 'stack',
-        },
-        {
-          title: 'POST sign-out (form submit)',
-          previewHtml: `<div class="flex items-center justify-center p-8" style="padding-bottom:180px">
-  <div class="relative inline-block">
-    <button type="button"
-      class="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm font-medium transition-colors hover:bg-surface-overlay">
-      <span class="h-8 w-8 rounded-full bg-primary-subtle text-primary text-sm flex items-center justify-center font-bold shrink-0">JS</span>
-      <div class="hidden sm:block text-left min-w-0">
-        <p class="text-sm font-medium text-text-primary truncate max-w-[8rem]">John Smith</p>
-        <p class="text-xs text-text-secondary truncate">Author</p>
-      </div>
-      <i class="fa-solid fa-chevron-down w-3 h-3 text-text-disabled hidden sm:block text-xs" aria-hidden="true"></i>
-    </button>
-    <div class="absolute right-0 top-full mt-1 w-56 rounded-xl border border-border bg-surface-raised shadow-lg z-50 overflow-hidden">
-      <div class="px-3 py-2.5 border-b border-border">
-        <p class="text-sm font-semibold text-text-primary truncate">John Smith</p>
-        <p class="text-xs text-text-secondary truncate">john@acme.com</p>
-      </div>
-      <div class="py-1">
-        <a href="#" class="flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-surface-overlay transition-colors">
-          <i class="fa-solid fa-user w-3.5 h-3.5 text-text-secondary text-xs shrink-0"></i>Profile
-        </a>
-      </div>
-      <div class="py-1 border-t border-border">
-        <form class="w-full">
-          <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-sm text-error hover:bg-error-subtle transition-colors text-left">
-            <i class="fa-solid fa-arrow-right-from-bracket w-3.5 h-3.5 shrink-0 text-xs"></i>Sign out
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>`,
-          code: `<%- include('modules/domain/common/user/UserMenu', {
-  name: user.name,
-  email: user.email,
-  role: user.role,
-  signOutHref: '/auth/logout',
-  signOutMethod: 'post'
-}) %>`,
-          layout: 'stack',
-        },
-      ],
-    },
-
     // ── GlobalSearch ──────────────────────────────────────────────────────────
     {
       id: 'global-search',
