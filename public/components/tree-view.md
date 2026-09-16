@@ -178,7 +178,7 @@ Collapsible tree with keyboard navigation, selection, and aria-tree roles.
   </ul>
 </div>
 
-<%- include('./scripts/tree-state', { _id: _id }) %>
-<%- include('./scripts/keyboard',    { _id: _id }) %>
+<%- include('./scripts/tree-state.js', { _id: _id }) %>
+<%- include('./scripts/keyboard.js',    { _id: _id }) %>
 
 ```

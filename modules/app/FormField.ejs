@@ -10,13 +10,20 @@
   //     template wraps it in a slot whose root element carries the computed
   //     `id`, `aria-describedby`, and `aria-invalid` attributes via a
   //     `data-form-field` data-attribute pattern. Real inputs should mirror
-  //     these on themselves (e.g. `id="<%= name %>"`) — the surrounding wrapper
-  //     exposes them for tests / scripts that walk the DOM.
+  //     these on themselves (id equal to the `name` local) — the surrounding
+  //     wrapper exposes them for tests / scripts that walk the DOM.
   //
-  //   <%- include('FormField', {
-  //         name: 'email', label: 'Email', error: errors.email,
-  //         children: `<input id="email" name="email" aria-invalid="${!!errors.email}" …>`
-  //       }) %>
+  //   Usage — do not write a literal EJS closing delimiter (percent then
+  //   greater-than, no space between) anywhere inside this scriptlet's own
+  //   comment. EJS's tokenizer scans for that two-character sequence raw,
+  //   with no awareness of // comments or JS strings, so writing it here
+  //   (even quoted, even describing this very rule) closes *this*
+  //   scriptlet early and silently turns the real code below into literal
+  //   output text instead of running it. That happened twice while writing
+  //   this file — caught by tests/partials.render.test.ts, not by eye.
+  //     include FormField with locals: name 'email', label 'Email',
+  //     error errors.email, children set to an <input> whose id matches
+  //     name and whose aria-invalid mirrors whether there is an error.
   //
   // The computed `_inputId` (== `name`) is mirrored onto the slot wrapper as
   // `data-input-id` so consumers can locate the input without re-deriving it.

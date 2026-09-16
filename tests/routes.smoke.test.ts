@@ -22,6 +22,20 @@ const registry = JSON.parse(readFileSync(path.join(REPO_ROOT, 'public/registry/c
 const showcaseSlugs: string[] = registry.components.map((c: { id: string }) => c.id);
 const themeRoutes: string[] = registry.themes.map((t: { route: string }) => t.route);
 
+// The registry's `themes[]` only lists one entry per theme (its index page),
+// so `/theme/common/email` above covers the email *index*, not the ~30
+// individual email templates under it — those are sub-pages, not registry
+// entries, so they'd otherwise never be requested by this suite at all.
+// Extracted by scanning the route file itself (rather than hand-listing)
+// so a new email template is picked up the moment its route is added.
+const commonThemeSrc = readFileSync(
+  path.join(REPO_ROOT, 'src/routes/themes/common.ts'),
+  'utf8'
+);
+const emailRoutes: string[] = [
+  ...commonThemeSrc.matchAll(/router\.get\('(\/email\/[^']+)'/g),
+].map((m) => `/theme/common${m[1]}`);
+
 async function expectShowcasePage(route: string) {
   const res = await request(app).get(route);
   expect(res.status, `GET ${route} -> ${res.status}`).toBe(200);
@@ -76,5 +90,18 @@ describe('theme routes', () => {
 describe('showcase component slugs', () => {
   it.each(showcaseSlugs)('GET /%s renders the showcase page', async (slug) => {
     await expectShowcasePage(`/${slug}`);
+  });
+});
+
+describe('common theme email sub-routes', () => {
+  it('found at least 25 email routes to test (regression guard on the scan itself)', () => {
+    expect(emailRoutes.length).toBeGreaterThanOrEqual(25);
+  });
+
+  it.each(emailRoutes)('GET %s renders successfully with real locals', async (route) => {
+    const res = await request(app).get(route);
+    expect(res.status, `GET ${route} -> ${res.status}`).toBe(200);
+    expect(res.headers['content-type']).toMatch(/text\/html/);
+    expect(res.text.length).toBeGreaterThan(200);
   });
 });

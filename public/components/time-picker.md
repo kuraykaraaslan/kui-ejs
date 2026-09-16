@@ -103,7 +103,7 @@ Native time input with the standard label/hint/error markup, reached via `includ
     <% if (_errorId) { %><p id="<%= _errorId %>" class="text-xs text-error" role="alert"><%= _error %></p><% } %>
   </div>
 <% } else { %>
-  <%- include('modules/ui/DatePicker/DateRangePicker', locals) %>
+  <%- include('./DatePicker/DateRangePicker', locals) %>
 <% } %>
 
 ```
