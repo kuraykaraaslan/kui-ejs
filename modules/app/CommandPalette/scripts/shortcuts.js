@@ -7,6 +7,13 @@
     var modal = document.getElementById(id);
     if (!modal) return;
     modal.classList.remove('hidden');
+    // activate() captures the pre-open focus target (for restore on
+    // close), pushes this dialog onto the shared layer stack, and
+    // focuses the first focusable element in it — overridden a moment
+    // later below, since the search input (not the header's "Esc"
+    // close button, which comes first in the DOM) is the intended
+    // initial focus target here.
+    if (window.__overlayFocusTrap) window.__overlayFocusTrap.activate(id, modal);
     var input = document.getElementById(id + '-input');
     if (input) { input.value = ''; window.cmdBarFilter(id, ''); setTimeout(function(){ input.focus(); }, 10); }
     document.body.style.overflow = 'hidden';
@@ -17,6 +24,7 @@
     if (!modal) return;
     modal.classList.add('hidden');
     document.body.style.overflow = '';
+    if (window.__overlayFocusTrap) window.__overlayFocusTrap.deactivate(id);
   }
 
   function setActive(list, items, nextIdx) {
@@ -92,6 +100,9 @@
   };
 
   window.cmdBarKeyNav = function (e, id) {
+    var modal = document.getElementById(id);
+    var ft = window.__overlayFocusTrap;
+    if (ft && modal) ft.handleKey(id, modal, e);
     var list = document.getElementById(id + '-list');
     if (!list) return;
     if (e.key === 'Escape') { closeCmdBar(id); return; }

@@ -81,6 +81,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
 
   var alignClass = _align === 'right' ? 'right-0' : 'left-0';
 %>
+<%- include('./Overlays/shared/focus-trap.js') %>
 <div
   id="<%= _id %>"
   class="relative inline-block<%= _className ? ' ' + _className : '' %>"
@@ -141,8 +142,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
     if (!e.root || !e.menu || !e.trigger) return;
     e.menu.hidden = false;
     e.trigger.setAttribute('aria-expanded', 'true');
-    var first = e.menu.querySelector('[role="menuitem"]:not([disabled])');
-    if (first) first.focus();
+    if (window.__overlayFocusTrap) window.__overlayFocusTrap.activate(id, e.menu);
   }
 
   function closeDropdownMenu(id) {
@@ -150,6 +150,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
     if (!e.root || !e.menu || !e.trigger) return;
     e.menu.hidden = true;
     e.trigger.setAttribute('aria-expanded', 'false');
+    if (window.__overlayFocusTrap) window.__overlayFocusTrap.deactivate(id);
   }
 
   function toggleDropdownMenu(id) {
@@ -189,7 +190,10 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
   document.addEventListener('keydown', function (ev) {
     var menu = document.getElementById(dropdownId + '-menu');
     if (!menu || menu.hidden) return;
+    var ft = window.__overlayFocusTrap;
+    if (ft && !ft.isTop(dropdownId)) return;
     if (ev.key === 'Escape') { closeDropdownMenu(dropdownId); return; }
+    if (ft) ft.handleKey(dropdownId, menu, ev);
 
     if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
       var items = Array.prototype.slice.call(menu.querySelectorAll('[role="menuitem"]:not([disabled])'));

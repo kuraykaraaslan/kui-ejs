@@ -175,6 +175,7 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
   </div>
 </div>
 
+<%- include('../../ui/Overlays/shared/focus-trap.js') %>
 <script>
   <%- include('./scripts/command-store.js') %>
   <%- include('./scripts/fuzzy.js') %>
