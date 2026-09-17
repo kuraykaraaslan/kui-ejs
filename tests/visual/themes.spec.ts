@@ -7,6 +7,7 @@
 // showcase.spec.ts — see that file's header for why each one is there.
 
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -27,7 +28,18 @@ const DETERMINISTIC_FONTS = `
   }
 `;
 
+// axe-core scan runs after the screenshot assertion, mirroring
+// showcase.spec.ts — see that file's header for why color-contrast is
+// the one ratcheted rule here (the same design-token-level gaps show up
+// on full theme pages, just without the component-specific issues that
+// file also ratchets, since none of those components' broken states
+// surface on these landing pages).
 test.describe('theme landing pages', () => {
+  const RATCHETED_RULES = ['color-contrast'];
+  const ratchetedViolationCounts: Record<string, number> = Object.fromEntries(
+    RATCHETED_RULES.map((id) => [id, 0]),
+  );
+
   for (const theme of themes) {
     test(theme.id, async ({ page }) => {
       await page.addInitScript((css) => {
@@ -43,6 +55,33 @@ test.describe('theme landing pages', () => {
         fullPage: true,
         mask: [page.locator(MASK_SELECTOR)],
       });
+
+      const results = await new AxeBuilder({ page }).analyze();
+      const bad = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+
+      for (const rule of RATCHETED_RULES) {
+        ratchetedViolationCounts[rule] += bad
+          .filter((v) => v.id === rule)
+          .reduce((sum, v) => sum + v.nodes.length, 0);
+      }
+
+      const strict = bad.filter((v) => !RATCHETED_RULES.includes(v.id));
+      const details = strict
+        .map((v) => `  [${v.impact}] ${v.id} (${v.nodes.length} nodes) — ${v.help}`)
+        .join('\n');
+      expect(strict, `axe found serious/critical violations on ${theme.route}:\n${details}`).toHaveLength(0);
     });
   }
+
+  test('does not regress past the ratcheted a11y baselines', () => {
+    const BASELINES: Record<string, number> = {
+      'color-contrast': 160,
+    };
+    for (const rule of RATCHETED_RULES) {
+      expect(
+        ratchetedViolationCounts[rule],
+        `${rule}: ${ratchetedViolationCounts[rule]} > baseline ${BASELINES[rule]}`,
+      ).toBeLessThanOrEqual(BASELINES[rule]);
+    }
+  });
 });

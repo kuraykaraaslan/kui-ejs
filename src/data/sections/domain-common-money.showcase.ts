@@ -124,9 +124,9 @@ export function buildDomainCommonMoneyData(): ShowcaseItem[] {
           title: 'Default',
           previewHtml: `<div class="w-full max-w-xs p-4">
   <div class="space-y-1">
-    <label class="block text-sm font-medium text-text-primary">Currency</label>
+    <label for="currency-selector-default" class="block text-sm font-medium text-text-primary">Currency</label>
     <div class="relative">
-      <select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
+      <select id="currency-selector-default" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
         <option>TRY</option><option>USD</option><option>EUR</option><option>GBP</option>
       </select>
       <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-text-tertiary">
@@ -145,7 +145,7 @@ export function buildDomainCommonMoneyData(): ShowcaseItem[] {
           title: 'No label',
           previewHtml: `<div class="w-full max-w-xs p-4">
   <div class="relative">
-    <select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
+    <select aria-label="Currency" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
       <option selected>USD</option><option>TRY</option><option>EUR</option>
     </select>
     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-text-tertiary">

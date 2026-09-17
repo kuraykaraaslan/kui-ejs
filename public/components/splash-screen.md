@@ -63,7 +63,8 @@ Full-screen overlay shown during app initialisation. Accepts a logo slot, option
       role="progressbar"
       aria-valuenow="<%= _progress %>"
       aria-valuemin="0"
-      aria-valuemax="100">
+      aria-valuemax="100"
+      aria-label="Loading progress">
     </div>
   </div>
   <% } %>

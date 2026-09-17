@@ -50,6 +50,9 @@ Scrollable container with a themed, thin scrollbar (Firefox scrollbar-color + We
   var _overflow = overflowClasses[_orientation] || overflowClasses.vertical;
 %>
 <div
+  tabindex="0"
+  role="region"
+  aria-label="<%= locals.label || 'Scrollable content' %>"
   class="relative rounded-md <%= _overflow %> [scrollbar-width:thin] [scrollbar-color:var(--border-strong)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border-strong [&::-webkit-scrollbar-thumb]:rounded-full<%= _className ? ' ' + _className : '' %>"
 ><% if (locals.children) { %><%- locals.children %><% } %></div>
 

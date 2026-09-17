@@ -69,7 +69,7 @@ function menuEl(opts: { items: MenuItem[]; showFooter?: boolean; emptyMode?: boo
     : '';
 
   return `<div class="relative inline-block">
-  <button type="button" aria-haspopup="dialog" aria-expanded="true"
+  <button type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="true"
     class="relative flex items-center justify-center w-8 h-8 rounded-md text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors">
     <i class="fa-solid fa-bell w-4 h-4" aria-hidden="true"></i>
     ${triggerBadge}

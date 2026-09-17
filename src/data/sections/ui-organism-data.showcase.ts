@@ -26,7 +26,7 @@ function tableEl(opts: { columns: Column[]; rows: Row[]; emptyMessage?: string }
         return `<tr class="hover:bg-surface-overlay transition-colors">\n          ${tds}\n        </tr>`;
       }).join('\n        ');
 
-  return `<div class="w-full overflow-x-auto rounded-lg border border-border">
+  return `<div class="w-full overflow-x-auto rounded-lg border border-border" tabindex="0" role="region" aria-label="Table">
   <table class="w-full text-sm">
     <thead class="bg-surface-sunken border-b border-border"><tr>${ths}</tr></thead>
     <tbody class="divide-y divide-border bg-surface-base">${body}</tbody>
@@ -103,7 +103,7 @@ function dataTableEl(opts: {
 
   return `<div class="rounded-xl border border-border bg-surface-raised shadow-sm overflow-hidden">
   ${header}
-  <div class="overflow-x-auto">
+  <div class="overflow-x-auto" tabindex="0" role="region" aria-label="${opts.title || 'Data table'}">
     <table class="w-full text-sm">
       <thead class="bg-surface-sunken border-b border-border"><tr>${ths}</tr></thead>
       <tbody class="divide-y divide-border bg-surface-base">${body}</tbody>

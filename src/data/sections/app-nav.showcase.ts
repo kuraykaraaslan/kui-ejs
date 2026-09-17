@@ -73,7 +73,7 @@ export function buildAppNavData(): ShowcaseItem[] {
       ${navLink('Overview', true)}${navLink('Analytics')}${navLink('Projects')}${navLink('Team')}
     </nav>
     <div class="flex items-center gap-2">
-      <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-bell text-sm"></i></button>
+      <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay" aria-label="Notifications"><i class="fa-solid fa-bell text-sm"></i></button>
       <span class="h-7 w-7 rounded-full bg-primary-subtle text-primary text-xs flex items-center justify-center font-bold">JD</span>
     </div>
   </header>
@@ -111,7 +111,7 @@ export function buildAppNavData(): ShowcaseItem[] {
   <div class="w-64 rounded-xl border border-border bg-surface-raised overflow-hidden">
     <div class="flex items-center justify-between px-4 py-3 border-b border-border">
       <span class="text-sm font-semibold text-text-primary">Navigation</span>
-      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-xmark text-sm"></i></button>
+      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Close"><i class="fa-solid fa-xmark text-sm"></i></button>
     </div>
     <nav class="flex flex-col gap-0.5 p-2">
       ${navItem('Home', true)}${navItem('Features')}${navItem('Pricing')}${navItem('Blog')}${navItem('Contact')}
@@ -136,7 +136,7 @@ export function buildAppNavData(): ShowcaseItem[] {
   <div class="w-64 rounded-xl border border-border bg-surface-raised overflow-hidden">
     <div class="flex items-center justify-between px-4 py-3 border-b border-border">
       <span class="text-sm font-semibold text-text-primary">Cart (3)</span>
-      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-xmark text-sm"></i></button>
+      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Close"><i class="fa-solid fa-xmark text-sm"></i></button>
     </div>
     <div class="flex flex-col gap-0.5 p-3 space-y-2">
       ${[

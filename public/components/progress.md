@@ -133,7 +133,7 @@ Progress indicator in bar or circle shape. Server-rendered only — the bar fill
       aria-valuenow="<%= _value %>"
       aria-valuemin="0"
       aria-valuemax="100"
-      <% if (!_showLabel) { %>aria-label="<%= _label %>"<% } %>
+      aria-label="<%= _label %>"
       class="w-full overflow-hidden rounded-full bg-surface-sunken <%= barHeightClass %>"
     >
       <div class="h-full rounded-full transition-[width] duration-300 <%= barFillClass %>" style="width: <%= _value %>%;"></div>

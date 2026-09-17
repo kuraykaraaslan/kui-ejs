@@ -529,7 +529,7 @@ function alertItemEl(severity: string, message: string, time: string, read: bool
     <p class="text-xs font-medium text-text-primary leading-relaxed">${message}</p>
     <p class="text-xs text-text-secondary mt-0.5">${time}</p>
   </div>
-  ${!read ? '<span class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" aria-label="Unread"></span>' : ''}
+  ${!read ? '<span role="img" class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" aria-label="Unread"></span>' : ''}
 </div>`;
 }
 

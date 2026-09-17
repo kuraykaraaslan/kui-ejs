@@ -65,7 +65,7 @@ Collapsible row representing a single API endpoint — shows the method badge, p
         <% } %>
         <% if (hasSecurity) { %>
           <span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled">
-            <i class="fa-solid fa-lock" aria-label="Requires authentication"></i>
+            <i class="fa-solid fa-lock" role="img" aria-label="Requires authentication"></i>
           </span>
         <% } %>
         <% if (isDeprecated) { %>

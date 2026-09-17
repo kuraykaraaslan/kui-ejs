@@ -91,20 +91,25 @@
 
     if (tblGrid) {
       tblGrid.innerHTML = '';
+      var allCells = [];
       var hoverR = 0, hoverC = 0;
       for (var r = 1; r <= 12; r++) {
+        var rowEl = document.createElement('div');
+        rowEl.setAttribute('role', 'row');
+        rowEl.style.display = 'contents';
         for (var c = 1; c <= 12; c++) {
           (function (rr, cc) {
             var b = document.createElement('button');
             b.type = 'button';
             b.setAttribute('role', 'gridcell');
+            b.setAttribute('aria-label', rr + ' \u00d7 ' + cc);
             b.style.width = '1.25rem'; b.style.height = '1.25rem';
             b.style.background = 'var(--surface-base)';
             b.style.border = '1px solid var(--border)';
             b.style.borderRadius = '2px';
             b.addEventListener('mouseenter', function () {
               hoverR = rr; hoverC = cc;
-              Array.prototype.forEach.call(tblGrid.children, function (cell, i) {
+              allCells.forEach(function (cell, i) {
                 var rrr = Math.floor(i / 12) + 1, ccc = (i % 12) + 1;
                 var active = rrr <= hoverR && ccc <= hoverC;
                 cell.style.background = active ? 'var(--primary)' : 'var(--surface-base)';
@@ -115,9 +120,11 @@
               if (tblRowsInput) tblRowsInput.value = String(rr);
               if (tblColsInput) tblColsInput.value = String(cc);
             });
-            tblGrid.appendChild(b);
+            rowEl.appendChild(b);
+            allCells.push(b);
           })(r, c);
         }
+        tblGrid.appendChild(rowEl);
       }
     }
     if (tblInsert) tblInsert.addEventListener('click', function () {

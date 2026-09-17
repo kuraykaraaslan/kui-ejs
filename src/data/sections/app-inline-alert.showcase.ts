@@ -49,8 +49,8 @@ export function buildInlineAlertData(): ShowcaseItem[] {
         {
           title: 'Below a form field',
           previewHtml: `<div class="p-4 w-full max-w-md space-y-2">
-  <label class="block text-sm font-medium text-text-primary">Email address</label>
-  <input type="email" value="not-an-email" class="w-full rounded-md border border-error bg-surface-base px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-border-focus" />
+  <label for="inline-alert-email" class="block text-sm font-medium text-text-primary">Email address</label>
+  <input id="inline-alert-email" type="email" value="not-an-email" class="w-full rounded-md border border-error bg-surface-base px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-border-focus" />
   ${alert('error', 'Please enter a valid email address.')}
 </div>`,
           code: `<div class="space-y-2">

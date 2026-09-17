@@ -89,6 +89,7 @@ Animated status indicator for UPLOADING / PROCESSING / READY / FAILED states. Op
   <% if (_progress !== null) { %>
   <div class="w-full rounded-full bg-surface-sunken overflow-hidden <%= s.bar %>">
     <div role="progressbar" aria-valuenow="<%= pct %>" aria-valuemin="0" aria-valuemax="100"
+      aria-label="<%= displayLabel %>"
       class="h-full rounded-full transition-all duration-300 <%= barColor %>"
       style="width:<%= pct %>%">
     </div>

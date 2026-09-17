@@ -33,9 +33,7 @@ function dropdownEl(opts: {
 }) {
   const alignClass = opts.align === 'right' ? 'right-0' : 'left-0';
   return `<div class="relative inline-block">
-  <div aria-haspopup="menu" aria-expanded="true">
-    ${opts.trigger}
-  </div>
+  ${opts.trigger}
   <div role="menu" class="absolute z-[60] mt-1 min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-lg py-1 ${alignClass}">
     ${opts.header ? `<div class="border-b border-border mb-1">${opts.header}</div>` : ''}
     ${menuItemsHtml(opts.items)}
@@ -44,13 +42,13 @@ function dropdownEl(opts: {
 }
 
 const trigger = (label: string) =>
-  `<button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">
+  `<button type="button" aria-haspopup="menu" aria-expanded="true" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">
     ${label}
     <i class="fa-solid fa-chevron-down" aria-hidden="true" style="font-size:10px"></i>
   </button>`;
 
 const iconTrigger =
-  `<button type="button" aria-label="More options" class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-border text-text-secondary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
+  `<button type="button" aria-haspopup="menu" aria-expanded="true" aria-label="More options" class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-border text-text-secondary hover:bg-surface-overlay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
     <i class="fa-solid fa-ellipsis-vertical" aria-hidden="true"></i>
   </button>`;
 

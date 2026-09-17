@@ -440,7 +440,7 @@ const endpointRowItem: ShowcaseItem = {
       <span class="inline-flex items-center rounded border font-mono font-bold uppercase text-xs px-2 py-0.5 bg-success-subtle text-success-fg border-success/30">GET</span>
       <code class="flex-1 truncate font-mono text-sm text-text-primary">/products</code>
       <span class="hidden sm:block text-xs text-text-secondary">List products</span>
-      <i class="fa-solid fa-lock text-xs text-text-disabled" aria-label="Requires authentication"></i>
+      <i class="fa-solid fa-lock text-xs text-text-disabled" role="img" aria-label="Requires authentication"></i>
       <i class="fa-solid fa-chevron-down text-[10px] text-text-disabled" aria-hidden="true"></i>
     </div>
   </div>
@@ -449,7 +449,7 @@ const endpointRowItem: ShowcaseItem = {
       <span class="inline-flex items-center rounded border font-mono font-bold uppercase text-xs px-2 py-0.5 bg-primary-subtle text-primary border-primary/30">POST</span>
       <code class="flex-1 truncate font-mono text-sm text-text-primary">/products</code>
       <span class="hidden sm:block text-xs text-text-secondary">Create product</span>
-      <i class="fa-solid fa-lock text-xs text-text-disabled" aria-label="Requires authentication"></i>
+      <i class="fa-solid fa-lock text-xs text-text-disabled" role="img" aria-label="Requires authentication"></i>
       <i class="fa-solid fa-chevron-down text-[10px] text-text-disabled" aria-hidden="true"></i>
     </div>
   </div>

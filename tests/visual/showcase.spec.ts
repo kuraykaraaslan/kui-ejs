@@ -50,6 +50,7 @@
 //     before each screenshot closes the race.
 
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -70,7 +71,39 @@ const DETERMINISTIC_FONTS = `
   }
 `;
 
+// axe-core scan runs after the screenshot assertions on the same page load —
+// per $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.4. Four rule
+// categories are ratcheted (not force-fixed) rather than blocking every
+// showcase page on them:
+//   - color-contrast: a design-token-level decision (--text-secondary on
+//     --surface-sunken-ish backgrounds sits under WCAG AA's 4.5:1 for
+//     normal text in several places), not a per-component code bug.
+//   - aria-command-name (25 nodes, 2 pages): MapView's Leaflet markers
+//     use `L.divIcon()` (a custom inline-SVG pin), not `L.icon()` — only
+//     the latter accepts Leaflet's `alt` option and renders an `<img>`
+//     `alt` actually applies to; and RichTextEditor's Quill toolbar
+//     renders its own `<span class="ql-picker-label" role="button">`
+//     unlabeled pickers — both are third-party-library-owned markup.
+//   - aria-prohibited-attr (21 nodes, 1 page): same Quill toolbar —
+//     `<span class="ql-header ql-picker" aria-label="...">` has no role
+//     Quill's own runtime assigns, so the fix would mean patching
+//     Quill's rendered DOM after the fact, not this codebase's markup.
+//   - aria-required-children (1 node, 1 page): MentionPicker's "no
+//     matching users" empty state keeps `role="listbox"` on the panel
+//     while it has zero `option`/`group` children — the tension between
+//     "the empty state must say something" and "a listbox must own an
+//     option" has no clean single-node fix.
 test.describe('showcase component variants', () => {
+  const RATCHETED_RULES = [
+    'color-contrast',
+    'aria-command-name',
+    'aria-prohibited-attr',
+    'aria-required-children',
+  ];
+  const ratchetedViolationCounts: Record<string, number> = Object.fromEntries(
+    RATCHETED_RULES.map((id) => [id, 0]),
+  );
+
   for (const component of components) {
     test(component.id, async ({ page }) => {
       await page.addInitScript((css) => {
@@ -91,6 +124,36 @@ test.describe('showcase component variants', () => {
           mask: [variant.locator(MASK_SELECTOR)],
         });
       }
+
+      const results = await new AxeBuilder({ page }).analyze();
+      const bad = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+
+      for (const rule of RATCHETED_RULES) {
+        ratchetedViolationCounts[rule] += bad
+          .filter((v) => v.id === rule)
+          .reduce((sum, v) => sum + v.nodes.length, 0);
+      }
+
+      const strict = bad.filter((v) => !RATCHETED_RULES.includes(v.id));
+      const details = strict
+        .map((v) => `  [${v.impact}] ${v.id} (${v.nodes.length} nodes) — ${v.help}`)
+        .join('\n');
+      expect(strict, `axe found serious/critical violations on /${component.id}:\n${details}`).toHaveLength(0);
     });
   }
+
+  test('does not regress past the ratcheted a11y baselines', () => {
+    const BASELINES: Record<string, number> = {
+      'color-contrast': 5100,
+      'aria-command-name': 35,
+      'aria-prohibited-attr': 30,
+      'aria-required-children': 5,
+    };
+    for (const rule of RATCHETED_RULES) {
+      expect(
+        ratchetedViolationCounts[rule],
+        `${rule}: ${ratchetedViolationCounts[rule]} > baseline ${BASELINES[rule]}`,
+      ).toBeLessThanOrEqual(BASELINES[rule]);
+    }
+  });
 });

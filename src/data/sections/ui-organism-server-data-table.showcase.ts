@@ -101,7 +101,7 @@ function serverDataTableEl(opts: {
   return `<div class="rounded-xl border border-border bg-surface-raised shadow-sm overflow-hidden">
     ${header}
     ${toolbar}
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto" tabindex="0" role="region" aria-label="${opts.title || 'Data table'}">
       <table class="w-full text-sm">
         <thead><tr class="border-b border-border bg-surface-sunken">${ths}</tr></thead>
         <tbody class="divide-y divide-border bg-surface-base">${body}</tbody>

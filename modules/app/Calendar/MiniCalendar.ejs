@@ -72,8 +72,10 @@
     <% }); %>
   </div>
 
-  <div data-mini-grid role="grid" class="grid grid-cols-7 px-1 pb-1 gap-0.5">
-    <% _cells.forEach(function (cell) {
+  <div data-mini-grid role="grid" aria-label="<%= L.monthNames[_value.getMonth()] %> <%= _value.getFullYear() %>" class="grid grid-cols-7 px-1 pb-1 gap-0.5">
+    <% for (var _mw = 0; _mw < _cells.length; _mw += 7) { %>
+    <div role="row" style="display: contents">
+    <% _cells.slice(_mw, _mw + 7).forEach(function (cell) {
          var inMonth = isSameMonth(cell, _value);
          var isToday = isSameDay(cell, _today);
          var isSelected = isSameDay(cell, _value);
@@ -87,6 +89,8 @@
         data-mini-day="<%= cell.toISOString() %>"
         class="<%= cls %>"><%= cell.getDate() %></button>
     <% }); %>
+    </div>
+    <% } %>
   </div>
 </div>
 

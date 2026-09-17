@@ -47,13 +47,7 @@
   data-popconfirm-confirm-action="<%= locals.confirmAction || '' %>"
   data-popconfirm-cancel-action="<%= locals.cancelAction || '' %>"
 >
-  <div
-    id="<%= _id %>-trigger"
-    aria-haspopup="dialog"
-    aria-expanded="false"
-    aria-controls="<%= _id %>-panel"
-    onclick="togglePopconfirm('<%= _id %>')"
-  >
+  <div data-popconfirm-trigger-wrap>
     <%- _trigger %>
   </div>
   <div
@@ -130,6 +124,20 @@
   var popconfirmId = '<%= _id %>';
   var root = document.getElementById(popconfirmId);
   if (!root) return;
+
+  // The trigger prop is caller-supplied HTML (usually a real <button>) —
+  // wire the widget's ARIA/id onto that real element instead of the
+  // wrapper div, so aria-haspopup/aria-expanded land on something with
+  // a role that actually allows them.
+  var triggerWrap = root.querySelector('[data-popconfirm-trigger-wrap]');
+  var triggerEl = triggerWrap && triggerWrap.firstElementChild;
+  if (triggerEl) {
+    triggerEl.id = popconfirmId + '-trigger';
+    triggerEl.setAttribute('aria-haspopup', 'dialog');
+    triggerEl.setAttribute('aria-expanded', 'false');
+    triggerEl.setAttribute('aria-controls', popconfirmId + '-panel');
+    triggerEl.addEventListener('click', function () { togglePopconfirm(popconfirmId); });
+  }
 
   root.addEventListener('click', function (ev) {
     var confirmBtn = ev.target.closest('[data-popconfirm-confirm] button, [data-popconfirm-confirm] a');

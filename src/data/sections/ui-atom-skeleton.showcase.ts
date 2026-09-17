@@ -12,7 +12,7 @@ const text = (lines: number) => {
   for (let i = 0; i < lines; i++) {
     rows.push(line(i === lines - 1 ? 'w-4/5' : 'w-full'));
   }
-  return `<div class="space-y-2" aria-busy="true" aria-label="Loading content">${rows.join('')}</div>`;
+  return `<div role="status" class="space-y-2" aria-busy="true" aria-label="Loading content">${rows.join('')}</div>`;
 };
 const tableRow = (cols = 4) => {
   const widths = ['w-28', 'w-40', 'w-20', 'w-16'];
@@ -22,7 +22,7 @@ const tableRow = (cols = 4) => {
   }
   return `<tr class="border-b border-border">${cells.join('')}</tr>`;
 };
-const card = () => `<div class="bg-surface-raised border border-border rounded-xl p-6 space-y-4" aria-busy="true" aria-label="Loading content">
+const card = () => `<div role="status" class="bg-surface-raised border border-border rounded-xl p-6 space-y-4" aria-busy="true" aria-label="Loading content">
   <div class="flex items-center gap-3">
     ${avatar()}
     <div class="flex-1 space-y-2">${line('w-2/3')}${line('w-1/2')}</div>

@@ -14,18 +14,13 @@
 <%- include('../shared/focus-trap.js') %>
 <%- include('../shared/dismiss.js') %>
 <div id="<%= _id %>" class="relative inline-block">
-  <div
-    id="<%= _id %>-trigger"
-    aria-haspopup="dialog"
-    aria-expanded="false"
-    aria-controls="<%= _id %>-panel"
-    onclick="togglePopover('<%= _id %>')"
-  >
+  <div data-popover-trigger-wrap>
     <%- _trigger %>
   </div>
   <div
     id="<%= _id %>-panel"
     role="dialog"
+    aria-label="<%= locals.label || 'Popover' %>"
     tabindex="-1"
     hidden
     data-state="closed"
@@ -77,6 +72,20 @@
   var popoverId = '<%= _id %>';
   var root = document.getElementById(popoverId);
   if (!root) return;
+
+  // The trigger prop is caller-supplied HTML (usually a real <button>) —
+  // wire the widget's ARIA/id onto that real element instead of the
+  // wrapper div, so aria-haspopup/aria-expanded land on something with
+  // a role that actually allows them.
+  var triggerWrap = root.querySelector('[data-popover-trigger-wrap]');
+  var triggerEl = triggerWrap && triggerWrap.firstElementChild;
+  if (triggerEl) {
+    triggerEl.id = popoverId + '-trigger';
+    triggerEl.setAttribute('aria-haspopup', 'dialog');
+    triggerEl.setAttribute('aria-expanded', 'false');
+    triggerEl.setAttribute('aria-controls', popoverId + '-panel');
+    triggerEl.addEventListener('click', function () { togglePopover(popoverId); });
+  }
 
   document.addEventListener('pointerdown', function (ev) {
     var panel = document.getElementById(popoverId + '-panel');

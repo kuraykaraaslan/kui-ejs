@@ -52,11 +52,11 @@
       </span>
       <div class="flex-1">
         <% if (_indicator === 'bar') { %>
-        <div class="h-1 w-full rounded-full bg-surface-sunken overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="<%= _steps.length %>" aria-valuenow="<%= _current + 1 %>">
+        <div class="h-1 w-full rounded-full bg-surface-sunken overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="<%= _steps.length %>" aria-valuenow="<%= _current + 1 %>" aria-label="Step <%= _current + 1 %> of <%= _steps.length %>">
           <div class="h-full bg-primary transition-[width] duration-300" style="width: <%= _pct %>%;"></div>
         </div>
         <% } else { %>
-        <div class="flex items-center gap-2" role="progressbar" aria-valuemin="0" aria-valuemax="<%= _steps.length %>" aria-valuenow="<%= _current + 1 %>">
+        <div class="flex items-center gap-2" role="progressbar" aria-valuemin="0" aria-valuemax="<%= _steps.length %>" aria-valuenow="<%= _current + 1 %>" aria-label="Step <%= _current + 1 %> of <%= _steps.length %>">
           <% _steps.forEach(function(_s, i) { %>
             <% var dotClass = (i === _current) ? 'w-6 bg-primary' : (i < _current ? 'w-2 bg-primary' : 'w-2 bg-surface-sunken'); %>
             <span class="h-2 rounded-full transition-all <%= dotClass %>" aria-hidden="true"></span>

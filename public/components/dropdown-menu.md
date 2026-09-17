@@ -85,13 +85,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
   id="<%= _id %>"
   class="relative inline-block<%= _className ? ' ' + _className : '' %>"
 >
-  <div
-    id="<%= _id %>-trigger"
-    aria-haspopup="menu"
-    aria-expanded="false"
-    aria-controls="<%= _id %>-menu"
-    onclick="toggleDropdownMenu('<%= _id %>')"
-  >
+  <div data-dropdown-trigger-wrap>
     <%- _trigger %>
   </div>
   <div
@@ -171,6 +165,20 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
   var dropdownId = '<%= _id %>';
   var root = document.getElementById(dropdownId);
   if (!root) return;
+
+  // The trigger prop is caller-supplied HTML (usually a real <button>) —
+  // wire the widget's ARIA/id onto that real element instead of the
+  // wrapper div, so aria-haspopup/aria-expanded land on something with
+  // a role that actually allows them.
+  var triggerWrap = root.querySelector('[data-dropdown-trigger-wrap]');
+  var triggerEl = triggerWrap && triggerWrap.firstElementChild;
+  if (triggerEl) {
+    triggerEl.id = dropdownId + '-trigger';
+    triggerEl.setAttribute('aria-haspopup', 'menu');
+    triggerEl.setAttribute('aria-expanded', 'false');
+    triggerEl.setAttribute('aria-controls', dropdownId + '-menu');
+    triggerEl.addEventListener('click', function () { toggleDropdownMenu(dropdownId); });
+  }
 
   document.addEventListener('mousedown', function (ev) {
     var menu = document.getElementById(dropdownId + '-menu');

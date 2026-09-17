@@ -243,7 +243,7 @@ Searchable autocomplete single-select with keyboard navigation, described option
 
   function refreshHighlight() {
     optionEls.forEach(function (el, i) {
-      var btn = el.querySelector('button');
+      var btn = el.querySelector('[data-combobox-option-btn]');
       if (!btn) return;
       if (i === highlighted) btn.classList.add('bg-surface-overlay');
       else btn.classList.remove('bg-surface-overlay');
@@ -284,7 +284,7 @@ Searchable autocomplete single-select with keyboard navigation, described option
     optionEls.forEach(function (o) {
       var sel = o === el;
       o.setAttribute('aria-selected', sel ? 'true' : 'false');
-      var btn = o.querySelector('button');
+      var btn = o.querySelector('[data-combobox-option-btn]');
       if (btn) {
         if (sel) btn.classList.add('font-medium', 'text-primary');
         else btn.classList.remove('font-medium', 'text-primary');
@@ -351,7 +351,7 @@ Searchable autocomplete single-select with keyboard navigation, described option
       input.value = '';
       optionEls.forEach(function (o) {
         o.setAttribute('aria-selected', 'false');
-        var btn = o.querySelector('button');
+        var btn = o.querySelector('[data-combobox-option-btn]');
         if (btn) btn.classList.remove('font-medium', 'text-primary');
       });
       setOpen(false);

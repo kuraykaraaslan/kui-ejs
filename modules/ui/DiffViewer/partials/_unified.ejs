@@ -30,7 +30,7 @@
 <% if (!_hunks.length) { %>
 <div class="px-3 py-2 font-mono text-xs text-text-secondary">No changes.</div>
 <% } else { %>
-<div role="region" aria-label="Unified diff" class="overflow-x-auto">
+<div role="region" aria-label="Unified diff" tabindex="0" class="overflow-x-auto">
   <% _hunks.forEach(function (hunk, hi) {
     var parts = _collapsible ? _partition(hunk.changes) : { lead: [], middle: hunk.changes, trail: [] };
   %>

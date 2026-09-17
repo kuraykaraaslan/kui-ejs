@@ -73,7 +73,7 @@ Router notification row. INFO · WARNING · CRITICAL severity levels. Unread ale
     <p class="text-xs text-text-secondary mt-0.5"><%= fmtTime(_alert.timestamp) %></p>
   </div>
   <% if (!_alert.read) { %>
-  <span class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" aria-label="Unread"></span>
+  <span role="img" class="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" aria-label="Unread"></span>
   <% } %>
 </div>
 

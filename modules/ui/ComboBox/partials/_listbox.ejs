@@ -22,10 +22,9 @@
       data-index="<%= index %>"
       <% if (option.disabled) { %>data-disabled="true"<% } %>
     >
-      <button
-        type="button"
-        <% if (option.disabled) { %>disabled<% } %>
-        class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors focus-visible:outline-none hover:bg-surface-overlay<%= isSelected ? ' font-medium text-primary' : '' %><%= option.disabled ? ' cursor-not-allowed opacity-50' : '' %>"
+      <div
+        data-combobox-option-btn
+        class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-surface-overlay<%= isSelected ? ' font-medium text-primary' : '' %><%= option.disabled ? ' cursor-not-allowed opacity-50' : '' %>"
       >
         <% if (option.icon) { %><span class="mt-0.5 shrink-0" aria-hidden="true"><%- option.icon %></span><% } %>
         <span class="min-w-0 flex-1">
@@ -34,7 +33,7 @@
             <span class="block truncate text-xs text-text-secondary"><%= option.description %></span>
           <% } %>
         </span>
-      </button>
+      </div>
     </li>
   <% }); %>
   <li data-combobox-loading class="hidden px-3 py-3 text-sm text-text-secondary" aria-live="polite">

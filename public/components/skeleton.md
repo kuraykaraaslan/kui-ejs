@@ -108,13 +108,13 @@ Animated placeholder shown before content loads. Uses animate-pulse bg-surface-s
 <% } else if (_variant === 'avatar') { %>
   <div class="<%= base %> rounded-full shrink-0 <%= avatarSize %><%= _className ? ' ' + _className : '' %>"></div>
 <% } else if (_variant === 'text') { %>
-  <div class="space-y-2<%= _className ? ' ' + _className : '' %>" aria-busy="true" aria-label="Loading content">
+  <div class="space-y-2<%= _className ? ' ' + _className : '' %>" role="status" aria-busy="true" aria-label="Loading content">
     <% for (var i = 0; i < _lines; i++) { %>
       <div class="<%= base %> h-3 rounded <%= (i === _lines - 1) ? 'w-4/5' : 'w-full' %>"></div>
     <% } %>
   </div>
 <% } else if (_variant === 'card') { %>
-  <div class="bg-surface-raised border border-border rounded-xl p-6 space-y-4<%= _className ? ' ' + _className : '' %>" aria-busy="true" aria-label="Loading content">
+  <div class="bg-surface-raised border border-border rounded-xl p-6 space-y-4<%= _className ? ' ' + _className : '' %>" role="status" aria-busy="true" aria-label="Loading content">
     <div class="flex items-center gap-3">
       <div class="<%= base %> rounded-full shrink-0 h-10 w-10"></div>
       <div class="flex-1 space-y-2">
@@ -122,7 +122,7 @@ Animated placeholder shown before content loads. Uses animate-pulse bg-surface-s
         <div class="<%= base %> h-3 rounded w-1/2"></div>
       </div>
     </div>
-    <div class="space-y-2" aria-busy="true" aria-label="Loading content">
+    <div class="space-y-2" role="status" aria-busy="true" aria-label="Loading content">
       <div class="<%= base %> h-3 rounded w-full"></div>
       <div class="<%= base %> h-3 rounded w-full"></div>
       <div class="<%= base %> h-3 rounded w-4/5"></div>

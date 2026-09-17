@@ -119,14 +119,14 @@ export function buildButtonGroupData(): ShowcaseItem[] {
           title: 'Icon-style labels',
           previewHtml: `<div class="flex flex-wrap items-center justify-center gap-4 p-4">
   <div role="group" class="inline-flex rounded-md overflow-hidden border border-border divide-x divide-border">
-    <button type="button" aria-pressed="false" class="${btnBase} bg-surface-base hover:bg-surface-overlay text-text-primary"><i class="fa-solid fa-list"></i></button>
-    <button type="button" aria-pressed="true"  class="${btnBase} bg-surface-overlay font-semibold text-text-primary"><i class="fa-solid fa-grip"></i></button>
-    <button type="button" aria-pressed="false" class="${btnBase} bg-surface-base hover:bg-surface-overlay text-text-primary"><i class="fa-solid fa-map"></i></button>
+    <button type="button" aria-pressed="false" aria-label="List view" class="${btnBase} bg-surface-base hover:bg-surface-overlay text-text-primary"><i class="fa-solid fa-list"></i></button>
+    <button type="button" aria-pressed="true"  aria-label="Grid view" class="${btnBase} bg-surface-overlay font-semibold text-text-primary"><i class="fa-solid fa-grip"></i></button>
+    <button type="button" aria-pressed="false" aria-label="Map view" class="${btnBase} bg-surface-base hover:bg-surface-overlay text-text-primary"><i class="fa-solid fa-map"></i></button>
   </div>
   <div role="group" class="inline-flex rounded-md overflow-hidden">
-    <button type="button" aria-pressed="false" class="${btnBase} bg-secondary/20 hover:bg-secondary/40 text-secondary-fg rounded-l-md"><i class="fa-solid fa-align-left"></i></button>
-    <button type="button" aria-pressed="true"  class="${btnBase} bg-secondary text-secondary-fg"><i class="fa-solid fa-align-center"></i></button>
-    <button type="button" aria-pressed="false" class="${btnBase} bg-secondary/20 hover:bg-secondary/40 text-secondary-fg rounded-r-md"><i class="fa-solid fa-align-right"></i></button>
+    <button type="button" aria-pressed="false" aria-label="Align left" class="${btnBase} bg-secondary/20 hover:bg-secondary/40 text-secondary-fg rounded-l-md"><i class="fa-solid fa-align-left"></i></button>
+    <button type="button" aria-pressed="true"  aria-label="Align center" class="${btnBase} bg-secondary text-secondary-fg"><i class="fa-solid fa-align-center"></i></button>
+    <button type="button" aria-pressed="false" aria-label="Align right" class="${btnBase} bg-secondary/20 hover:bg-secondary/40 text-secondary-fg rounded-r-md"><i class="fa-solid fa-align-right"></i></button>
   </div>
 </div>`,
           code: `<%- include('modules/ui/ButtonGroup', {

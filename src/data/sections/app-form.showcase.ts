@@ -10,31 +10,40 @@ const filterBarSource = fs.readFileSync(path.join(process.cwd(), 'modules/app/Fi
 const wrapCard = (inner: string) =>
   `<div class="p-4 w-full max-w-lg"><div class="bg-surface rounded-xl border border-border p-5">${inner}</div></div>`;
 
-const field = (label: string, placeholder = '', type = 'text', value = '') =>
-  `<div class="w-full">
-    <label class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
-    <input type="${type}" placeholder="${placeholder}" value="${value}"
+let fieldIdCounter = 0;
+const nextFieldId = (prefix: string) => `${prefix}-${fieldIdCounter++}`;
+
+const field = (label: string, placeholder = '', type = 'text', value = '') => {
+  const id = nextFieldId('field');
+  return `<div class="w-full">
+    <label for="${id}" class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
+    <input id="${id}" type="${type}" placeholder="${placeholder}" value="${value}"
       class="block w-full rounded-md border border-border bg-surface text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">
   </div>`;
+};
 
-const textarea = (label: string, placeholder = '') =>
-  `<div class="w-full">
-    <label class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
-    <textarea rows="3" placeholder="${placeholder}"
+const textarea = (label: string, placeholder = '') => {
+  const id = nextFieldId('textarea');
+  return `<div class="w-full">
+    <label for="${id}" class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
+    <textarea id="${id}" rows="3" placeholder="${placeholder}"
       class="block w-full rounded-md border border-border bg-surface text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm resize-none"></textarea>
   </div>`;
+};
 
-const select = (label: string, options: string[], placeholder = 'All') =>
-  `<div class="w-full">
-    <label class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
+const select = (label: string, options: string[], placeholder = 'All') => {
+  const id = nextFieldId('select');
+  return `<div class="w-full">
+    <label for="${id}" class="block text-sm font-medium text-text-primary mb-1.5">${label}</label>
     <div class="relative">
-      <select class="block w-full appearance-none rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 pr-8 text-sm">
+      <select id="${id}" class="block w-full appearance-none rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 pr-8 text-sm">
         <option value="">${placeholder}</option>
         ${options.map(o => `<option>${o}</option>`).join('')}
       </select>
       <i class="fa-solid fa-chevron-down text-xs text-text-disabled pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"></i>
     </div>
   </div>`;
+};
 
 const actionBtns = (primary: string, secondary?: string) =>
   `<div class="flex items-center justify-end gap-3 pt-2 border-t border-border mt-2">
@@ -136,11 +145,11 @@ export function buildAppFormData(): ShowcaseItem[] {
     ${select('Status', ['Active', 'Inactive', 'Pending'])}
     ${select('Category', ['Design', 'Engineering', 'Marketing'])}
     <div class="min-w-56 flex-1">
-      <label class="block text-sm font-medium text-text-primary mb-1.5">Date range</label>
+      <label id="filterbar-daterange-label" class="block text-sm font-medium text-text-primary mb-1.5">Date range</label>
       <div class="flex items-center gap-1.5">
-        <input type="date" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">
+        <input type="date" aria-label="Date range start" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">
         <span class="text-text-disabled text-sm shrink-0">–</span>
-        <input type="date" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">
+        <input type="date" aria-label="Date range end" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">
       </div>
     </div>
     <div class="flex items-center gap-2 shrink-0 self-end pb-0.5">

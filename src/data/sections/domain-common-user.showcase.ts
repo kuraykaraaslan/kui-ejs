@@ -31,7 +31,7 @@ function avatarEl(opts: { name: string; size?: string; status?: string; src?: st
     ? `<img src="${opts.src}" alt="${opts.name}" class="${sc} rounded-full object-cover border border-border" />`
     : `<span aria-label="${opts.name}" class="${sc} rounded-full bg-primary-subtle text-primary font-semibold flex items-center justify-center border border-primary-subtle select-none">${initials}</span>`;
   const dot = opts.status
-    ? `<span aria-label="${opts.status}" class="absolute bottom-0 right-0 rounded-full border-2 border-surface-base ${statusColor} ${dotSc}"></span>`
+    ? `<span role="img" aria-label="${opts.status}" class="absolute bottom-0 right-0 rounded-full border-2 border-surface-base ${statusColor} ${dotSc}"></span>`
     : '';
 
   return `<span class="${opts.status ? 'relative inline-flex shrink-0' : 'inline-flex shrink-0'}">${inner}${dot}</span>`;
@@ -262,7 +262,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
           previewHtml: `<div class="p-4 w-full max-w-sm"><div class="bg-surface rounded-xl border border-border p-5"><form class="space-y-4">
   ${baseInput({ id: 'pf4', label: 'Display Name', value: 'Alice Johnson' })}
   ${baseInput({ id: 'pf5', label: 'Username', value: 'alicejohnson', hint: 'Lowercase letters, numbers and underscores. 3–32 characters.' })}
-  <div class="w-full"><label class="block text-sm font-medium text-text-primary mb-1.5">Bio</label><textarea rows="3" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">Frontend developer and coffee enthusiast.</textarea></div>
+  <div class="w-full"><label for="user-profile-bio" class="block text-sm font-medium text-text-primary mb-1.5">Bio</label><textarea id="user-profile-bio" rows="3" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm">Frontend developer and coffee enthusiast.</textarea></div>
   ${baseInput({ id: 'pf6', label: 'Profile Picture URL', type: 'url', value: 'https://example.com/alice.jpg', icon: '<i class="fa-solid fa-link text-xs" aria-hidden="true"></i>' })}
   <div class="flex justify-end gap-2 pt-2"><a href="#" class="inline-flex items-center justify-center gap-2 rounded-md font-medium border border-border text-text-primary hover:bg-surface-overlay px-4 py-2 text-sm">Cancel</a><button type="submit" class="inline-flex items-center justify-center gap-2 rounded-md font-medium bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm">Save Profile</button></div>
 </form></div></div>`,
@@ -370,8 +370,8 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
           previewHtml: `<div class="p-4 w-full max-w-sm"><div class="bg-surface rounded-xl border border-border p-5"><form class="space-y-6">
   <div class="space-y-3">
     <h3 class="text-sm font-semibold text-text-primary">Appearance</h3>
-    <div><label class="block text-sm font-medium text-text-primary mb-1.5">Theme</label><select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm"><option selected>System default</option><option>Light</option><option>Dark</option></select></div>
-    <div><label class="block text-sm font-medium text-text-primary mb-1.5">Language</label><select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm"><option selected>🇺🇸 English</option><option>🇹🇷 Türkçe</option><option>🇩🇪 Deutsch</option></select></div>
+    <div><label for="user-prefs-theme" class="block text-sm font-medium text-text-primary mb-1.5">Theme</label><select id="user-prefs-theme" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm"><option selected>System default</option><option>Light</option><option>Dark</option></select></div>
+    <div><label for="user-prefs-language" class="block text-sm font-medium text-text-primary mb-1.5">Language</label><select id="user-prefs-language" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm"><option selected>🇺🇸 English</option><option>🇹🇷 Türkçe</option><option>🇩🇪 Deutsch</option></select></div>
   </div>
   <div class="space-y-3 pt-2 border-t border-border">
     <h3 class="text-sm font-semibold text-text-primary pt-2">Notifications</h3>

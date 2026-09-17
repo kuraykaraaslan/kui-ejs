@@ -105,12 +105,12 @@ export function buildAppUserData(): ShowcaseItem[] {
         class="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none">
       <span class="rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-text-secondary">Esc</span>
     </div>
-    <div class="max-h-72 overflow-y-auto py-2">
-      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Navigation</p>
+    <div role="listbox" aria-label="Commands" class="max-h-72 overflow-y-auto py-2">
+      <p role="presentation" class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Navigation</p>
       ${cmdItem('fa-solid fa-house', 'Dashboard', 'G D', true)}
       ${cmdItem('fa-solid fa-users', 'Users', 'G U')}
       ${cmdItem('fa-solid fa-chart-bar', 'Analytics', 'G A')}
-      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Actions</p>
+      <p role="presentation" class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Actions</p>
       ${cmdItem('fa-solid fa-plus', 'New Project', 'C N')}
       ${cmdItem('fa-solid fa-file-export', 'Export Data', 'C E')}
     </div>
@@ -159,11 +159,11 @@ export function buildAppUserData(): ShowcaseItem[] {
         class="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-disabled outline-none">
       <span class="rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-text-secondary">Esc</span>
     </div>
-    <div class="max-h-72 overflow-y-auto py-2">
-      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Workflows</p>
+    <div role="listbox" aria-label="Commands" class="max-h-72 overflow-y-auto py-2">
+      <p role="presentation" class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Workflows</p>
       ${cmdItem('fa-solid fa-screwdriver-wrench', 'Assign Reviewer to PR-42', 'A R', true)}
       ${cmdItem('fa-solid fa-rocket', 'Release & Tag v1.4.0', 'R T')}
-      <p class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Help</p>
+      <p role="presentation" class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-text-disabled">Help</p>
       ${cmdItem('fa-solid fa-keyboard', 'Open Keyboard Shortcuts', '?')}
     </div>
     <div class="flex items-center gap-4 border-t border-border px-4 py-2 text-[10px] text-text-disabled">

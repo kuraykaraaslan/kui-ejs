@@ -57,7 +57,7 @@ function multiSelectEl(opts: {
   return `<div id="${id}-root" class="space-y-1" data-multiselect-root>
   <label id="${labelId}" class="block text-sm font-medium text-text-primary">${opts.label || ''}</label>
   <div class="relative">
-    <div role="combobox" tabindex="${opts.disabled ? -1 : 0}" aria-haspopup="listbox" aria-expanded="${expanded}" aria-labelledby="${labelId}" aria-disabled="${opts.disabled ? 'true' : 'false'}" id="${id}" data-multiselect-shell class="min-h-[2.5rem] w-full rounded-md border px-3 py-1.5 text-sm transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus flex flex-wrap gap-1 items-center ${shellStateClass}${shellDisabledClass}">
+    <div role="combobox" tabindex="${opts.disabled ? -1 : 0}" aria-haspopup="listbox" aria-expanded="${expanded}" aria-labelledby="${labelId}" aria-controls="${id}-listbox" aria-disabled="${opts.disabled ? 'true' : 'false'}" id="${id}" data-multiselect-shell class="min-h-[2.5rem] w-full rounded-md border px-3 py-1.5 text-sm transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus flex flex-wrap gap-1 items-center ${shellStateClass}${shellDisabledClass}">
       <span data-multiselect-placeholder class="text-text-disabled${value.length > 0 ? ' hidden' : ''}">${placeholder}</span>
       <span data-multiselect-chips class="contents">${chips}</span>
       <i data-multiselect-caret class="fa-solid fa-chevron-${opts.open ? 'up' : 'down'} ml-auto text-text-disabled" style="width:0.75rem;height:0.75rem" aria-hidden="true"></i>
@@ -66,7 +66,7 @@ function multiSelectEl(opts: {
       ${opts.searchable ? `<div class="p-2 border-b border-border">
         <input type="text" data-multiselect-search placeholder="Search…" class="block w-full rounded-md border border-border bg-surface-base px-3 py-1.5 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"/>
       </div>` : ''}
-      <ul role="listbox" aria-labelledby="${labelId}" aria-multiselectable="true" data-multiselect-list class="py-1 max-h-48 overflow-y-auto">
+      <ul id="${id}-listbox" role="listbox" aria-labelledby="${labelId}" aria-multiselectable="true" data-multiselect-list class="py-1 max-h-48 overflow-y-auto">
         ${optionItems}
       </ul>
     </div>

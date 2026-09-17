@@ -45,7 +45,7 @@
       </div>
       <div class="w-full h-1.5 rounded-full bg-surface-sunken overflow-hidden">
         <div class="h-full rounded-full transition-all <%= cpuColor %>" style="width:<%= cpuPct %>%"
-             role="progressbar" aria-valuenow="<%= cpuPct %>" aria-valuemin="0" aria-valuemax="100"></div>
+             role="progressbar" aria-valuenow="<%= cpuPct %>" aria-valuemin="0" aria-valuemax="100" aria-label="CPU usage"></div>
       </div>
     </div>
     <div class="space-y-1">
@@ -55,7 +55,7 @@
       </div>
       <div class="w-full h-1.5 rounded-full bg-surface-sunken overflow-hidden">
         <div class="h-full rounded-full transition-all <%= memColor %>" style="width:<%= memPct %>%"
-             role="progressbar" aria-valuenow="<%= memPct %>" aria-valuemin="0" aria-valuemax="100"></div>
+             role="progressbar" aria-valuenow="<%= memPct %>" aria-valuemin="0" aria-valuemax="100" aria-label="Memory usage"></div>
       </div>
     </div>
   </div>

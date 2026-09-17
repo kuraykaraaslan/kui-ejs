@@ -36,7 +36,7 @@ export function buildShareDialogData(): ShowcaseItem[] {
         <div class="flex gap-2">
           <div class="flex flex-1 items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm">
             <i class="fa-solid fa-link text-text-disabled shrink-0" style="font-size: 0.875rem;" aria-hidden="true"></i>
-            <input type="text" value="https://app.example.com/docs/x4y9-zk7" readonly class="flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate" />
+            <input type="text" value="https://app.example.com/docs/x4y9-zk7" readonly aria-label="Shareable link" class="flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate" />
           </div>
           <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm">
             <i class="fa-solid fa-copy" style="font-size: 0.875rem;" aria-hidden="true"></i>
@@ -51,7 +51,7 @@ export function buildShareDialogData(): ShowcaseItem[] {
           <input type="email" placeholder="name@example.com" class="w-full bg-transparent text-text-primary placeholder:text-text-disabled focus-visible:outline-none" />
         </div>
         <div class="flex items-center justify-end gap-2">
-          <select class="rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary">
+          <select aria-label="Permission level for new invite" class="rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary">
             <option>Viewer</option><option>Commenter</option><option>Editor</option>
           </select>
           <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm">
@@ -71,13 +71,13 @@ export function buildShareDialogData(): ShowcaseItem[] {
           <li class="flex items-center gap-3 px-3 py-2">
             <span class="h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle">MR</span>
             <div class="flex-1 min-w-0"><p class="text-sm font-medium text-text-primary truncate">Marcus Reed</p><p class="text-xs text-text-secondary truncate">marcus@example.com</p></div>
-            <select class="rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary"><option>Viewer</option><option>Commenter</option><option selected>Editor</option></select>
+            <select aria-label="Permission level for Marcus Reed" class="rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary"><option>Viewer</option><option>Commenter</option><option selected>Editor</option></select>
             <button type="button" aria-label="Remove Marcus Reed's access" class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md text-text-disabled hover:text-error hover:bg-error-subtle"><i class="fa-solid fa-xmark" style="font-size: 0.75rem;" aria-hidden="true"></i></button>
           </li>
           <li class="flex items-center gap-3 px-3 py-2">
             <span class="h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle">PS</span>
             <div class="flex-1 min-w-0"><p class="text-sm font-medium text-text-primary truncate">Priya Sharma</p><p class="text-xs text-text-secondary truncate">priya@example.com</p></div>
-            <select class="rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary"><option selected>Viewer</option><option>Commenter</option><option>Editor</option></select>
+            <select aria-label="Permission level for Priya Sharma" class="rounded-md border border-border bg-surface-base px-2 py-1 text-xs text-text-primary"><option selected>Viewer</option><option>Commenter</option><option>Editor</option></select>
             <button type="button" aria-label="Remove Priya Sharma's access" class="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md text-text-disabled hover:text-error hover:bg-error-subtle"><i class="fa-solid fa-xmark" style="font-size: 0.75rem;" aria-hidden="true"></i></button>
           </li>
         </ul>
@@ -113,7 +113,7 @@ export function buildShareDialogData(): ShowcaseItem[] {
         <div class="flex gap-2">
           <div class="flex flex-1 items-center gap-2 rounded-md border border-border bg-surface-base px-3 py-2 text-sm">
             <i class="fa-solid fa-link text-text-disabled shrink-0" style="font-size: 0.875rem;" aria-hidden="true"></i>
-            <input type="text" value="https://app.example.com/projects/empty-share" readonly class="flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate" />
+            <input type="text" value="https://app.example.com/projects/empty-share" readonly aria-label="Shareable link" class="flex-1 bg-transparent text-text-primary focus-visible:outline-none truncate" />
           </div>
           <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm">
             <i class="fa-solid fa-copy" style="font-size: 0.875rem;" aria-hidden="true"></i>
@@ -128,7 +128,7 @@ export function buildShareDialogData(): ShowcaseItem[] {
           <input type="email" placeholder="name@example.com" class="w-full bg-transparent text-text-primary placeholder:text-text-disabled focus-visible:outline-none" />
         </div>
         <div class="flex items-center justify-end gap-2">
-          <select class="rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary"><option>Viewer</option></select>
+          <select aria-label="Permission level for new invite" class="rounded-md border border-border bg-surface-base px-3 py-2 text-sm text-text-primary"><option>Viewer</option></select>
           <button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium bg-primary text-primary-fg hover:bg-primary-hover px-4 py-2 text-sm">
             <i class="fa-solid fa-paper-plane" style="font-size: 0.875rem;" aria-hidden="true"></i>
             Invite

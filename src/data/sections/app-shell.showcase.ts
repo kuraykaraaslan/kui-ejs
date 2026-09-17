@@ -14,7 +14,7 @@ const miniSidebar = (collapsed = false) => `
     ${collapsed ? '<i class="fa-solid fa-grid-2 text-primary text-xs"></i>' : '<span class="text-xs font-bold text-primary">Acme</span>'}
   </div>
   <div class="flex items-center ${collapsed ? 'justify-center' : 'justify-end'} px-1.5 py-1.5 border-b border-border">
-    <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay">
+    <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="${collapsed ? 'Expand sidebar' : 'Collapse sidebar'}">
       <i class="fa-solid fa-chevron-left${collapsed ? ' rotate-180' : ''} text-[10px]"></i>
     </button>
   </div>
@@ -52,7 +52,7 @@ const miniTopbar = `
     <i class="fa-solid fa-magnifying-glass absolute left-2 top-1/2 -translate-y-1/2 text-text-disabled text-[10px]"></i>
     <div class="w-full h-5 rounded bg-surface-sunken/60 pl-6 text-[9px] text-text-disabled flex items-center">Search…</div>
   </div>
-  <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-bell text-[10px]"></i></button>
+  <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Notifications"><i class="fa-solid fa-bell text-[10px]"></i></button>
   <span class="h-5 w-5 rounded-full bg-primary-subtle text-primary text-[9px] flex items-center justify-center font-bold">JD</span>
 </header>`;
 
@@ -140,7 +140,7 @@ export function buildAppShellData(): ShowcaseItem[] {
           previewHtml: `<div class="flex bg-surface-raised border border-border rounded-xl overflow-hidden" style="height:300px;width:200px">
   <div class="flex flex-col flex-1 w-56">
     <div class="flex items-center justify-end px-2 py-2 border-b border-border">
-      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Collapse sidebar"><i class="fa-solid fa-chevron-left text-xs"></i></button>
     </div>
     <nav class="flex-1 px-2 py-3 space-y-4 overflow-y-auto">
       ${sidebarNavGroup('Main', [{icon:'fa-solid fa-house',label:'Dashboard',active:true},{icon:'fa-solid fa-chart-bar',label:'Analytics',badge:3},{icon:'fa-solid fa-folder',label:'Projects'},{icon:'fa-solid fa-circle-check',label:'Tasks',badge:12}])}
@@ -178,7 +178,7 @@ export function buildAppShellData(): ShowcaseItem[] {
           previewHtml: `<div class="flex bg-surface-raised border border-border rounded-xl overflow-hidden" style="height:300px;width:200px">
   <div class="flex flex-col flex-1 w-56">
     <div class="flex items-center justify-end px-2 py-2 border-b border-border">
-      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Collapse sidebar"><i class="fa-solid fa-chevron-left text-xs"></i></button>
     </div>
     <div class="px-3 py-2 border-b border-border">
       <div class="relative">
@@ -204,7 +204,7 @@ export function buildAppShellData(): ShowcaseItem[] {
           previewHtml: `<div class="flex bg-surface-raised border border-border rounded-xl overflow-hidden" style="height:300px;width:56px">
   <div class="flex flex-col flex-1 w-14">
     <div class="flex items-center justify-center px-2 py-2 border-b border-border">
-      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-chevron-left rotate-180 text-xs"></i></button>
+      <button class="p-1 rounded text-text-secondary hover:bg-surface-overlay" aria-label="Expand sidebar"><i class="fa-solid fa-chevron-left rotate-180 text-xs"></i></button>
     </div>
     <nav class="flex-1 px-1.5 py-3 space-y-0.5">
       <a href="#" class="flex justify-center py-2 rounded-lg bg-primary-subtle text-primary" title="Dashboard"><i class="fa-solid fa-house text-sm"></i></a>
@@ -244,11 +244,11 @@ export function buildAppShellData(): ShowcaseItem[] {
     <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-text-disabled text-xs"></i>
     <div class="h-7 rounded-md bg-surface text-text-disabled text-xs flex items-center pl-7 border border-border">Search everything…</div>
   </div>
-  <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay relative">
+  <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay relative" aria-label="Notifications">
     <i class="fa-solid fa-bell text-sm"></i>
     <span class="absolute top-0.5 right-0.5 h-2 w-2 rounded-full bg-error border-2 border-surface-raised"></span>
   </button>
-  <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay"><i class="fa-solid fa-gear text-sm"></i></button>
+  <button class="p-1.5 rounded-md text-text-secondary hover:bg-surface-overlay" aria-label="Settings"><i class="fa-solid fa-gear text-sm"></i></button>
   <span class="h-7 w-7 rounded-full bg-primary-subtle text-primary text-xs flex items-center justify-center font-bold">JD</span>
 </div></div>`,
           code: `<%- include('modules/app/AppTopBar', {

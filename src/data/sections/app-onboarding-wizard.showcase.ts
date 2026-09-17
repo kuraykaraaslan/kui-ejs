@@ -24,7 +24,7 @@ export function buildOnboardingWizardData(): ShowcaseItem[] {
     <div class="flex items-center gap-3">
       <span class="text-xs uppercase tracking-wide text-text-disabled font-medium shrink-0">1 / 3</span>
       <div class="flex-1">
-        <div class="flex items-center gap-2" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1">
+        <div class="flex items-center gap-2" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1" aria-label="Step 1 of 3">
           <span class="h-2 rounded-full transition-all w-6 bg-primary" aria-hidden="true"></span>
           <span class="h-2 rounded-full transition-all w-2 bg-surface-sunken" aria-hidden="true"></span>
           <span class="h-2 rounded-full transition-all w-2 bg-surface-sunken" aria-hidden="true"></span>
@@ -66,7 +66,7 @@ export function buildOnboardingWizardData(): ShowcaseItem[] {
     <div class="flex items-center gap-3">
       <span class="text-xs uppercase tracking-wide text-text-disabled font-medium shrink-0">2 / 4</span>
       <div class="flex-1">
-        <div class="h-1 w-full rounded-full bg-surface-sunken overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2">
+        <div class="h-1 w-full rounded-full bg-surface-sunken overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2" aria-label="Step 2 of 4">
           <div class="h-full bg-primary transition-[width] duration-300" style="width: 50%;"></div>
         </div>
       </div>

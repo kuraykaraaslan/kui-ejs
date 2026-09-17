@@ -21,11 +21,11 @@ export function buildMentionPickerData(): ShowcaseItem[] {
           layout: 'stack',
           previewHtml: `<div class="flex flex-col items-center gap-4 py-6">
   <div role="listbox" aria-label="Users to mention" class="z-50 w-72 rounded-lg border border-border bg-surface-raised shadow-lg overflow-hidden">
-    <div class="flex items-center gap-2 border-b border-border px-3 py-2 text-xs text-text-secondary">
+    <div role="presentation" class="flex items-center gap-2 border-b border-border px-3 py-2 text-xs text-text-secondary">
       <i class="fa-solid fa-at text-text-disabled" style="font-size: 0.75rem;" aria-hidden="true"></i>
       <span class="font-medium">"al"</span>
     </div>
-    <ul class="max-h-64 overflow-y-auto py-1">
+    <ul role="presentation" class="max-h-64 overflow-y-auto py-1">
       <li role="option" aria-selected="true" class="flex items-center gap-3 px-3 py-2 cursor-pointer bg-surface-overlay">
         <span class="h-8 w-8 rounded-full bg-primary-subtle text-primary font-semibold text-xs flex items-center justify-center shrink-0 border border-primary-subtle">AB</span>
         <div class="flex-1 min-w-0">
@@ -54,11 +54,11 @@ export function buildMentionPickerData(): ShowcaseItem[] {
           layout: 'stack',
           previewHtml: `<div class="flex justify-center py-6">
   <div role="listbox" aria-label="Users to mention" class="z-50 w-72 rounded-lg border border-border bg-surface-raised shadow-lg overflow-hidden">
-    <div class="flex items-center gap-2 border-b border-border px-3 py-2 text-xs text-text-secondary">
+    <div role="presentation" class="flex items-center gap-2 border-b border-border px-3 py-2 text-xs text-text-secondary">
       <i class="fa-solid fa-at text-text-disabled" style="font-size: 0.75rem;" aria-hidden="true"></i>
       <span class="font-medium">"zzz"</span>
     </div>
-    <p class="px-3 py-4 text-sm text-center text-text-secondary">No matching users</p>
+    <p role="presentation" class="px-3 py-4 text-sm text-center text-text-secondary">No matching users</p>
   </div>
 </div>`,
           code: `<%- include('modules/app/MentionPicker', {

@@ -14,22 +14,21 @@ const placementClassMap: Record<string, string> = {
 function popoverEl(opts: {
   trigger: string;
   children: string;
+  label: string;
   placement?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
 }) {
   const pc = placementClassMap[opts.placement || 'bottom'];
   return `<div class="relative inline-block">
-  <div aria-haspopup="dialog" aria-expanded="true">
-    ${opts.trigger}
-  </div>
-  <div role="dialog" class="absolute z-[70] min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-xl focus-visible:outline-none ${pc}${opts.className ? ' ' + opts.className : ''}">
+  ${opts.trigger}
+  <div role="dialog" aria-label="${opts.label}" class="absolute z-[70] min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-xl focus-visible:outline-none ${pc}${opts.className ? ' ' + opts.className : ''}">
     ${opts.children}
   </div>
 </div>`;
 }
 
 const trigger = (label: string) =>
-  `<button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">
+  `<button type="button" aria-haspopup="dialog" aria-expanded="true" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">
     ${label}
   </button>`;
 
@@ -73,6 +72,7 @@ export function buildPopoverData(): ShowcaseItem[] {
           previewHtml: stage(popoverEl({
             trigger: trigger('What is Pro?'),
             children: infoBody,
+            label: 'Pro tier',
             placement: 'bottom',
           })),
           code: `<%- include('modules/ui/Popover', {
@@ -88,6 +88,7 @@ export function buildPopoverData(): ShowcaseItem[] {
           previewHtml: stage(popoverEl({
             trigger: trigger('Add note'),
             children: formBody,
+            label: 'Quick note',
             placement: 'right',
           })),
           code: `<%- include('modules/ui/Popover', {
@@ -103,6 +104,7 @@ export function buildPopoverData(): ShowcaseItem[] {
           previewHtml: stage(popoverEl({
             trigger: trigger('Account'),
             children: listBody,
+            label: 'Account menu',
             placement: 'top',
           })),
           code: `<%- include('modules/ui/Popover', {

@@ -48,9 +48,9 @@ export function buildDomainCommonLocationData(): ShowcaseItem[] {
   <div class="bg-surface rounded-xl border border-border p-5 space-y-4">
     <div class="grid grid-cols-2 gap-4">
       <div class="w-full">
-        <label class="block text-sm font-medium text-text-primary mb-1.5">Country</label>
+        <label for="location-picker-country-empty" class="block text-sm font-medium text-text-primary mb-1.5">Country</label>
         <div class="relative">
-          <select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
+          <select id="location-picker-country-empty" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
             <option value="">Select country…</option>
             <option>Turkey</option><option>United States</option><option>Germany</option>
           </select>
@@ -80,9 +80,9 @@ export function buildDomainCommonLocationData(): ShowcaseItem[] {
   <div class="bg-surface rounded-xl border border-border p-5 space-y-4">
     <div class="grid grid-cols-2 gap-4">
       <div class="w-full">
-        <label class="block text-sm font-medium text-text-primary mb-1.5">Country</label>
+        <label for="location-picker-country-filled" class="block text-sm font-medium text-text-primary mb-1.5">Country</label>
         <div class="relative">
-          <select class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
+          <select id="location-picker-country-filled" class="block w-full rounded-md border border-border bg-surface text-text-primary appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm pr-8">
             <option>Select country…</option>
             <option selected>Turkey</option>
           </select>

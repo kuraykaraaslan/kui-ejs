@@ -42,12 +42,12 @@ function comboBoxEl(opts: {
     const isSelected = opt.value === opts.value;
     const isHighlighted = opts.highlightedIndex === index;
     return `<li id="${id}-option-${index}" role="option" aria-selected="${isSelected ? 'true' : 'false'}" data-combobox-option data-value="${opt.value}" data-label="${opt.label}" data-description="${opt.description || ''}" data-index="${index}"${opt.disabled ? ' data-disabled="true"' : ''}>
-        <button type="button"${opt.disabled ? ' disabled' : ''} class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors focus-visible:outline-none hover:bg-surface-overlay${isSelected ? ' font-medium text-primary' : ''}${isHighlighted ? ' bg-surface-overlay' : ''}${opt.disabled ? ' cursor-not-allowed opacity-50' : ''}">
+        <div class="flex w-full items-start gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-surface-overlay${isSelected ? ' font-medium text-primary' : ''}${isHighlighted ? ' bg-surface-overlay' : ''}${opt.disabled ? ' cursor-not-allowed opacity-50' : ''}">
           <span class="min-w-0 flex-1">
             <span class="block truncate">${opt.label}</span>
             ${opt.description ? `<span class="block truncate text-xs text-text-secondary">${opt.description}</span>` : ''}
           </span>
-        </button>
+        </div>
       </li>`;
   }).join('');
 
@@ -64,9 +64,9 @@ function comboBoxEl(opts: {
   </div>
   <ul id="${listboxId}" role="listbox" data-combobox-list class="z-20 max-h-60 w-full overflow-y-auto rounded-md border border-border bg-surface-raised py-1 shadow-lg${listHidden}">
     ${opts.loading
-      ? `<li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
-         <li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
-         <li class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>`
+      ? `<li role="presentation" class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
+         <li role="presentation" class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>
+         <li role="presentation" class="px-3 py-2"><div class="h-3 w-full animate-pulse rounded bg-surface-overlay"></div></li>`
       : optionItems}
     <li data-combobox-empty class="hidden px-3 py-3 text-sm text-text-secondary">${opts.noResultsText || 'No results found.'}</li>
   </ul>

@@ -30,7 +30,7 @@
 <div class="px-3 py-2 font-mono text-xs text-text-secondary">No changes.</div>
 <% } else { %>
 <div role="region" aria-label="Split diff" class="grid grid-cols-2 gap-0">
-  <div data-diff-split-left="<%= _diffId %>" class="overflow-x-auto border-r border-border">
+  <div data-diff-split-left="<%= _diffId %>" tabindex="0" role="region" aria-label="Diff, before" class="overflow-x-auto border-r border-border">
     <% _hunks.forEach(function (hunk, hi) {
       var pairs = _pairChanges(hunk.changes);
     %>
@@ -46,7 +46,7 @@
     </div>
     <% }); %>
   </div>
-  <div data-diff-split-right="<%= _diffId %>" class="overflow-x-auto">
+  <div data-diff-split-right="<%= _diffId %>" tabindex="0" role="region" aria-label="Diff, after" class="overflow-x-auto">
     <% _hunks.forEach(function (hunk, hi) {
       var pairs = _pairChanges(hunk.changes);
     %>

@@ -44,7 +44,7 @@
       <%- include('../../Spinner', { size: 'lg' }) %>
     </div>
   <% } else { %>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto" tabindex="0" role="region" aria-label="<%= locals.caption || 'Data table' %>">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-border bg-surface-sunken">

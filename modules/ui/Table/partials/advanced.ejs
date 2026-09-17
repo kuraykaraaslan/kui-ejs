@@ -26,7 +26,7 @@
     <span data-adt-count-num>0</span> of <%= _rows.length %> row<%= _rows.length !== 1 ? 's' : '' %> selected
   </p>
   <% } %>
-  <div class="w-full rounded-lg border border-border<%= _stickyHeader ? ' overflow-auto max-h-80' : '' %>">
+  <div class="w-full rounded-lg border border-border<%= _stickyHeader ? ' overflow-auto max-h-80' : '' %>"<% if (_stickyHeader) { %> tabindex="0" role="region" aria-label="<%= _caption || 'Table' %>"<% } %>>
     <table class="w-full text-sm">
       <% if (_caption) { %><caption class="sr-only"><%= _caption %></caption><% } %>
       <thead class="bg-surface-sunken border-b border-border<%= _stickyHeader ? ' sticky top-0 z-10' : '' %>">

@@ -63,6 +63,7 @@ role="searchbox" with search icon and clear button. Works in controlled and unco
     id="<%= _id %>"
     type="text"
     role="searchbox"
+    aria-label="<%= locals.ariaLabel || 'Search' %>"
     value="<%= _val %>"
     placeholder="<%= _placeholder %>"
     autocomplete="off"

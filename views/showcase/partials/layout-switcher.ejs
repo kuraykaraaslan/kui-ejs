@@ -4,7 +4,7 @@
     <a href="?layout=<%= opt[0] %>"
        title="<%= opt[0].charAt(0).toUpperCase() + opt[0].slice(1) %> layout"
        class="flex items-center justify-center w-7 h-7 rounded text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary text-primary-fg' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-       aria-pressed="<%= isActive ? 'true' : 'false' %>"
+       <% if (isActive) { %>aria-current="true"<% } %>
     ><i class="fa-solid <%= opt[1] %>" aria-hidden="true"></i></a>
   <% }) %>
 </div>

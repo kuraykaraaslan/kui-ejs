@@ -12,7 +12,7 @@
     return (_L.weekStart === 1) ? '+' + n + ' daha' : '+' + n + ' more';
   }
 %>
-<div class="flex flex-col w-full">
+<div class="flex flex-col w-full" role="grid" aria-label="<%= _L.monthNames[_date.getMonth()] %> <%= _date.getFullYear() %>">
   <div class="grid grid-cols-7 border-b border-border bg-surface-raised" role="row">
     <% _headerOrder.forEach(function (dayIdx) { %>
       <div role="columnheader" class="px-2 py-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary text-center">
@@ -21,8 +21,11 @@
     <% }); %>
   </div>
 
-  <div role="grid" aria-label="<%= _L.monthNames[_date.getMonth()] %> <%= _date.getFullYear() %>" class="grid grid-cols-7 grid-rows-6 flex-1">
-    <% _cells.forEach(function (cell, i) {
+  <div role="presentation" class="grid grid-cols-7 grid-rows-6 flex-1">
+    <% for (var _w = 0; _w < _cells.length; _w += 7) { %>
+    <div role="row" style="display: contents">
+    <% _cells.slice(_w, _w + 7).forEach(function (cell, _ci) {
+         var i = _w + _ci;
          var inMonth = _isSameMonth(cell, _date);
          var isToday = _isSameDay(cell, _today);
          var dayEvents = _events.filter(function (e) { return _eventOnDay(e, cell); });
@@ -61,5 +64,7 @@
         </div>
       </div>
     <% }); %>
+    </div>
+    <% } %>
   </div>
 </div>

@@ -98,8 +98,8 @@ export function buildDomainCommonSeoData(): ShowcaseItem[] {
   <div class="bg-surface rounded-xl border border-border p-5 space-y-4">
     ${baseInput({ id: 'st2', label: 'SEO Title', value: 'Best Running Shoes 2025', hint: '23/60' })}
     <div class="w-full">
-      <label class="block text-sm font-medium text-text-primary mb-1.5">Meta Description</label>
-      <textarea rows="3" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm resize-y">Discover the top-rated running shoes for every terrain and budget.</textarea>
+      <label for="seo-meta-description" class="block text-sm font-medium text-text-primary mb-1.5">Meta Description</label>
+      <textarea id="seo-meta-description" rows="3" class="block w-full rounded-md border border-border bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 px-3 py-2 text-sm resize-y">Discover the top-rated running shoes for every terrain and budget.</textarea>
       <p class="mt-1.5 text-sm text-text-secondary">64/160</p>
     </div>
     <div class="w-full">
