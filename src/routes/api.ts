@@ -1,8 +1,13 @@
-// AI-discoverability endpoints.
+// AI-discoverability endpoints, plus classic-SEO sitemap.xml/robots.txt
+// (docs/dev/phase-7-showcase-and-dx.md 7.4) — small enough to live here
+// alongside the other registry-driven, non-page routes rather than a
+// dedicated router file.
 //
 //   GET /api/registry          → full machine-readable component catalog (JSON)
 //   GET /api/registry?index=1  → lightweight index (no source code), ~5x smaller
 //   GET /llms-full.txt         → flattened markdown of the entire catalog
+//   GET /sitemap.xml           → every showcase component slug + theme route
+//   GET /robots.txt            → allow-all, points at the sitemap
 //
 // The static llms.txt overview is served from public/llms.txt by the
 // express.static middleware in src/app.ts.
@@ -10,6 +15,7 @@
 import { Router } from 'express';
 import { buildRegistry, buildRegistryIndex } from '../registry/registry';
 import type { Registry, RegistryComponent } from '../registry/registry.types';
+import { SHOWCASE_LINKS } from '../config/showcase.config';
 
 const router = Router();
 
@@ -19,6 +25,29 @@ router.get('/api/registry', (req, res) => {
   res.set('Cache-Control', 'public, max-age=3600');
   res.set('Access-Control-Allow-Origin', '*');
   res.json(payload);
+});
+
+router.get('/sitemap.xml', (_req, res) => {
+  const reg = buildRegistryIndex();
+  const base = SHOWCASE_LINKS.siteUrl;
+  const urls = [
+    base,
+    ...reg.components.map((c) => `${base}/${c.id}`),
+    ...reg.themes.map((t) => `${base}${t.route}`),
+  ];
+  const body =
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n') +
+    '\n</urlset>\n';
+  res.set('Content-Type', 'application/xml; charset=utf-8');
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.send(body);
+});
+
+router.get('/robots.txt', (_req, res) => {
+  res.set('Content-Type', 'text/plain; charset=utf-8');
+  res.send(['User-agent: *', 'Allow: /', `Sitemap: ${SHOWCASE_LINKS.siteUrl}/sitemap.xml`, ''].join('\n'));
 });
 
 function renderComponent(c: RegistryComponent): string {
