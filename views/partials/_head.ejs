@@ -29,7 +29,14 @@
   <meta name="keywords" content="<%= site.keywords %>" />
   <meta name="author" content="<%= site.author %>" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <link rel="canonical" href="<%= site.url %>" />
+  <%
+    // res.locals.currentPath (set globally in src/app.ts) is the request
+    // path without query string, so `?layout=grid`-style variant params
+    // don't fragment canonical identity. Every page used to point at
+    // the same site.url (docs/dev/phase-7-showcase-and-dx.md 7.4).
+    var _canonicalPath = locals.currentPath && locals.currentPath !== '/' ? locals.currentPath : '';
+  %>
+  <link rel="canonical" href="<%= site.url %><%= _canonicalPath %>" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />

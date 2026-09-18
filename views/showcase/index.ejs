@@ -10,7 +10,13 @@
   <meta name="keywords" content="<%= site.keywords %>" />
   <meta name="author" content="<%= site.author %>" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <link rel="canonical" href="<%= site.url %>" />
+  <%
+    // See views/partials/_head.ejs for the same fix and why it's needed
+    // (docs/dev/phase-7-showcase-and-dx.md 7.4) — this file has its own
+    // separate <head> since it renders with `layout: false`.
+    var _canonicalPath = locals.currentPath && locals.currentPath !== '/' ? locals.currentPath : '';
+  %>
+  <link rel="canonical" href="<%= site.url %><%= _canonicalPath %>" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -37,7 +43,11 @@
     "@graph": [
       { "@type": "WebSite", "url": site.url, "name": site.name, "description": site.description },
       { "@type": "Person", "name": site.author, "url": site.authorUrl },
-      { "@type": "SoftwareApplication", "name": site.name, "applicationCategory": "DeveloperApplication", "operatingSystem": "Web", "description": site.description, "url": site.url, "creator": { "@type": "Person", "name": site.author } }
+      { "@type": "SoftwareApplication", "name": site.name, "applicationCategory": "DeveloperApplication", "operatingSystem": "Web", "description": site.description, "url": site.url, "creator": { "@type": "Person", "name": site.author } },
+      // Component catalog as a structured list (docs/dev/phase-7-showcase-and-dx.md
+      // 7.4) — only present on the homepage (locals.itemListElements is
+      // set by GET / in src/routes/index.ts, not by GET /:slug).
+      ...(locals.itemListElements ? [{ "@type": "ItemList", "itemListElement": itemListElements }] : [])
     ]
   }) %>
   </script>
