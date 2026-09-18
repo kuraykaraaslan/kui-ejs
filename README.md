@@ -19,6 +19,13 @@ npm run dev          # http://localhost:3003
 
 `npm run dev` runs the Express server (with auto-reload) and the PostCSS/Tailwind watcher in parallel.
 
+## Ports
+
+kui-ejs's dev server runs on **3003**, [kui-react](https://github.com/kuraykaraaslan/kui-react)'s
+on **3002** — chosen so both can run side by side when comparing a
+component across the two implementations (see kui-react's
+`docs/adr/0003-react-ejs-parity-contract.md`).
+
 ## Theme demos
 
 Five full-page demos — one per industry vertical — built entirely from the partial library.
