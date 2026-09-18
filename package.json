@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:css\"",
     "parity:open": "node scripts/parity-open.mjs",
+    "new:component": "node scripts/new-component.mjs",
     "dev:server": "nodemon --watch src --watch views --watch modules --ext ts,ejs --exec tsx src/server.ts",
     "dev:css": "postcss public/assets/css/input.css -o public/assets/css/app.css --watch",
     "prebuild": "npm run registry:snapshot",
