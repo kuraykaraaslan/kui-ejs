@@ -99,7 +99,7 @@ if (collapseBtn) {
 }
 
 // ── Group accordion ───────────────────────────────────────
-// SSR default: groups collapsed unless they contain the active item.
+// SSR default: every group open (kui-react ShowcaseShell's defaultExpanded).
 // sessionStorage stores explicit user toggles ('open' | 'closed') and
 // takes precedence over the SSR default.
 document.querySelectorAll('.group-toggle-btn').forEach((btn) => {

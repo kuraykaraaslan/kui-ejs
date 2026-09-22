@@ -21,13 +21,20 @@
 >
 
   <!-- Logo -->
-  <div id="sidebar-logo" class="flex items-center border-b border-border shrink-0 h-14 px-5">
-    <div class="sidebar-full-only">
-      <p class="text-sm font-semibold text-text-primary whitespace-nowrap">UI Showcase</p>
-      <p class="text-xs text-text-secondary whitespace-nowrap">Component library</p>
+  <%# Brand header — 1:1 with kui-react SidebarBrand.tsx and kui-native
+      Sidebar.tsx; change all three together. %>
+  <div id="sidebar-logo" class="flex items-center border-b border-border shrink-0 h-14 px-4">
+    <div class="sidebar-full-only min-w-0">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <%- include('../../partials/_brand-mark', { className: 'w-7 h-7' }) %>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-text-primary truncate"><%= site.name %></p>
+          <p class="text-xs text-text-secondary truncate">Component library</p>
+        </div>
+      </div>
     </div>
     <div class="sidebar-compact-only hidden w-full justify-center">
-      <span class="text-sm font-black text-primary select-none">UI</span>
+      <%- include('../../partials/_brand-mark', { className: 'w-7 h-7' }) %>
     </div>
   </div>
 
@@ -46,11 +53,11 @@
   <!-- Search -->
   <div class="sidebar-full-only px-3 py-2 border-b border-border shrink-0">
     <div class="relative">
-      <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-disabled" aria-hidden="true"></i>
+      <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-5 h-4 leading-4 text-center text-text-disabled" aria-hidden="true"></i>
       <input
         id="sidebar-search"
         type="search"
-        placeholder="Search.."
+        placeholder="Search…"
         autocomplete="off"
         class="w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-border-focus"
         aria-label="Search navigation"
@@ -70,7 +77,7 @@
     <% allGroups.forEach(function(group, gi) {
       var groupKey = group.label || ('g' + gi);
       var hasActive = group.items.some(function(i){ return i.active || i.id === selectedId; });
-      var isExpanded = group.collapsible ? hasActive : true;
+      var isExpanded = true;
     %>
     <div data-group-section>
       <% if (group.label) { %>
@@ -82,7 +89,7 @@
             class="group-toggle-btn sidebar-full-only w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActive ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
           >
             <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>
-            <i class="fa-solid fa-chevron-down w-3 h-3 transition-transform duration-200" style="<%= isExpanded ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
+            <i class="fa-solid fa-chevron-down inline-block w-5 h-4 leading-4 text-center transition-transform duration-200" style="<%= isExpanded ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
           </button>
         <% } else { %>
           <p class="sidebar-full-only text-[10px] font-semibold uppercase tracking-widest text-text-disabled px-3 mb-1"><%= group.label %></p>
@@ -150,32 +157,37 @@
 
   <aside
     id="mobile-sidebar"
-    class="absolute left-0 top-0 h-full w-56 bg-surface-raised flex flex-col shadow-xl transition-transform duration-200 -translate-x-full overflow-hidden"
+    class="absolute left-0 top-0 h-full w-72 max-w-full bg-surface-raised border-r border-border flex flex-col shadow-xl transition-transform duration-200 -translate-x-full overflow-hidden"
   >
     <!-- Logo -->
-    <div class="relative flex items-center border-b border-border shrink-0 h-14 px-5">
-      <div>
-        <p class="text-sm font-semibold text-text-primary whitespace-nowrap">UI Showcase</p>
-        <p class="text-xs text-text-secondary whitespace-nowrap">Component library</p>
+    <div class="flex items-center gap-3 h-14 px-4 border-b border-border shrink-0">
+      <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <%- include('../../partials/_brand-mark', { className: 'w-7 h-7' }) %>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold text-text-primary truncate"><%= site.name %></p>
+          <p class="text-xs text-text-secondary truncate">Component library</p>
+        </div>
+      </div>
       </div>
       <button
         type="button"
         onclick="closeMobileSidebar()"
-        class="absolute top-1/2 -translate-y-1/2 right-3 p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
-        aria-label="Close sidebar"
+        class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+        aria-label="Close drawer"
       >
-        <i class="fa-solid fa-xmark w-4 h-4" aria-hidden="true"></i>
+        <i class="fa-solid fa-xmark relative -top-0.5 inline-block w-5 h-4 leading-4 text-center align-[-0.125em]" aria-hidden="true"></i>
       </button>
     </div>
 
     <!-- Search -->
     <div class="px-3 py-2 border-b border-border shrink-0">
       <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-disabled" aria-hidden="true"></i>
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 w-5 h-4 leading-4 text-center text-text-disabled" aria-hidden="true"></i>
         <input
           id="mobile-sidebar-search"
           type="search"
-          placeholder="Search.."
+          placeholder="Search…"
           autocomplete="off"
           class="w-full rounded-md border border-border bg-surface-base pl-7 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-disabled focus:outline-none focus:ring-2 focus:ring-border-focus"
           aria-label="Search navigation"
@@ -193,7 +205,7 @@
 
       <% allGroups.forEach(function(group, gi) {
         var hasActiveM = group.items.some(function(i){ return i.active || i.id === selectedId; });
-        var isExpandedM = group.collapsible ? hasActiveM : true;
+        var isExpandedM = true;
       %>
       <div data-group-section>
         <% if (group.label) { %>
@@ -205,7 +217,7 @@
               class="group-toggle-btn w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActiveM ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>"
             >
               <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>
-              <i class="fa-solid fa-chevron-down w-3 h-3 transition-transform duration-200" style="<%= isExpandedM ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
+              <i class="fa-solid fa-chevron-down inline-block w-5 h-4 leading-4 text-center transition-transform duration-200" style="<%= isExpandedM ? '' : 'transform:rotate(-90deg);' %>" aria-hidden="true"></i>
             </button>
           <% } else { %>
             <p class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled px-3 mb-1"><%= group.label %></p>
