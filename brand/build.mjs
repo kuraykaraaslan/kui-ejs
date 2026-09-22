@@ -47,7 +47,9 @@ function mark({ toneOne, toneTwo, tile }) {
 }
 
 const LABEL = `${WORDMARK.lead}${WORDMARK.trail}`;
-/** Derived, not fixed — see WORDMARK_ADVANCE. */
+/** Derived, not fixed — see WORDMARK_ADVANCE. The tspans sit on the same
+ *  line as their <text>: under xml:space="preserve" any newline/indent
+ *  inside it renders as leading spaces and shoves the wordmark right. */
 const LOCKUP_WIDTH = Math.ceil(WORDMARK_X + LABEL.length * WORDMARK_ADVANCE + 16);
 
 function markSvg() {
@@ -76,9 +78,7 @@ function wordmarkSvg({ inverse }) {
        surface that cannot load Geist. -->
   ${mark({ toneOne, toneTwo: COLORS.toneTwo, tile })}
   <text x="${WORDMARK_X}" y="41" font-family="${FONT_STACK}"
-        font-size="26" font-weight="600" letter-spacing="-0.5" xml:space="preserve">
-    <tspan fill="${toneOne}">${WORDMARK.lead}</tspan><tspan fill="${text}">${WORDMARK.trail}</tspan>
-  </text>
+        font-size="26" font-weight="600" letter-spacing="-0.5" xml:space="preserve"><tspan fill="${toneOne}">${WORDMARK.lead}</tspan><tspan fill="${text}">${WORDMARK.trail}</tspan></text>
 </svg>
 `;
 }
@@ -106,9 +106,7 @@ function ogCardSvg() {
   </g>
 
   <text x="96" y="352" font-family="${FONT_STACK}"
-        font-size="76" font-weight="600" letter-spacing="-2" xml:space="preserve">
-    <tspan fill="${COLORS.toneOneInverse}">${WORDMARK.lead}</tspan><tspan fill="${COLORS.foregroundInverse}">${WORDMARK.trail}</tspan>
-  </text>
+        font-size="76" font-weight="600" letter-spacing="-2" xml:space="preserve"><tspan fill="${COLORS.toneOneInverse}">${WORDMARK.lead}</tspan><tspan fill="${COLORS.foregroundInverse}">${WORDMARK.trail}</tspan></text>
   <text x="96" y="410" font-family="${FONT_STACK}"
         font-size="28" font-weight="400" fill="${COLORS.foregroundMutedInverse}">${TAGLINE}</text>
 </svg>
