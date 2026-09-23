@@ -1,0 +1,61 @@
+<%#
+  The KUI family card on the home panel: the three UI kits (one design system
+  on three runtimes) and the standalone libraries. Pixel-identical in kui-react
+  (modules/showcase/ui/FamilyPanel.tsx) and kui-native
+  (modules/showcase/ui/FamilyPanel.tsx) — change all three together; only
+  `current` differs between them.
+
+  Marks use the family's fixed brand hex (brand/geometry.mjs of each package),
+  like the static brand assets: they draw the siblings' marks, not this kit's
+  themed one.
+%>
+<%
+  var current = 'ejs';
+  var kits = [
+    { id: 'react',  name: 'KUIreact',  meta: 'Next.js · React',     href: 'https://next-js-components.kuray.dev', label: 'next-js-components.kuray.dev', tone: '#8b5cf6' },
+    { id: 'ejs',    name: 'KUIejs',    meta: 'Express · EJS',       href: 'https://ejs-components.kuray.dev',     label: 'ejs-components.kuray.dev',     tone: '#ec4899' },
+    { id: 'native', name: 'KUInative', meta: 'Expo · React Native', href: 'https://kui-native.kuray.dev',         label: 'kui-native.kuray.dev',         tone: '#f97316' },
+  ];
+  var libraries = [
+    { id: 'player', name: 'KUI Player', meta: 'Video player',        href: 'https://www.npmjs.com/package/@kuraykaraaslan/kui-player', label: '@kuraykaraaslan/kui-player', tone: '#22c55e' },
+    { id: 'gantt',  name: 'KUI Gantt',  meta: 'Gantt chart',         href: 'https://www.npmjs.com/package/@kuraykaraaslan/kui-gantt',  label: '@kuraykaraaslan/kui-gantt',  tone: '#ef4444' },
+    { id: 'viewer', name: 'KUI Viewer', meta: 'IFC / BIM 3D viewer', href: 'https://kui-viewer.kuray.dev',                            label: 'kui-viewer.kuray.dev',       tone: '#ffb020' },
+  ];
+  function card(m, isCurrent) {
+    var cls = 'group flex flex-col gap-3 rounded-lg border bg-surface-base p-4 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus ' + (isCurrent ? 'border-primary' : 'border-border');
+    var attrs = isCurrent ? ' aria-current="page"' : ' target="_blank" rel="noopener noreferrer"';
+    return '<a href="' + m.href + '"' + attrs + ' class="' + cls + '">'
+      + '<div class="flex items-center gap-2.5">'
+      +   '<svg viewBox="0 0 64 64" class="w-8 h-8 shrink-0" aria-hidden="true" focusable="false">'
+      +     '<rect width="64" height="64" rx="14" fill="#0f172a"/>'
+      +     '<rect x="16" y="16" width="7" height="32" rx="1.5" fill="#3b82f6"/>'
+      +     '<path d="M25 32 L41 16" stroke="#3b82f6" stroke-width="7" stroke-linecap="round" fill="none"/>'
+      +     '<path d="M25 32 L41 48" stroke="' + m.tone + '" stroke-width="7" stroke-linecap="round" fill="none"/>'
+      +   '</svg>'
+      +   '<div class="min-w-0">'
+      +     '<p class="text-sm font-semibold text-text-primary truncate group-hover:text-primary transition-colors">' + m.name + '</p>'
+      +     '<p class="text-[10px] text-text-secondary truncate">' + m.meta + '</p>'
+      +   '</div>'
+      +   (isCurrent ? '<span class="ml-auto shrink-0 rounded-full bg-primary-subtle px-2 py-0.5 text-[10px] font-medium text-primary">You are here</span>' : '')
+      + '</div>'
+      + '<span class="text-[10px] font-mono text-text-disabled truncate">' + m.label + '</span>'
+      + '</a>';
+  }
+%>
+<div class="rounded-xl border border-border bg-surface-raised p-5 mb-8">
+  <h2 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+    <i class="fa-solid fa-cubes text-primary" aria-hidden="true"></i>
+    The KUI Family
+  </h2>
+  <p class="text-xs text-text-secondary mb-4 max-w-2xl leading-relaxed">
+    KUIreact, KUIejs and KUInative are one design system: the same tokens, the same components and the same
+    showcase, pixel for pixel — on Next.js, Express + EJS and React Native.
+  </p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <% kits.forEach(function(k) { %><%- card(k, k.id === current) %><% }); %>
+  </div>
+  <p class="text-[10px] font-semibold uppercase tracking-widest text-text-disabled mt-5 mb-2">Standalone libraries</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <% libraries.forEach(function(l) { %><%- card(l, false) %><% }); %>
+  </div>
+</div>
