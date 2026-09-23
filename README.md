@@ -8,7 +8,7 @@ A server-rendered EJS / Express / Tailwind 4 component library organised the sam
 
 ## Stack
 
-Node.js 20+ · Express 4 · EJS 3 + express-ejs-layouts · TypeScript 5 · Tailwind CSS 4 · PostCSS pipeline · Font Awesome 6 Free (CDN) · Helmet · Zod
+Node.js 20+ · Express 5 · EJS 6 + express-ejs-layouts · TypeScript 6 · Tailwind CSS 4 · PostCSS pipeline · Font Awesome 7 Free (CDN) · Helmet · Zod
 
 ## Quick start
 

@@ -55,11 +55,11 @@ const matches = reg.components.filter(c =>
 | Layer | Technology |
 |-------|-----------|
 | Runtime | Node.js 20+ |
-| Server | Express 4 |
-| Templates | EJS 3 + express-ejs-layouts |
+| Server | Express 5 |
+| Templates | EJS 6 + express-ejs-layouts |
 | Styles | Tailwind CSS 4 (PostCSS pipeline) |
-| Language | TypeScript 5 |
-| Icons | Font Awesome 6 Free (CDN) |
+| Language | TypeScript 6 |
+| Icons | Font Awesome 7 Free (CDN) |
 
 ---
 
