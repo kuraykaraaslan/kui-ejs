@@ -45,7 +45,7 @@ jobs:
 
             ### Artifacts
 
-            - `kui-ejs-${{ github.ref_name }}.tar.gz` with the application source
+            - `kui-ejs-<version>.tar.gz` with the application source
               and build configuration, excluding Git metadata, dependencies, and
               the release directory
             - `SHA256SUMS` for integrity verification
