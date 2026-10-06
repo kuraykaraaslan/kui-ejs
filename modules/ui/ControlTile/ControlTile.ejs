@@ -1,0 +1,53 @@
+<%
+  // ControlTile — the frame every async control shares: title, the control slot,
+  // and one live status line (pending / confirmed / mismatch / failed / read-only).
+  // One place, so the controls cannot drift on what "pending" or "failed" looks
+  // like. Mirror of kui-react modules/ui/ControlTile/ControlTile.tsx.
+  //
+  // The status line is rendered by the runtime (scripts/control-bind.js) as the
+  // control's state changes; this partial renders the idle state (the read-only
+  // notice, when set). Locals:
+  //   id            — root id (auto-generated when omitted)
+  //   title         — optional heading
+  //   body          — pre-rendered HTML of the control (trusted include output)
+  //   kind          — 'switch' | 'slider' | 'setpoint' | 'button' (runtime binder)
+  //   config        — JSON-serialisable settings for the binder
+  //   readOnly      — show the read-only notice (the user may not use the control)
+  //   reportedText  — quiet line under the control (the slider keeps it live)
+  //   messages      — { pending, confirmed, mismatch, failed, readOnly, retry, ... }
+  //   className     — extra classes on the frame
+  //
+  // DEFAULT_CONTROL_MESSAGES (same strings as kui-react):
+  var DEFAULT_MESSAGES = {
+    pending: 'Sending…',
+    confirmed: 'Done',
+    mismatch: 'The device reports a different value.',
+    failed: 'The change failed.',
+    readOnly: 'You do not have permission to use this control.',
+    retry: 'Retry',
+  };
+  var _m = Object.assign({}, DEFAULT_MESSAGES, locals.messages || {});
+  var _id = locals.id || ('control-' + Math.random().toString(36).substr(2, 9));
+  var _title = locals.title || '';
+  var _readOnly = !!locals.readOnly;
+  var _reportedText = locals.reportedText || '';
+  var _kind = locals.kind || '';
+  var body = locals.body || '';
+  var _reportedHolder = !!locals.reportedHolder;   // slider: a live (initially hidden) reported line
+%>
+<div
+  id="<%= _id %>"
+  class="rounded-lg border border-border bg-surface-raised p-3<%= locals.className ? ' ' + locals.className : '' %>"
+  <% if (_kind) { %>data-kui-control="<%= _kind %>"
+  data-kui-control-config="<%= JSON.stringify(locals.config || {}) %>"
+  data-kui-messages="<%= JSON.stringify(_m) %>"<% } %>
+>
+  <% if (_title) { %><h3 class="mb-2 text-sm font-semibold text-text-primary"><%= _title %></h3><% } %>
+  <div class="space-y-2">
+    <%- body %>
+    <% if (_reportedText || _reportedHolder) { %><p class="text-xs text-text-secondary" data-kui-control-reported<%= _reportedText ? '' : ' hidden' %>><%= _reportedText %></p><% } %>
+    <div class="flex min-h-5 items-center gap-2 text-xs" aria-live="polite" data-kui-control-status>
+      <% if (_readOnly) { %><span class="text-text-secondary"><%= _m.readOnly %></span><% } %>
+    </div>
+  </div>
+</div>

@@ -73,11 +73,20 @@
     return html + '</div>';
   }
 
-  function setupTileTheme(map) {
-    var current = isDark() ? TILES.dark : TILES.light;
+  // `tiles` is one layer for both themes ({ url, attribution }) or a light/dark pair
+  // ({ light, dark }); omitted = CARTO Voyager / Dark Matter.
+  function tileSet(tiles) {
+    if (!tiles) return TILES;
+    if (tiles.url) return { light: tiles, dark: tiles };
+    return { light: tiles.light || TILES.light, dark: tiles.dark || tiles.light || TILES.dark };
+  }
+
+  function setupTileTheme(map, tiles) {
+    var set = tileSet(tiles);
+    var current = isDark() ? set.dark : set.light;
     var layer = L.tileLayer(current.url, { attribution: current.attribution }).addTo(map);
     var mo = new MutationObserver(function () {
-      var next = isDark() ? TILES.dark : TILES.light;
+      var next = isDark() ? set.dark : set.light;
       if (next === current) return;
       map.removeLayer(layer);
       current = next;
@@ -91,8 +100,12 @@
     var mapEl = document.getElementById(opts.id + '-map');
     if (!mapEl || !window.L) return;
 
+    // The "loading" placeholder (MapCanvas / MapView `loadingLabel`) goes once the map exists.
+    var loading = mapEl.querySelector('[data-map-loading]');
+    if (loading && loading.parentNode) loading.parentNode.removeChild(loading);
+
     var map = L.map(opts.id + '-map').setView(opts.center, opts.zoom);
-    setupTileTheme(map);
+    setupTileTheme(map, opts.tiles);
 
     var zoneLayers = (opts.zones || []).map(function (z) {
       var v = z.variant || 'primary';
@@ -117,6 +130,9 @@
     (opts.markers || []).forEach(function (m) {
       var color  = COLORS[m.variant || 'primary'];
       var marker = L.marker(m.position, { icon: createIcon(color) }).addTo(map);
+      if (typeof opts.onMarkerClick === 'function' && m.id !== undefined) {
+        marker.on('click', function () { opts.onMarkerClick(m.id); });
+      }
       if (m.tooltip) marker.bindTooltip(tooltipHtml(m.tooltip));
       else if (m.label) marker.bindTooltip('<span style="font-size:12px;font-weight:600">' + m.label + '</span>');
     });

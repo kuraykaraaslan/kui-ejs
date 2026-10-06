@@ -1,0 +1,34 @@
+<%
+  // Server-side twin of scripts/control-logic.js (kui-react control-logic.ts).
+  // Fills the object passed as `L`:  include('./_logic', { L: L })
+  // Keep in step with scripts/control-logic.js; tests/control-tile.test.ts
+  // checks both agree over a table of inputs.
+  var L = locals.L;
+  L.asBoolean = function (value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value === 0 ? false : value === 1 ? true : null;
+    if (typeof value === 'string') {
+      var v = value.trim().toLowerCase();
+      if (['true', 'on', '1', 'yes'].indexOf(v) !== -1) return true;
+      if (['false', 'off', '0', 'no'].indexOf(v) !== -1) return false;
+    }
+    return null;
+  };
+  L.asNumber = function (value) {
+    if (typeof value === 'number') return isFinite(value) ? value : null;
+    if (typeof value === 'string' && value.trim() !== '') {
+      var n = Number(value);
+      return isFinite(n) ? n : null;
+    }
+    return null;
+  };
+  L.toRange = function (bounds) {
+    var min = L.asNumber(bounds.min);
+    if (min === null) min = 0;
+    var maxRaw = L.asNumber(bounds.max);
+    if (maxRaw === null) maxRaw = 100;
+    var step = L.asNumber(bounds.step);
+    return { min: min, max: maxRaw > min ? maxRaw : min + 1, step: step && step > 0 ? step : 1 };
+  };
+  L.formatValue = function (value, decimals) { return value.toFixed(Math.max(0, decimals || 0)); };
+%>

@@ -9,6 +9,10 @@
 
 Numeric slider input, distinct from Slider (a carousel). Single mode renders one native `<input type="range">` with a server-computed token gradient fill. Range (dual-handle) mode overlays two native range inputs with a shared fill bar and a small inline script that clamps the handles against each other and keeps the fill in sync while dragging.
 
+## Used by
+
+- `control-tile`
+
 ## Design tokens consumed
 
 - `--primary`
@@ -47,6 +51,24 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
 }) %>
 ```
 
+### Commit on release (one write per gesture)
+
+```ejs
+<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5 }) %>
+<script>
+  // 'input' still fires per step (live label); the commit fires once per gesture:
+  // pointer up, 400 ms of keyboard idle, or blur.
+  document.getElementById('fan').addEventListener('kui:rangeslider-commit', (e) => api.setFan(e.detail.value));
+</script>
+```
+
+### Pending (a write is in flight)
+
+```ejs
+<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5, pending: true }) %>
+<!-- at runtime: document.getElementById('fan').__rangeslider.setPending(false) -->
+```
+
 ## Full EJS source
 
 ```ejs
@@ -56,6 +78,17 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
   Distinct from modules/ui/Slider.ejs, which is a carousel — this is a
   numeric <input type="range"> control. Named RangeSlider (not Slider) to
   avoid colliding with the carousel.
+
+  Single mode — commit on release (kui-react `onCommit` / `pending` / `commitIdleMs`):
+    The native `input` event still fires per step (live label). The committed
+    value fires ONCE per gesture: on pointer up, after `commitIdleMs` (default
+    400) of keyboard idle for Arrow / Home / End / Page keys, or on blur.
+    It is delivered as the DOM event 'kui:rangeslider-commit' on the root
+    (bubbles, detail: { value, id }) and, when `onCommit` is a string, to the
+    global function of that name. Use it for slow writes (a device, a server
+    setting).
+    `pending: true` disables the thumb and sets aria-busy while a write is in
+    flight. At runtime: root.__rangeslider.setPending(bool) / .setValue(n).
 %>
 <%
   var _id        = locals.id        || 'range-' + Math.random().toString(36).substr(2, 9);
@@ -68,6 +101,9 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
   var _showValue = (locals.showValue === undefined) ? true : !!locals.showValue;
   var _isRange   = !!locals.range;
   var _className = locals.className || '';
+  var _pending   = !!locals.pending;
+  var _commitIdleMs = (locals.commitIdleMs !== undefined) ? Number(locals.commitIdleMs) : 400;
+  var _onCommit  = typeof locals.onCommit === 'string' ? locals.onCommit : '';
 
   var _hintId = _hint ? (_id + '-hint') : '';
 
@@ -88,7 +124,7 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
     return Math.min(100, Math.max(0, ((v - _min) / (_max - _min)) * 100));
   }
 %>
-<div id="<%= _id %>" data-rangeslider data-range="<%= _isRange ? 'true' : 'false' %>" data-min="<%= _min %>" data-max="<%= _max %>" class="w-full<%= _className ? ' ' + _className : '' %>">
+<div id="<%= _id %>" data-rangeslider data-range="<%= _isRange ? 'true' : 'false' %>" data-min="<%= _min %>" data-max="<%= _max %>" data-commit-idle-ms="<%= _commitIdleMs %>"<% if (_onCommit) { %> data-on-commit="<%= _onCommit %>"<% } %> class="w-full<%= _className ? ' ' + _className : '' %>">
   <% if (_label || _showValue) { %>
     <div class="mb-2 flex items-center justify-between gap-2">
       <% if (_label) { %><span class="text-sm font-medium text-text-primary"><%= _label %></span><% } %>
@@ -149,7 +185,8 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
       step="<%= _step %>"
       value="<%= _singleVal %>"
       <% if (locals.name) { %>name="<%= locals.name %>"<% } %>
-      <% if (_disabled) { %>disabled<% } %>
+      <% if (_disabled || _pending) { %>disabled<% } %>
+      <% if (_pending) { %>aria-busy="true"<% } %>
       <% if (_hintId) { %>aria-describedby="<%= _hintId %>"<% } %>
       data-rangeslider-handle="single"
       class="h-1.5 w-full cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed <%= thumbClass %>"
@@ -179,11 +216,46 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
     var single = document.getElementById(rootId + '-input');
     var singleLabel = root.querySelector('[data-rangeslider-value-single]');
     if (!single) return;
-    single.addEventListener('input', function () {
-      var v = Number(single.value);
+    function paint(v) {
       single.style.backgroundImage = 'linear-gradient(to right, var(--primary) 0%, var(--primary) ' + pct(v) + '%, var(--surface-sunken) ' + pct(v) + '%, var(--surface-sunken) 100%)';
       if (singleLabel) singleLabel.textContent = String(v);
+    }
+
+    // Commit on release: one commit per gesture, never per step.
+    var COMMIT_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'];
+    var idleMs = Number(root.getAttribute('data-commit-idle-ms'));
+    if (!isFinite(idleMs)) idleMs = 400;
+    var latest = null;
+    var timer = null;
+    function clearTimer() { if (timer) { clearTimeout(timer); timer = null; } }
+    function flush() {
+      clearTimer();
+      var v = latest;
+      latest = null;
+      if (v === null) return;
+      root.dispatchEvent(new CustomEvent('kui:rangeslider-commit', { bubbles: true, detail: { value: v, id: rootId } }));
+      var fnName = root.getAttribute('data-on-commit');
+      if (fnName && typeof window[fnName] === 'function') window[fnName](v);
+    }
+
+    single.addEventListener('input', function () {
+      var v = Number(single.value);
+      latest = v;
+      paint(v);
     });
+    single.addEventListener('pointerup', flush);
+    single.addEventListener('keyup', function (e) {
+      if (COMMIT_KEYS.indexOf(e.key) !== -1) { clearTimer(); timer = setTimeout(flush, idleMs); }
+    });
+    single.addEventListener('blur', flush);
+
+    root.__rangeslider = {
+      setPending: function (on) {
+        single.disabled = <%= _disabled ? 'true' : 'false' %> || !!on;
+        if (on) single.setAttribute('aria-busy', 'true'); else single.removeAttribute('aria-busy');
+      },
+      setValue: function (v) { single.value = String(v); paint(Number(single.value)); },
+    };
     return;
   }
 

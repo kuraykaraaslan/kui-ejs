@@ -1,0 +1,44 @@
+<%
+  // ControlButton — one press fires the write; an optional confirm / typed-confirm
+  // step comes first. Mirror of kui-react ControlButton.
+  //
+  // Locals:
+  //   id, title
+  //   label     — button caption (default messages.run = 'Run')
+  //   confirm   — 'none' (default) | 'confirm' ("Are you sure?") | 'typed' (also type `confirmText`)
+  //   confirmText — the text to type when confirm = 'typed'
+  //   onCommit  — NAME of a global function (confirmation?: { confirmed: true, typed? }) => Promise,
+  //               or the DOM event 'kui:control-commit' (see scripts/control-bind.js)
+  //   readOnly, disabled, className, loadRuntime
+  //   messages  — the shared ones plus { run: 'Run', confirmPrompt: 'Are you sure?', confirm: 'Confirm',
+  //               cancel: 'Cancel', typeToConfirm: 'Type "{text}" to confirm' }
+  var _id = locals.id || ('control-button-' + Math.random().toString(36).substr(2, 9));
+  var _confirm = ['none', 'confirm', 'typed'].indexOf(locals.confirm) !== -1 ? locals.confirm : 'none';
+  var _confirmText = locals.confirmText || '';
+  var _readOnly = !!locals.readOnly;
+  var _disabled = !!locals.disabled;
+  var _msgs = Object.assign({
+    run: 'Run', confirmPrompt: 'Are you sure?', confirm: 'Confirm', cancel: 'Cancel', typeToConfirm: 'Type "{text}" to confirm',
+  }, locals.messages || {});
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  var _main = include('../Button', { children: locals.label || _msgs.run, disabled: _disabled || _readOnly }).replace('<button', '<button data-kui-control-main');
+  var _ask = '';
+  if (_confirm !== 'none') {
+    var goBtn = include('../Button', { children: _msgs.confirm, disabled: _confirm === 'typed' }).replace('<button', '<button data-kui-control-go');
+    var cancelBtn = include('../Button', { children: _msgs.cancel, variant: 'secondary' }).replace('<button', '<button data-kui-control-cancel');
+    _ask = '<div class="space-y-2" role="group" aria-labelledby="' + esc(_id) + '-prompt" data-kui-control-ask hidden>'
+      + '<p id="' + esc(_id) + '-prompt" class="text-sm text-text-primary">' + esc(_msgs.confirmPrompt) + '</p>'
+      + (_confirm === 'typed'
+        ? '<input aria-label="' + esc(_msgs.typeToConfirm.replace('{text}', _confirmText)) + '" placeholder="' + esc(_confirmText) + '" data-kui-control-typed'
+          + ' class="h-9 w-full rounded-md border border-border bg-surface-base px-2 text-sm text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">'
+        : '')
+      + '<div class="flex gap-2">' + goBtn + cancelBtn + '</div>'
+      + '</div>';
+  }
+  var body = _main + _ask;
+%>
+<%- include('./ControlTile', {
+  id: _id, title: locals.title, kind: 'button', readOnly: _readOnly, messages: _msgs, className: locals.className, body: body,
+  config: { readOnly: _readOnly, disabled: _disabled, confirm: _confirm, confirmText: _confirmText, onCommit: locals.onCommit },
+}) %>
+<% if (locals.loadRuntime !== false) { %><%- include('./_runtime') %><% } %>

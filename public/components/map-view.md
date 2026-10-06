@@ -16,9 +16,11 @@ Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygo
 - `--primary`
 - `--primary-fg`
 - `--primary-hover`
+- `--secondary`
 - `--surface-overlay`
 - `--surface-raised`
 - `--text-primary`
+- `--text-secondary`
 
 ## Variants
 
@@ -43,6 +45,18 @@ Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygo
   zoom:   5,
   height: 360,
 }) %>
+```
+
+### MapCanvas: card-less, custom tiles
+
+```ejs
+<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', {
+    markers: markers,
+    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
+    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
+  }) %>
+</div>
 ```
 
 ### Yalnız zone ve rota
@@ -73,6 +87,9 @@ Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygo
 //   center, zoom       — view start
 //   markers, zones, routes
 //   fitBoundsPadding   — number → enables fit-to-bounds
+//   tiles              — { url, attribution } (both themes) or { light, dark };
+//                        default CARTO Voyager / Dark Matter
+//   loadingLabel       — text shown until the map is built (default 'Loading map…')
 //   height             — px or CSS string
 //   className          — extra root classes
 //
@@ -92,6 +109,8 @@ var _zones            = locals.zones   || [];
 var _routes           = locals.routes  || [];
 var _fitBoundsPadding = locals.fitBoundsPadding;
 var _cls              = locals.className || '';
+var _tiles            = locals.tiles || null;
+var _loadingLabel     = locals.loadingLabel || 'Loading map…';
 
 if (_provider !== 'leaflet') {
   throw new Error('MapView provider "' + _provider + '" is not yet implemented — TODO M1+');
@@ -124,7 +143,11 @@ var _cssHeight = (typeof _height === 'number') ? (_height + 'px') : _height;
       }) %>
 
       <!-- Map canvas -->
-      <div id="<%= _id %>-map" style="height:<%= _cssHeight %>"></div>
+      <div id="<%= _id %>-map" style="height:<%= _cssHeight %>">
+        <div data-map-loading class="w-full h-full flex items-center justify-center bg-surface-raised">
+          <span class="text-sm text-text-secondary"><%= _loadingLabel %></span>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -142,6 +165,7 @@ var _cssHeight = (typeof _height === 'number') ? (_height + 'px') : _height;
       zones:            <%- JSON.stringify(_zones) %>,
       routes:           <%- JSON.stringify(_routes) %>,
       fitBoundsPadding: <%- _fitBoundsPadding != null ? _fitBoundsPadding : 'undefined' %>,
+      tiles:            <%- JSON.stringify(_tiles) %>,
       onReady: function (ctx) { window.__MapViewMarkers.attach({ id: '<%- _id %>', ctx: ctx }); }
     };
     if (document.readyState === 'loading') {

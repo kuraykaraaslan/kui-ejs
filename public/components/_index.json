@@ -203,6 +203,24 @@
     "category": "Molecule",
     "file": "time-picker.md"
   },
+  "chart": {
+    "name": "Chart",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "chart.md"
+  },
+  "time-window-picker": {
+    "name": "TimeWindowPicker",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "time-window-picker.md"
+  },
+  "control-tile": {
+    "name": "ControlTile",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "control-tile.md"
+  },
   "card": {
     "name": "Card",
     "layer": "ui",

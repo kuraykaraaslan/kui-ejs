@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-09-18T14:52:04.420Z",
+  "generatedAt": "2026-10-06T12:14:20.401Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -213,6 +213,9 @@
         "--text-inverse",
         "--text-primary"
       ],
+      "usedBy": [
+        "control-tile"
+      ],
       "variantCount": 13
     },
     {
@@ -410,9 +413,13 @@
         "--secondary",
         "--surface-sunken",
         "--text-primary",
-        "--text-secondary"
+        "--text-secondary",
+        "--warning"
       ],
-      "variantCount": 5
+      "usedBy": [
+        "control-tile"
+      ],
+      "variantCount": 7
     },
     {
       "id": "checkbox",
@@ -893,7 +900,10 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 2
+      "usedBy": [
+        "control-tile"
+      ],
+      "variantCount": 4
     },
     {
       "id": "time-picker",
@@ -918,6 +928,115 @@
         "--text-secondary"
       ],
       "variantCount": 2
+    },
+    {
+      "id": "chart",
+      "name": "Chart",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/Chart/Chart.ejs",
+      "abbr": "Ch",
+      "description": "Token-aware SVG chart partial. `type` is line, bar, area, pie, donut, sparkline, gauge or heatmap. Colors resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode works without extra work. Line and area take `xAxis: 'time'` for a continuous time axis with drag-to-zoom (double-click or the reset button leaves the zoom; it never reaches the page), bar and area take `stacked`, the gauge is a role=\"meter\" half-donut with threshold bands and the heatmap draws missing values as empty cells. Pixel-identical sibling of kui-react modules/ui/Chart.",
+      "status": "beta",
+      "since": "2026-05",
+      "relatedTo": [
+        "charts"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "img",
+          "meter",
+          "tooltip"
+        ],
+        "notes": "Charts are role=\"img\" with an aria-label; the gauge is role=\"meter\" with aria-valuemin / -max / -now (clamped) and aria-valuetext (real value, unit, band, stale). The zoom reset is a real button."
+      },
+      "designTokens": [
+        "--primary",
+        "--secondary",
+        "--success",
+        "--warning",
+        "--error",
+        "--info",
+        "--border",
+        "--border-strong",
+        "--surface-raised",
+        "--text-primary",
+        "--text-secondary"
+      ],
+      "variantCount": 5
+    },
+    {
+      "id": "time-window-picker",
+      "name": "TimeWindowPicker",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/TimeWindowPicker.ejs",
+      "abbr": "Tw",
+      "description": "Relative presets (\"1h\", \"7d\"), an absolute UTC range and the interval / aggregation that go with a window. The value is a structural `TimeWindowValue` (ISO strings, UTC); every change dispatches a `kui:timewindow-change` DOM event (detail = the next value) and calls the global function named by `onChange`. Every label is overridable through `messages`. Inline dashboard / telemetry sibling of DateRangePicker.",
+      "status": "stable",
+      "since": "2026-10",
+      "relatedTo": [
+        "date-range-picker",
+        "time-picker"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "radiogroup",
+          "group"
+        ],
+        "notes": "Presets form a radiogroup; the date inputs and the selects carry accessible names from `messages`."
+      },
+      "designTokens": [
+        "--primary",
+        "--border",
+        "--surface-base",
+        "--surface-sunken",
+        "--text-secondary",
+        "--border-focus"
+      ],
+      "variantCount": 2
+    },
+    {
+      "id": "control-tile",
+      "name": "ControlTile",
+      "layer": "ui",
+      "category": "Molecule",
+      "filePath": "modules/ui/ControlTile/ControlTile.ejs",
+      "abbr": "Ct",
+      "description": "Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. No transport knowledge; all text is overridable through `messages`.",
+      "status": "stable",
+      "since": "2026-10",
+      "composes": [
+        "toggle",
+        "range-slider",
+        "button"
+      ],
+      "relatedTo": [
+        "toggle",
+        "range-slider",
+        "button"
+      ],
+      "a11y": {
+        "wcagLevel": "AA",
+        "ariaPatterns": [
+          "switch",
+          "slider",
+          "status"
+        ],
+        "notes": "The status line is an aria-live region; a failure is role=\"alert\". Pending sets aria-busy and disables the input. A bad set-point is a field error (aria-invalid + described-by) and sends nothing."
+      },
+      "designTokens": [
+        "--surface-raised",
+        "--border",
+        "--primary",
+        "--success",
+        "--warning",
+        "--error",
+        "--text-secondary"
+      ],
+      "variantCount": 7
     },
     {
       "id": "card",
@@ -1142,11 +1261,13 @@
         "--primary",
         "--primary-fg",
         "--primary-hover",
+        "--secondary",
         "--surface-overlay",
         "--surface-raised",
-        "--text-primary"
+        "--text-primary",
+        "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "video-player",

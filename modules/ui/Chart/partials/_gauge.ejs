@@ -1,0 +1,96 @@
+<%
+  // GaugeChart — half-donut gauge with threshold bands, centred value and an
+  // optional needle. Rendered on the server (no script). Mirrors kui-react's
+  // charts/GaugeChart.tsx: same viewBox, geometry, tones and aria contract.
+  //
+  // Locals: value, min=0, max=100, bands=[{ to, tone }] (ascending by `to`),
+  //   unit, label, format(v) (server-side function), needle=false,
+  //   size='sm'|'md'|'lg', ariaLabel, stale=false, staleLabel='stale', className.
+  //
+  // role="meter" with aria-valuemin / -max / -now (clamped) and aria-valuetext
+  // (real value, unit, band tone, stale).
+  var TONE_COLOR = {
+    success: 'var(--success)', warning: 'var(--warning)', error: 'var(--error)',
+    info: 'var(--info)', neutral: 'var(--text-disabled, var(--border-strong))',
+  };
+  var SIZE_PX = { sm: 140, md: 200, lg: 280 };
+  var CX = 100, CY = 100, R = 80, STROKE = 16;
+
+  var gMin = typeof locals.min === 'number' ? locals.min : 0;
+  var gMax = typeof locals.max === 'number' ? locals.max : 100;
+  var gBands = Array.isArray(locals.bands) ? locals.bands : [];
+  var gSize = SIZE_PX[locals.size] ? locals.size : 'md';
+  var gStale = !!locals.stale;
+  var gStaleLabel = locals.staleLabel || 'stale';
+  var gNeedle = !!locals.needle;
+  var gUnit = locals.unit;
+  var gValue = locals.value;
+
+  function gPoint(fraction, radius) {
+    var r = radius === undefined ? R : radius;
+    var angle = Math.PI * (1 - fraction);
+    return { x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle) };
+  }
+  function gArc(from, to) {
+    var a = gPoint(Math.max(0, Math.min(1, from)));
+    var b = gPoint(Math.max(0, Math.min(1, to)));
+    return 'M' + a.x.toFixed(2) + ' ' + a.y.toFixed(2) + ' A' + R + ' ' + R + ' 0 0 1 ' + b.x.toFixed(2) + ' ' + b.y.toFixed(2);
+  }
+
+  var gSpan = gMax - gMin || 1;
+  var gHas = typeof gValue === 'number' && isFinite(gValue);
+  var gClamped = gHas ? Math.min(gMax, Math.max(gMin, gValue)) : gMin;
+  var gFraction = (gClamped - gMin) / gSpan;
+  var gBand = null;
+  if (gHas && gBands.length) {
+    gBand = gBands[gBands.length - 1];
+    for (var bi = 0; bi < gBands.length; bi++) { if (gValue <= gBands[bi].to) { gBand = gBands[bi]; break; } }
+  }
+  var gTone = gBand ? gBand.tone : 'info';
+  var gColor = gBand ? (TONE_COLOR[gTone] || TONE_COLOR.info) : 'var(--primary)';
+  var gText = gHas ? (typeof locals.format === 'function' ? locals.format(gValue) : String(Math.round(gValue * 100) / 100)) : '—';
+  var gBandName = gBand ? gTone : '';
+
+  var gSegments = [];
+  var gFrom = 0;
+  gBands.forEach(function (b) {
+    var to = Math.min(1, Math.max(0, (b.to - gMin) / gSpan));
+    gSegments.push({ from: gFrom, to: to, tone: b.tone });
+    gFrom = Math.max(gFrom, to);
+  });
+
+  var gNeedlePt = gPoint(gFraction, R - STROKE / 2 - 4);
+  var gAria = locals.ariaLabel || locals.label || 'Gauge';
+  var gValueText = gHas
+    ? (gText + (gUnit ? ' ' + gUnit : '') + (gBandName ? ', ' + gBandName : '') + (gStale ? ', ' + gStaleLabel : ''))
+    : 'no value';
+%>
+<div class="inline-flex flex-col items-center<%= gStale ? ' opacity-60' : '' %><%= locals.className ? ' ' + locals.className : '' %>" style="width: <%= SIZE_PX[gSize] %>px; max-width: 100%;">
+  <svg
+    viewBox="0 0 200 118"
+    width="100%"
+    role="meter"
+    aria-label="<%= gAria %>"
+    aria-valuemin="<%= gMin %>"
+    aria-valuemax="<%= gMax %>"
+    <% if (gHas) { %>aria-valuenow="<%= gClamped %>"<% } %>
+    aria-valuetext="<%= gValueText %>"
+  >
+    <path d="<%= gArc(0, 1) %>" fill="none" stroke="var(--border)" stroke-width="<%= STROKE %>" stroke-linecap="butt" />
+    <% gSegments.forEach(function (s) { %>
+    <path d="<%= gArc(s.from, s.to) %>" fill="none" stroke="<%= TONE_COLOR[s.tone] || TONE_COLOR.info %>" stroke-opacity="0.28" stroke-width="<%= STROKE %>" />
+    <% }); %>
+    <% if (gHas && gFraction > 0) { %>
+    <path d="<%= gArc(0, gFraction) %>" fill="none" stroke="<%= gColor %>" stroke-width="<%= STROKE %>" stroke-linecap="butt" class="transition-[stroke] duration-[400ms] motion-reduce:transition-none" />
+    <% } %>
+    <% if (gNeedle && gHas) { %>
+    <line x1="<%= CX %>" y1="<%= CY %>" x2="<%= gNeedlePt.x %>" y2="<%= gNeedlePt.y %>" stroke="var(--text-primary)" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="<%= CX %>" cy="<%= CY %>" r="5" fill="var(--text-primary)" />
+    <% } %>
+    <text x="<%= CX %>" y="<%= gNeedle ? 84 : 92 %>" text-anchor="middle" font-size="26" font-weight="600" fill="var(--text-primary)"><%= gText %><% if (gUnit && gHas) { %><tspan font-size="13" fill="var(--text-secondary)" dx="3"><%= gUnit %></tspan><% } %></text>
+    <text x="<%= CX - R %>" y="<%= CY + 14 %>" text-anchor="middle" font-size="10" fill="var(--text-secondary)"><%= gMin %></text>
+    <text x="<%= CX + R %>" y="<%= CY + 14 %>" text-anchor="middle" font-size="10" fill="var(--text-secondary)"><%= gMax %></text>
+  </svg>
+  <% if (locals.label) { %><div class="-mt-1 text-xs text-text-secondary"><%= locals.label %></div><% } %>
+  <% if (gStale) { %><div class="text-[10px] uppercase tracking-wide text-text-secondary"><%= gStaleLabel %></div><% } %>
+</div>

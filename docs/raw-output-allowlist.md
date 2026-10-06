@@ -413,3 +413,22 @@ bash scripts/audit-raw-output.sh
 ---
 
 *Last updated: 2026-09-15. Grep result: 59 raw output sites documented, 255 include() calls listed.*
+
+---
+
+## Added with the phase-9 data / realtime components
+
+All of these also match an allowlist pattern in `scripts/audit-raw-output.sh`
+(`include(`, `JSON.stringify(`, `<%- body %>`); they are listed here so the audit
+trail stays complete.
+
+| File | Expression | Category | Justification |
+|---|---|---|---|
+| `modules/ui/ControlTile/ControlTile.ejs` | `body` | slot / composition | The control markup, built by `ControlSwitch` / `ControlSlider` / `ControlSetpoint` / `ControlButton` from escaped locals (every interpolated string goes through their `esc()` helper) and from `include()` of `Toggle` / `RangeSlider` / `Button`. Never user input. |
+| `modules/ui/ControlTile/_runtime.ejs` | `include('./scripts/*.js')` | EJS include | The runtime scripts shipped with the repo, inlined once per control (idempotent). |
+| `modules/ui/Chart/Chart.ejs` | `include('./scripts/*.js')` | EJS include | Chart helper and renderer scripts shipped with the repo (idempotent; `loadHelpers: false` skips them). |
+| `modules/ui/MapView/MapCanvas.ejs`, `MapView.ejs` | `JSON.stringify(markers / zones / routes / tiles / center / id …)` | developer-controlled JS config | JSON-serialised map configuration interpolated into the inline init script. Not user input. |
+| `modules/ui/TimeWindowPicker.ejs` | `JSON.stringify(ACTIVE.split(' '))` | developer-controlled JS config | Two constant class lists. |
+
+Chart, TimeWindowPicker and the controls pass their configuration to the client as
+`data-*` attributes through `<%= JSON.stringify(...) %>`, i.e. HTML-escaped.

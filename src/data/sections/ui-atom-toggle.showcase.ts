@@ -1,8 +1,15 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as ejs from 'ejs';
 
-const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Toggle.ejs'), 'utf-8');
+const togglePath = path.join(process.cwd(), 'modules/ui/Toggle.ejs');
+const sourceCode = fs.readFileSync(togglePath, 'utf-8');
+
+// The async states render the real Toggle.ejs (the older variants above use a peer-based sketch).
+function renderToggle(locals: Record<string, unknown>): string {
+  return ejs.render(sourceCode, locals, { filename: togglePath });
+}
 
 // Matches the peer-based Toggle.ejs
 function toggle(opts: {
@@ -80,6 +87,19 @@ export function buildToggleData(): ShowcaseItem[] {
           code: `<%- include('modules/ui/Toggle', { id: 'sm', label: 'Small',  size: 'sm', checked: true }) %>
 <%- include('modules/ui/Toggle', { id: 'md', label: 'Medium', size: 'md', checked: true }) %>
 <%- include('modules/ui/Toggle', { id: 'lg', label: 'Large',  size: 'lg', checked: true }) %>`,
+        },
+        {
+          title: 'Pending (a write is in flight)',
+          previewHtml: `<div class="flex justify-center p-4">${renderToggle({ id: 'tg-pending', label: 'Heater', checked: true, pending: true })}</div>`,
+          code: `<%- include('modules/ui/Toggle', { id: 'heater', label: 'Heater', checked: true, pending: true }) %>
+<!-- at runtime: document.querySelector('[data-toggle-root="heater"]').__toggle.setPending(false) -->`,
+        },
+        {
+          title: 'Mismatch (the device reports another value)',
+          previewHtml: `<div class="flex justify-center p-4">${renderToggle({ id: 'tg-mismatch', label: 'Heater', checked: true, mismatch: true, describedBy: 'tg-mismatch-hint' })}</div>
+<p id="tg-mismatch-hint" class="text-center text-xs text-text-secondary">The device reports a different value.</p>`,
+          code: `<%- include('modules/ui/Toggle', { id: 'heater', label: 'Heater', checked: true, mismatch: true, describedBy: 'heater-hint' }) %>
+<p id="heater-hint">The device reports a different value.</p>`,
         },
       ],
     },

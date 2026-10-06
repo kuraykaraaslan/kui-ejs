@@ -1,3 +1,84 @@
+# Chart
+
+- **id:** `chart`
+- **layer:** ui
+- **category:** Molecule
+- **filePath:** `modules/ui/Chart/Chart.ejs`
+- **status:** beta
+- **since:** 2026-05
+
+Token-aware SVG chart partial. `type` is line, bar, area, pie, donut, sparkline, gauge or heatmap. Colors resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode works without extra work. Line and area take `xAxis: 'time'` for a continuous time axis with drag-to-zoom (double-click or the reset button leaves the zoom; it never reaches the page), bar and area take `stacked`, the gauge is a role="meter" half-donut with threshold bands and the heatmap draws missing values as empty cells. Pixel-identical sibling of kui-react modules/ui/Chart.
+
+## Accessibility
+
+- WCAG: AA
+- ARIA patterns: img, meter, tooltip
+
+Charts are role="img" with an aria-label; the gauge is role="meter" with aria-valuemin / -max / -now (clamped) and aria-valuetext (real value, unit, band, stale). The zoom reset is a real button.
+
+## Design tokens consumed
+
+- `--primary`
+- `--secondary`
+- `--success`
+- `--warning`
+- `--error`
+- `--info`
+- `--border`
+- `--border-strong`
+- `--surface-raised`
+- `--text-primary`
+- `--text-secondary`
+
+## Variants
+
+### LineChart (band axis)
+
+```ejs
+<%- include('modules/ui/Chart/Chart', { id: 'activity', type: 'line', series: series, height: 220 }) %>
+```
+
+### Time axis + drag-to-zoom (xAxis: "time")
+
+```ejs
+<%- include('modules/ui/Chart/Chart', {
+  id: 'temp',
+  type: 'line',
+  xAxis: 'time',          // 'xScale' is an alias; xAxis wins
+  yFormat: 'fmtCelsius',  // NAME of a global function: window.fmtCelsius = (v) => v + '°C'
+  series: [{ id: 'temp', name: 'Temperature', data: [{ x: '2026-10-06T08:00:00Z', y: 21.4 }, /* … */] }],
+}) %>
+```
+
+### Stacked bars and areas
+
+```ejs
+<%- include('modules/ui/Chart/Chart', { type: 'bar', stacked: true, series: series }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'area', stacked: true, series: series }) %>
+```
+
+### GaugeChart
+
+```ejs
+<%- include('modules/ui/Chart/Chart', {
+  type: 'gauge', value: 91, min: 0, max: 100, unit: '%', label: 'Disk', needle: true,
+  bands: [{ to: 60, tone: 'success' }, { to: 85, tone: 'warning' }, { to: 100, tone: 'error' }],
+}) %>
+```
+
+### HeatmapChart
+
+```ejs
+<%- include('modules/ui/Chart/Chart', {
+  type: 'heatmap',
+  cells: [{ x: '08', y: 'Mon', value: 42 }, { x: '09', y: 'Mon', value: null } /* … */],
+  valueLabel: 'Messages',
+}) %>
+```
+
+## Full EJS source
+
+```ejs
 <%
   // ─── Chart (EJS) ───────────────────────────────────────────────────────────
   //
@@ -190,3 +271,5 @@
 </script>
 <% } %>
 <% } %>
+
+```

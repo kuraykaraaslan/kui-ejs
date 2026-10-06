@@ -64,6 +64,25 @@ export function buildRangeSliderData(): ShowcaseItem[] {
   nameMax: 'priceMax',
 }) %>`,
         },
+        {
+          title: 'Commit on release (one write per gesture)',
+          layout: 'stack' as const,
+          previewHtml: `<div id="rs-commit-wrap" class="w-full max-w-sm p-2">${renderRangeSlider({ id: 'rs-demo-commit', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5 })}<p class="mt-2 text-xs text-text-secondary" data-commits>Commits: none yet</p></div>
+<script>(function(){var w=document.getElementById('rs-commit-wrap');if(!w)return;var n=0;w.addEventListener('kui:rangeslider-commit',function(e){n++;w.querySelector('[data-commits]').textContent='Commits: '+n+' (last value '+e.detail.value+')';});})();</script>`,
+          code: `<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5 }) %>
+<script>
+  // 'input' still fires per step (live label); the commit fires once per gesture:
+  // pointer up, 400 ms of keyboard idle, or blur.
+  document.getElementById('fan').addEventListener('kui:rangeslider-commit', (e) => api.setFan(e.detail.value));
+</script>`,
+        },
+        {
+          title: 'Pending (a write is in flight)',
+          layout: 'stack' as const,
+          previewHtml: wrap(renderRangeSlider({ id: 'rs-demo-pending', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5, pending: true })),
+          code: `<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5, pending: true }) %>
+<!-- at runtime: document.getElementById('fan').__rangeslider.setPending(false) -->`,
+        },
       ],
     },
   ];

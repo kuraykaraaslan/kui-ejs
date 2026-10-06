@@ -22,7 +22,9 @@
     var P = KuiChart.padding;
     var rect = { x: P.left, y: P.top, width: Math.max(0, W - P.left - P.right), height: Math.max(0, H - P.top - P.bottom) };
     var cats = KuiChart.xCategories(series);
-    var ext = KuiChart.yExtent(series);
+    var stacked = <%= (typeof _stacked !== 'undefined' && _stacked) ? 'true' : 'false' %>;
+    var ext = stacked ? KuiChart.stackedExtent(series) : KuiChart.yExtent(series);
+    var tops = stacked ? KuiChart.stackTops(series) : [];
     var ticks = KuiChart.niceTicks(ext.min, ext.max, 4);
     var yPx = ticks.map(function(v){return KuiChart.yScale(v, ext.min, ext.max, rect);});
     if (showGrid) ticks.forEach(function(_,i){svg.appendChild(ns('line',{x1:rect.x,x2:rect.x+rect.width,y1:yPx[i],y2:yPx[i],stroke:KuiChart.theme.gridStroke,'stroke-dasharray':'2 4','stroke-width':1,opacity:0.5}));});
@@ -31,17 +33,20 @@
     svg.appendChild(ns('line',{x1:rect.x,x2:rect.x+rect.width,y1:rect.y+rect.height,y2:rect.y+rect.height,stroke:KuiChart.theme.axisStroke,'stroke-width':1}));
 
     var groupWidth = KuiChart.bandWidth(cats.length, rect, 0.25);
-    var barW = series.length ? groupWidth / series.length : 0;
+    var barW = stacked ? groupWidth : (series.length ? groupWidth / series.length : 0);
     var baseY = KuiChart.yScale(0, ext.min, ext.max, rect);
     series.forEach(function(s, si){
       var color = KuiChart.paletteColor(si, s.color);
       s.data.forEach(function(p, i){
         if (p.y === null || p.y === undefined) return;
         var center = KuiChart.bandCenter(i, cats.length, rect);
-        var bx = center - groupWidth/2 + si*barW;
-        var ty = KuiChart.yScale(p.y, ext.min, ext.max, rect);
-        var by = Math.min(ty, baseY);
-        var bh = Math.abs(ty - baseY);
+        var groupLeft = center - groupWidth/2;
+        var bx = stacked ? groupLeft : groupLeft + si*barW;
+        var top = stacked ? (tops[si][i] || 0) : p.y;
+        var bottom = stacked ? top - Math.max(0, p.y) : 0;
+        var ty = KuiChart.yScale(top, ext.min, ext.max, rect);
+        var by = stacked ? ty : Math.min(ty, baseY);
+        var bh = stacked ? Math.abs(KuiChart.yScale(bottom, ext.min, ext.max, rect) - ty) : Math.abs(ty - baseY);
         svg.appendChild(ns('rect', {
           x: bx, y: by, width: Math.max(0, barW-2), height: Math.max(0, bh),
           rx: Math.min(4, barW/2), fill: color,

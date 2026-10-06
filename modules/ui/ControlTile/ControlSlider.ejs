@@ -1,0 +1,44 @@
+<%
+  // ControlSlider — drag moves only the local value; the write happens ONCE on
+  // release (pointer up / keyboard idle / blur); failure restores the bound value.
+  // Mirror of kui-react ControlSlider.
+  //
+  // Locals:
+  //   id, title
+  //   value, reported — as ControlSwitch (numbers)
+  //   onCommit  — NAME of a global function (next: number) => Promise, or the DOM
+  //               event 'kui:control-commit' (see scripts/control-bind.js)
+  //   min (0), max (100), step (1), unit, decimals (0)
+  //   reportedLabel — 'Reported: {value}'
+  //   readOnly, disabled, timeoutMs (10000), messages, className, loadRuntime
+  var L = {};
+  include('./_logic', { L: L });
+  var _id = locals.id || ('control-slider-' + Math.random().toString(36).substr(2, 9));
+  var _range = L.toRange({ min: locals.min, max: locals.max, step: locals.step });
+  var _bound = L.asNumber(locals.value);
+  var _shown = _bound === null ? _range.min : _bound;
+  var _decimals = locals.decimals || 0;
+  var _suffix = locals.unit ? ' ' + locals.unit : '';
+  var _readOnly = !!locals.readOnly;
+  var _disabled = !!locals.disabled;
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  var _slider = include('../RangeSlider', {
+    id: _id + '-slider', label: locals.title || 'Value', showValue: false,
+    min: _range.min, max: _range.max, step: _range.step, value: _shown, disabled: _disabled || _readOnly,
+  });
+  var body = _slider
+    + '<div class="flex justify-between text-xs tabular-nums text-text-secondary">'
+    + '<span>' + esc(_range.min) + '</span>'
+    + '<span class="font-semibold text-text-primary" aria-live="off" data-kui-control-value>' + esc(L.formatValue(_shown, _decimals) + _suffix) + '</span>'
+    + '<span>' + esc(_range.max) + '</span>'
+    + '</div>';
+%>
+<%- include('./ControlTile', {
+  id: _id, title: locals.title, kind: 'slider', readOnly: _readOnly, messages: Object.assign({ reportedLabel: locals.reportedLabel || 'Reported: {value}' }, locals.messages || {}),
+  className: locals.className, body: body, reportedHolder: true,
+  config: {
+    value: locals.value, reported: locals.reported, timeoutMs: locals.timeoutMs, readOnly: _readOnly, disabled: _disabled,
+    min: locals.min, max: locals.max, step: locals.step, unit: locals.unit, decimals: _decimals, onCommit: locals.onCommit,
+  },
+}) %>
+<% if (locals.loadRuntime !== false) { %><%- include('./_runtime') %><% } %>

@@ -45,6 +45,9 @@ const NAV_GROUPS: ShowcaseNavGroup[] = [
       { id: 'popconfirm',        title: 'Popconfirm',     category: 'Molecule', abbr: 'Pc', since: '2026-09' },
       { id: 'range-slider',      title: 'RangeSlider',    category: 'Molecule', abbr: 'Rs', since: '2026-09' },
       { id: 'time-picker',       title: 'TimePicker',     category: 'Molecule', abbr: 'Tp', since: '2026-09' },
+      { id: 'chart',             title: 'Chart',          category: 'Molecule', abbr: 'Ch', since: '2026-05', status: 'beta' },
+      { id: 'time-window-picker',title: 'TimeWindowPicker', category: 'Molecule', abbr: 'Tw', since: '2026-10' },
+      { id: 'control-tile',      title: 'ControlTile',    category: 'Molecule', abbr: 'Ct', since: '2026-10' },
     ],
   },
   {

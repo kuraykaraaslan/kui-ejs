@@ -1,8 +1,11 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs   from 'fs';
 import * as path from 'path';
+import * as ejs from 'ejs';
 
 const mapViewSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/MapView/MapView.ejs'), 'utf-8');
+const mapCanvasPath = path.join(process.cwd(), 'modules/ui/MapView/MapCanvas.ejs');
+const mapCanvasSource = fs.readFileSync(mapCanvasPath, 'utf-8');
 
 // ─── color tables (mirrors MapView.ejs) ──────────────────────────────────────
 
@@ -184,6 +187,28 @@ export function buildMapData(): ShowcaseItem[] {
   zoom:   5,
   height: 360,
 }) %>`,
+        },
+        {
+          title:       'MapCanvas: card-less, custom tiles',
+          layout:      'stack',
+          previewHtml: `<div class="h-72 w-full overflow-hidden rounded-lg border border-border">${ejs.render(mapCanvasSource, {
+            id: 'map-canvas-demo',
+            center: [41.015, 28.979],
+            zoom: 6,
+            markers: [
+              { id: 'a', position: [41.015, 28.979], variant: 'success', tooltip: { title: 'Gateway 1' } },
+              { id: 'b', position: [39.925, 32.836], variant: 'error', tooltip: { title: 'Gateway 2' } },
+            ],
+            tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
+            loadingLabel: 'Loading map…',
+          }, { filename: mapCanvasPath })}</div>`,
+          code: `<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', {
+    markers: markers,
+    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
+    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
+  }) %>
+</div>`,
         },
         {
           title:       'Yalnız zone ve rota',

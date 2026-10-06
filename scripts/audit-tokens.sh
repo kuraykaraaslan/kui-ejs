@@ -22,6 +22,10 @@
 #     Payment card brand gradients (VISA, Mastercard, AMEX, etc.).
 #     Official brand colors — cannot be replaced with design-system tokens.
 #
+#   views/showcase/partials/family-panel.ejs
+#     Sibling-product brand tones and the KUI logo SVG fill on the showcase home page.
+#     Brand identity values of other products — not part of this design system's tokens.
+#
 #   modules/ui/MapView/partials/_popup.ejs
 #   src/data/sections/ui-molecule-map.showcase.ts
 #     Leaflet popup/tooltip innerHTML is built as a JS string; CSS classes and
@@ -68,6 +72,7 @@ ALLOWLIST=(
   "src/data/sections/domain-common-auth.showcase.ts"
   "modules/domain/common/payment/CreditCardVisual.ejs"
   "src/data/sections/domain-common-payment.showcase.ts"
+  "views/showcase/partials/family-panel.ejs"
   "modules/ui/MapView/partials/_popup.ejs"
   "src/data/sections/ui-molecule-map.showcase.ts"
   "modules/domain/common/charts/Charts.ejs"

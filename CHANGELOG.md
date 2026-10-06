@@ -4,6 +4,19 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Added — phase-9 data and realtime components (parity with kui-react)
+
+- **Chart** (`modules/ui/Chart/Chart.ejs`, now with a showcase entry):
+  - `type: 'gauge'` — server-rendered half-donut, `role="meter"`, threshold `bands`, optional needle, `stale`.
+  - `type: 'heatmap'` — matrix of `cells`, token colour at variable opacity, hover tooltip, gradient legend; a missing value is an empty cell.
+  - `xAxis: 'time'` (alias `xScale`) on line / area — points placed by timestamp, drag-to-zoom, double-click or `resetZoomLabel` button to leave, y rescales to the visible points.
+  - `stacked` on bar / area; shared axis / grid / crosshair / tooltip primitives in `scripts/chart-helpers.js`.
+  - Chart.ejs now inlines its helper scripts (idempotent; `loadHelpers: false` to opt out) — the band partials previously bailed out when the host page had not loaded them.
+- **TimeWindowPicker** (`modules/ui/TimeWindowPicker.ejs`) — relative presets, absolute UTC range, interval / aggregation; emits `kui:timewindow-change`.
+- **MapCanvas** (`modules/ui/MapView/MapCanvas.ejs`) — card-less map filling its parent; `tiles` (`{ url, attribution }` or `{ light, dark }`) and an English `loadingLabel` also on MapView.
+- **ControlTile** (`modules/ui/ControlTile/`) — `ControlSwitch`, `ControlSlider`, `ControlSetpoint`, `ControlButton` over one `createAsyncControl` state machine (idle / pending / confirmed / mismatch / failed).
+- **Toggle** `pending` / `mismatch` / `describedBy`; **RangeSlider** (single) `pending` and commit-on-release (`kui:rangeslider-commit`).
+
 ### Added — AI-discoverability layer
 
 - **Machine-readable component registry** at [`src/registry/registry.ts`](src/registry/registry.ts), exposed via:
