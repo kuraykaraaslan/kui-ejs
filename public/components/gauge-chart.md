@@ -1,78 +1,58 @@
-# Chart
+# GaugeChart
 
-- **id:** `chart`
+- **id:** `gauge-chart`
 - **layer:** ui
 - **category:** Molecule
-- **filePath:** `modules/ui/Chart/Chart.ejs`
+- **filePath:** `modules/ui/Chart/partials/_gauge.ejs`
 - **status:** beta
-- **since:** 2026-05
+- **since:** 2026-10
 
-Token-aware primitive chart library at @/modules/ui/Chart. M1 ships seven SVG-based charts (Line, Bar, Area, Pie, Donut, Scatter, SparkLine) that consume a unified `Series` data shape. Colors auto-resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps work without any extra work. Pixel-identical EJS sibling at modules/ui/Chart/Chart.ejs. GaugeChart, HeatmapChart and the time axis (`xAxis="time"` with drag-to-zoom on Line/Area) have their own pages (gauge-chart, heatmap-chart, time-series-chart); Bar/Area take `stacked`. The remaining M3 stubs (BubbleChart, TreemapChart, RadarChart, FunnelChart, SankeyChart, CandlestickChart) are exported but render null until implemented; see PLANS/38-Charts.md.
+Half-donut gauge (role="meter") with threshold bands, optional needle, three sizes and a stale state for readings that stopped updating. Part of the Chart library (`modules/ui/Chart/Chart.ejs`, `type: 'gauge'`); the colour comes from semantic tokens through `bands[].tone`.
 
 ## Accessibility
 
 - WCAG: AA
-- ARIA patterns: img
+- ARIA patterns: meter
 
-Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data table for screen-reader parity and keyboard navigation between data points.
+role="meter" with aria-valuemin / aria-valuemax / aria-valuenow and an aria-label from `label`.
 
 ## Design tokens consumed
 
-- `--primary`
-- `--secondary`
 - `--success`
 - `--warning`
 - `--error`
 - `--info`
-- `--surface-raised`
-- `--border`
+- `--surface-sunken`
 - `--text-primary`
 - `--text-secondary`
 
 ## Variants
 
-### LineChart
+### Threshold bands
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { id: 'activity', type: 'line', series: series, height: 220 }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 34, unit: '%', label: 'CPU', bands: bands }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 91, unit: '%', label: 'Disk', bands: bands }) %>
 ```
 
-### Stacked bars and areas
+### Needle
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'bar', stacked: true, series: series }) %>
-<%- include('modules/ui/Chart/Chart', { type: 'area', stacked: true, series: series }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 91, min: 0, max: 100, unit: '%', label: 'Disk', needle: true, bands: bands }) %>
 ```
 
-### BarChart
+### Stale reading
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'bar', series: series }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 72, size: 'sm', label: 'Stale reading', stale: true }) %>
 ```
 
-### AreaChart
+### Sizes
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'area', series: series, fillOpacity: 0.18 }) %>
-```
-
-### PieChart
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'pie', series: pieSeries }) %>
-```
-
-### DonutChart
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'donut', series: pieSeries, innerRadius: 0.62 }) %>
-```
-
-### SparkLine
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values }], height: 28, filled: true }) %>
-<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values2 }], height: 28 }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 55, unit: '%', label: 'sm', size: 'sm', bands: bands }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 55, unit: '%', label: 'md', size: 'md', bands: bands }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 55, unit: '%', label: 'lg', size: 'lg', bands: bands }) %>
 ```
 
 ## Full EJS source

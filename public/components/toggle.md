@@ -2,7 +2,7 @@
 
 - **id:** `toggle`
 - **layer:** ui
-- **category:** Atom
+- **category:** Molecule
 - **filePath:** `modules/ui/Toggle.ejs`
 - **status:** stable
 - **since:** 2025-02
@@ -70,6 +70,27 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
 ```ejs
 <%- include('modules/ui/Toggle', { id: 'heater', label: 'Heater', checked: true, mismatch: true, describedBy: 'heater-hint' }) %>
 <p id="heater-hint">The device reports a different value.</p>
+```
+
+### With description
+
+```ejs
+<%- include('modules/ui/Toggle', { id: 'marketing', label: 'Marketing emails', description: 'Receive weekly updates.', checked: true }) %>
+```
+
+### Settings list (controlled)
+
+```ejs
+<div class="divide-y border rounded-lg">
+  <div class="flex items-center justify-between px-4 py-3">
+    <div>
+      <p class="text-sm font-medium">Push notifications</p>
+      <p class="text-xs text-text-secondary">Alerts for new activity</p>
+    </div>
+    <%- include('modules/ui/Toggle', { id: 'notifications', label: '', ariaLabel: 'Push notifications', checked: true }) %>
+  </div>
+  <!-- … one row per setting -->
+</div>
 ```
 
 ## Full EJS source

@@ -53,12 +53,6 @@
     "category": "Atom",
     "file": "star-rating.md"
   },
-  "toggle": {
-    "name": "Toggle",
-    "layer": "ui",
-    "category": "Atom",
-    "file": "toggle.md"
-  },
   "checkbox": {
     "name": "Checkbox",
     "layer": "ui",
@@ -112,6 +106,12 @@
     "layer": "ui",
     "category": "Molecule",
     "file": "search-bar.md"
+  },
+  "toggle": {
+    "name": "Toggle",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "toggle.md"
   },
   "select": {
     "name": "Select",
@@ -209,6 +209,24 @@
     "category": "Molecule",
     "file": "chart.md"
   },
+  "gauge-chart": {
+    "name": "GaugeChart",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "gauge-chart.md"
+  },
+  "heatmap-chart": {
+    "name": "HeatmapChart",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "heatmap-chart.md"
+  },
+  "time-series-chart": {
+    "name": "TimeSeriesChart",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "time-series-chart.md"
+  },
   "time-window-picker": {
     "name": "TimeWindowPicker",
     "layer": "ui",
@@ -220,6 +238,12 @@
     "layer": "ui",
     "category": "Molecule",
     "file": "control-tile.md"
+  },
+  "use-async-control": {
+    "name": "useAsyncControl (hook)",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "use-async-control.md"
   },
   "card": {
     "name": "Card",
@@ -292,6 +316,12 @@
     "layer": "ui",
     "category": "Molecule",
     "file": "map-view.md"
+  },
+  "map-canvas": {
+    "name": "MapCanvas",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "map-canvas.md"
   },
   "video-player": {
     "name": "VideoPlayer",

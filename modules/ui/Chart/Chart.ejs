@@ -33,6 +33,9 @@
   //   locale    — tick label locale (default: the browser's).
   //   smooth, strokeWidth, fillOpacity — as in kui-react.
   //
+  // pie / donut: innerRadius (0..1).  area (band axis): fillOpacity (default 0.2).
+  // sparkline: filled (area under the line, opacity 0.15).
+  //
   // bar / area:
   //   stacked   — stack the series (negative values count as 0; stacked
   //               areas use straight segments).
@@ -142,6 +145,9 @@
       _showTooltip: _showTooltip,
       _ariaLabel: _ariaLabel,
       _stacked: _stacked,
+      innerRadius: locals.innerRadius,
+      fillOpacity: locals.fillOpacity,
+      filled: locals.filled,
     }) %>
     <% } %>
   </div>

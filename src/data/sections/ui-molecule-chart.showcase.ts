@@ -4,16 +4,16 @@ import * as path from 'path';
 import * as ejs from 'ejs';
 
 // Chart (EJS sibling of kui-react modules/ui/Chart). One partial dispatches to
-// the per-type partials; line/area with `xAxis: 'time'` and the heatmap are
-// drawn client-side from `data-kui-chart-config`, the gauge is server-rendered.
-const chartPath   = path.join(process.cwd(), 'modules/ui/Chart/Chart.ejs');
-const chartSource = fs.readFileSync(chartPath, 'utf-8');
+// the per-type partials. Gauge, heatmap and the time axis have their own pages
+// (ui-primitive-chart-singles.showcase.ts), same as kui-react.
+export const chartPath   = path.join(process.cwd(), 'modules/ui/Chart/Chart.ejs');
+export const chartSource = fs.readFileSync(chartPath, 'utf-8');
 
-function renderChart(locals: Record<string, unknown>): string {
+export function renderChart(locals: Record<string, unknown>): string {
   return ejs.render(chartSource, locals, { filename: chartPath });
 }
 
-const frame = (title: string, inner: string) =>
+export const frame = (title: string, inner: string) =>
   `<div class="w-full rounded-xl border border-border bg-surface-raised p-4 shadow-sm"><p class="mb-2 text-xs font-medium text-text-secondary">${title}</p>${inner}</div>`;
 
 // ── demo data (same shapes and numbers as the kui-react showcase) ──────────
@@ -22,47 +22,21 @@ const lineSeries = [
   { id: 'signups', name: 'New signups', data: [['Mon', 300], ['Tue', 480], ['Wed', 220], ['Thu', 560], ['Fri', 410], ['Sat', 690], ['Sun', 320]].map(([x, y]) => ({ x, y })) },
 ];
 
-// Telemetry: uneven sampling instants on one time axis (ISO strings).
-const T0 = Date.UTC(2026, 9, 6, 8, 0, 0);
-const tempSeries = [
-  {
-    id: 'temp',
-    name: 'Temperature',
-    data: Array.from({ length: 60 }, (_, i) => ({
-      x: new Date(T0 + i * 7 * 60_000 + (i % 3) * 20_000).toISOString(),
-      y: Math.round((21 + Math.sin(i / 6) * 3 + (i % 5) * 0.2) * 10) / 10,
-    })),
-  },
-  {
-    id: 'setpoint',
-    name: 'Setpoint',
-    data: [
-      { x: new Date(T0).toISOString(), y: 22 },
-      { x: new Date(T0 + 3 * 3_600_000).toISOString(), y: 22 },
-      { x: new Date(T0 + 7 * 3_600_000).toISOString(), y: 20 },
-    ],
-  },
-];
-
 const barSeries = [
   { id: 'revenue', name: 'Revenue', data: [['Jan', 4200], ['Feb', 5800], ['Mar', 4900], ['Apr', 7100], ['May', 6300], ['Jun', 8400]].map(([x, y]) => ({ x, y })) },
   { id: 'expenses', name: 'Expenses', data: [['Jan', 2800], ['Feb', 3200], ['Mar', 3600], ['Apr', 4100], ['May', 3900], ['Jun', 4700]].map(([x, y]) => ({ x, y })) },
 ];
 
-const heatCells = Array.from({ length: 7 * 24 }, (_, i) => {
-  const day = Math.floor(i / 24);
-  const hour = i % 24;
-  return {
-    x: String(hour).padStart(2, '0'),
-    y: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day],
-    value: i % 37 === 0 ? null : Math.round(40 + 35 * Math.sin(hour / 4) + day * 3),
-  };
-});
+const pieSeries = [
+  { id: 'category-share', name: 'Category share', data: [['Electronics', 35], ['Clothing', 25], ['Food', 20], ['Books', 12], ['Other', 8]].map(([x, y]) => ({ x, y })) },
+];
 
-const gaugeBands = [{ to: 60, tone: 'success' }, { to: 85, tone: 'warning' }, { to: 100, tone: 'error' }];
+const sparkValues = [12, 14, 11, 17, 19, 16, 22, 21, 24, 27, 23, 29];
+const toSpark = (values: number[]) => [{ id: 'spark', name: 'spark', data: values.map((y, i) => ({ x: i, y })) }];
 
-// `yFormat` / `valueFormat` travel as the NAME of a global function (the config is JSON).
-const FMT_SCRIPT = `<script>window.kuiFmtCelsius = function (v) { return (Math.round(v * 10) / 10) + '\\u00b0C'; };</script>`;
+// Fixed-size inline wrapper (react SparkLine: inline-block align-middle, width x height).
+const spark = (id: string, values: number[], filled: boolean) =>
+  `<span class="inline-block align-middle" style="width: 120px; height: 28px;">${renderChart({ id, type: 'sparkline', series: toSpark(values), height: 28, filled, showLegend: false, ariaLabel: 'Sparkline' })}</span>`;
 
 export function buildChartData(): ShowcaseItem[] {
   return [
@@ -72,39 +46,24 @@ export function buildChartData(): ShowcaseItem[] {
       category: 'Molecule',
       abbr: 'Ch',
       description:
-        'Token-aware SVG chart partial. `type` is line, bar, area, pie, donut, sparkline, gauge or heatmap. Colors resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode works without extra work. Line and area take `xAxis: \'time\'` for a continuous time axis with drag-to-zoom (double-click or the reset button leaves the zoom; it never reaches the page), bar and area take `stacked`, the gauge is a role="meter" half-donut with threshold bands and the heatmap draws missing values as empty cells. Pixel-identical sibling of kui-react modules/ui/Chart.',
+        'Token-aware primitive chart library at @/modules/ui/Chart. M1 ships seven SVG-based charts (Line, Bar, Area, Pie, Donut, Scatter, SparkLine) that consume a unified `Series` data shape. Colors auto-resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps work without any extra work. Pixel-identical EJS sibling at modules/ui/Chart/Chart.ejs. GaugeChart, HeatmapChart and the time axis (`xAxis="time"` with drag-to-zoom on Line/Area) have their own pages (gauge-chart, heatmap-chart, time-series-chart); Bar/Area take `stacked`. The remaining M3 stubs (BubbleChart, TreemapChart, RadarChart, FunnelChart, SankeyChart, CandlestickChart) are exported but render null until implemented; see PLANS/38-Charts.md.',
       filePath: 'modules/ui/Chart/Chart.ejs',
       sourceCode: chartSource,
       since: '2026-05',
       status: 'beta',
       relatedTo: ['charts'],
-      designTokens: ['--primary', '--secondary', '--success', '--warning', '--error', '--info', '--border', '--border-strong', '--surface-raised', '--text-primary', '--text-secondary'],
+      designTokens: ['--primary', '--secondary', '--success', '--warning', '--error', '--info', '--surface-raised', '--border', '--text-primary', '--text-secondary'],
       a11y: {
         wcagLevel: 'AA',
-        ariaPatterns: ['img', 'meter', 'tooltip'],
-        notes: 'Charts are role="img" with an aria-label; the gauge is role="meter" with aria-valuemin / -max / -now (clamped) and aria-valuetext (real value, unit, band, stale). The zoom reset is a real button.',
+        ariaPatterns: ['img'],
+        notes: 'Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data table for screen-reader parity and keyboard navigation between data points.',
       },
       variants: [
         {
-          title: 'LineChart (band axis)',
+          title: 'LineChart',
           layout: 'stack' as const,
-          previewHtml: frame('Weekly activity', renderChart({ id: 'ch-demo-line', type: 'line', series: lineSeries, height: 220 })),
+          previewHtml: frame('Daily active users vs new signups', renderChart({ id: 'ch-demo-line', type: 'line', series: lineSeries, height: 220 })),
           code: `<%- include('modules/ui/Chart/Chart', { id: 'activity', type: 'line', series: series, height: 220 }) %>`,
-        },
-        {
-          title: 'Time axis + drag-to-zoom (xAxis: "time")',
-          layout: 'stack' as const,
-          previewHtml: frame(
-            'Temperature (drag a range to zoom, double-click to reset)',
-            FMT_SCRIPT + renderChart({ id: 'ch-demo-time', type: 'line', xAxis: 'time', yFormat: 'kuiFmtCelsius', series: tempSeries, height: 240 }),
-          ),
-          code: `<%- include('modules/ui/Chart/Chart', {
-  id: 'temp',
-  type: 'line',
-  xAxis: 'time',          // 'xScale' is an alias; xAxis wins
-  yFormat: 'fmtCelsius',  // NAME of a global function: window.fmtCelsius = (v) => v + '°C'
-  series: [{ id: 'temp', name: 'Temperature', data: [{ x: '2026-10-06T08:00:00Z', y: 21.4 }, /* … */] }],
-}) %>`,
         },
         {
           title: 'Stacked bars and areas',
@@ -118,33 +77,39 @@ export function buildChartData(): ShowcaseItem[] {
 <%- include('modules/ui/Chart/Chart', { type: 'area', stacked: true, series: series }) %>`,
         },
         {
-          title: 'GaugeChart',
+          title: 'BarChart',
           layout: 'stack' as const,
-          previewHtml: frame(
-            'Gauges with threshold bands',
-            `<div class="flex flex-wrap items-end gap-6">`
-              + renderChart({ id: 'ch-demo-gauge-1', type: 'gauge', value: 34, unit: '%', label: 'CPU', bands: gaugeBands })
-              + renderChart({ id: 'ch-demo-gauge-2', type: 'gauge', value: 91, unit: '%', label: 'Disk', needle: true, bands: gaugeBands })
-              + renderChart({ id: 'ch-demo-gauge-3', type: 'gauge', value: 72, size: 'sm', label: 'Stale reading', stale: true })
-              + `</div>`,
-          ),
-          code: `<%- include('modules/ui/Chart/Chart', {
-  type: 'gauge', value: 91, min: 0, max: 100, unit: '%', label: 'Disk', needle: true,
-  bands: [{ to: 60, tone: 'success' }, { to: 85, tone: 'warning' }, { to: 100, tone: 'error' }],
-}) %>`,
+          previewHtml: frame('Revenue vs expenses (monthly)', renderChart({ id: 'ch-demo-bar', type: 'bar', series: barSeries, height: 220 })),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'bar', series: series }) %>`,
         },
         {
-          title: 'HeatmapChart',
+          title: 'AreaChart',
+          layout: 'stack' as const,
+          previewHtml: frame('Engagement over the week (smoothed)', renderChart({ id: 'ch-demo-area', type: 'area', series: lineSeries, height: 220, fillOpacity: 0.18 })),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'area', series: series, fillOpacity: 0.18 }) %>`,
+        },
+        {
+          title: 'PieChart',
+          layout: 'stack' as const,
+          previewHtml: frame('Sales by category', renderChart({ id: 'ch-demo-pie', type: 'pie', series: pieSeries, height: 220 })),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'pie', series: pieSeries }) %>`,
+        },
+        {
+          title: 'DonutChart',
+          layout: 'stack' as const,
+          previewHtml: frame('Sales by category (donut)', renderChart({ id: 'ch-demo-donut', type: 'donut', series: pieSeries, height: 220, innerRadius: 0.62 })),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'donut', series: pieSeries, innerRadius: 0.62 }) %>`,
+        },
+        {
+          title: 'SparkLine',
           layout: 'stack' as const,
           previewHtml: frame(
-            'Messages per hour (missing values are empty cells, never 0)',
-            renderChart({ id: 'ch-demo-heat', type: 'heatmap', cells: heatCells, height: 220, valueLabel: 'Messages' }),
+            'Inline sparklines',
+            `<div class="flex items-center gap-4 text-sm text-text-primary"><span>MRR&nbsp;</span>${spark('ch-demo-spark-1', sparkValues, true)}<span class="ml-2 font-medium text-success">+24%</span></div>`
+              + `<div class="mt-3 flex items-center gap-4 text-sm text-text-primary"><span>DAU&nbsp;</span>${spark('ch-demo-spark-2', [5, 7, 6, 9, 8, 11, 10, 13], false)}<span class="ml-2 font-medium text-success">+8%</span></div>`,
           ),
-          code: `<%- include('modules/ui/Chart/Chart', {
-  type: 'heatmap',
-  cells: [{ x: '08', y: 'Mon', value: 42 }, { x: '09', y: 'Mon', value: null } /* … */],
-  valueLabel: 'Messages',
-}) %>`,
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values }], height: 28, filled: true }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values2 }], height: 28 }) %>`,
         },
       ],
     },

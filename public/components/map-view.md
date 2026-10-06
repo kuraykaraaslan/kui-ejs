@@ -47,18 +47,6 @@ Leaflet-based interactive map. Tooltip-enabled markers, predefined zones (polygo
 }) %>
 ```
 
-### MapCanvas: card-less, custom tiles
-
-```ejs
-<div class="h-72">
-  <%- include('modules/ui/MapView/MapCanvas', {
-    markers: markers,
-    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
-    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
-  }) %>
-</div>
-```
-
 ### Yalnız zone ve rota
 
 ```ejs

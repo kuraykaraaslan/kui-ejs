@@ -11,7 +11,10 @@ import { buildAccordionData }         from './ui-molecule-accordion.showcase';
 import { buildPopconfirmData }        from './ui-molecule-popconfirm.showcase';
 import { buildRangeSliderData }       from './ui-molecule-range-slider.showcase';
 import { buildTimePickerData }        from './ui-molecule-time-picker.showcase';
+import { buildToggleData }         from './ui-molecule-toggle.showcase';
 import { buildChartData }             from './ui-molecule-chart.showcase';
+import { buildPrimitiveChartSinglesData } from './ui-primitive-chart-singles.showcase';
+import { buildUseAsyncControlData }   from './ui-molecule-use-async-control.showcase';
 import { buildTimeWindowPickerData }  from './ui-molecule-time-window-picker.showcase';
 import { buildControlTileData }       from './ui-molecule-control-tile.showcase';
 
@@ -30,6 +33,7 @@ import { buildControlTileData }       from './ui-molecule-control-tile.showcase'
 export function buildMoleculesData(): ShowcaseItem[] {
   return [
     ...buildMoleculeTextData(),
+    ...buildToggleData(),
     ...buildMoleculeSelectionData(),
     ...buildMultiSelectData(),
     ...buildComboBoxData(),
@@ -42,7 +46,9 @@ export function buildMoleculesData(): ShowcaseItem[] {
     ...buildRangeSliderData(),
     ...buildTimePickerData(),
     ...buildChartData(),
+    ...buildPrimitiveChartSinglesData(),
     ...buildTimeWindowPickerData(),
     ...buildControlTileData(),
+    ...buildUseAsyncControlData(),
   ];
 }

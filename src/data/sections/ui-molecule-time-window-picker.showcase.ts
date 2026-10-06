@@ -12,7 +12,7 @@ function renderPicker(locals: Record<string, unknown>): string {
 
 // A tiny readout so the change event is visible in the preview.
 function demo(id: string, locals: Record<string, unknown>): string {
-  return `<div class="w-full space-y-2 p-2" id="${id}">${renderPicker(locals)}<pre class="text-xs text-text-secondary" data-readout>${JSON.stringify(locals.value ?? null)}</pre></div>
+  return `<div class="space-y-2" id="${id}">${renderPicker(locals)}<pre class="text-xs text-text-secondary" data-readout>${JSON.stringify(locals.value ?? null)}</pre></div>
 <script>(function(){var r=document.getElementById('${id}');if(!r)return;r.addEventListener('kui:timewindow-change',function(e){r.querySelector('[data-readout]').textContent=JSON.stringify(e.detail);});})();</script>`;
 }
 

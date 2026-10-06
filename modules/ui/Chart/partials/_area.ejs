@@ -55,7 +55,7 @@
         } else {
           area = line + ' L' + clean[clean.length-1].x + ' ' + baseY + ' L' + clean[0].x + ' ' + baseY + ' Z';
         }
-        svg.appendChild(ns('path', { d: area, fill: color, opacity: 0.2 }));
+        svg.appendChild(ns('path', { d: area, fill: color, opacity: <%- JSON.stringify(typeof locals.fillOpacity === 'number' ? locals.fillOpacity : 0.2) %> }));
       }
       svg.appendChild(ns('path', { d: line, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
     });

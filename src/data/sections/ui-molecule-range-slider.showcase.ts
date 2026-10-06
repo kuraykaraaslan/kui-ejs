@@ -10,7 +10,7 @@ function renderRangeSlider(locals: Record<string, unknown>): string {
   return ejs.render(rangeSliderSource, locals, { filename: rangeSliderPath });
 }
 
-const wrap = (inner: string) => `<div class="w-full max-w-sm p-2">${inner}</div>`;
+const CLS = 'w-full max-w-xs';
 
 export function buildRangeSliderData(): ShowcaseItem[] {
   return [
@@ -28,13 +28,14 @@ export function buildRangeSliderData(): ShowcaseItem[] {
         {
           title: 'Single value',
           layout: 'stack' as const,
-          previewHtml: wrap(renderRangeSlider({
+          previewHtml: renderRangeSlider({
+            className: CLS,
             id: 'rs-demo-single',
             label: 'Volume',
             value: 65,
             min: 0,
             max: 100,
-          })),
+          }),
           code: `<%- include('modules/ui/RangeSlider', {
   label: 'Volume',
   value: 65,
@@ -46,14 +47,15 @@ export function buildRangeSliderData(): ShowcaseItem[] {
         {
           title: 'Dual-handle range',
           layout: 'stack' as const,
-          previewHtml: wrap(renderRangeSlider({
+          previewHtml: renderRangeSlider({
+            className: CLS,
             id: 'rs-demo-range',
             label: 'Price range',
             range: true,
             value: [20, 80],
             min: 0,
             max: 100,
-          })),
+          }),
           code: `<%- include('modules/ui/RangeSlider', {
   label: 'Price range',
   range: true,
@@ -67,7 +69,7 @@ export function buildRangeSliderData(): ShowcaseItem[] {
         {
           title: 'Commit on release (one write per gesture)',
           layout: 'stack' as const,
-          previewHtml: `<div id="rs-commit-wrap" class="w-full max-w-sm p-2">${renderRangeSlider({ id: 'rs-demo-commit', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5 })}<p class="mt-2 text-xs text-text-secondary" data-commits>Commits: none yet</p></div>
+          previewHtml: `<div id="rs-commit-wrap" class="w-full max-w-xs space-y-1">${renderRangeSlider({ id: 'rs-demo-commit', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5 })}<p class="text-xs text-text-secondary" data-commits>Commits: none yet</p></div>
 <script>(function(){var w=document.getElementById('rs-commit-wrap');if(!w)return;var n=0;w.addEventListener('kui:rangeslider-commit',function(e){n++;w.querySelector('[data-commits]').textContent='Commits: '+n+' (last value '+e.detail.value+')';});})();</script>`,
           code: `<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5 }) %>
 <script>
@@ -79,7 +81,7 @@ export function buildRangeSliderData(): ShowcaseItem[] {
         {
           title: 'Pending (a write is in flight)',
           layout: 'stack' as const,
-          previewHtml: wrap(renderRangeSlider({ id: 'rs-demo-pending', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5, pending: true })),
+          previewHtml: `<div class="w-full max-w-xs">${renderRangeSlider({ id: 'rs-demo-pending', label: 'Fan speed', value: 40, min: 0, max: 100, step: 5, pending: true })}</div>`,
           code: `<%- include('modules/ui/RangeSlider', { id: 'fan', label: 'Fan speed', value: 40, step: 5, pending: true }) %>
 <!-- at runtime: document.getElementById('fan').__rangeslider.setPending(false) -->`,
         },

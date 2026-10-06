@@ -8,7 +8,6 @@ import { buildSkeletonData }    from './ui-atom-skeleton.showcase';
 import { buildSkipLinkData }    from './ui-atom-skip-link.showcase';
 import { buildBrandLogoData }   from './ui-atom-brand-logo.showcase';
 import { buildStarRatingData }  from './ui-atom-star-rating.showcase';
-import { buildToggleData }      from './ui-atom-toggle.showcase';
 import { buildCheckboxData }    from './ui-atom-checkbox.showcase';
 import { buildInputData }       from './ui-atom-input.showcase';
 import { buildTextareaData }    from './ui-atom-textarea.showcase';
@@ -29,7 +28,6 @@ export function buildAtomsData(): ShowcaseItem[] {
     ...buildSkipLinkData(),
     ...buildBrandLogoData(),
     ...buildStarRatingData(),
-    ...buildToggleData(),
     ...buildCheckboxData(),
     ...buildInputData(),
     ...buildTextareaData(),

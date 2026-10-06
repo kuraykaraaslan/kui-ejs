@@ -1,0 +1,120 @@
+# MapCanvas
+
+- **id:** `map-canvas`
+- **layer:** ui
+- **category:** Molecule
+- **filePath:** `modules/ui/MapView/MapCanvas.ejs`
+- **status:** beta
+- **since:** 2026-10
+
+The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.
+
+## Accessibility
+
+- WCAG: AA
+- ARIA patterns: application
+
+Leaflet keyboard navigation (arrows, +/-) stays on; the loading label is announced while the map loads.
+
+## Design tokens consumed
+
+- `--border`
+- `--surface-raised`
+- `--text-secondary`
+
+## Variants
+
+### Default tiles
+
+```ejs
+<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', { center: [40.5, 30.5], zoom: 6, markers: markers }) %>
+</div>
+```
+
+### Custom tiles
+
+```ejs
+<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', {
+    markers: markers,
+    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
+    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
+  }) %>
+</div>
+```
+
+## Full EJS source
+
+```ejs
+<%
+// MapCanvas — a bare, card-less Leaflet map that fills its parent (EJS).
+// Mirror of kui-react modules/ui/MapView/MapCanvas.tsx.
+//
+// Use it inside something that already owns the frame (a dashboard cell, a
+// panel). MapView is the framed variant with a toolbar. The PARENT MUST HAVE A
+// HEIGHT — the map is `h-full w-full`. Leaflet itself (leaflet.css +
+// leaflet.js, global `L`) must be loaded by the host page, as for MapView.
+//
+// Locals:
+//   id                 — DOM id base (auto-generated when omitted)
+//   markers, zones, routes — same shapes as MapView
+//   center, zoom       — view start (default Ankara, 6)
+//   tiles              — { url, attribution } for both themes, or { light, dark }.
+//                        Default CARTO Voyager / Dark Matter.
+//   fitBoundsPadding   — fit the view to the markers with this padding in px
+//                        (default 32; pass false to keep center / zoom)
+//   onMarkerClick      — NAME of a global function called with the marker id
+//                        (the config cannot carry a function); the DOM event
+//                        'kui:map-marker-click' (detail: { id }) fires too.
+//   loadingLabel       — text shown until the map is built (default 'Loading map…')
+//   ariaLabel          — accessible name of the map region (default 'Map')
+//   className          — extra classes on the region
+var _id        = locals.id || ('mapcanvas-' + Math.random().toString(36).substr(2, 9));
+var _center    = Array.isArray(locals.center) ? locals.center : [39.9334, 32.8597];
+var _zoom      = typeof locals.zoom === 'number' ? locals.zoom : 6;
+var _markers   = locals.markers || [];
+var _zones     = locals.zones   || [];
+var _routes    = locals.routes  || [];
+var _tiles     = locals.tiles || null;
+var _fit       = locals.fitBoundsPadding === false ? null : (typeof locals.fitBoundsPadding === 'number' ? locals.fitBoundsPadding : 32);
+var _loading   = locals.loadingLabel || 'Loading map…';
+var _aria      = locals.ariaLabel || 'Map';
+var _onClick   = typeof locals.onMarkerClick === 'string' ? locals.onMarkerClick : '';
+%>
+<div role="region" aria-label="<%= _aria %>" class="h-full w-full<%= locals.className ? ' ' + locals.className : '' %>" style="isolation: isolate;">
+  <div id="<%= _id %>-map" class="w-full h-full">
+    <div data-map-loading class="w-full h-full flex items-center justify-center bg-surface-raised">
+      <span class="text-sm text-text-secondary"><%= _loading %></span>
+    </div>
+  </div>
+</div>
+<script>
+  <%- include('./scripts/map-leaflet.js') %>
+  (function () {
+    var onClickName = <%- JSON.stringify(_onClick) %>;
+    var opts = {
+      id:               <%- JSON.stringify(_id) %>,
+      center:           <%- JSON.stringify(_center) %>,
+      zoom:             <%- JSON.stringify(_zoom) %>,
+      markers:          <%- JSON.stringify(_markers) %>,
+      zones:            <%- JSON.stringify(_zones) %>,
+      routes:           <%- JSON.stringify(_routes) %>,
+      fitBoundsPadding: <%- JSON.stringify(_fit === null ? null : _fit) %>,
+      tiles:            <%- JSON.stringify(_tiles) %>,
+      onMarkerClick: function (markerId) {
+        var el = document.getElementById(<%- JSON.stringify(_id + '-map') %>);
+        if (el) el.dispatchEvent(new CustomEvent('kui:map-marker-click', { bubbles: true, detail: { id: markerId } }));
+        if (onClickName && typeof window[onClickName] === 'function') window[onClickName](markerId);
+      }
+    };
+    if (opts.fitBoundsPadding === null) opts.fitBoundsPadding = undefined;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { window.__MapViewLeaflet.init(opts); });
+    } else {
+      window.__MapViewLeaflet.init(opts);
+    }
+  })();
+</script>
+
+```

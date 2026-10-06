@@ -152,6 +152,17 @@ const ROUTES: Route[] = [
   { id: 'ist-izm', label: 'İstanbul → İzmir (E87)',  positions: [[41.015,28.979],[40.5,27.9],[39.9,27.5],[38.9,27.2],[38.423,27.143]],  color: '#06b6d4', weight: 3, dashed: true },
 ];
 
+const GATEWAYS: Marker[] = [
+  { id: 'a', position: [41.015, 28.979], variant: 'success', tooltip: { title: 'Gateway 1' } },
+  { id: 'b', position: [39.925, 32.836], variant: 'error', tooltip: { title: 'Gateway 2' } },
+];
+
+function canvasDemo(id: string, tiles: boolean): string {
+  const locals: Record<string, unknown> = { id, center: [40.5, 30.5], zoom: 6, markers: GATEWAYS, loadingLabel: 'Loading map…' };
+  if (tiles) locals.tiles = { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' };
+  return `<div class="h-72 w-full overflow-hidden rounded-lg border border-border">${ejs.render(mapCanvasSource, locals, { filename: mapCanvasPath })}</div>`;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function buildMapData(): ShowcaseItem[] {
@@ -189,28 +200,6 @@ export function buildMapData(): ShowcaseItem[] {
 }) %>`,
         },
         {
-          title:       'MapCanvas: card-less, custom tiles',
-          layout:      'stack',
-          previewHtml: `<div class="h-72 w-full overflow-hidden rounded-lg border border-border">${ejs.render(mapCanvasSource, {
-            id: 'map-canvas-demo',
-            center: [41.015, 28.979],
-            zoom: 6,
-            markers: [
-              { id: 'a', position: [41.015, 28.979], variant: 'success', tooltip: { title: 'Gateway 1' } },
-              { id: 'b', position: [39.925, 32.836], variant: 'error', tooltip: { title: 'Gateway 2' } },
-            ],
-            tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
-            loadingLabel: 'Loading map…',
-          }, { filename: mapCanvasPath })}</div>`,
-          code: `<div class="h-72">
-  <%- include('modules/ui/MapView/MapCanvas', {
-    markers: markers,
-    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
-    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
-  }) %>
-</div>`,
-        },
-        {
           title:       'Yalnız zone ve rota',
           layout:      'stack',
           previewHtml: mapPreviewHtml({ center: [39.5, 35.0], zoom: 5, height: 360, zones: ZONES, routes: ROUTES }),
@@ -221,6 +210,42 @@ export function buildMapData(): ShowcaseItem[] {
   zones:  ZONES,
   routes: ROUTES,
 }) %>`,
+        },
+      ],
+    },
+    {
+      id:          'map-canvas',
+      title:       'MapCanvas',
+      category:    'Molecule',
+      abbr:        'Mc',
+      description: 'The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.',
+      filePath:    'modules/ui/MapView/MapCanvas.ejs',
+      sourceCode:  mapCanvasSource,
+      since:       '2026-10',
+      status:      'beta',
+      relatedTo:   ['map-view'],
+      designTokens: ['--border', '--surface-raised', '--text-secondary'],
+      a11y: { wcagLevel: 'AA', ariaPatterns: ['application'], notes: 'Leaflet keyboard navigation (arrows, +/-) stays on; the loading label is announced while the map loads.' },
+      variants: [
+        {
+          title:       'Default tiles',
+          layout:      'stack',
+          previewHtml: canvasDemo('map-canvas-default', false),
+          code: `<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', { center: [40.5, 30.5], zoom: 6, markers: markers }) %>
+</div>`,
+        },
+        {
+          title:       'Custom tiles',
+          layout:      'stack',
+          previewHtml: canvasDemo('map-canvas-custom', true),
+          code: `<div class="h-72">
+  <%- include('modules/ui/MapView/MapCanvas', {
+    markers: markers,
+    tiles: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; OpenStreetMap contributors' },
+    onMarkerClick: 'onMarker',   // NAME of a global function; the 'kui:map-marker-click' event fires too
+  }) %>
+</div>`,
         },
       ],
     },

@@ -1,78 +1,48 @@
-# Chart
+# TimeSeriesChart
 
-- **id:** `chart`
+- **id:** `time-series-chart`
 - **layer:** ui
 - **category:** Molecule
-- **filePath:** `modules/ui/Chart/Chart.ejs`
+- **filePath:** `modules/ui/Chart/scripts/time-series.js`
 - **status:** beta
-- **since:** 2026-05
+- **since:** 2026-10
 
-Token-aware primitive chart library at @/modules/ui/Chart. M1 ships seven SVG-based charts (Line, Bar, Area, Pie, Donut, Scatter, SparkLine) that consume a unified `Series` data shape. Colors auto-resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps work without any extra work. Pixel-identical EJS sibling at modules/ui/Chart/Chart.ejs. GaugeChart, HeatmapChart and the time axis (`xAxis="time"` with drag-to-zoom on Line/Area) have their own pages (gauge-chart, heatmap-chart, time-series-chart); Bar/Area take `stacked`. The remaining M3 stubs (BubbleChart, TreemapChart, RadarChart, FunnelChart, SankeyChart, CandlestickChart) are exported but render null until implemented; see PLANS/38-Charts.md.
+The continuous time axis behind `LineChart` / `AreaChart` with `xAxis="time"`: timestamps (ISO strings or epoch ms) in `x`, uneven sampling, series with different instants on one axis, and drag-to-zoom (double-click or "Reset zoom" to leave). Zoom is local to the chart and never reaches the caller.
 
 ## Accessibility
 
 - WCAG: AA
 - ARIA patterns: img
 
-Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data table for screen-reader parity and keyboard navigation between data points.
+role="img" with an aria-label; the tooltip and crosshair follow the nearest sample.
 
 ## Design tokens consumed
 
 - `--primary`
 - `--secondary`
-- `--success`
-- `--warning`
-- `--error`
-- `--info`
-- `--surface-raised`
 - `--border`
-- `--text-primary`
 - `--text-secondary`
+- `--surface-raised`
 
 ## Variants
 
-### LineChart
+### Line with drag-to-zoom
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { id: 'activity', type: 'line', series: series, height: 220 }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'line', xAxis: 'time', series: series, height: 240, yFormat: 'fmtCelsius' }) %>
+<!-- yFormat is the NAME of a global function: window.fmtCelsius = (v) => v + '°C' -->
 ```
 
-### Stacked bars and areas
+### Area, series sampled at different instants
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'bar', stacked: true, series: series }) %>
-<%- include('modules/ui/Chart/Chart', { type: 'area', stacked: true, series: series }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'area', xAxis: 'time', series: [inlet, outlet], height: 240 }) %>
 ```
 
-### BarChart
+### Zoom disabled
 
 ```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'bar', series: series }) %>
-```
-
-### AreaChart
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'area', series: series, fillOpacity: 0.18 }) %>
-```
-
-### PieChart
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'pie', series: pieSeries }) %>
-```
-
-### DonutChart
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'donut', series: pieSeries, innerRadius: 0.62 }) %>
-```
-
-### SparkLine
-
-```ejs
-<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values }], height: 28, filled: true }) %>
-<%- include('modules/ui/Chart/Chart', { type: 'sparkline', series: [{ id: 'spark', name: 'spark', data: values2 }], height: 28 }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'line', xAxis: 'time', series: series, zoom: false }) %>
 ```
 
 ## Full EJS source
