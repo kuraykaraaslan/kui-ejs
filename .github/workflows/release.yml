@@ -32,7 +32,7 @@ jobs:
           tar --exclude=.git --exclude=node_modules --exclude=release -czf "release/kui-ejs-${GITHUB_REF_NAME#v}.tar.gz" .
       - name: Create checksums
         run: sha256sum release/* > release/SHA256SUMS
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
