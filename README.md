@@ -149,7 +149,7 @@ npm run dev            # development (server + CSS watcher in parallel)
 npm run build          # production build (CSS then TypeScript → dist/)
 npm start              # production server (runs dist/server.js)
 npm run audit:tokens   # validates CSS token usage (no raw hex outside allowlist)
-npm run audit:raw      # enforces the <%- %> allowlist (docs/raw-output-allowlist.md)
+npm run audit:raw      # enforces the <%- %> allowlist (docs/reference/raw-output-allowlist.md)
 npm run lint:spacing   # rejects arbitrary px values in spacing utilities
 npm run dead-partials  # scans for partials with zero include() refs
 npm run screenshots    # Puppeteer-based visual capture
@@ -163,7 +163,7 @@ npm run ci             # build + all audit/lint scripts
 - **Layouts:** `layouts/main` for showcase pages, `layouts/blank` for theme demos with self-contained chrome.
 - **Data:** sample data in `src/data/<vertical>.data.ts`, never inline in views or routes.
 - **Static only:** no real API calls or database queries — themes use static TypeScript data.
-- **Escaping:** `<%= %>` for any user-controlled value; `<%- %>` reserved for trusted EJS includes (audited in [`docs/raw-output-allowlist.md`](docs/raw-output-allowlist.md)).
+- **Escaping:** `<%= %>` for any user-controlled value; `<%- %>` reserved for trusted EJS includes (audited in [`docs/reference/raw-output-allowlist.md`](docs/reference/raw-output-allowlist.md)).
 
 ## Contributing
 

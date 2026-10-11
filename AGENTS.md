@@ -23,7 +23,7 @@ If you are an AI assistant working in this repo, **read these first**:
 | Editor rule mirrors | `.cursor/rules/kui-ejs.mdc`, `.cursorrules`, `.windsurfrules`, `.github/copilot-instructions.md`, `.clinerules` | Per-tool views of this file so AI assistants behave consistently. AGENTS.md remains canonical when they drift. |
 | Registry source of truth | [src/registry/registry.ts](src/registry/registry.ts) | Derives the catalog from showcase data + menu. |
 | Type definitions | [src/registry/registry.types.ts](src/registry/registry.types.ts) | TypeScript types for the registry JSON. |
-| Raw-output audit | [docs/raw-output-allowlist.md](docs/raw-output-allowlist.md) | Every `<%- %>` site enumerated and justified. |
+| Raw-output audit | [docs/reference/raw-output-allowlist.md](docs/reference/raw-output-allowlist.md) | Every `<%- %>` site enumerated and justified. |
 
 > ⚠️ **Keep the catalog in sync (REQUIRED).** Any time you **add, rename, or remove** a partial (`modules/ui/`, `modules/app/`, `modules/domain/<vertical>/`), a theme (`views/theme/<vertical>/` + `src/routes/themes/<vertical>.ts`), a data file (`src/data/<vertical>.data.ts`), or a `showcase.menu.ts` entry, you **must** rebuild the catalog before committing:
 >

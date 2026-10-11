@@ -29,7 +29,7 @@ npm run registry:snapshot
 ## Hard rules
 
 1. **Server-rendered Express + EJS only.** No React, no Vue, no htmx, no Alpine, no SPA bundling.
-2. **`<%= value %>`** for user-facing data (HTML-escaped). **`<%- html %>`** only for trusted EJS includes or pre-built HTML — every site must be enumerated in `docs/raw-output-allowlist.md`.
+2. **`<%= value %>`** for user-facing data (HTML-escaped). **`<%- html %>`** only for trusted EJS includes or pre-built HTML — every site must be enumerated in `docs/reference/raw-output-allowlist.md`.
 3. **`<%- include('partials/foo', locals) %>`** for partial includes. Paths are relative to the current view.
 4. **Token-only styling.** `bg-primary`, `text-text-secondary`, `border-border-focus`. Never raw hex / rgb / hsl in partials.
 5. **Font Awesome via CDN only.** `<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>`. No inline SVG, no other icon libraries.

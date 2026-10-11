@@ -1,6 +1,6 @@
 // keyboard-trap.spec.ts — keyboard smoke test for every overlay component
 // (Modal, Drawer, DropdownMenu, Popover, Popconfirm, CommandPalette), per
-// $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.4: open it, assert
+// $KUIREACT_ROOT/docs/phases/02-testing.md section 2.4: open it, assert
 // focus moved inside, press Escape, assert focus returned to the trigger.
 //
 // None of these render as live, interactive instances on the showcase

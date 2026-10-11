@@ -1,5 +1,5 @@
 // showcase.spec.ts — visual regression over every showcase component page,
-// per $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.3. Iterates the
+// per $KUIREACT_ROOT/docs/phases/02-testing.md section 2.3. Iterates the
 // committed registry snapshot rather than hand-listing components, so a
 // new component is covered the moment its showcase entry ships.
 //
@@ -72,7 +72,7 @@ const DETERMINISTIC_FONTS = `
 `;
 
 // axe-core scan runs after the screenshot assertions on the same page load —
-// per $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.4. Four rule
+// per $KUIREACT_ROOT/docs/phases/02-testing.md section 2.4. Four rule
 // categories are ratcheted (not force-fixed) rather than blocking every
 // showcase page on them:
 //   - color-contrast: a design-token-level decision (--text-secondary on
@@ -105,7 +105,7 @@ test.describe('showcase component variants', () => {
   );
 
   // Written only when a page actually fails the strict check below, so
-  // CI ($KUIREACT_ROOT/docs/phases/phase-2-testing.md 2.5) has the full axe
+  // CI ($KUIREACT_ROOT/docs/phases/02-testing.md 2.5) has the full axe
   // payload — not just the truncated one-line-per-rule summary in the
   // assertion message — to upload as an artifact.
   const AXE_OUT_DIR = path.join(REPO_ROOT, 'test-results/axe');

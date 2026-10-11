@@ -13,7 +13,7 @@
 # job (a clean checkout every time, no partial-staging ambiguity) is the
 # real enforcement point for now; this script is a fast manual/CI-only
 # check until that interaction is understood well enough to wire back in
-# (see docs/phases/phase-1-ci-and-gates.md section 1.5, $KUIREACT_ROOT).
+# (see docs/phases/01-ci-and-gates.md section 1.5, $KUIREACT_ROOT).
 #
 # Deliberately does NOT `git add` the regenerated files itself — same
 # reasoning: let the caller decide, don't fight git's index from inside a

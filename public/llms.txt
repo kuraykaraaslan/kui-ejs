@@ -79,7 +79,7 @@ Always include partials via path:
 
 - **EJS:** Pass all data via `res.render(view, locals)`. Use `<%= value %>`
   (escaped) by default. `<%- html %>` (raw) only for trusted EJS includes —
-  every site is enumerated in `docs/raw-output-allowlist.md` and validated
+  every site is enumerated in `docs/reference/raw-output-allowlist.md` and validated
   by `scripts/audit-raw-output.sh`.
 - **Icons:** Font Awesome 6 Free via CDN. `aria-hidden="true"` on decorative
   icons. No inline SVG. No other icon libraries.
@@ -111,7 +111,7 @@ Always include partials via path:
 
 - `AGENTS.md` — detailed authoring rules, design tokens, file naming.
 - `CLAUDE.md` — alias of AGENTS.md.
-- `ROADMAP.md` — long-form roadmap with EJS ↔ Next.js parity mapping.
-- `docs/raw-output-allowlist.md` — every `<%- %>` site enumerated.
+- `docs/reference/feature-roadmap.md` — long-form roadmap with EJS ↔ Next.js parity mapping.
+- `docs/reference/raw-output-allowlist.md` — every `<%- %>` site enumerated.
 - `/llms-full.txt` — every partial flattened into a single markdown file.
 - Live showcase site — interactive playground with copy buttons.

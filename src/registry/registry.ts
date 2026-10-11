@@ -37,7 +37,7 @@ const LAYER_DESCRIPTIONS: Record<RegistryLayer, string> = {
 
 const CONVENTIONS = {
   templating:
-    'EJS 3 server-rendered. All data passed via res.render(view, locals). Use <%= value %> for escaped output; reserve <%- html %> for trusted EJS includes only (audited in docs/raw-output-allowlist.md).',
+    'EJS 3 server-rendered. All data passed via res.render(view, locals). Use <%= value %> for escaped output; reserve <%- html %> for trusted EJS includes only (audited in docs/reference/raw-output-allowlist.md).',
   icons:
     'Font Awesome 6 Free via CDN. Decorative icons require aria-hidden="true"; icon-only interactive elements require aria-label. No inline SVG; no other icon libraries.',
   styling:
@@ -47,7 +47,7 @@ const CONVENTIONS = {
   accessibility:
     'Semantic HTML. Apply aria-busy / aria-invalid / aria-describedby / aria-pressed / aria-expanded where applicable. Always include focus-visible:ring-2 focus-visible:ring-border-focus on interactive elements. Standard disabled pattern: disabled:opacity-50 disabled:cursor-not-allowed.',
   rawOutput:
-    'Unescaped EJS output (<%- %>) is restricted; every site is enumerated in docs/raw-output-allowlist.md and validated by scripts/audit-raw-output.sh. Adding a new raw-output site requires a justification entry in that doc.',
+    'Unescaped EJS output (<%- %>) is restricted; every site is enumerated in docs/reference/raw-output-allowlist.md and validated by scripts/audit-raw-output.sh. Adding a new raw-output site requires a justification entry in that doc.',
   fileNaming:
     'EJS partials: PascalCase .ejs in modules/{ui,app,domain}/. Shared partials: underscore-prefixed camelCase .ejs in views/partials/. Routes: camelCase .ts. Data: camelCase .data.ts. Theme directories: lowercase.',
 };

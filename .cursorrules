@@ -21,7 +21,7 @@ files so the catalog stays in lockstep with the code. A stale catalog misleads e
 Hard rules (see AGENTS.md for full detail):
 1. Server-rendered Express + EJS. No React, no SPA bundling.
 2. Use <%= value %> for user data (HTML-escaped). Use <%- html %> only for trusted EJS includes
-   or pre-built HTML; every site MUST be in docs/raw-output-allowlist.md.
+   or pre-built HTML; every site MUST be in docs/reference/raw-output-allowlist.md.
 3. <%- include('partials/foo', locals) %> for partial includes. Paths are relative to current view.
 4. Token-only styling: bg-primary, text-text-secondary, border-border-focus. No raw hex / rgb / hsl.
 5. Icons: Font Awesome via CDN only. <i class="fa-solid fa-x" aria-hidden="true"></i>. No inline SVG,

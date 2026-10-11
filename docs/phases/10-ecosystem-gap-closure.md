@@ -1,6 +1,6 @@
 # Phase 10 (kui-ejs): Ecosystem gap closure
 
-**Canonical plan:** `$KUIREACT_ROOT/docs/phases/phase-10-ecosystem-gap-closure.md`. Section numbers below match it. Read its "Placement and parity rules" first; this file lists only the kui-ejs tasks.
+**Canonical plan:** `$KUIREACT_ROOT/docs/phases/10-ecosystem-gap-closure.md`. Section numbers below match it. Read its "Placement and parity rules" first; this file lists only the kui-ejs tasks.
 **Origin:** survey of 2026-10-11 of five reference libraries (shadcnspace, daisyUI, FlyonUI, Preline, Aceternity UI). Evidence ("seen in N/M sites") is quoted in the canonical file.
 **Effort:** M for this repo. Every numbered section is an independent PR.
 

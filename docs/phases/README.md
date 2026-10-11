@@ -8,7 +8,7 @@ Path keys resolve through `internal-ai-rules/LOCAL_PATHS.json`. Never hardcode a
 
 | # | File | Goal | Canonical plan |
 |---|---|---|---|
-| 10 | [phase-10-ecosystem-gap-closure.md](phase-10-ecosystem-gap-closure.md) | The kui-ejs share of the gaps found against five reference libraries: palette presets, primitives, cookie consent, and the drift between the three KUI repos | `$KUIREACT_ROOT/docs/phases/phase-10-ecosystem-gap-closure.md` |
+| 10 | [10-ecosystem-gap-closure.md](10-ecosystem-gap-closure.md) | The kui-ejs share of the gaps found against five reference libraries: palette presets, primitives, cookie consent, and the drift between the three KUI repos | `$KUIREACT_ROOT/docs/phases/10-ecosystem-gap-closure.md` |
 
 ## Rules for every phase here
 

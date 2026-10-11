@@ -38,7 +38,7 @@ Shared with NextJS: yes — counterpart is `$KUIREACT_ROOT/modules/ui/`. Compone
 2. **Icons** — Font Awesome via `<i class="fa-solid fa-..." aria-hidden="true"></i>`. No inline SVG, no other icon libs.
 3. **No React state** — interactive behavior is rendered as a vanilla-JS IIFE (`<script>(function(){ ... })();</script>`) scoped to a unique `id`/`data-` attribute.
 4. **Tokens only** — use Tailwind utilities backed by shared CSS variables (`bg-primary`, `text-text-secondary`, `border-border-focus`); never raw hex.
-5. **Escaping** — `<%= %>` for any value that could come from data; `<%- %>` only for trusted HTML / pre-rendered partials (see `docs/raw-output-allowlist.md`).
+5. **Escaping** — `<%= %>` for any value that could come from data; `<%- %>` only for trusted HTML / pre-rendered partials (see `docs/reference/raw-output-allowlist.md`).
 6. **Accessibility** — `focus-visible:ring-2 focus-visible:ring-border-focus`, ARIA attributes (`aria-busy`, `aria-invalid`, `aria-expanded`), `disabled:opacity-50 disabled:cursor-not-allowed`.
 
 ## See also

@@ -37,7 +37,7 @@ jobs:
       - name: Spacing lint
         run: npm run lint:spacing
       # 138 pre-existing <%- %> sites aren't on the pattern-based allowlist
-      # yet (grew from the ~46 noted in ROADMAP.md). Most look like
+      # yet (grew from the ~46 noted in docs/reference/feature-roadmap.md). Most look like
       # legitimate component-slot passthroughs (locals.children, _trigger,
       # icon slots, col.render(row)), but a few — e.g. MapView.ejs building
       # a <script> literal from _id/_center/_zoom — need a real per-site XSS

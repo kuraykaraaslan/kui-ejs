@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // npm run new:component <layer> <Name> — scaffolds a new EJS partial,
 // registered in the showcase. Per
-// $KUIREACT_ROOT/docs/phases/phase-7-showcase-and-dx.md 7.6, mirroring
+// $KUIREACT_ROOT/docs/phases/07-showcase-and-dx.md 7.6, mirroring
 // kui-react's scripts/new-component.mjs.
 //
 // <layer> is one of: ui, app, domain/<vertical> (vertical must already

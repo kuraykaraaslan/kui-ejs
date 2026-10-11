@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Visual regression config, per $KUIREACT_ROOT/docs/phases/phase-2-testing.md
+// Visual regression config, per $KUIREACT_ROOT/docs/phases/02-testing.md
 // section 2.3 (shared plan, both repos). Runs against a real build
 // (`npm run build && npm run start`), not the nodemon/tsx dev server, so
 // the ~213 page visits (207 components + 6 themes) hit a stable compiled
@@ -19,7 +19,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   // CI gets an HTML report (browsable trace viewer) alongside the
   // terminal list; local runs stay list-only. See
-  // $KUIREACT_ROOT/docs/phases/phase-2-testing.md 2.5 — CI uploads
+  // $KUIREACT_ROOT/docs/phases/02-testing.md 2.5 — CI uploads
   // playwright-report/ and test-results/ as artifacts on failure, so a
   // nightly/PR failure is debuggable without rerunning.
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
