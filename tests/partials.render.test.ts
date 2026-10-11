@@ -1,6 +1,6 @@
 // partials.render.test.ts — render every modules/**/*.ejs component the
 // registry knows about through ejs.renderFile with empty locals ({}).
-// Per $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.2: "render each
+// Per $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.2: "render each
 // modules/**/*.ejs through ejs.renderFile with the default locals from its
 // showcase entry's first variant. Catches undefined-local crashes that only
 // surface on a rarely visited page."

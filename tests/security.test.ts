@@ -1,7 +1,7 @@
 // security.test.ts — HTTP security header baseline, plus two documented
-// gaps (CSP, CSRF) tracked in docs/dev/phase-5-ejs-security-and-runtime.md.
+// gaps (CSP, CSRF) tracked in docs/phases/phase-5-ejs-security-and-runtime.md.
 //
-// Per docs/dev/phase-2-testing.md section 2.2, this file "grows with phase
+// Per docs/phases/phase-2-testing.md section 2.2, this file "grows with phase
 // 5": CSP and CSRF are real, pre-existing gaps in this app today (not test
 // omissions). Rather than skip them, the tests below assert today's actual
 // (weak) posture for both, so that landing CSP or CSRF protection later

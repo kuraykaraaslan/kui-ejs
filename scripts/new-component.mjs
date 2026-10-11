@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // npm run new:component <layer> <Name> — scaffolds a new EJS partial,
 // registered in the showcase. Per
-// $KUIREACT_ROOT/docs/dev/phase-7-showcase-and-dx.md 7.6, mirroring
+// $KUIREACT_ROOT/docs/phases/phase-7-showcase-and-dx.md 7.6, mirroring
 // kui-react's scripts/new-component.mjs.
 //
 // <layer> is one of: ui, app, domain/<vertical> (vertical must already
@@ -15,7 +15,7 @@
 //   src/data/showcase.menu.ts  — adds a NAV_GROUPS entry
 //
 // Does NOT scaffold a `.locals.ts` file — that convention
-// (docs/dev/phase-7-showcase-and-dx.md 7.1, "Point the existing editor
+// (docs/phases/phase-7-showcase-and-dx.md 7.1, "Point the existing editor
 // at the .locals.ts schemas from phase 6.8") doesn't exist anywhere in
 // this codebase yet (phase 6 hasn't happened), so there's no established
 // shape to generate against.

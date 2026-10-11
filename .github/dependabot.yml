@@ -12,7 +12,7 @@ updates:
           - "patch"
       express-ecosystem-majors:
         # express, express-ejs-layouts and helmet are the framework core —
-        # bump these together deliberately (see docs/dev/phase-5 for the
+        # bump these together deliberately (see docs/phases/phase-5 for the
         # planned Express 5 migration) rather than as three separate PRs.
         patterns:
           - "express"

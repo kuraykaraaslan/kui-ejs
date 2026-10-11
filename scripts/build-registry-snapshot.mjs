@@ -114,7 +114,7 @@ process.stdout.write('::REG_BEGIN::' + JSON.stringify(reg) + '::REG_END::');
     // sequence until the next chunk instead. Found via a real, intermittent
     // corruption of a box-drawing comment in FormField.ejs's captured
     // source that only appeared on some snapshot runs — see
-    // $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.2.
+    // $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.2.
     child.stdout.setEncoding('utf8');
     child.stderr.setEncoding('utf8');
     child.stdout.on('data', (chunk) => { stdout += chunk; });

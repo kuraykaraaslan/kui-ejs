@@ -42,7 +42,7 @@ jobs:
       # icon slots, col.render(row)), but a few — e.g. MapView.ejs building
       # a <script> literal from _id/_center/_zoom — need a real per-site XSS
       # review before they're blessed, not a blind pattern-list append.
-      # That review is docs/dev/phase-6-architecture-refactors.md section
+      # That review is docs/phases/phase-6-architecture-refactors.md section
       # 6.9. Report-only until it lands; remove continue-on-error then.
       - name: Raw-output audit (report-only — see comment above)
         run: npm run audit:raw

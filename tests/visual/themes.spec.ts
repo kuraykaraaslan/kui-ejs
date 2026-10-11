@@ -1,5 +1,5 @@
 // themes.spec.ts — full-page visual regression of every theme landing
-// page, per $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.3.
+// page, per $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.3.
 // Iterates the committed registry snapshot's themes[], so a new theme is
 // covered the moment it's registered.
 //

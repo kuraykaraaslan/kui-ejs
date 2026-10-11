@@ -1,5 +1,5 @@
 // AI-discoverability endpoints, plus classic-SEO sitemap.xml/robots.txt
-// (docs/dev/phase-7-showcase-and-dx.md 7.4) — small enough to live here
+// (docs/phases/phase-7-showcase-and-dx.md 7.4) — small enough to live here
 // alongside the other registry-driven, non-page routes rather than a
 // dedicated router file.
 //

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // debt-ratchet.mjs — Freeze the known pre-existing debt counts and only
-// allow them to go down. See docs/dev/phase-1-ci-and-gates.md ($KUIREACT_ROOT)
+// allow them to go down. See docs/phases/phase-1-ci-and-gates.md ($KUIREACT_ROOT)
 // section 1.6.
 //
 // Each metric's definition matches the exact command documented in
-// $KUIREACT_ROOT/docs/dev/audit-2026-09-15.md's "Commands to reproduce"
+// $KUIREACT_ROOT/docs/phases/audit-2026-09-15.md's "Commands to reproduce"
 // section, so the baseline stays reproducible by hand, not just by this
 // script.
 //

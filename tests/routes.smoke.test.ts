@@ -2,12 +2,12 @@
 // request every known URL: the fixed AI-discoverability endpoints, every
 // theme route, every showcase component slug, and one genuinely unknown
 // path. The cheapest, highest-value test in this repo per
-// $KUIREACT_ROOT/docs/dev/phase-2-testing.md section 2.2 — it iterates the
+// $KUIREACT_ROOT/docs/phases/phase-2-testing.md section 2.2 — it iterates the
 // registry rather than hand-listing routes, so a new theme or component is
 // covered the moment it's registered.
 //
 // If this fails right after `npm run registry:snapshot`, regenerate the
-// snapshot first (see $KUIREACT_ROOT/docs/dev/phase-1-ci-and-gates.md
+// snapshot first (see $KUIREACT_ROOT/docs/phases/phase-1-ci-and-gates.md
 // section 1.2) before assuming a route is actually broken.
 
 import { describe, it, expect } from 'vitest';

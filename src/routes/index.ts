@@ -11,7 +11,7 @@ router.get('/', (_req, res) => {
     items: group.items.map((item) => ({ ...item, active: false })),
   }));
 
-  // JSON-LD ItemList for the homepage only (docs/dev/phase-7-showcase-and-dx.md
+  // JSON-LD ItemList for the homepage only (docs/phases/phase-7-showcase-and-dx.md
   // 7.4) — views/showcase/index.ejs adds it to the existing @graph when
   // this is non-null, same registry data as GET /sitemap.xml.
   const itemListElements = NAV_GROUPS.flatMap((g) => g.items).map((item, i) => ({

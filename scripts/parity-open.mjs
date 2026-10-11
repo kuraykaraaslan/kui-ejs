@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // npm run parity:open <id> — opens the same component in both showcases
-// side by side, per $KUIREACT_ROOT/docs/dev/phase-7-showcase-and-dx.md
+// side by side, per $KUIREACT_ROOT/docs/phases/phase-7-showcase-and-dx.md
 // 7.6. Needs both dev servers already running (kui-ejs on :3003,
 // kui-react on :3002 — see README's "Ports" section). Identical to
 // kui-react's scripts/parity-open.mjs.
