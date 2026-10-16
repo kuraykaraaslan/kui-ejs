@@ -89,17 +89,17 @@ html.sidebar-collapsed #sidebar-logo {
 }
 
 :root {
-  --primary:         #8b5cf6;
-  --primary-hover:   #7c3aed;
-  --primary-active:  #6d28d9;
-  --primary-subtle:  #f5f3ff;
+  --primary:         #3b82f6;
+  --primary-hover:   #2563eb;
+  --primary-active:  #1d4ed8;
+  --primary-subtle:  #eff6ff;
   --primary-fg:      #ffffff;
 
-  --secondary:       #3b82f6;
-  --secondary-hover:  #2563eb;
-  --secondary-active: #1d4ed8;
-  --secondary-subtle: #eff6ff;
-  --secondary-fg:    #ffffff;
+  --secondary:        #8b5cf6;
+  --secondary-hover:  #7c3aed;
+  --secondary-active: #6d28d9;
+  --secondary-subtle: #f5f3ff;
+  --secondary-fg:     #ffffff;
 
   --surface-base:    #ffffff;
   --surface-raised:  #f9fafb;
@@ -133,16 +133,16 @@ html.sidebar-collapsed #sidebar-logo {
 }
 
 .dark {
-  --primary:         #a78bfa;
-  --primary-hover:   #c4b5fd;
-  --primary-subtle:  #2e1065;
-  --primary-active:  #7c3aed;
-  --primary-fg:      #ffffff;
+  --primary:          #60a5fa;
+  --primary-hover:    #93c5fd;
+  --primary-subtle:   #1e3a5f;
+  --primary-active:   #1d4ed8;
+  --primary-fg:       #ffffff;
 
-  --secondary:        #60a5fa;
-  --secondary-hover:  #93c5fd;
-  --secondary-active: #1d4ed8;
-  --secondary-subtle: #1e3a5f;
+  --secondary:        #a78bfa;
+  --secondary-hover:  #c4b5fd;
+  --secondary-active: #7c3aed;
+  --secondary-subtle: #2e1065;
   --secondary-fg:     #ffffff;
 
   --surface-base:    #0f172a;
