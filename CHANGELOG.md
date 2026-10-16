@@ -4,6 +4,22 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Changed — Chart parity with kui-react's chart settings surface
+
+- Value axes widen to round bounds with readable steps (`niceStep`, `niceTicks`, `resolveDomain`); `yTickCount`.
+- Crowded category labels are thinned (`thinLabels`); time ticks read `HH:mm` / `d MMM`, with `timeZone`.
+- Line / area / bar: right value axis (`yAxis: 'right'`, `y2Min` / `y2Max` / `y2Label` / `y2Format`, aligned grid),
+  `yMin` / `yMax`, axis titles, `thresholds`, `gridStyle`, `gridColor`, `tickStyle`, `showXAxis` / `showYAxis`,
+  legend position / values / toggling, tooltip mode / header / value format / total, `fill`, entrance animation.
+- Line / area: curves (`smooth`, `linear`, `step`), per-series `lineStyle`, point marks (`pointShape`, `pointSize`),
+  `fillGradient`, value labels, `yIncludeZero`. Bar: grouped stacks (`series[].stack`), horizontal bars, value
+  labels, `barWidth` / `barGap` / `radius`, `categoryTicks`, `markers`, tooltips.
+- Pie / donut: slice labels inside or outside, `sliceGap`, `startAngle`, centre caption, legend values and toggling.
+- Gauge: arc / donut / bar / level layouts, outer or track bands, needle styles, ticks, HTML text.
+- Heatmap: two-colour scale (`colorLow`), banded colours, cell values, legend position and banded legend.
+- Line / area / bar / pie are drawn by `scripts/series.js`, `bar.js` and `pie.js` from a JSON config (the
+  `_line` / `_area` / `_bar` / `_pie` / `_donut` partials and `time-series.js` are gone).
+
 ### Added — phase-9 data and realtime components (parity with kui-react)
 
 - **Chart** (`modules/ui/Chart/Chart.ejs`, now with a showcase entry):
