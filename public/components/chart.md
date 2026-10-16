@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-05
 
-Token-aware primitive chart library at @/modules/ui/Chart. M1 ships seven SVG-based charts (Line, Bar, Area, Pie, Donut, Scatter, SparkLine) that consume a unified `Series` data shape. Colors auto-resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps work without any extra work. Pixel-identical EJS sibling at modules/ui/Chart/Chart.ejs. GaugeChart, HeatmapChart and the time axis (`xAxis="time"` with drag-to-zoom on Line/Area) have their own pages (gauge-chart, heatmap-chart, time-series-chart); Bar/Area take `stacked`. The remaining M3 stubs (BubbleChart, TreemapChart, RadarChart, FunnelChart, SankeyChart, CandlestickChart) are exported but render null until implemented; see PLANS/38-Charts.md.
+Token-aware primitive chart library, the EJS sibling of kui-react `@/modules/ui/Chart` (modules/ui/Chart/Chart.ejs). Line, Bar, Area, Pie, Donut and SparkLine consume one `Series` data shape; colours come from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps need no extra work. Value axes widen to round bounds with readable steps (never 263.25 on a 0-351 axis; `yTickCount` sets about how many intervals); crowded category labels are thinned so they never overlap. Line / Area / Bar share the settings surface: a right value axis (`series[].yAxis: 'right'`, `y2Min` / `y2Max` / `y2Label`, aligned to the left grid), `yMin` / `yMax`, axis titles, thresholds, `gridStyle` (dashed by default), `showXAxis` / `showYAxis`, legend position / values / toggling, tooltip mode, header, value format and stack total, and `fill` (take the parent's height). Line / Area add curves (smooth, linear, step), per-series stroke style, point marks (circle, square, diamond, triangle, `pointSize`) and gradient fills; Bar adds grouped stacks (`series[].stack`), horizontal bars, value labels, category ticks and markers. Pie / Donut take slice labels (inside or outside), a slice gap, the start angle, a centre caption and legend values. GaugeChart, HeatmapChart and the time axis (`xAxis: 'time'` with drag-to-zoom) have their own pages. Format options are the NAME of a global function, since the config travels as JSON.
 
 ## Accessibility
 
@@ -68,6 +68,30 @@ Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data 
 <%- include('modules/ui/Chart/Chart', { type: 'donut', series: pieSeries, innerRadius: 0.62 }) %>
 ```
 
+### Right axis, point marks and a gradient fill
+
+```ejs
+<%- include('modules/ui/Chart/Chart', { type: 'line', series: [load, { ...temp, yAxis: 'right' }], yLabel: 'kW', y2Label: '°C',
+  thresholds: [{ value: 320, label: 'Limit' }] }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'area', series: [{ ...visits, fillGradient: true }], showValues: true, gridStyle: 'dotted' }) %>
+```
+
+### Grouped stacks, markers and crowded labels
+
+```ejs
+<%- include('modules/ui/Chart/Chart', { type: 'bar', series: [{ ...a, stack: 'north' }, { ...b, stack: 'north' }, south], showValues: true, tooltipTotal: true }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'bar', series: bins, barWidth: 1, barGap: 0, radius: 0, markers: [{ at: 4.2, label: 'Mean 210 ms' }] }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'bar', series: thirtyDays, yTickCount: 3 }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'bar', series: share, orientation: 'horizontal', showValues: true }) %>
+```
+
+### Pie and donut labels
+
+```ejs
+<%- include('modules/ui/Chart/Chart', { type: 'pie', series: pieSeries, labels: 'name-percent', labelPosition: 'outside', legendLayout: 'grid' }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'donut', series: pieSeries, centerLabel: 'Total', sliceGap: 3, legendValue: 'percent', legendPosition: 'right' }) %>
+```
+
 ### SparkLine
 
 ```ejs
@@ -81,64 +105,66 @@ Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data 
 <%
   // ─── Chart (EJS) ───────────────────────────────────────────────────────────
   //
-  // Pixel-identical sibling of kui-react's modules/ui/Chart (index.ts)
+  // Pixel-identical sibling of kui-react's modules/ui/Chart (index.ts).
   //
-  // Single entry point that dispatches to the per-type partials below.
+  // Single entry point. line / area / bar / pie / donut / heatmap are drawn in
+  // the browser by the renderers in ./scripts (series.js, bar.js, pie.js,
+  // heatmap.js) from `data-kui-chart-config` (JSON); gauge is rendered here on
+  // the server (partials/_gauge.ejs); sparkline keeps its own partial.
+  // This file lays out the frame (legend above / below / beside the plot, `fill`).
+  //
+  // Functions cannot travel as JSON: every format option is the NAME of a global
+  // function, e.g. yFormat: 'fmtPercent' for window.fmtPercent = function (v) {...}.
   //
   // Locals (all types):
-  //   id        — required base id; the actual <svg> gets `${id}-svg`.
+  //   id        — base id (data-kui-chart="<id>").
   //   type      — 'line' | 'bar' | 'area' | 'pie' | 'donut' | 'sparkline'
-  //               | 'gauge' | 'heatmap'
-  //               ('scatter' is M2 in EJS; renders as 'line' for M1).
-  //   series    — Array<{ id, name, data: [{ x, y, color?, label? }] }>
-  //   height    — px (default 240; 24 for sparkline)
-  //   showLegend, showGrid, showTooltip — booleans (default true except tooltip)
-  //   ariaLabel — optional override of role="img" aria-label
-  //   className — extra classes on the outer wrapper
-  //   loadHelpers — default true: the chart-helpers / renderer scripts are
-  //               inlined (idempotent, they bail out when KuiChart already
-  //               exists). Pass false when the host page already loads them
-  //               once via <script src>.
+  //               | 'gauge' | 'heatmap'  ('scatter' renders as 'line').
+  //   series    — Array<{ id, name, data: [{ x, y, color?, label? }], color?, hidden?,
+  //               lineStyle?, strokeWidth?, showPoints?, pointShape?, pointSize?,
+  //               fillOpacity?, fillGradient?, yAxis? ('left'|'right'), stack?, format? }>
+  //   height    — px (default 240; 24 for sparkline). fill — take the parent's height.
+  //   showLegend, showGrid, showTooltip — booleans (default true).
+  //   ariaLabel, className.
+  //   loadHelpers — default true: the helper / renderer scripts are inlined
+  //               (idempotent). Pass false when the page already loads them.
   //
-  // line / area — time axis + drag-zoom (kui-react TimeSeriesChart):
-  //   xAxis     — 'band' (default) | 'time'.  `xScale` is an alias; xAxis wins.
-  //               x is an ISO string or epoch ms. Series with different
-  //               sampling instants share one axis. Drag selects a range,
-  //               double-click or the reset button restores it. Zoom is local
-  //               to the chart and never reported to the page. y rescales to
-  //               the visible points. Area ignores it when `stacked`.
-  //   zoom      — default true.   resetZoomLabel — default 'Reset zoom'.
-  //   yFormat   — NAME of a global function (config travels as JSON), e.g.
-  //               'fmtPercent' for window.fmtPercent = function (v) {...}.
-  //   locale    — tick label locale (default: the browser's).
-  //   smooth, strokeWidth, fillOpacity — as in kui-react.
-  //
-  // pie / donut: innerRadius (0..1).  area (band axis): fillOpacity (default 0.2).
+  // line / area / bar (kui-react BaseChartProps):
+  //   yMin, yMax, yLabel, xLabel, yTickCount (4), yIncludeZero (true),
+  //   showXAxis, showYAxis (true), gridStyle ('dashed' | 'dotted' | 'solid'),
+  //   gridColor, tickStyle { color, fontSize, fontWeight, fontFamily, fontStyle },
+  //   thresholds [{ value, label?, color?, style?, width?, yAxis? }],
+  //   y2Min, y2Max, y2Label, y2Format (series with yAxis: 'right'),
+  //   legendPosition ('bottom' | 'top' | 'left' | 'right'),
+  //   legendValues (['latest','min','max','avg','total']), legendStyle {css},
+  //   legendToggle (default: on when a series starts hidden),
+  //   tooltipMode ('axis' | 'point' | 'none'), tooltipHeader (true),
+  //   tooltipValueFormat (fn name, (value, series)), tooltipTotal (false),
+  //   yFormat, animate (true), valueLabelStyle, stacked.
+  // line / area: xAxis 'band' (default) | 'time' (`xScale` alias; never with a
+  //   stacked area), zoom (true), resetZoomLabel, locale, timeZone, smooth (true),
+  //   curve ('smooth' | 'linear' | 'step'), strokeWidth (2), fillOpacity (0.2),
+  //   pointShape ('circle' | 'square' | 'diamond' | 'triangle'), pointSize,
+  //   showValues, valueLabelPosition ('top' | 'bottom').
+  // bar: radius (4), orientation ('vertical' | 'horizontal'), showValues,
+  //   valueLabelPosition ('outside' | 'inside' | 'center'), barWidth (0.75),
+  //   barGap (2), categoryTicks [{ at, label }], xTickFormat (fn name),
+  //   markers [{ at, label?, color?, style?, width? }].
+  // pie / donut: innerRadius (0 / 0.6), labels ('none' | 'percent' | 'value' |
+  //   'name' | 'name-percent'), labelPosition ('inside' | 'outside'), labelStyle,
+  //   minLabelShare (0.04), valueFormat, showCenter (true), centerLabel,
+  //   legendValue ('none' | 'value' | 'percent'), legendLayout ('wrap' | 'grid'),
+  //   legendToggle, hiddenSlices, startAngle (0), sliceGap (0),
+  //   tooltipValue ('both' | 'value' | 'percent').
   // sparkline: filled (area under the line, opacity 0.15).
+  // heatmap (kui-react HeatmapChart): cells [{ x, y, value|null }], min, max,
+  //   valueLabel ('Value'), color ('var(--primary)'), colorLow, colorFor (fn name),
+  //   valueFormat, legendFormat, showValues, valueLabelStyle, legendPosition,
+  //   legendItems [{ color, label }], tickStyle, cellGap (2), cellRadius (3).
+  // gauge (kui-react GaugeChart) — rendered on the server: see partials/_gauge.ejs.
   //
-  // bar / area:
-  //   stacked   — stack the series (negative values count as 0; stacked
-  //               areas use straight segments).
-  //
-  // heatmap (kui-react HeatmapChart):
-  //   cells — [{ x, y, value|null }] (a missing value is an empty cell),
-  //   min, max, valueLabel ('Value'), color ('var(--primary)'),
-  //   valueFormat — NAME of a global function.
-  //   showLegend toggles the gradient legend; showTooltip the hover tooltip.
-  //
-  // gauge (kui-react GaugeChart) — rendered on the server, no script:
-  //   value, min (0), max (100), bands [{ to, tone }], unit, label,
-  //   format (a function, server side), needle, size 'sm'|'md'|'lg',
-  //   stale, staleLabel ('stale').
-  //
-  // Not ported from kui-react's roadmap (phase 9 §9.1–§9.4 extras): 'linear'
-  // scale, maxPoints down-sampling, Brush overview, calendar heatmap mode.
-  //
-  // TODO M2: scatter, brush, empty + skeleton states.
-  // TODO M3: treemap / radar / funnel / sankey / candlestick / bubble.
-  // TODO M4: brush + pan + synced tooltips + drilldown.
-  // TODO M5: a11y data table + keyboard nav + PNG / SVG / CSV export.
-  // TODO M6: annotations, forecast, streaming, threshold bands.
+  // Not ported: scatter (no EJS scatter chart yet), histogram, React-only props
+  // (valueContent as a React node).
 
   var _id        = locals.id        || ('chart-' + Math.random().toString(36).substr(2, 6));
   var _type      = (locals.type     || 'line').toLowerCase();
@@ -146,14 +172,13 @@ Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data 
   var _height    = typeof locals.height === 'number' ? locals.height : (_type === 'sparkline' ? 24 : 240);
   var _showLegend  = locals.showLegend  === false ? false : true;
   var _showGrid    = locals.showGrid    === false ? false : true;
-  var _showTooltip = locals.showTooltip === false ? false : true;
   var _ariaLabel = locals.ariaLabel || (_type.charAt(0).toUpperCase() + _type.slice(1) + ' chart');
   var _className = locals.className || '';
   var _stacked   = !!locals.stacked;
+  var _fill      = !!locals.fill;
   var _loadHelpers = locals.loadHelpers === false ? false : true;
 
-  // Scatter in M1 EJS falls back to a line chart with markers — full
-  // SVG scatter logic ships in M2.
+  // Scatter has no EJS chart yet: it falls back to a line chart.
   if (_type === 'scatter') _type = 'line';
 
   // `xAxis` wins over its `xScale` alias. Time applies to line + area only, and
@@ -162,119 +187,114 @@ Each chart SVG uses role="img" + aria-label. M5 will add a visually hidden data 
   var _isTime = _xAxis === 'time' && (_type === 'line' || (_type === 'area' && !_stacked));
   var _resetZoomLabel = locals.resetZoomLabel || 'Reset zoom';
 
-  var _partial = '';
-  var _clientKind = '';   // 'time' | 'heatmap' → rendered client side from data-kui-chart-config
-  var _clientConfig = null;
-  if (_type === 'gauge') _partial = 'partials/_gauge';
-  else if (_type === 'heatmap') {
-    _clientKind = 'heatmap';
-    _clientConfig = {
-      cells: Array.isArray(locals.cells) ? locals.cells : [], height: _height,
-      min: locals.min, max: locals.max, valueFormat: locals.valueFormat,
-      valueLabel: locals.valueLabel, showLegend: _showLegend, showTooltip: _showTooltip,
-      ariaLabel: locals.ariaLabel, color: locals.color,
-    };
+  var CARTESIAN = ['series', 'height', 'fill', 'showLegend', 'showGrid', 'showTooltip', 'stacked', 'yFormat', 'y2Format',
+    'tooltipValueFormat', 'legendPosition', 'legendValues', 'legendStyle', 'legendToggle', 'yMin', 'yMax', 'yLabel', 'xLabel',
+    'thresholds', 'tooltipMode', 'gridColor', 'tickStyle', 'yTickCount', 'showXAxis', 'showYAxis', 'gridStyle', 'y2Min',
+    'y2Max', 'y2Label', 'tooltipHeader', 'tooltipTotal', 'animate', 'valueLabelStyle', 'showValues', 'valueLabelPosition', 'ariaLabel'];
+  var KEYS = {
+    series: CARTESIAN.concat(['smooth', 'curve', 'strokeWidth', 'fillOpacity', 'zoom', 'locale', 'timeZone', 'pointShape', 'pointSize', 'yIncludeZero']),
+    bar: CARTESIAN.concat(['radius', 'orientation', 'barWidth', 'barGap', 'categoryTicks', 'xTickFormat', 'markers']),
+    pie: ['series', 'height', 'fill', 'showLegend', 'showTooltip', 'innerRadius', 'labels', 'labelPosition', 'labelStyle',
+      'minLabelShare', 'valueFormat', 'showCenter', 'centerLabel', 'legendValue', 'legendPosition', 'legendStyle', 'legendLayout',
+      'legendToggle', 'hiddenSlices', 'tooltipMode', 'tooltipValue', 'startAngle', 'sliceGap', 'animate', 'ariaLabel'],
+    heatmap: ['cells', 'height', 'min', 'max', 'valueFormat', 'legendFormat', 'valueLabel', 'showLegend', 'showTooltip', 'ariaLabel',
+      'color', 'colorLow', 'colorFor', 'showValues', 'valueLabelStyle', 'legendPosition', 'legendItems', 'tickStyle', 'cellGap',
+      'cellRadius', 'fill', 'animate'],
+  };
+  function pick(kind) {
+    var out = {};
+    KEYS[kind].forEach(function (k) { if (locals[k] !== undefined && typeof locals[k] !== 'function') out[k] = locals[k]; });
+    out.height = _height;
+    return out;
   }
-  else if (_isTime) {
-    _clientKind = 'time';
-    _clientConfig = {
-      series: _series, variant: _type, height: _height, showGrid: _showGrid, showTooltip: _showTooltip,
-      smooth: locals.smooth, strokeWidth: locals.strokeWidth, fillOpacity: locals.fillOpacity,
-      zoom: locals.zoom, yFormat: locals.yFormat, locale: locals.locale, ariaLabel: locals.ariaLabel,
-    };
+
+  var _kind = '';   // 'series' | 'bar' | 'pie' | 'heatmap' → drawn client side from data-kui-chart-config
+  var _cfg = null;
+  if (_type === 'line' || _type === 'area') {
+    _kind = 'series';
+    _cfg = pick('series');
+    _cfg.variant = _type;
+    _cfg.mode = _isTime ? 'time' : 'band';
+  } else if (_type === 'bar') {
+    _kind = 'bar';
+    _cfg = pick('bar');
+  } else if (_type === 'pie' || _type === 'donut') {
+    _kind = 'pie';
+    _cfg = pick('pie');
+    if (_type === 'donut' && typeof _cfg.innerRadius !== 'number') _cfg.innerRadius = 0.6;
+  } else if (_type === 'heatmap') {
+    _kind = 'heatmap';
+    _cfg = pick('heatmap');
+    _cfg.cells = Array.isArray(locals.cells) ? locals.cells : [];
   }
-  else if (_type === 'line')      _partial = 'partials/_line';
-  else if (_type === 'bar')  _partial = 'partials/_bar';
-  else if (_type === 'area') _partial = 'partials/_area';
-  else if (_type === 'pie')  _partial = 'partials/_pie';
-  else if (_type === 'donut') _partial = 'partials/_donut';
-  else if (_type === 'sparkline') _partial = 'partials/_sparkline';
+
+  // ChartFrame: legend above / below / beside the plot; `fill` takes the parent's height.
+  var _legendPos = ['top', 'bottom', 'left', 'right'].indexOf(locals.legendPosition) >= 0 ? locals.legendPosition : 'bottom';
+  var _side = _legendPos === 'left' || _legendPos === 'right';
+  var _hasLegend = false;
+  if (_kind === 'series' || _kind === 'bar') _hasLegend = _showLegend && _series.length > 0;
+  else if (_kind === 'pie') _hasLegend = _showLegend && !!_series[0] && (_series[0].data || []).some(function (p) { return typeof p.y === 'number' && p.y >= 0; });
+  else if (_kind === 'heatmap') _hasLegend = _showLegend;
+  var _frameCls;
+  var _plotCls;
+  if (_kind === 'heatmap') {
+    _frameCls = 'w-full' + (_side && _hasLegend ? ' flex flex-row items-stretch gap-3' : _fill ? ' flex flex-col' : '') + (_fill ? ' h-full min-h-0' : '');
+    _plotCls = _side || _fill ? 'min-h-0 min-w-0 flex-1' : '';
+  } else if (!_hasLegend) {
+    _frameCls = 'w-full' + (_fill ? ' flex h-full min-h-0 flex-col' : '');
+    _plotCls = _fill ? 'min-h-0 flex-1' : '';
+  } else {
+    _frameCls = 'flex w-full ' + (_side ? 'flex-row gap-4 ' + (_fill ? 'items-stretch' : 'items-center') : 'flex-col') + (_fill ? ' h-full min-h-0' : '');
+    _plotCls = 'min-w-0 flex-1' + (_fill ? ' min-h-0' : '');
+  }
+  var _canvasCls = 'relative w-full' + (_fill ? ' h-full min-h-0' : '');
+  var _canvasStyle = _fill ? 'min-height: 80px;' : 'height: ' + _height + 'px;';
 %>
 <% if (_type === 'gauge') { %>
-<%- include('partials/_gauge', {
-  value: locals.value, min: locals.min, max: locals.max, bands: locals.bands, unit: locals.unit,
-  label: locals.label, format: locals.format, needle: locals.needle, size: locals.size,
-  ariaLabel: locals.ariaLabel, stale: locals.stale, staleLabel: locals.staleLabel, className: _className,
-}) %>
+<%- include('partials/_gauge', locals) %>
+<% } else if (_type === 'sparkline') { %>
+<% if (_loadHelpers) { %>
+<script>
+<%- include('./scripts/chart-helpers.js') %>
+</script>
+<% } %>
+<div data-kui-chart="<%= _id %>" data-kui-chart-type="sparkline" class="kui-chart relative w-full<%= _className ? ' ' + _className : '' %>">
+  <div data-kui-chart-canvas class="relative w-full" style="height: <%= _height %>px;">
+    <%- include('partials/_sparkline', { _id: _id, _series: _series, _height: _height, _ariaLabel: _ariaLabel, filled: locals.filled }) %>
+  </div>
+</div>
 <% } else { %>
 <% if (_loadHelpers) { %>
 <script>
 <%- include('./scripts/chart-helpers.js') %>
-<% if (_clientKind === 'time') { %><%- include('./scripts/time-series.js') %><% } %>
-<% if (_clientKind === 'heatmap') { %><%- include('./scripts/heatmap.js') %><% } %>
+<% if (_kind === 'series') { %><%- include('./scripts/series.js') %><% } %>
+<% if (_kind === 'bar') { %><%- include('./scripts/bar.js') %><% } %>
+<% if (_kind === 'pie') { %><%- include('./scripts/pie.js') %><% } %>
+<% if (_kind === 'heatmap') { %><%- include('./scripts/heatmap.js') %><% } %>
 </script>
 <% } %>
 <div
   data-kui-chart="<%= _id %>"
   data-kui-chart-type="<%= _type %>"
-  <% if (_clientKind) { %>data-kui-chart-kind="<%= _clientKind %>"
-  data-kui-chart-config="<%= JSON.stringify(_clientConfig) %>"<% } %>
-  class="kui-chart relative w-full<%= _className ? ' ' + _className : '' %>"
+  data-kui-chart-kind="<%= _kind %>"
+  data-kui-chart-config="<%= JSON.stringify(_cfg) %>"
+  class="kui-chart <%= _frameCls %><%= _className ? ' ' + _className : '' %>"
 >
-  <div
-    data-kui-chart-canvas
-    class="relative w-full"
-    style="height: <%= _height %>px;"
-  >
-    <% if (_partial) { %>
-    <%- include(_partial, {
-      _id: _id,
-      _series: _series,
-      _height: _height,
-      _showGrid: _showGrid,
-      _showTooltip: _showTooltip,
-      _ariaLabel: _ariaLabel,
-      _stacked: _stacked,
-      innerRadius: locals.innerRadius,
-      fillOpacity: locals.fillOpacity,
-      filled: locals.filled,
-    }) %>
+  <div data-kui-chart-plot<% if (_plotCls) { %> class="<%= _plotCls %>"<% } %>>
+    <div data-kui-chart-canvas class="<%= _canvasCls %>" style="<%= _canvasStyle %>"></div>
+    <% if (_kind === 'series' && _isTime && locals.zoom !== false) { %>
+    <button
+      type="button"
+      data-kui-chart-reset
+      hidden
+      class="mt-1 self-start rounded-sm text-xs text-primary underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+    ><%= _resetZoomLabel %></button>
     <% } %>
   </div>
-  <% if (_clientKind === 'time' && locals.zoom !== false) { %>
-  <button
-    type="button"
-    data-kui-chart-reset
-    hidden
-    class="mt-1 rounded-sm text-xs text-primary underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-  ><%= _resetZoomLabel %></button>
-  <% } %>
-  <% if (_showLegend && _type !== 'sparkline' && _type !== 'heatmap' && _series.length) { %>
-  <ul
-    class="kui-chart-legend mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5"
-    style="font-size: 12px;"
-    role="list"
-  >
-    <% if (_type === 'pie' || _type === 'donut') { %>
-      <% (_series[0] && _series[0].data || []).forEach(function (p, i) {
-        var sw = 'var(--primary)';
-        var palette = ['var(--primary)','var(--secondary)','var(--success)','var(--warning)','var(--error)','var(--info)','var(--primary-active)','var(--text-secondary)'];
-        sw = p.color || palette[i % palette.length];
-      %>
-      <li class="flex items-center gap-2 text-text-secondary">
-        <span aria-hidden="true" class="inline-block w-2.5 h-2.5 rounded-sm" style="background-color: <%= sw %>; border: 1px solid var(--border);"></span>
-        <span><%= p.label || p.x %></span>
-      </li>
-      <% }); %>
-    <% } else { %>
-      <% _series.forEach(function (s, i) {
-        var palette = ['var(--primary)','var(--secondary)','var(--success)','var(--warning)','var(--error)','var(--info)','var(--primary-active)','var(--text-secondary)'];
-        var sw = s.color || palette[i % palette.length];
-      %>
-      <li class="flex items-center gap-2 text-text-secondary">
-        <span aria-hidden="true" class="inline-block w-2.5 h-2.5 rounded-sm" style="background-color: <%= sw %>; border: 1px solid var(--border);"></span>
-        <span><%= s.name %></span>
-      </li>
-      <% }); %>
-    <% } %>
-  </ul>
-  <% } %>
 </div>
-<% if (_clientKind) { %>
 <script>
 (function () { if (window.KuiChart) window.KuiChart.autoInit(); })();
 </script>
-<% } %>
 <% } %>
 
 ```

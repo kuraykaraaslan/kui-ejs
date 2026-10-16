@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-10-06T16:32:34.886Z",
+  "generatedAt": "2026-10-16T07:35:27.476Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -13,12 +13,12 @@
     "library": "External npm packages featured in the showcase. filePath points to the showcase entry, not first-party source; the `external` field carries homepage/npm/github links."
   },
   "conventions": {
-    "templating": "EJS 3 server-rendered. All data passed via res.render(view, locals). Use <%= value %> for escaped output; reserve <%- html %> for trusted EJS includes only (audited in docs/raw-output-allowlist.md).",
+    "templating": "EJS 3 server-rendered. All data passed via res.render(view, locals). Use <%= value %> for escaped output; reserve <%- html %> for trusted EJS includes only (audited in docs/reference/raw-output-allowlist.md).",
     "icons": "Font Awesome 6 Free via CDN. Decorative icons require aria-hidden=\"true\"; icon-only interactive elements require aria-label. No inline SVG; no other icon libraries.",
     "styling": "Tailwind CSS 4 + CSS-variable design tokens defined in public/assets/css/input.css. Use token names (bg-primary, text-text-secondary, border-border-focus) — never raw hex. scripts/audit-tokens.sh enforces this in CI.",
     "includes": "Include partials with relative paths: <%- include('../../partials/_head') %>. Use modules/ui|app|domain partials by referencing their repo-relative paths from the consuming view.",
     "accessibility": "Semantic HTML. Apply aria-busy / aria-invalid / aria-describedby / aria-pressed / aria-expanded where applicable. Always include focus-visible:ring-2 focus-visible:ring-border-focus on interactive elements. Standard disabled pattern: disabled:opacity-50 disabled:cursor-not-allowed.",
-    "rawOutput": "Unescaped EJS output (<%- %>) is restricted; every site is enumerated in docs/raw-output-allowlist.md and validated by scripts/audit-raw-output.sh. Adding a new raw-output site requires a justification entry in that doc.",
+    "rawOutput": "Unescaped EJS output (<%- %>) is restricted; every site is enumerated in docs/reference/raw-output-allowlist.md and validated by scripts/audit-raw-output.sh. Adding a new raw-output site requires a justification entry in that doc.",
     "fileNaming": "EJS partials: PascalCase .ejs in modules/{ui,app,domain}/. Shared partials: underscore-prefixed camelCase .ejs in views/partials/. Routes: camelCase .ts. Data: camelCase .data.ts. Theme directories: lowercase."
   },
   "designTokens": [
@@ -936,7 +936,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/Chart/Chart.ejs",
       "abbr": "Ch",
-      "description": "Token-aware primitive chart library at @/modules/ui/Chart. M1 ships seven SVG-based charts (Line, Bar, Area, Pie, Donut, Scatter, SparkLine) that consume a unified `Series` data shape. Colors auto-resolve from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps work without any extra work. Pixel-identical EJS sibling at modules/ui/Chart/Chart.ejs. GaugeChart, HeatmapChart and the time axis (`xAxis=\"time\"` with drag-to-zoom on Line/Area) have their own pages (gauge-chart, heatmap-chart, time-series-chart); Bar/Area take `stacked`. The remaining M3 stubs (BubbleChart, TreemapChart, RadarChart, FunnelChart, SankeyChart, CandlestickChart) are exported but render null until implemented; see PLANS/38-Charts.md.",
+      "description": "Token-aware primitive chart library, the EJS sibling of kui-react `@/modules/ui/Chart` (modules/ui/Chart/Chart.ejs). Line, Bar, Area, Pie, Donut and SparkLine consume one `Series` data shape; colours come from --primary / --secondary / --success / --warning / --error / --info, so dark mode and theme swaps need no extra work. Value axes widen to round bounds with readable steps (never 263.25 on a 0-351 axis; `yTickCount` sets about how many intervals); crowded category labels are thinned so they never overlap. Line / Area / Bar share the settings surface: a right value axis (`series[].yAxis: 'right'`, `y2Min` / `y2Max` / `y2Label`, aligned to the left grid), `yMin` / `yMax`, axis titles, thresholds, `gridStyle` (dashed by default), `showXAxis` / `showYAxis`, legend position / values / toggling, tooltip mode, header, value format and stack total, and `fill` (take the parent's height). Line / Area add curves (smooth, linear, step), per-series stroke style, point marks (circle, square, diamond, triangle, `pointSize`) and gradient fills; Bar adds grouped stacks (`series[].stack`), horizontal bars, value labels, category ticks and markers. Pie / Donut take slice labels (inside or outside), a slice gap, the start angle, a centre caption and legend values. GaugeChart, HeatmapChart and the time axis (`xAxis: 'time'` with drag-to-zoom) have their own pages. Format options are the NAME of a global function, since the config travels as JSON.",
       "status": "beta",
       "since": "2026-05",
       "relatedTo": [
@@ -961,7 +961,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 7
+      "variantCount": 10
     },
     {
       "id": "gauge-chart",
@@ -970,7 +970,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/Chart/partials/_gauge.ejs",
       "abbr": "Gc",
-      "description": "Half-donut gauge (role=\"meter\") with threshold bands, optional needle, three sizes and a stale state for readings that stopped updating. Part of the Chart library (`modules/ui/Chart/Chart.ejs`, `type: 'gauge'`); the colour comes from semantic tokens through `bands[].tone`.",
+      "description": "Gauge (role=\"meter\") rendered on the server. Five layouts: `arc` (half circle, default), `donut` (an arc between `startAngle` / `endAngle`), `bar-horizontal`, `bar-vertical` and `level` (a thermometer). Threshold `bands` (`from` / `to`, `tone` or any `color`, `label`) drawn as a thin outer ring (`bandStyle: 'outer'`, default) or tinted on the track; `bandEdges` decides boundary values, `bandDisplay` whether bands colour the bar, the track or both. Needle styles `line`, `arrow`, `marker`; evenly spaced `ticks` with `tickLabels`; `thickness`, `roundedCaps`, `color`, `trackColor`; sizes sm / md / lg / `fill`; a stale state for readings that stopped updating. Every text (value, caption, min / max, ticks) is HTML over the SVG, so it keeps the kit's type sizes. Part of the Chart library (`modules/ui/Chart/Chart.ejs`, `type: 'gauge'`).",
       "status": "beta",
       "since": "2026-10",
       "relatedTo": [
@@ -992,7 +992,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 4
+      "variantCount": 5
     },
     {
       "id": "heatmap-chart",
@@ -1001,7 +1001,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/Chart/scripts/heatmap.js",
       "abbr": "Hm",
-      "description": "Matrix of cells coloured on one token scale. A missing value (`null`) renders as an empty cell, never as 0, so gaps in the data stay visible. Hover shows the value; the scale can be fixed with `min` / `max`.",
+      "description": "Matrix of cells coloured on one token scale (`color` at a variable opacity, or mixed from `colorLow` to `color`; `colorFor` for banded colours). A missing value (`null`) renders as an empty cell, never as 0, so gaps in the data stay visible. Hover shows the value; the scale can be fixed with `min` / `max`. Options: `showValues` (cell labels whose colour follows the cell), `cellGap`, `cellRadius`, `legendPosition`, `legendItems` (a banded legend), `legendFormat`, `tickStyle`, `fill`.",
       "status": "beta",
       "since": "2026-10",
       "relatedTo": [
@@ -1020,16 +1020,16 @@
         "--border",
         "--text-secondary"
       ],
-      "variantCount": 2
+      "variantCount": 3
     },
     {
       "id": "time-series-chart",
       "name": "TimeSeriesChart",
       "layer": "ui",
       "category": "Molecule",
-      "filePath": "modules/ui/Chart/scripts/time-series.js",
+      "filePath": "modules/ui/Chart/scripts/series.js",
       "abbr": "Ts",
-      "description": "The continuous time axis behind `LineChart` / `AreaChart` with `xAxis=\"time\"`: timestamps (ISO strings or epoch ms) in `x`, uneven sampling, series with different instants on one axis, and drag-to-zoom (double-click or \"Reset zoom\" to leave). Zoom is local to the chart and never reaches the caller.",
+      "description": "The continuous time axis behind `LineChart` / `AreaChart` with `xAxis=\"time\"`: timestamps (ISO strings or epoch ms) in `x`, uneven sampling, series with different instants on one axis, and drag-to-zoom (double-click or \"Reset zoom\" to leave). Zoom is local to the chart and never reaches the caller. Ticks follow the visible span (24 h `HH:mm`, `d MMM`, `MMM yy`), in `timeZone` when given; the value axis widens to round bounds. Takes the same settings as the band axis (right axis, thresholds, marks, legend values, tooltip options).",
       "status": "beta",
       "since": "2026-10",
       "relatedTo": [

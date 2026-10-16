@@ -1,5 +1,9 @@
 import type { ShowcaseItem } from '../../types';
+import * as fs from 'fs';
+import * as path from 'path';
 import { chartSource, renderChart, frame } from './ui-molecule-chart.showcase';
+
+const gaugeSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Chart/partials/_gauge.ejs'), 'utf-8');
 
 // GaugeChart, HeatmapChart and the time axis of Line/Area: own pages, same split as
 // kui-react (ui-primitive-chart-singles.showcase.tsx). All three render through
@@ -70,9 +74,9 @@ export function buildPrimitiveChartSinglesData(): ShowcaseItem[] {
       title: 'GaugeChart',
       abbr: 'Gc',
       description:
-        'Half-donut gauge (role="meter") with threshold bands, optional needle, three sizes and a stale state for readings that stopped updating. Part of the Chart library (`modules/ui/Chart/Chart.ejs`, `type: \'gauge\'`); the colour comes from semantic tokens through `bands[].tone`.',
+        'Gauge (role="meter") rendered on the server. Five layouts: `arc` (half circle, default), `donut` (an arc between `startAngle` / `endAngle`), `bar-horizontal`, `bar-vertical` and `level` (a thermometer). Threshold `bands` (`from` / `to`, `tone` or any `color`, `label`) drawn as a thin outer ring (`bandStyle: \'outer\'`, default) or tinted on the track; `bandEdges` decides boundary values, `bandDisplay` whether bands colour the bar, the track or both. Needle styles `line`, `arrow`, `marker`; evenly spaced `ticks` with `tickLabels`; `thickness`, `roundedCaps`, `color`, `trackColor`; sizes sm / md / lg / `fill`; a stale state for readings that stopped updating. Every text (value, caption, min / max, ticks) is HTML over the SVG, so it keeps the kit\'s type sizes. Part of the Chart library (`modules/ui/Chart/Chart.ejs`, `type: \'gauge\'`).',
       filePath: 'modules/ui/Chart/partials/_gauge.ejs',
-      sourceCode: chartSource,
+      sourceCode: gaugeSource,
       designTokens: ['--success', '--warning', '--error', '--info', '--surface-sunken', '--text-primary', '--text-secondary'],
       a11y: { wcagLevel: 'AA', ariaPatterns: ['meter'], notes: 'role="meter" with aria-valuemin / aria-valuemax / aria-valuenow and an aria-label from `label`.' },
       variants: [
@@ -93,6 +97,23 @@ export function buildPrimitiveChartSinglesData(): ShowcaseItem[] {
           layout: 'stack' as const,
           previewHtml: frame('Disk 91% with a needle', renderChart({ id: 'gc-demo-needle', type: 'gauge', value: 91, unit: '%', label: 'Disk', needle: true, bands: BANDS })),
           code: `<%- include('modules/ui/Chart/Chart', { type: 'gauge', value: 91, min: 0, max: 100, unit: '%', label: 'Disk', needle: true, bands: bands }) %>`,
+        },
+        {
+          title: 'Layouts',
+          layout: 'stack' as const,
+          previewHtml: frame(
+            'donut with an arrow, horizontal bar with ticks, vertical bar, level with a marker',
+            `<div class="flex flex-wrap items-end gap-6">`
+              + renderChart({ id: 'gc-demo-donut', type: 'gauge', layout: 'donut', value: 72, unit: '%', label: 'Memory', needle: true, needleStyle: 'arrow', bands: BANDS, size: 'sm' })
+              + renderChart({ id: 'gc-demo-hbar', type: 'gauge', layout: 'bar-horizontal', value: 64, unit: '%', label: 'Battery', ticks: 5, tickLabels: true, bands: BANDS, size: 'sm' })
+              + renderChart({ id: 'gc-demo-vbar', type: 'gauge', layout: 'bar-vertical', value: 38, unit: 'L', label: 'Tank', roundedCaps: true, size: 'sm' })
+              + renderChart({ id: 'gc-demo-level', type: 'gauge', layout: 'level', value: 21, min: -10, max: 40, unit: '°C', label: 'Room', needle: true, needleStyle: 'marker', color: 'var(--error)', size: 'sm' })
+              + `</div>`,
+          ),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'gauge', layout: 'donut', value: 72, unit: '%', needle: true, needleStyle: 'arrow', bands: bands }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', layout: 'bar-horizontal', value: 64, ticks: 5, tickLabels: true, bands: bands }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', layout: 'bar-vertical', value: 38, unit: 'L', roundedCaps: true }) %>
+<%- include('modules/ui/Chart/Chart', { type: 'gauge', layout: 'level', value: 21, min: -10, max: 40, needle: true, needleStyle: 'marker', color: 'var(--error)' }) %>`,
         },
         {
           title: 'Stale reading',
@@ -119,7 +140,7 @@ export function buildPrimitiveChartSinglesData(): ShowcaseItem[] {
       title: 'HeatmapChart',
       abbr: 'Hm',
       description:
-        'Matrix of cells coloured on one token scale. A missing value (`null`) renders as an empty cell, never as 0, so gaps in the data stay visible. Hover shows the value; the scale can be fixed with `min` / `max`.',
+        'Matrix of cells coloured on one token scale (`color` at a variable opacity, or mixed from `colorLow` to `color`; `colorFor` for banded colours). A missing value (`null`) renders as an empty cell, never as 0, so gaps in the data stay visible. Hover shows the value; the scale can be fixed with `min` / `max`. Options: `showValues` (cell labels whose colour follows the cell), `cellGap`, `cellRadius`, `legendPosition`, `legendItems` (a banded legend), `legendFormat`, `tickStyle`, `fill`.',
       filePath: 'modules/ui/Chart/scripts/heatmap.js',
       sourceCode: chartSource,
       designTokens: ['--primary', '--surface-sunken', '--border', '--text-secondary'],
@@ -143,6 +164,15 @@ export function buildPrimitiveChartSinglesData(): ShowcaseItem[] {
           ),
           code: `<%- include('modules/ui/Chart/Chart', { type: 'heatmap', cells: cells, min: 0, max: 100, valueLabel: 'Humidity', valueFormat: 'fmtPercent' }) %>\n<!-- valueFormat is the NAME of a global function: window.fmtPercent = (v) => v + '%' -->`,
         },
+        {
+          title: 'Two-colour scale, cell values, legend on the right',
+          layout: 'stack' as const,
+          previewHtml: frame(
+            'Humidity from colorLow (info) to color (error), values printed in the cells',
+            FMT_SCRIPT + renderChart({ id: 'hm-demo-two', type: 'heatmap', cells: roomCells, height: 160, min: 0, max: 100, color: 'var(--error)', colorLow: 'var(--info)', showValues: true, legendPosition: 'right', valueFormat: 'kuiFmtPercent' }),
+          ),
+          code: `<%- include('modules/ui/Chart/Chart', { type: 'heatmap', cells: cells, color: 'var(--error)', colorLow: 'var(--info)', showValues: true, legendPosition: 'right' }) %>`,
+        },
       ],
     },
     {
@@ -151,8 +181,8 @@ export function buildPrimitiveChartSinglesData(): ShowcaseItem[] {
       title: 'TimeSeriesChart',
       abbr: 'Ts',
       description:
-        'The continuous time axis behind `LineChart` / `AreaChart` with `xAxis="time"`: timestamps (ISO strings or epoch ms) in `x`, uneven sampling, series with different instants on one axis, and drag-to-zoom (double-click or "Reset zoom" to leave). Zoom is local to the chart and never reaches the caller.',
-      filePath: 'modules/ui/Chart/scripts/time-series.js',
+        'The continuous time axis behind `LineChart` / `AreaChart` with `xAxis="time"`: timestamps (ISO strings or epoch ms) in `x`, uneven sampling, series with different instants on one axis, and drag-to-zoom (double-click or "Reset zoom" to leave). Zoom is local to the chart and never reaches the caller. Ticks follow the visible span (24 h `HH:mm`, `d MMM`, `MMM yy`), in `timeZone` when given; the value axis widens to round bounds. Takes the same settings as the band axis (right axis, thresholds, marks, legend values, tooltip options).',
+      filePath: 'modules/ui/Chart/scripts/series.js',
       sourceCode: chartSource,
       designTokens: ['--primary', '--secondary', '--border', '--text-secondary', '--surface-raised'],
       a11y: { wcagLevel: 'AA', ariaPatterns: ['img'], notes: 'role="img" with an aria-label; the tooltip and crosshair follow the nearest sample.' },
