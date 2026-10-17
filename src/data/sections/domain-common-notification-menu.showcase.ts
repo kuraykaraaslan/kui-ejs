@@ -103,7 +103,7 @@ export function buildDomainCommonNotificationMenuData(): ShowcaseItem[] {
       variants: [
         {
           title: 'With unread notifications',
-          previewHtml: `<div class="w-full max-w-md p-4 min-h-[28rem] flex justify-center">
+          previewHtml: `<div class="w-full max-w-md p-4 min-h-[28rem] flex items-start justify-end">
   ${menuEl({
     items: [
       {
@@ -151,7 +151,7 @@ export function buildDomainCommonNotificationMenuData(): ShowcaseItem[] {
         },
         {
           title: 'Empty state',
-          previewHtml: `<div class="w-full max-w-md p-4 min-h-[24rem] flex justify-center">
+          previewHtml: `<div class="w-full max-w-md p-4 min-h-[24rem] flex items-start justify-end">
   ${menuEl({ items: [], emptyMode: true, showFooter: false })}
 </div>`,
           code: `<%- include('modules/domain/common/notification/NotificationMenu', {
