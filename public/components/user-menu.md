@@ -144,7 +144,8 @@ Avatar + name + role trigger (the role line only when the user has one; the emai
   // We do this via a string by inlining the same Button atom output we'd render.
   // Because EJS includes can't be captured to a string easily without a helper,
   // we manually compose the trigger using the exact Button atom shape (ghost / sm).
-  // This matches `<Button variant="ghost" size="sm" className="gap-2 px-2">…</Button>`.
+  // This matches `<Button variant="ghost" size="sm" className="group gap-2 px-2">…</Button>`, where
+  // the className's px-2 replaces the sm size's px-3 (kui-react merges them with tailwind-merge).
 
   // Render Avatar via include into a captured chunk:
   // we rely on the DropdownMenu atom accepting raw HTML strings for `trigger` and `header`.
@@ -169,7 +170,7 @@ Avatar + name + role trigger (the role line only when the user has one; the emai
     trigger:
       '<button type="button"' +
       ' aria-label="User menu for ' + _name + '"' +
-      ' class="group inline-flex items-center justify-center gap-2 px-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed bg-transparent text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">' +
+      ' class="group inline-flex items-center justify-center gap-2 px-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed bg-transparent text-text-primary hover:bg-surface-overlay py-1.5 text-sm">' +
         '<span data-user-menu-avatar-slot></span>' +
         (_onlyAvatar ? '' :
           '<div class="hidden sm:block text-left min-w-0">' +

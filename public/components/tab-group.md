@@ -125,11 +125,11 @@ Accessible tab navigation following the role="tablist" / role="tab" / role="tabp
       id="<%= _id %>-tab-<%= tab.id %>"
       aria-selected="<%= tab.id === _activeTab ? 'true' : 'false' %>"
       aria-controls="<%= _id %>-panel-<%= tab.id %>"
-      <%= tab.disabled ? 'aria-disabled="true"' : '' %>
+      <% if (tab.disabled) { %>aria-disabled="true"<% } %>
       tabindex="<%= tab.id === _activeTab ? '0' : '-1' %>"
       data-tg-tab="<%= tab.id %>"
       data-tg-index="<%= ti %>"
-      <%= tab.disabled ? 'data-tg-disabled="1"' : '' %>
+      <% if (tab.disabled) { %>data-tg-disabled="1"<% } %>
       class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= tab.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none border-transparent text-text-secondary' : (tab.id === _activeTab ? _activeCls : _inactiveCls) %>"
     >
       <% if (tab.icon) { %><span aria-hidden="true" class="shrink-0"><%- tab.icon %></span><% } %>

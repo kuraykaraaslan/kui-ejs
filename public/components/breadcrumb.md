@@ -75,7 +75,7 @@ Hierarchical navigation trail wrapped in nav aria-label="Breadcrumb". Last item 
     displayed = [_items[0], { label: '…', href: undefined, _isEllipsis: true }].concat(tail);
   }
 %>
-<nav aria-label="Breadcrumb"<%= _className ? ' class="' + _className + '"' : '' %>>
+<nav aria-label="Breadcrumb"<% if (_className) { %> class="<%= _className %>"<% } %>>
   <ol class="flex flex-wrap items-center gap-1 text-sm">
     <% displayed.forEach(function (item, i) { %>
     <%

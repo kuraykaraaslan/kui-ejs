@@ -36,11 +36,19 @@ All notable changes to this project will be documented here. Format follows [Kee
   chevron turns over while the menu is open (`group-aria-expanded:rotate-180`). Without a name the email stands
   in, as in kui-react. These came from next-boilerplate's UserMenu fork, which now uses kui-react's.
 
-### Fixed — AppSidebar
+### Fixed — conditional attributes written through escaped output
 
-- An active item rendered `aria-current=&#34;page&#34;` and a collapsed one `title=&#34;…&#34;` (the attribute
-  strings went through escaped output), so neither attribute had its intended value. Both are now real
+- AppSidebar: an active item rendered `aria-current=&#34;page&#34;` and a collapsed one `title=&#34;…&#34;` (the
+  attribute strings went through escaped output), so neither attribute had its intended value. Both are now real
   attributes, the title escaped.
+- The same bug in eleven more templates, now `<% if (cond) { %>name="value"<% } %>`: `aria-current="page"` in
+  Pagination, AppNav, the showcase navbar and the account, invoice, modem and UPS theme navs; `aria-disabled` and
+  `data-tg-disabled` on a disabled TabGroup tab (the tab script compares `data-tg-disabled` with `'1'`, so disabled
+  tabs could be reached from the keyboard); the `className` of Breadcrumb and DirectionProvider (it did not
+  apply); a server-mode Table row's `onclick` (the href now goes in through `JSON.stringify`).
+  `tests/conditional-attributes.test.ts` asserts each one and scans every template for the pattern.
+- UserMenu: the trigger carried both `px-2` and `px-3`, and `px-3` won, so it was 4px wider on each side than
+  kui-react's. It has kui-react's `px-2` now.
 
 ### Changed — CommandPalette lists no sample commands by default
 

@@ -36,7 +36,7 @@ Wrapper div that sets dir="rtl"/"ltr" based on the language code. RTL languages:
   var _dir  = RTL_LANGS.indexOf(_lang) !== -1 ? 'rtl' : 'ltr';
   var _applyToDocument = (locals.applyToDocument === undefined) ? true : !!locals.applyToDocument;
 %>
-<div dir="<%= _dir %>" lang="<%= _lang %>"<%= locals.className ? ' class="' + locals.className + '"' : '' %>>
+<div dir="<%= _dir %>" lang="<%= _lang %>"<% if (locals.className) { %> class="<%= locals.className %>"<% } %>>
   <%- locals.children || '' %>
 </div>
 <% if (_applyToDocument) { %>
