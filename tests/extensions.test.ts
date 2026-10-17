@@ -226,6 +226,34 @@ describe('UserMenu', () => {
     expect(html).toContain('href="/me"');
     expect(html).toContain('href="/settings"');
   });
+
+  it('a hidden item with a built-in id leaves that item out', async () => {
+    expect(await entries({ mergeItems: true, items: [{ id: 'settings', label: 'Settings', hidden: true }] }))
+      .toEqual(['Profile', '-', 'Sign out']);
+  });
+
+  it('shows the role under the name only when there is one, and the email when there is no name', async () => {
+    const trigger = (html: string) => markup(html).match(/<button type="button" aria-label="User menu[\s\S]*?<\/button>/)![0];
+    const withRole = trigger(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane', role: 'ADMIN' }));
+    expect(withRole).toContain('<p class="text-xs text-text-secondary truncate">ADMIN</p>');
+    const noRole = trigger(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', user: { email: 'sam@acme.com' } }));
+    expect(count(noRole, /<p /g)).toBe(1);
+    expect(noRole).toContain('aria-label="User menu for sam@acme.com"');
+  });
+
+  it('the trigger is a group and the chevron turns over while the menu is open', async () => {
+    const html = markup(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane' }));
+    expect(html).toMatch(/<button type="button" aria-label="User menu for Jane" class="group /);
+    expect(html).toContain('transition-transform group-aria-expanded:rotate-180" aria-hidden="true"><i class="fa-solid fa-chevron-down"');
+  });
+
+  it('portal marks the menu for document.body and className reaches the root', async () => {
+    const html = markup(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane', portal: true, className: 'ml-auto' }));
+    expect(html).toContain('data-dropdown-portal="right"');
+    expect(html).toContain('id="um"\n  class="relative inline-block ml-auto"');
+    const inPlace = markup(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane' }));
+    expect(inPlace).not.toContain('data-dropdown-portal');
+  });
 });
 
 describe('AppTopBar regions', () => {

@@ -122,7 +122,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserMenu',
       category: 'Domain',
       abbr: 'Um',
-      description: 'Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.',
+      description: 'Avatar + name + role trigger (the role line only when the user has one; the email stands in for a missing name); the chevron turns over while the menu is open. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order; a hidden item with a built-in id leaves that item out. portal moves the open menu to document.body so a sticky or clipping top bar cannot cut it off; className goes to the root. Closes on outside click and Escape.',
       filePath: 'modules/domain/common/user/UserMenu.ejs',
       sourceCode: userMenuSource,
       variants: [
@@ -196,6 +196,32 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
     { id: 'switch-tenant', label: 'Switch workspace', group: 'workspace', order: 600 },
     { id: 'stop-impersonating', label: 'Stop impersonating', group: 'session', order: 900, hidden: !impersonating },
   ]
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Session user, no Settings, in a portal',
+          previewHtml: `<div class="p-4 flex justify-end" style="min-height:200px">${renderPartial('modules/domain/common/user/UserMenu.ejs', {
+            id: 'user-menu-session',
+            name: 'Sam Lee',
+            email: 'sam@acme.com',
+            profileHref: '#profile',
+            signOutHref: '#sign-out',
+            mergeItems: true,
+            items: [{ id: 'settings', label: 'Settings', hidden: true }],
+            portal: true,
+          })}</div>`,
+          code: `<%# A session user (name + email, no role): the trigger shows the name alone.
+    A hidden item with a built-in id leaves Settings out; portal opens the menu in
+    document.body so a sticky top bar cannot clip it. %>
+<%- include('modules/domain/common/user/UserMenu', {
+  name: user.name,
+  email: user.email,
+  profileHref: '/me',
+  signOutHref: '/logout',
+  mergeItems: true,
+  items: [{ id: 'settings', label: 'Settings', hidden: true }],
+  portal: true
 }) %>`,
           layout: 'stack',
         },
