@@ -74,9 +74,9 @@
         %>
         <div data-nav-item data-search-title="<%= (item.label||'').toLowerCase() %>">
         <% if (item.href) { %>
-        <a href="<%= item.href %>" <%= isActive ? 'aria-current="page"' : '' %> <%= (_collapsed && item.label) ? 'title="'+item.label+'"' : '' %> class="<%= cls %>">
+        <a href="<%= item.href %>"<% if (isActive) { %> aria-current="page"<% } %><% if (_collapsed && item.label) { %> title="<%= item.label %>"<% } %> class="<%= cls %>">
         <% } else { %>
-        <button type="button" <%= isActive ? 'aria-current="page"' : '' %> <%= (_collapsed && item.label) ? 'title="'+item.label+'"' : '' %> class="<%= cls %>">
+        <button type="button"<% if (isActive) { %> aria-current="page"<% } %><% if (_collapsed && item.label) { %> title="<%= item.label %>"<% } %> class="<%= cls %>">
         <% } %>
           <% if (item.icon) { %><span class="shrink-0 w-5 text-center text-[15px] leading-none" aria-hidden="true"><%- item.icon %></span><% } %>
           <% if (!_collapsed) { %><span class="flex-1 truncate"><%= item.label %></span><% } %>

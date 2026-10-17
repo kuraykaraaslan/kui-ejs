@@ -279,6 +279,28 @@ describe('AppSidebar header and badges', () => {
     expect(html).not.toMatch(/text-\[10px\]">0</);
     expect(html).toContain('<span class="shrink-0"><span class="dot">Beta</span></span>');
   });
+
+  it('marks the active item, link or button, as the current page (parity with kui-react)', async () => {
+    const render2 = async (activeId: string) => markup(await render('modules/app/AppSidebar.ejs', {
+      searchable: false,
+      activeId,
+      navItems: [{ id: 'home', label: 'Home', href: '/home' }, { id: 'inbox', label: 'Inbox' }],
+    }));
+    expect(await render2('home')).toMatch(/<a href="\/home" aria-current="page"/);
+    expect(await render2('inbox')).toMatch(/<button type="button" aria-current="page"/);
+    expect(count(await render2('none'), /aria-current/g)).toBe(0);
+  });
+
+  it('collapsed, every item carries its label as an escaped title', async () => {
+    const html = markup(await render('modules/app/AppSidebar.ejs', {
+      collapsed: true,
+      searchable: false,
+      navItems: [{ id: 'a', label: 'Q&A', href: '/qa' }, { id: 'b', label: 'Inbox' }],
+    }));
+    expect(html).toContain('<a href="/qa" title="Q&amp;A" class=');
+    expect(html).toContain('<button type="button" title="Inbox" class=');
+    expect(html).not.toContain('&#34;');
+  });
 });
 
 describe('DataTable rowActions', () => {

@@ -132,7 +132,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppSidebar',
       category: 'App',
       abbr: 'Sb',
-      description: 'Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.',
+      description: 'Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML. The active item, link or button, is marked aria-current="page"; collapsed, the nav reserves no scrollbar gutter, so the icons stay centered.',
       filePath: 'modules/app/AppSidebar.ejs',
       sourceCode: appSidebarSource,
       variants: [
