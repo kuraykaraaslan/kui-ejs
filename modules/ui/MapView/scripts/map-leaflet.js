@@ -11,8 +11,8 @@
 //   • Lazy load: defers L.map() until the container enters the viewport.
 //   • Token-based theming: swaps CartoDB Voyager (light) ↔ Dark Matter (dark)
 //     in response to <html class="dark"> changes.
-//   • Fit-to-bounds: zoom to marker bounds when `fitBoundsPadding` is set or
-//     when the marker count changes.
+//   • Fit-to-bounds: zoom to the bounds of the markers and the zone / route
+//     vertices when `fitBoundsPadding` is set.
 //
 // TODO M2: marker clustering, hover popup auto-open, activeMarkerId.
 // TODO M3: search/geocoder, route polylines from a directions service.
@@ -137,9 +137,13 @@
       else if (m.label) marker.bindTooltip('<span style="font-size:12px;font-weight:600">' + m.label + '</span>');
     });
 
-    // Fit-to-bounds when requested.
-    if (typeof opts.fitBoundsPadding === 'number' && opts.markers && opts.markers.length) {
-      var bounds = L.latLngBounds(opts.markers.map(function (m) { return m.position; }));
+    // Fit-to-bounds when requested. It frames the zones' and routes' vertices too, not only
+    // the markers: a map of zones or routes alone was not framed (kui-react LeafletCanvas parity).
+    var fitPoints = (opts.markers || []).map(function (m) { return m.position; });
+    (opts.zones || []).forEach(function (z) { fitPoints = fitPoints.concat(z.positions || []); });
+    (opts.routes || []).forEach(function (r) { fitPoints = fitPoints.concat(r.positions || []); });
+    if (typeof opts.fitBoundsPadding === 'number' && fitPoints.length) {
+      var bounds = L.latLngBounds(fitPoints);
       if (bounds.isValid()) {
         map.fitBounds(bounds, { padding: [opts.fitBoundsPadding, opts.fitBoundsPadding] });
       }
