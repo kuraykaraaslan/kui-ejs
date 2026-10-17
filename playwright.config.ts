@@ -24,8 +24,23 @@ export default defineConfig({
   // nightly/PR failure is debuggable without rerunning.
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   timeout: 30_000,
+  // Comparison tolerances. The defaults (threshold 0.2, maxDiffPixelRatio
+  // 0.02) let real regressions through: a swapped primary colour (blue
+  // #3b82f6 vs purple #8b5cf6, close in luminance) is below a 0.2 per-pixel
+  // YIQ threshold, and a misplaced pale panel or a recoloured button stays
+  // under 2% of the image. Measured on this suite (2026-10-17):
+  //   - two consecutive full renders were pixel-identical (0 pixels differ
+  //     even at threshold 0.02), so there is no run-to-run noise to absorb;
+  //   - at threshold 0.1 the smallest real regressions found change 0.11%
+  //     (card-5, a recoloured "Live" pill) to 2.6% (notification-menu-0,
+  //     the panel opened at the bottom) of their image.
+  // threshold 0.1 counts the colour swap; maxDiffPixelRatio 0.0005 (0.05%)
+  // fails the smallest of those with a 2x margin and still leaves a little
+  // room for anti-aliasing drift from a Chromium update. If a browser or
+  // font update moves many baselines at once, regenerate them rather than
+  // loosening these.
   expect: {
-    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
+    toHaveScreenshot: { threshold: 0.1, maxDiffPixelRatio: 0.0005 },
   },
   use: {
     baseURL: 'http://localhost:3003',
