@@ -323,6 +323,81 @@ describe('TimeWindowPicker', () => {
   });
 });
 
+describe('TimeWindowPicker: calendar periods, custom durations, time zone', () => {
+  const checked = (h: string) => [...h.matchAll(/role="radio" aria-checked="true"[^>]*>([^<]*)</g)].map((x) => x[1]);
+  it('offers no Last, Calendar or zone option unless asked (backward compatible)', async () => {
+    const html = await render('TimeWindowPicker.ejs', { idPrefix: 'tw', value: null });
+    expect(html).not.toContain('data-kui-timewindow-duration');
+    expect(html).not.toContain('data-kui-timewindow-calendar');
+    expect(html).not.toContain('aria-label="Time zone"');
+    expect(html.match(/role="radio"/g)).toHaveLength(9);
+  });
+  it('a calendar value opens the Calendar segment with the period selected and "so far" checked', async () => {
+    const html = await render('TimeWindowPicker.ejs', {
+      idPrefix: 'tw', value: { mode: 'calendar', period: 'current.day', soFar: true }, calendarPeriods: ['current.day', 'previous.month'],
+    });
+    expect(checked(html)).toEqual(['Calendar']);
+    expect(html).toMatch(/aria-checked="true" data-kui-timewindow-calendar\s+class="h-8 px-2\.5 text-xs font-medium [^"]*bg-primary text-primary-fg"/);
+    expect(html).not.toMatch(/data-kui-timewindow-calendar-panel hidden/);
+    expect(html).toContain('<select id="tw-period" aria-label="Calendar period"');
+    expect(html).toMatch(/<option value="current.day" selected>Today<\/option>/);
+    expect(html).toMatch(/<option value="previous.month">Previous month<\/option>/);
+    expect(html).toContain('class="flex items-center gap-1.5 text-xs text-text-secondary"');
+    expect(html).toMatch(/id="tw-so-far" type="checkbox" class="rounded border-border focus-visible:ring-2 focus-visible:ring-border-focus" data-kui-timewindow-so-far checked>/);
+    expect(html).toMatch(/So far\s*<\/label>/);
+  });
+  it('"so far" is disabled and greyed for a past period; period names come from messages; an unlisted period is kept', async () => {
+    const html = await render('TimeWindowPicker.ejs', {
+      idPrefix: 'tw', value: { mode: 'calendar', period: 'previous.day' }, calendarPeriods: ['current.day'], messages: { periods: { 'previous.day': 'Gestern' } },
+    });
+    expect(html).toMatch(/data-kui-timewindow-so-far disabled>/);
+    expect(html).toContain('text-xs text-text-disabled');
+    expect(html).toMatch(/<option value="current.day">Today<\/option>/);
+    expect(html).toMatch(/<option value="previous.day" selected>Gestern<\/option>/);
+  });
+  it('calendarPeriods: true offers all 18 periods in order, with English names', async () => {
+    const html = await render('TimeWindowPicker.ejs', { idPrefix: 'tw', value: { mode: 'calendar', period: 'current.hour' }, calendarPeriods: true });
+    const sel = /<select id="tw-period"[\s\S]*?<\/select>/.exec(html)![0];
+    const opts = [...sel.matchAll(/<option value="([^"]+)"[^>]*>([^<]*)</g)].map((x) => `${x[1]}=${x[2]}`);
+    expect(opts).toEqual([
+      'current.hour=This hour', 'current.day=Today', 'current.week=This week', 'current.isoWeek=This week (Mon)',
+      'current.month=This month', 'current.quarter=This quarter', 'current.halfYear=This half year', 'current.year=This year',
+      'previous.hour=Previous hour', 'previous.day=Yesterday', 'previous.week=Previous week', 'previous.isoWeek=Previous week (Mon)',
+      'previous.month=Previous month', 'previous.quarter=Previous quarter', 'previous.halfYear=Previous half year', 'previous.year=Previous year',
+      'dayBeforeYesterday=Day before yesterday', 'thisDayLastWeek=This day last week',
+    ]);
+    expect(cfgOf(html, 'data-kui-timewindow-config').calendarPeriods).toHaveLength(18);
+  });
+  it('a relative value that is not a preset opens on Last, prefilled', async () => {
+    const html = await render('TimeWindowPicker.ejs', { idPrefix: 'tw', value: { mode: 'relative', last: '3d' }, allowDuration: true });
+    expect(checked(html)).toEqual(['Last']);
+    expect(html).not.toMatch(/data-kui-timewindow-duration-panel hidden/);
+    expect(html).toMatch(/<input id="tw-amount" type="number" inputmode="numeric" min="1" aria-label="Amount" class="h-8 [^"]* w-20" data-kui-timewindow-amount value="3">/);
+    expect(html).toContain('<select id="tw-unit" aria-label="Unit"');
+    expect(html).toMatch(/<option value="m">minutes<\/option>\s*<option value="h">hours<\/option>\s*<option value="d" selected>days<\/option>/);
+  });
+  it('a preset value keeps the preset checked and the Last panel hidden (unit defaults to hours)', async () => {
+    const html = await render('TimeWindowPicker.ejs', { idPrefix: 'tw', value: { mode: 'relative', last: '1h' }, allowDuration: true, calendarPeriods: ['current.day'] });
+    expect(checked(html)).toEqual(['1h']);
+    expect(html).toMatch(/data-kui-timewindow-duration-panel hidden/);
+    expect(html).toMatch(/data-kui-timewindow-calendar-panel hidden/);
+    expect(html).toMatch(/<option value="h" selected>hours/);
+  });
+  it('the zone select: "Zone: default" first, UTC next, the current zone selected even when unknown', async () => {
+    const html = await render('TimeWindowPicker.ejs', { idPrefix: 'tw', value: { mode: 'relative', last: '1h', timezone: 'Mars/Olympus' }, showTimezone: true });
+    const sel = /<select aria-label="Time zone"[\s\S]*?<\/select>/.exec(html)![0];
+    const values = [...sel.matchAll(/<option value="([^"]*)"/g)].map((x) => x[1]);
+    expect(values.slice(0, 2)).toEqual(['', 'UTC']);
+    expect(values).toContain('Asia/Tokyo');
+    expect(values[values.length - 1]).toBe('Mars/Olympus');
+    expect(sel).toMatch(/<option value="">Zone: default<\/option>/);
+    expect(sel).toMatch(/<option value="Mars\/Olympus" selected>/);
+    // Between the interval and the aggregation selects, as in kui-react.
+    expect(html.indexOf('aria-label="Interval"')).toBeLessThan(html.indexOf('aria-label="Time zone"'));
+    expect(html.indexOf('aria-label="Time zone"')).toBeLessThan(html.indexOf('aria-label="Aggregation"'));
+  });
+});
+
 describe('MapCanvas', () => {
   const raw = (rel: string, locals: Record<string, unknown>) => ejs.renderFile(path.join(UI, rel), locals);
   it('is a card-less region that fills its parent, with the English loading label', async () => {
