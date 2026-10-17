@@ -430,6 +430,22 @@ describe('MapCanvas', () => {
     expect(hidden).toContain('showZones:        false');
     expect(hidden).toContain('showRoutes:       false');
   });
+  it('passes a picture through, null without one', async () => {
+    expect(await raw('MapView/MapCanvas.ejs', { id: 'mc' })).toContain('image:            null');
+    const html = await raw('MapView/MapCanvas.ejs', { id: 'mc', image: { url: '/plans/f1.png', width: 1000, height: 600 } });
+    expect(html).toContain('image:            {"url":"/plans/f1.png","width":1000,"height":600}');
+    const https = await raw('MapView/MapCanvas.ejs', { id: 'mc', image: { url: 'https://cdn.example/f1.png', width: '1000', height: '600' } });
+    expect(https).toContain('image:            {"url":"https://cdn.example/f1.png","width":1000,"height":600}');
+  });
+  it('refuses an unsafe picture address server-side, and a picture without a size', async () => {
+    for (const url of ['javascript:alert(1)', 'data:image/png;base64,AAAA', '//evil.example/p.png', '/\\evil.example/p.png', 'http://x.example/p.png', 'java\tscript:x', '/a</script><script>alert(1)</script>']) {
+      const html = await raw('MapView/MapCanvas.ejs', { id: 'mc', image: { url, width: 10, height: 10 } });
+      expect(html, url).toContain('image:            {"url":null,"width":10,"height":10}');
+      expect(html).not.toContain('evil.example');
+      expect(html).not.toContain('alert(1)');
+    }
+    expect(await raw('MapView/MapCanvas.ejs', { id: 'mc', image: { url: '/p.png', width: 0, height: 10 } })).toContain('image:            null');
+  });
   it('MapView takes tiles + loadingLabel too', async () => {
     const html = await raw('MapView/MapView.ejs', { id: 'mv', loadingLabel: 'Hold on', tiles: { light: { url: 'a', attribution: '' }, dark: { url: 'b', attribution: '' } } });
     expect(html).toContain('Hold on');

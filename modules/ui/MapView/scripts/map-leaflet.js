@@ -6,6 +6,7 @@
 //   window.__MapViewLeaflet.init({
 //     id, center, zoom, markers, zones, routes, fitBoundsPadding,
 //     showMarkers, showZones, showRoutes,   // optional, default true
+//     image, minZoom,                       // optional, see below
 //   });
 //
 // Behaviour parity with NextJS M1:
@@ -19,6 +20,13 @@
 //     never moves the view (kui-react MapCanvas / LeafletCanvas parity). The layers are
 //     still built and returned (markerLayers / zoneLayers / routeLayers), so a toggle can
 //     add them later with `layer.addTo(map)`.
+//   • Image map: `image` ({ url, width, height }) draws a picture (a floor plan) instead of
+//     tiles. The map uses flat coordinates (L.CRS.Simple) and an L.imageOverlay over
+//     [[0, 0], [height, width]]; markers / zones / routes are [y, x] pixels from the
+//     picture's TOP-LEFT, flipped here to Leaflet's upward y ([height - y, x]). The view
+//     starts on the picture's centre at zoom 0, fit-to-bounds frames the whole picture (not
+//     the markers) and minZoom defaults to -5 (kui-react MapCanvas `image` parity). An
+//     unsafe `url` (anything but an internal `/path` or https) draws no picture.
 //
 // TODO M2: marker clustering, hover popup auto-open, activeMarkerId.
 // TODO M3: search/geocoder, route polylines from a directions service.
@@ -102,6 +110,23 @@
     return function dispose() { mo.disconnect(); };
   }
 
+  // The picture's address: an internal path (`/x`, never `//host` or `/\host`) or https. The
+  // template checks it server-side too; this guards a direct init() call.
+  function safeImageUrl(url) {
+    if (typeof url !== 'string') return null;
+    var v = url.trim();
+    if (!v || v.length > 2048 || /[\u0000-\u001f\u007f\s<>]/.test(v)) return null;
+    return (/^\/(?![\/\\])/.test(v) || /^https:\/\/[^\/\\]/i.test(v)) ? v : null;
+  }
+
+  // { url, width, height } with a positive size, or null (a geographic map).
+  function imageOf(image) {
+    if (!image || typeof image !== 'object') return null;
+    var w = Number(image.width), h = Number(image.height);
+    if (!isFinite(w) || !isFinite(h) || w <= 0 || h <= 0) return null;
+    return { url: safeImageUrl(image.url), width: w, height: h };
+  }
+
   function build(opts) {
     var mapEl = document.getElementById(opts.id + '-map');
     if (!mapEl || !window.L) return;
@@ -110,8 +135,26 @@
     var loading = mapEl.querySelector('[data-map-loading]');
     if (loading && loading.parentNode) loading.parentNode.removeChild(loading);
 
-    var map = L.map(opts.id + '-map').setView(opts.center, opts.zoom);
-    setupTileTheme(map, opts.tiles);
+    var image = imageOf(opts.image);
+    var map;
+    var imageBounds = null;
+    if (image) {
+      // An image map takes [y, x] pixels from the picture's top-left; Leaflet's flat
+      // coordinates grow upwards.
+      var flip = function (p) { return [image.height - p[0], p[1]]; };
+      opts = Object.assign({}, opts, {
+        markers: (opts.markers || []).map(function (m) { return Object.assign({}, m, { position: flip(m.position) }); }),
+        zones:   (opts.zones   || []).map(function (z) { return Object.assign({}, z, { positions: (z.positions || []).map(flip) }); }),
+        routes:  (opts.routes  || []).map(function (r) { return Object.assign({}, r, { positions: (r.positions || []).map(flip) }); })
+      });
+      imageBounds = [[0, 0], [image.height, image.width]];
+      map = L.map(opts.id + '-map', { crs: L.CRS.Simple, minZoom: typeof opts.minZoom === 'number' ? opts.minZoom : -5 })
+        .setView([image.height / 2, image.width / 2], 0);
+      if (image.url) L.imageOverlay(image.url, imageBounds).addTo(map);
+    } else {
+      map = L.map(opts.id + '-map', typeof opts.minZoom === 'number' ? { minZoom: opts.minZoom } : undefined).setView(opts.center, opts.zoom);
+      setupTileTheme(map, opts.tiles);
+    }
 
     // A hidden layer is built but not added to the map; it still frames the view below.
     function show(layer, visible) { return visible ? layer.addTo(map) : layer; }
@@ -156,9 +199,12 @@
     // Fit-to-bounds when requested. It frames the zones' and routes' vertices too, not only
     // the markers: a map of zones or routes alone was not framed (kui-react LeafletCanvas parity).
     // Hidden layers (show* === false) are framed too, so hiding a layer never moves the view.
-    var fitPoints = (opts.markers || []).map(function (m) { return m.position; });
-    (opts.zones || []).forEach(function (z) { fitPoints = fitPoints.concat(z.positions || []); });
-    (opts.routes || []).forEach(function (r) { fitPoints = fitPoints.concat(r.positions || []); });
+    // An image map is framed as a whole: a floor plan is read in full, not cropped to its markers.
+    var fitPoints = imageBounds ? imageBounds : (opts.markers || []).map(function (m) { return m.position; });
+    if (!imageBounds) {
+      (opts.zones || []).forEach(function (z) { fitPoints = fitPoints.concat(z.positions || []); });
+      (opts.routes || []).forEach(function (r) { fitPoints = fitPoints.concat(r.positions || []); });
+    }
     if (typeof opts.fitBoundsPadding === 'number' && fitPoints.length) {
       var bounds = L.latLngBounds(fitPoints);
       if (bounds.isValid()) {
@@ -166,7 +212,7 @@
       }
     }
 
-    return { map: map, mapEl: mapEl, COLORS: COLORS, markerLayers: markerLayers, zoneLayers: zoneLayers, routeLayers: routeLayers, createIcon: createIcon, tooltipHtml: tooltipHtml };
+    return { map: map, mapEl: mapEl, image: image, COLORS: COLORS, markerLayers: markerLayers, zoneLayers: zoneLayers, routeLayers: routeLayers, createIcon: createIcon, tooltipHtml: tooltipHtml };
   }
 
   function init(opts) {

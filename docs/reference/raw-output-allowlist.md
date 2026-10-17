@@ -427,7 +427,7 @@ trail stays complete.
 | `modules/ui/ControlTile/ControlTile.ejs` | `body` | slot / composition | The control markup, built by `ControlSwitch` / `ControlSlider` / `ControlSetpoint` / `ControlButton` from escaped locals (every interpolated string goes through their `esc()` helper) and from `include()` of `Toggle` / `RangeSlider` / `Button`. Never user input. |
 | `modules/ui/ControlTile/_runtime.ejs` | `include('./scripts/*.js')` | EJS include | The runtime scripts shipped with the repo, inlined once per control (idempotent). |
 | `modules/ui/Chart/Chart.ejs` | `include('./scripts/*.js')` | EJS include | Chart helper and renderer scripts shipped with the repo (idempotent; `loadHelpers: false` skips them). |
-| `modules/ui/MapView/MapCanvas.ejs`, `MapView.ejs` | `JSON.stringify(markers / zones / routes / tiles / center / id …)` | developer-controlled JS config | JSON-serialised map configuration interpolated into the inline init script. Not user input. |
+| `modules/ui/MapView/MapCanvas.ejs`, `MapView.ejs` | `JSON.stringify(markers / zones / routes / tiles / image / center / id …)` | developer-controlled JS config | JSON-serialised map configuration interpolated into the inline init script. Not user input; the `image.url` is additionally allow-listed server-side (internal path or https only). |
 | `modules/ui/TimeWindowPicker.ejs` | `JSON.stringify(ACTIVE.split(' '))` | developer-controlled JS config | Two constant class lists. |
 | `modules/ui/TimeWindowSelect.ejs` | `include('./Overlays/Popover/Popover', …)`, `include('./TimeWindowSelect/scripts/*.js')` | EJS include | The Popover it opens (trigger and panel built by `_trigger.ejs` / `_panel.ejs` from escaped locals) and the logic / binding scripts shipped with the repo (idempotent). |
 

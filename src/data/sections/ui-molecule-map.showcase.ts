@@ -218,7 +218,7 @@ export function buildMapData(): ShowcaseItem[] {
       title:       'MapCanvas',
       category:    'Molecule',
       abbr:        'Mc',
-      description: 'The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). `showMarkers` / `showZones` / `showRoutes` (default true) hide a layer without moving the view: a hidden layer still counts for fit-to-bounds. Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.',
+      description: 'The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). `showMarkers` / `showZones` / `showRoutes` (default true) hide a layer without moving the view: a hidden layer still counts for fit-to-bounds. `image` ({ url, width, height }) draws a picture (a floor plan) instead of tiles: flat coordinates, positions as `[y, x]` pixels from its top-left, the whole picture framed; the url must be an internal path or https. Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.',
       filePath:    'modules/ui/MapView/MapCanvas.ejs',
       sourceCode:  mapCanvasSource,
       since:       '2026-10',

@@ -13,15 +13,30 @@ type LatLng = [number, number];
 type Opts = {
   markers?: { position: LatLng }[]; zones?: { positions: LatLng[] }[]; routes?: { positions: LatLng[] }[]; fitBoundsPadding?: number;
   showMarkers?: boolean; showZones?: boolean; showRoutes?: boolean;
+  image?: { url: unknown; width: unknown; height: unknown }; minZoom?: number;
 };
 
 function exec(opts: Opts) {
   const fits: { points: LatLng[]; padding: unknown }[] = [];
-  // Which kinds of layer were added to the map (tile, polygon, polyline, marker).
+  // Which kinds of layer were added to the map (tile, image, polygon, polyline, marker).
   const drawn: string[] = [];
-  const layer = (kind: string) => () => ({ addTo() { drawn.push(kind); return this; }, bindTooltip() { return this; }, on() { return this; } });
+  // Where each zone / route / marker was placed, and the picture drawn (url + bounds).
+  const placed: { kind: string; at: unknown }[] = [];
+  const overlays: { url: string; bounds: unknown }[] = [];
+  const created: { options: unknown; view: unknown[] }[] = [];
+  const layer = (kind: string) => (at?: unknown) => {
+    if (kind !== 'tile' && kind !== 'image') placed.push({ kind, at });
+    return { addTo() { drawn.push(kind); return this; }, bindTooltip() { return this; }, on() { return this; } };
+  };
+  const CRS = { Simple: { simple: true } };
   const L = {
-    map: () => ({ setView() { return this; }, removeLayer() {}, fitBounds(b: { points: LatLng[] }, o: { padding: unknown }) { fits.push({ points: b.points, padding: o.padding }); } }),
+    CRS,
+    map: (_id: string, options?: unknown) => {
+      const rec = { options, view: [] as unknown[] };
+      created.push(rec);
+      return { setView(c: unknown, z: unknown) { rec.view = [c, z]; return this; }, removeLayer() {}, fitBounds(b: { points: LatLng[] }, o: { padding: unknown }) { fits.push({ points: b.points, padding: o.padding }); } };
+    },
+    imageOverlay: (url: string, bounds: unknown) => { overlays.push({ url, bounds }); return layer('image')(); },
     tileLayer: layer('tile'), polygon: layer('zone'), polyline: layer('route'), marker: layer('marker'), divIcon: () => ({}),
     latLngBounds: (points: LatLng[]) => ({ points, isValid: () => points.length > 0 }),
   };
@@ -34,7 +49,7 @@ function exec(opts: Opts) {
   });
   vm.runInContext(SRC, ctx);
   (window.__MapViewLeaflet as { init: (o: unknown) => void }).init({ id: 'm', center: [39, 35], zoom: 5, ...opts });
-  return { fits, drawn: drawn.filter((k) => k !== 'tile') };
+  return { fits, drawn: drawn.filter((k) => k !== 'tile'), tiles: drawn.filter((k) => k === 'tile').length, placed, overlays, created, CRS };
 }
 
 const run = (opts: Opts) => exec(opts).fits;
@@ -82,5 +97,62 @@ describe('MapView layer visibility', () => {
     const hidden = run({ ...ALL, showMarkers: false, showZones: false, showRoutes: false });
     expect(hidden).toEqual(shown);
     expect(hidden).toEqual([{ points: [[37, 35.3], ...ZONE, ...ROUTE], padding: [32, 32] }]);
+  });
+});
+
+// Image (floor-plan) map (kui-react MapCanvas `image` parity, modules/ui/MapView/parts/LeafletCanvas.tsx):
+// flat coordinates, a picture instead of tiles, [y, x] pixels from the picture's top-left.
+describe('MapView image map', () => {
+  const IMAGE = { url: '/plans/floor-1.png', width: 1000, height: 600 };
+
+  it('uses flat coordinates, draws the picture over its bounds and no tiles', () => {
+    const r = exec({ image: IMAGE, fitBoundsPadding: 32 });
+    expect(r.created).toHaveLength(1);
+    expect((r.created[0].options as { crs: unknown }).crs).toBe(r.CRS.Simple);
+    expect(r.overlays).toEqual([{ url: '/plans/floor-1.png', bounds: [[0, 0], [600, 1000]] }]);
+    expect(r.tiles).toBe(0);
+    expect(r.drawn).toEqual(['image']);
+  });
+
+  it('starts on the picture centre at zoom 0, minZoom -5 unless one is given', () => {
+    const r = exec({ image: IMAGE });
+    expect(r.created[0]).toEqual({ options: { crs: r.CRS.Simple, minZoom: -5 }, view: [[300, 500], 0] });
+    expect((exec({ image: IMAGE, minZoom: -2 }).created[0].options as { minZoom: number }).minZoom).toBe(-2);
+  });
+
+  it('flips [y, x] from the top-left to Leaflet upward y for markers, zones and routes', () => {
+    const r = exec({
+      image: IMAGE,
+      markers: [{ position: [100, 200] }],
+      zones: [{ positions: [[0, 0], [0, 1000], [600, 1000]] }],
+      routes: [{ positions: [[50, 10], [550, 990]] }],
+    });
+    expect(r.placed).toEqual([
+      { kind: 'zone', at: [[600, 0], [600, 1000], [0, 1000]] },
+      { kind: 'route', at: [[550, 10], [50, 990]] },
+      { kind: 'marker', at: [500, 200] },
+    ]);
+  });
+
+  it('frames the whole picture, not its markers', () => {
+    const fits = run({ image: IMAGE, markers: [{ position: [100, 200] }], zones: [{ positions: ZONE }], fitBoundsPadding: 16 });
+    expect(fits).toEqual([{ points: [[0, 0], [600, 1000]], padding: [16, 16] }]);
+  });
+
+  it('refuses an unsafe picture address: flat coordinates stay, no picture is drawn', () => {
+    for (const url of ['javascript:alert(1)', 'data:image/svg+xml,<svg/>', '//evil.example/p.png', '/\\evil.example/p.png', 'http://x.example/p.png', 'java\tscript:x', 'plans/p.png', '', 42]) {
+      const r = exec({ image: { url, width: 1000, height: 600 } });
+      expect(r.overlays, String(url)).toEqual([]);
+      expect((r.created[0].options as { crs: unknown }).crs).toBe(r.CRS.Simple);
+    }
+    expect(exec({ image: { url: 'https://cdn.example/p.png', width: 10, height: 10 } }).overlays).toEqual([{ url: 'https://cdn.example/p.png', bounds: [[0, 0], [10, 10]] }]);
+  });
+
+  it('ignores an image without a positive size (a geographic map with tiles)', () => {
+    const r = exec({ image: { url: '/p.png', width: 0, height: 600 }, markers: [{ position: [37, 35] }] });
+    expect(r.overlays).toEqual([]);
+    expect(r.tiles).toBe(1);
+    expect(r.created[0].view).toEqual([[39, 35], 5]);
+    expect(r.placed).toEqual([{ kind: 'marker', at: [37, 35] }]);
   });
 });

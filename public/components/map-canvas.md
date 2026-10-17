@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-10
 
-The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). `showMarkers` / `showZones` / `showRoutes` (default true) hide a layer without moving the view: a hidden layer still counts for fit-to-bounds. Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.
+The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). `showMarkers` / `showZones` / `showRoutes` (default true) hide a layer without moving the view: a hidden layer still counts for fit-to-bounds. `image` ({ url, width, height }) draws a picture (a floor plan) instead of tiles: flat coordinates, positions as `[y, x]` pixels from its top-left, the whole picture framed; the url must be an internal path or https. Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.
 
 ## Accessibility
 
@@ -63,6 +63,16 @@ Leaflet keyboard navigation (arrows, +/-) stays on; the loading label is announc
 //                      — layer visibility (default true). A hidden layer is not
 //                        drawn but still counts for fit-to-bounds, so hiding a
 //                        layer never moves the view.
+//   image              — a picture (a floor plan, a site drawing) instead of map
+//                        tiles: { url, width, height } (width / height in px).
+//                        The map then uses flat coordinates (L.CRS.Simple), the
+//                        markers / zones / routes take [y, x] pixels from the
+//                        picture's TOP-LEFT corner, the view frames the whole
+//                        picture (not the markers) and minZoom defaults to -5.
+//                        `url` must be an internal path (`/x`, never `//host`)
+//                        or https; anything else (javascript:, data:, http:,
+//                        //host) is refused and no picture is drawn. Without a
+//                        positive width and height the local is ignored.
 //   center, zoom       — view start (default Ankara, 6)
 //   tiles              — { url, attribution } for both themes, or { light, dark }.
 //                        Default CARTO Voyager / Dark Matter.
@@ -85,6 +95,17 @@ var _showMarkers = locals.showMarkers !== false;
 var _showZones   = locals.showZones   !== false;
 var _showRoutes  = locals.showRoutes  !== false;
 var _tiles     = locals.tiles || null;
+// The picture's address is author data: only an internal path or https gets into the page.
+var _image = null;
+if (locals.image && typeof locals.image === 'object') {
+  var _iw = Number(locals.image.width), _ih = Number(locals.image.height);
+  if (isFinite(_iw) && isFinite(_ih) && _iw > 0 && _ih > 0) {
+    var _iu = typeof locals.image.url === 'string' ? locals.image.url.trim() : '';
+    var _iok = _iu.length > 0 && _iu.length <= 2048 && !/[\u0000-\u001f\u007f\s<>]/.test(_iu)
+      && (/^\/(?![\/\\])/.test(_iu) || /^https:\/\/[^\/\\]/i.test(_iu));
+    _image = { url: _iok ? _iu : null, width: _iw, height: _ih };
+  }
+}
 var _fit       = locals.fitBoundsPadding === false ? null : (typeof locals.fitBoundsPadding === 'number' ? locals.fitBoundsPadding : 32);
 var _loading   = locals.loadingLabel || 'Loading map…';
 var _aria      = locals.ariaLabel || 'Map';
@@ -113,6 +134,7 @@ var _onClick   = typeof locals.onMarkerClick === 'string' ? locals.onMarkerClick
       showRoutes:       <%- JSON.stringify(_showRoutes) %>,
       fitBoundsPadding: <%- JSON.stringify(_fit === null ? null : _fit) %>,
       tiles:            <%- JSON.stringify(_tiles) %>,
+      image:            <%- JSON.stringify(_image) %>,
       onMarkerClick: function (markerId) {
         var el = document.getElementById(<%- JSON.stringify(_id + '-map') %>);
         if (el) el.dispatchEvent(new CustomEvent('kui:map-marker-click', { bubbles: true, detail: { id: markerId } }));
