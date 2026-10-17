@@ -1,5 +1,16 @@
 <%
+  // Optional controlled open state (kui-react Popover `open` / `onOpenChange`):
+  //   open          — a boolean makes the popover controlled: it renders in that state, and the
+  //                   trigger, outside clicks and Escape only ASK to change it. The host opens and
+  //                   closes it with window.openPopover(id) / window.closePopover(id) (e.g. from an
+  //                   Apply button inside). Omit it for the uncontrolled default.
+  //   onOpenChange  — NAME of a global function called with (open, id) on every requested change.
+  // Every requested change also dispatches 'kui:popover-openchange' on the root
+  // (bubbles, detail: { id, open }), controlled or not.
   var _id        = locals.id        || 'popover-' + Math.random().toString(36).substr(2, 9);
+  var _controlled = typeof locals.open === 'boolean';
+  var _open       = _controlled && locals.open === true;
+  var _onOpenChange = typeof locals.onOpenChange === 'string' ? locals.onOpenChange : '';
   var _placement = locals.placement || 'bottom';
   var _trigger   = locals.trigger   || '';
   var _className = locals.className || '';
@@ -13,7 +24,7 @@
 %>
 <%- include('../shared/focus-trap.js') %>
 <%- include('../shared/dismiss.js') %>
-<div id="<%= _id %>" class="relative inline-block">
+<div id="<%= _id %>" class="relative inline-block"<% if (_controlled) { %> data-popover-controlled<% } %><% if (_onOpenChange) { %> data-on-open-change="<%= _onOpenChange %>"<% } %>>
   <div data-popover-trigger-wrap>
     <%- _trigger %>
   </div>
@@ -22,8 +33,8 @@
     role="dialog"
     aria-label="<%= locals.label || 'Popover' %>"
     tabindex="-1"
-    hidden
-    data-state="closed"
+    <%= _open ? '' : 'hidden' %>
+    data-state="<%= _open ? 'open' : 'closed' %>"
     class="absolute z-[70] min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-xl focus-visible:outline-none <%= placementClass %><%= _className ? ' ' + _className : '' %>"
   >
     <%- locals.children || '' %>
@@ -72,6 +83,15 @@
   var popoverId = '<%= _id %>';
   var root = document.getElementById(popoverId);
   if (!root) return;
+  var controlled = root.hasAttribute('data-popover-controlled');
+  var onOpenChange = root.getAttribute('data-on-open-change');
+
+  // Uncontrolled: change it, then tell. Controlled: only tell; the host decides.
+  function requestOpen(next) {
+    if (!controlled) { if (next) openPopover(popoverId); else closePopover(popoverId); }
+    root.dispatchEvent(new CustomEvent('kui:popover-openchange', { bubbles: true, detail: { id: popoverId, open: next } }));
+    if (onOpenChange && typeof window[onOpenChange] === 'function') window[onOpenChange](next, popoverId);
+  }
 
   // The trigger prop is caller-supplied HTML (usually a real <button>) —
   // wire the widget's ARIA/id onto that real element instead of the
@@ -82,15 +102,19 @@
   if (triggerEl) {
     triggerEl.id = popoverId + '-trigger';
     triggerEl.setAttribute('aria-haspopup', 'dialog');
-    triggerEl.setAttribute('aria-expanded', 'false');
+    var initialPanel = document.getElementById(popoverId + '-panel');
+    triggerEl.setAttribute('aria-expanded', initialPanel && !initialPanel.hidden ? 'true' : 'false');
     triggerEl.setAttribute('aria-controls', popoverId + '-panel');
-    triggerEl.addEventListener('click', function () { togglePopover(popoverId); });
+    triggerEl.addEventListener('click', function () {
+      var panel = document.getElementById(popoverId + '-panel');
+      requestOpen(!!panel && panel.hidden);
+    });
   }
 
   document.addEventListener('pointerdown', function (ev) {
     var panel = document.getElementById(popoverId + '-panel');
     if (!panel || panel.hidden) return;
-    if (!root.contains(ev.target)) closePopover(popoverId);
+    if (!root.contains(ev.target)) requestOpen(false);
   }, true);
 
   document.addEventListener('keydown', function (ev) {
@@ -98,7 +122,7 @@
     if (!panel || panel.hidden) return;
     var ft = window.__overlayFocusTrap;
     if (ft && !ft.isTop(popoverId)) return;
-    if (ev.key === 'Escape') { closePopover(popoverId); return; }
+    if (ev.key === 'Escape') { requestOpen(false); return; }
     if (ft) ft.handleKey(popoverId, panel, ev);
   });
 })();

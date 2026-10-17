@@ -92,55 +92,14 @@ Presets, Last, Calendar and Custom form one radiogroup; the inputs, the period s
   // Instead of onChange({...}) the component dispatches the DOM event
   // 'kui:timewindow-change' on its root (bubbles, detail: the next value).
   // Runtime: root.__timeWindow.getValue() / .setValue(value)
-  var DEFAULT_MESSAGES = {
-    label: 'Time window',
-    presets: 'Quick ranges',
-    custom: 'Custom',
-    from: 'From (UTC)',
-    to: 'To (UTC)',
-    interval: 'Interval',
-    intervalAuto: 'Interval: auto',
-    intervalValue: 'Interval: {value}',
-    aggregation: 'Aggregation',
-    aggregationValue: 'Aggregate: {value}',
-    calendar: 'Calendar',
-    calendarPeriod: 'Calendar period',
-    soFar: 'So far',
-    duration: 'Last',
-    durationAmount: 'Amount',
-    durationUnit: 'Unit',
-    durationUnits: { m: 'minutes', h: 'hours', d: 'days' },
-    timezone: 'Time zone',
-    timezoneDefault: 'Zone: default',
-    periods: {
-      'current.hour': 'This hour', 'current.day': 'Today', 'current.week': 'This week', 'current.isoWeek': 'This week (Mon)',
-      'current.month': 'This month', 'current.quarter': 'This quarter', 'current.halfYear': 'This half year', 'current.year': 'This year',
-      'previous.hour': 'Previous hour', 'previous.day': 'Yesterday', 'previous.week': 'Previous week', 'previous.isoWeek': 'Previous week (Mon)',
-      'previous.month': 'Previous month', 'previous.quarter': 'Previous quarter', 'previous.halfYear': 'Previous half year', 'previous.year': 'Previous year',
-      dayBeforeYesterday: 'Day before yesterday', thisDayLastWeek: 'This day last week',
-    },
-  };
-  var DEFAULT_CALENDAR_PERIODS = [
-    'current.hour', 'current.day', 'current.week', 'current.isoWeek', 'current.month', 'current.quarter', 'current.halfYear', 'current.year',
-    'previous.hour', 'previous.day', 'previous.week', 'previous.isoWeek', 'previous.month', 'previous.quarter', 'previous.halfYear', 'previous.year',
-    'dayBeforeYesterday', 'thisDayLastWeek',
-  ];
-  // `<n>m`, `<n>h` or `<n>d`: what a custom duration is written as.
-  var DURATION = /^([1-9]\d{0,5})([mhd])$/;
-  var DURATION_UNITS = ['m', 'h', 'd'];
-  // A short list for a runtime that cannot enumerate zones.
-  var FALLBACK_ZONES = [
-    'UTC', 'Europe/London', 'Europe/Berlin', 'Europe/Istanbul', 'Europe/Moscow', 'Africa/Cairo', 'Asia/Dubai', 'Asia/Kolkata',
-    'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland', 'America/Sao_Paulo', 'America/New_York',
-    'America/Chicago', 'America/Denver', 'America/Los_Angeles',
-  ];
-  // Every IANA zone the runtime knows (UTC first), or the short list; the current value is always among them.
-  function zoneChoices(current) {
-    var all = [];
-    try { all = (typeof Intl.supportedValuesOf === 'function' && Intl.supportedValuesOf('timeZone')) || []; } catch (e) { all = []; }
-    var list = all.length > 0 ? ['UTC'].concat(all.filter(function (z) { return z !== 'UTC'; })) : FALLBACK_ZONES;
-    return current && list.indexOf(current) === -1 ? list.concat([current]) : list;
-  }
+  // The messages, period list, duration pattern and zone list are shared with TimeWindowSelect.
+  var S = {};
+  include('./TimeWindowPicker/_shared', { S: S });
+  var DEFAULT_MESSAGES = S.DEFAULT_MESSAGES;
+  var DEFAULT_CALENDAR_PERIODS = S.DEFAULT_CALENDAR_PERIODS;
+  var DURATION = S.DURATION;
+  var DURATION_UNITS = S.DURATION_UNITS;
+  var zoneChoices = S.zoneChoices;
   var _m = Object.assign({}, DEFAULT_MESSAGES, locals.messages || {});
   var _value = locals.value || null;
   var _presets = Array.isArray(locals.presets) ? locals.presets : ['15m', '1h', '6h', '24h', '7d', '30d', '90d', '365d'];

@@ -19,13 +19,16 @@ ServerDataTable.ejs     Skeleton.ejs           SkipLink.ejs
 Slider.ejs              Spinner.ejs            StarRating.ejs
 StatCard.ejs            Stepper.ejs            TabButton.ejs
 TabGroup.ejs            Table.ejs              TagInput.ejs
-Textarea.ejs            TimeWindowPicker.ejs   Toast.ejs
-Toggle.ejs              Tooltip.ejs            TreeView.ejs
-VideoPlayer.ejs         ViewToggle.ejs         lazy.ejs
+Textarea.ejs            TimeWindowPicker.ejs   TimeWindowSelect.ejs
+Toast.ejs               Toggle.ejs             Tooltip.ejs
+TreeView.ejs            VideoPlayer.ejs        ViewToggle.ejs
+lazy.ejs
 
 Chart/         Chart.ejs + partials/ + scripts/ (line, bar, area, pie, donut, sparkline, gauge, heatmap, time axis)
 ControlTile/   ControlTile.ejs, ControlSwitch / ControlSlider / ControlSetpoint / ControlButton.ejs, scripts/
 MapView/       MapView.ejs (framed) + MapCanvas.ejs (card-less)
+TimeWindowPicker/  _shared.ejs (messages, calendar periods, zone list; also used by TimeWindowSelect)
+TimeWindowSelect/  _trigger.ejs, _panel.ejs, _logic.ejs (server twin of scripts/time-window-logic.js), scripts/
 ```
 
 ## Parity

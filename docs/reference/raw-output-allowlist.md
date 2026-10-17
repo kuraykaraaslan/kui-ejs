@@ -429,6 +429,7 @@ trail stays complete.
 | `modules/ui/Chart/Chart.ejs` | `include('./scripts/*.js')` | EJS include | Chart helper and renderer scripts shipped with the repo (idempotent; `loadHelpers: false` skips them). |
 | `modules/ui/MapView/MapCanvas.ejs`, `MapView.ejs` | `JSON.stringify(markers / zones / routes / tiles / center / id …)` | developer-controlled JS config | JSON-serialised map configuration interpolated into the inline init script. Not user input. |
 | `modules/ui/TimeWindowPicker.ejs` | `JSON.stringify(ACTIVE.split(' '))` | developer-controlled JS config | Two constant class lists. |
+| `modules/ui/TimeWindowSelect.ejs` | `include('./Overlays/Popover/Popover', …)`, `include('./TimeWindowSelect/scripts/*.js')` | EJS include | The Popover it opens (trigger and panel built by `_trigger.ejs` / `_panel.ejs` from escaped locals) and the logic / binding scripts shipped with the repo (idempotent). |
 
-Chart, TimeWindowPicker and the controls pass their configuration to the client as
+Chart, TimeWindowPicker, TimeWindowSelect and the controls pass their configuration to the client as
 `data-*` attributes through `<%= JSON.stringify(...) %>`, i.e. HTML-escaped.

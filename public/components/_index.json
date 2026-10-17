@@ -233,6 +233,12 @@
     "category": "Molecule",
     "file": "time-window-picker.md"
   },
+  "time-window-select": {
+    "name": "TimeWindowSelect",
+    "layer": "ui",
+    "category": "Molecule",
+    "file": "time-window-select.md"
+  },
   "control-tile": {
     "name": "ControlTile",
     "layer": "ui",

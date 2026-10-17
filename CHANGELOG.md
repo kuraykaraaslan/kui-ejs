@@ -4,6 +4,26 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Added — TimeWindowSelect (parity with kui-react)
+
+- `modules/ui/TimeWindowSelect.ejs`: a time window behind one button. The button names the window
+  (`Realtime · Last 24h · avg 5m`) and opens a panel with **Realtime** (last N presets or any amount sliding with
+  now, or the current calendar period, optionally so far) and **History** (last N anchored when Update is
+  pressed, a fixed range typed as `datetime-local` in the window's zone with DST-correct offsets, or a past
+  period); aggregation, interval with a bucket estimate (warning above `maxBuckets`, default 500) and time zone
+  apply to both. Edits are a draft until Update; Cancel, Escape and an outside click drop them. Same
+  `TimeWindowValue`, `kui:timewindow-change` event and `onChange` hook as TimeWindowPicker.
+- The draft state is DOM-free (`TimeWindowSelect/scripts/time-window-logic.js`, server twin `_logic.ejs`).
+- TimeWindowPicker's messages, calendar periods and zone list moved to `TimeWindowPicker/_shared.ejs`, shared by
+  both; the picker's output is unchanged.
+
+### Changed — Popover can be controlled
+
+- `open` (boolean) makes the popover controlled: it renders in that state and the trigger, outside clicks and
+  Escape only ask; the host opens and closes it with `openPopover(id)` / `closePopover(id)`. `onOpenChange` names
+  a global function called with `(open, id)`. Every requested change dispatches `kui:popover-openchange`
+  (`detail: { id, open }`). Without `open` it behaves as before.
+
 ### Added — TimeWindowPicker calendar periods, custom durations and time zone (parity with kui-react)
 
 - `calendarPeriods` (default none; `true` = all 18) adds a **Calendar** segment with a period select
