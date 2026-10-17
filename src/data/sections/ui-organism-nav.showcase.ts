@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const paginationSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Pagination.ejs'), 'utf-8');
 const breadcrumbSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Breadcrumb.ejs'), 'utf-8');
@@ -227,7 +228,7 @@ export function buildOrganismNavData(): ShowcaseItem[] {
       title: 'TabGroup',
       category: 'Organism',
       abbr: 'Tb',
-      description: 'Accessible tab navigation following the role="tablist" / role="tab" / role="tabpanel" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs.',
+      description: 'Accessible tab navigation following the role="tablist" / role="tab" / role="tabpanel" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs. Tabs take order and a per-tab lazy; isolate renders function contents inside try/catch so one failing contributed tab shows a placeholder instead of taking the page down.',
       filePath: 'modules/ui/TabGroup.ejs',
       sourceCode: tabGroupSource,
       variants: [
@@ -284,6 +285,32 @@ export function buildOrganismNavData(): ShowcaseItem[] {
     { id: 'active',   label: 'Active',   content: '<p>Active tab content.</p>' },
     { id: 'disabled', label: 'Disabled', content: '', disabled: true },
     { id: 'another',  label: 'Another',  content: '<p>Another tab content.</p>' },
+  ]
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Contributed tabs: isolate + order',
+          previewHtml: wrapFull(renderPartial('modules/ui/TabGroup.ejs', {
+            id: 'tg-isolate',
+            label: 'Contact',
+            isolate: true,
+            tabs: [
+              // Contributed tabs carry an order; the host's own tabs (no order) count as 0 and stay first.
+              { id: 'calls', label: 'Calls', order: 20, lazy: true, content: () => { throw new Error('telephony is unreachable'); } },
+              { id: 'overview', label: 'Overview', content: '<p class="text-sm text-text-secondary">Host tab: contact details.</p>' },
+              { id: 'tasks', label: 'Tasks', order: 10, lazy: true, content: () => '<p class="text-sm text-text-secondary">Contributed by the tasks module.</p>' },
+            ],
+          })),
+          code: `<%# A function content renders inside try/catch when isolated: a throwing tab shows a
+    "failed" placeholder with Retry (or renderError) and is reported to onTabError. %>
+<%- include('modules/ui/TabGroup', {
+  isolate: true,
+  onTabError: function (tabId, error) { report(tabId, error); },
+  tabs: [
+    { id: 'overview', label: 'Overview', content: overviewHtml },              // host: order 0
+    { id: 'tasks', label: 'Tasks', order: 10, lazy: true, content: renderTasks },
+    { id: 'calls', label: 'Calls', order: 20, lazy: true, content: renderCallLog },
   ]
 }) %>`,
           layout: 'stack',

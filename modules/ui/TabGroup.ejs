@@ -1,12 +1,43 @@
 <%
-  var _tabs      = locals.tabs      || [];
-  var _activeTab = locals.activeTab || (_tabs.length > 0 ? _tabs[0].id : '');
+  // Tabs take `order` (like CSS order: missing is 0, ties keep array order), a per-tab
+  // `lazy` overriding the group's, and `isolate` (group or per tab): a tab whose `content`
+  // is a function is rendered inside try/catch, and one that throws shows `renderError`
+  // ({ tab, error } => HTML) or a "failed" UnavailableContribution with Retry (a reload),
+  // and is reported to `onTabError(tabId, error)`. Parity with kui-react TabGroup.
+  var _tabs = (locals.tabs || [])
+    .map(function (t, i) { return { t: t, i: i, o: (typeof t.order === 'number' && isFinite(t.order)) ? t.order : 0 }; })
+    .sort(function (a, b) { return a.o - b.o || a.i - b.i; })
+    .map(function (e) { return e.t; });
+  var _hasTab    = function (id) { return _tabs.some(function (t) { return t.id === id; }); };
+  var _activeTab = locals.activeTab && _hasTab(locals.activeTab) ? locals.activeTab : (_tabs.length > 0 ? _tabs[0].id : '');
   var _label     = locals.label     || 'Tabs';
   var _lazy      = !!locals.lazy;
+  var _isolate   = !!locals.isolate;
+  var _retryLabel = locals.retryLabel || 'Retry';
   var _id        = locals.id        || 'tabgroup-' + Math.random().toString(36).substr(2, 9);
 
   var _inactiveCls = 'border-transparent text-text-secondary hover:text-text-primary hover:border-border';
   var _activeCls   = 'border-primary text-primary';
+
+  var _tabLazy = function (tab) { return tab.lazy !== undefined ? !!tab.lazy : _lazy; };
+  // Resolve every panel's HTML once (the panels and the lazy payload both use it).
+  var _contents = {};
+  _tabs.forEach(function (tab) {
+    var isolate = tab.isolate !== undefined ? !!tab.isolate : _isolate;
+    if (typeof tab.content !== 'function') { _contents[tab.id] = tab.content || ''; return; }
+    if (!isolate) { _contents[tab.id] = tab.content() || ''; return; }
+    try {
+      _contents[tab.id] = tab.content() || '';
+    } catch (err) {
+      var error = err instanceof Error ? err : new Error(String(err));
+      if (typeof locals.onTabError === 'function') {
+        try { locals.onTabError(tab.id, error); } catch (_reportErr) { /* reporting never breaks the host */ }
+      }
+      _contents[tab.id] = typeof locals.renderError === 'function'
+        ? (locals.renderError({ tab: tab, error: error }) || '')
+        : include('./UnavailableContribution', { reason: 'failed', size: 'tab', action: { label: _retryLabel, onClick: 'location.reload()' } });
+    }
+  });
 %>
 <div id="<%= _id %>" class="w-full" data-tg-root data-tg-lazy="<%= _lazy ? '1' : '0' %>">
   <div role="tablist" aria-label="<%= _label %>" class="flex border-b border-border pb-3">
@@ -33,7 +64,8 @@
 
   <% _tabs.forEach(function (tab) {
     var _isActive = tab.id === _activeTab;
-    var _shouldRender = !_lazy || _isActive;
+    var _panelLazy = _tabLazy(tab);
+    var _shouldRender = !_panelLazy || _isActive;
   %>
   <div
     id="<%= _id %>-panel-<%= tab.id %>"
@@ -41,11 +73,12 @@
     aria-labelledby="<%= _id %>-tab-<%= tab.id %>"
     tabindex="0"
     data-tg-panel="<%= tab.id %>"
+    <% if (_panelLazy) { %>data-tg-lazy-panel="1"<% } %>
     <%= _isActive ? '' : 'hidden' %>
     class="py-4 focus-visible:outline-none"
   >
     <% if (_shouldRender) { %>
-      <%- tab.content || '' %>
+      <%- _contents[tab.id] %>
     <% } %>
   </div>
   <% }); %>
@@ -55,7 +88,7 @@
   /* Inline-script-safe JSON for TAB_CONTENTS: escape sequences that would
      otherwise terminate <script> early or be invalid inside a JS string literal. */
   var _tabContentsJson = JSON
-    .stringify(_tabs.map(function (t) { return { id: t.id, content: t.content || '' }; }))
+    .stringify(_tabs.filter(_tabLazy).map(function (t) { return { id: t.id, content: _contents[t.id] }; }))
     .replace(/<\/(script|style)/gi, '<\\/$1')
     .replace(/<!--/g, '<\\!--')
     .replace(/\u2028/g, '\\u2028')
@@ -99,7 +132,7 @@
       var pid = p.getAttribute('data-tg-panel');
       var isActive = pid === tabId;
       if (isActive) {
-        if (lazy && !activated.has(pid)) {
+        if ((lazy || p.hasAttribute('data-tg-lazy-panel')) && !activated.has(pid)) {
           var match = TAB_CONTENTS.find(function (c) { return c.id === pid; });
           if (match) p.innerHTML = match.content;
         }
