@@ -242,6 +242,28 @@ describe('Control* markup', () => {
     expect(plain).not.toContain('data-kui-control-typed class');
     expect(plain).toContain('Are you sure?');
   });
+  it('ControlButton: absent `pressed` is an ordinary button; false/true make it a toggle (kui-react parity)', async () => {
+    const mainOf = (html: string) => html.match(/<button data-kui-control-main[^>]*>/)![0];
+    const absent = mainOf(await render('ControlTile/ControlButton.ejs', { id: 'p0', label: 'Fan' }));
+    expect(absent).not.toContain('aria-pressed');
+    expect(absent).not.toContain('data-pressed');
+    expect(absent).not.toMatch(/ ring-2 ring-border-focus"/);
+    const off = mainOf(await render('ControlTile/ControlButton.ejs', { id: 'p1', label: 'Fan', pressed: false }));
+    expect(off).toContain('aria-pressed="false"');
+    expect(off).toContain('data-pressed="false"');
+    expect(off).not.toMatch(/ ring-2 ring-border-focus"/);
+    const on = mainOf(await render('ControlTile/ControlButton.ejs', { id: 'p2', label: 'Fan', pressed: true }));
+    expect(on).toContain('aria-pressed="true"');
+    expect(on).toContain('data-pressed="true"');
+    expect(on).toMatch(/ ring-2 ring-border-focus"/);
+    // the absent case renders exactly what a button without the option did
+    expect(await render('ControlTile/ControlButton.ejs', { id: 'p3', label: 'Fan', pressed: 'yes' }))
+      .toBe(await render('ControlTile/ControlButton.ejs', { id: 'p3', label: 'Fan' }));
+    // with a confirmation step, only the main button carries the state, never Confirm / Cancel
+    const asked = await render('ControlTile/ControlButton.ejs', { id: 'p4', label: 'Fan', pressed: true, confirm: 'confirm' });
+    expect(asked.match(/aria-pressed=/g)).toHaveLength(1);
+    expect(asked.match(/data-pressed=/g)).toHaveLength(1);
+  });
   it('messages override every string; loadRuntime:false leaves the script out', async () => {
     const html = await render('ControlTile/ControlSwitch.ejs', { id: 'm', title: 't', value: true, messages: { pending: 'Wird gesendet', retry: 'Nochmal' }, loadRuntime: false });
     expect(cfgOf(html, 'data-kui-messages')).toMatchObject({ pending: 'Wird gesendet', retry: 'Nochmal', confirmed: 'Done' });

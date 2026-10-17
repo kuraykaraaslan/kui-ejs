@@ -54,7 +54,7 @@ export function buildControlTileData(): ShowcaseItem[] {
       category: 'Molecule',
       abbr: 'Ct',
       description:
-        'Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. No transport knowledge; all text is overridable through `messages`.',
+        'Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. `ControlButton` takes an optional `pressed` for a toggle-like button: `true` draws it pressed and announces `aria-pressed="true"`, `false` announces `aria-pressed="false"`, absent is an ordinary button. No transport knowledge; all text is overridable through `messages`.',
       filePath: 'modules/ui/ControlTile/ControlTile.ejs',
       sourceCode: sources.tile + '\n\n' + sources.switch,
       since: '2026-10',
@@ -117,6 +117,15 @@ export function buildControlTileData(): ShowcaseItem[] {
             + box(render('ControlButton.ejs', { id: 'ct-button-typed', title: 'Gateway', label: 'Reboot', confirm: 'typed', confirmText: 'reboot' })) + wire('ct-button-typed', { setBound: false })
             + `</div>`,
           code: `<%- include('modules/ui/ControlTile/ControlButton', { title: 'Gateway', label: 'Reboot', confirm: 'typed', confirmText: 'reboot' }) %>`,
+        },
+        {
+          title: 'Button: toggle (pressed)',
+          layout: 'stack' as const,
+          previewHtml: `<div class="flex flex-wrap gap-3">`
+            + box(render('ControlButton.ejs', { id: 'ct-button-pressed-off', title: 'Fan', label: 'Fan', pressed: false })) + wire('ct-button-pressed-off', { setBound: false })
+            + box(render('ControlButton.ejs', { id: 'ct-button-pressed-on', title: 'Fan', label: 'Fan', pressed: true })) + wire('ct-button-pressed-on', { setBound: false })
+            + `</div>`,
+          code: `<%- include('modules/ui/ControlTile/ControlButton', { title: 'Fan', label: 'Fan', pressed: fanOn }) %>`,
         },
         {
           title: 'Read-only (no permission)',

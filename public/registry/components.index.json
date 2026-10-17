@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-10-17T05:55:34.803Z",
+  "generatedAt": "2026-10-17T10:00:23.367Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1128,7 +1128,7 @@
       "category": "Molecule",
       "filePath": "modules/ui/ControlTile/ControlTile.ejs",
       "abbr": "Ct",
-      "description": "Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. No transport knowledge; all text is overridable through `messages`.",
+      "description": "Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. `ControlButton` takes an optional `pressed` for a toggle-like button: `true` draws it pressed and announces `aria-pressed=\"true\"`, `false` announces `aria-pressed=\"false\"`, absent is an ordinary button. No transport knowledge; all text is overridable through `messages`.",
       "status": "stable",
       "since": "2026-10",
       "composes": [
@@ -1159,7 +1159,7 @@
         "--error",
         "--text-secondary"
       ],
-      "variantCount": 7
+      "variantCount": 8
     },
     {
       "id": "use-async-control",

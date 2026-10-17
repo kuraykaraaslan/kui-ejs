@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-10
 
-Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. No transport knowledge; all text is overridable through `messages`.
+Async controls: a frame (`ControlTile`) plus `ControlButton`, `ControlSwitch`, `ControlSlider` and `ControlSetpoint`. Each takes the bound `value` and a write handler that returns a Promise, and shows idle -> pending -> confirmed / mismatch / failed with the previous value restored on failure. The slider writes once on release. Hand the write to the control with `root.__kuiControl.onCommit = fn`, the `onCommit` global-function name, or the `kui:control-commit` DOM event. `ControlButton` takes an optional `pressed` for a toggle-like button: `true` draws it pressed and announces `aria-pressed="true"`, `false` announces `aria-pressed="false"`, absent is an ordinary button. No transport knowledge; all text is overridable through `messages`.
 
 ## Depends on (include order)
 
@@ -79,6 +79,12 @@ The status line is an aria-live region; a failure is role="alert". Pending sets 
 
 ```ejs
 <%- include('modules/ui/ControlTile/ControlButton', { title: 'Gateway', label: 'Reboot', confirm: 'typed', confirmText: 'reboot' }) %>
+```
+
+### Button: toggle (pressed)
+
+```ejs
+<%- include('modules/ui/ControlTile/ControlButton', { title: 'Fan', label: 'Fan', pressed: fanOn }) %>
 ```
 
 ### Read-only (no permission)
