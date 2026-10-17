@@ -116,7 +116,7 @@ Page header for detail/record views: title, subtitle, status badge, action butto
         role="tab"
         aria-selected="<%= isActive %>"
         <% if (tab.disabled) { %>aria-disabled="true"<% } %>
-        onclick="<% if (!tab.disabled) { %>activateDetailTab('<%= _id %>','<%= tab.value %>')<% } %>"
+        onclick="<% if (!tab.disabled) { %>activateDetailTab(<%= JSON.stringify(String(_id)) %>,<%= JSON.stringify(String(tab.value)) %>)<% } %>"
         data-tab="<%= tab.value %>"
         class="px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus<%= isActive ? ' border-primary text-primary' : ' border-transparent text-text-secondary hover:text-text-primary hover:border-border-strong' %><%= tab.disabled ? ' opacity-40 cursor-not-allowed pointer-events-none' : '' %>">
         <%= tab.label %>

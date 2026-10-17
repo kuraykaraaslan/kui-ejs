@@ -72,7 +72,7 @@ Horizontal navigation bar. Renders inline links on desktop and a hamburger that 
 
   <!-- Mobile hamburger -->
   <div class="md:hidden">
-    <button type="button" onclick="openDrawer('<%= _drawerId %>')"
+    <button type="button" onclick="openDrawer(<%= JSON.stringify(String(_drawerId)) %>)"
       aria-label="Open navigation menu"
       class="inline-flex items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
       <i class="fa-solid fa-bars" aria-hidden="true"></i>

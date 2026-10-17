@@ -79,7 +79,7 @@ Full-screen layout wrapper with logo, sidebar and topbar slots. Sidebar renders 
     <% if (_hasTopbar) { %>
     <header class="sticky top-0 z-30 flex items-center h-14 px-4 border-b border-border bg-surface-raised/90 backdrop-blur shrink-0">
       <% if (_hasSidebar) { %>
-      <button type="button" onclick="openDrawer('<%= _drawerId %>')"
+      <button type="button" onclick="openDrawer(<%= JSON.stringify(String(_drawerId)) %>)"
         aria-label="Open sidebar"
         class="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-md text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
         <i class="fa-solid fa-bars" aria-hidden="true"></i>

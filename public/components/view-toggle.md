@@ -73,7 +73,7 @@ Horizontal / vertical view toggle control; two-state icon selector. Emits a view
     type="button"
     data-vt-option="<%= opt.key %>"
     aria-pressed="<%= isActive ? 'true' : 'false' %>"
-    onclick="viewToggleSelect('<%= _id %>', '<%= opt.key %>')"
+    onclick="viewToggleSelect(<%= JSON.stringify(String(_id)) %>, <%= JSON.stringify(String(opt.key)) %>)"
     class="px-3 py-1.5 rounded-md text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= btnCls %>"
   >
     <span class="flex items-center gap-1.5">

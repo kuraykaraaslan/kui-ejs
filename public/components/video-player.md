@@ -156,7 +156,7 @@ var _ctx = {
     <% if (_startMuted) { %>muted<% } %>
     crossorigin="anonymous"
     class="w-full h-full object-contain block cursor-pointer"
-    onclick="window.__vp['<%= _id %>'].togglePlay()"
+    onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].togglePlay()"
   >
     <% _sources.forEach(function(s) {
          var src  = typeof s === 'string' ? s : s.src;
@@ -177,7 +177,7 @@ var _ctx = {
   <%/* ── Controls layer ── */%>
   <div id="<%= _id %>-controls"
     class="absolute inset-0 flex flex-col justify-end transition-opacity duration-300 opacity-100 z-20"
-    onclick="window.__vp['<%= _id %>'].onBgClick(event)">
+    onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].onBgClick(event)">
 
     <%/* Vignette */%>
     <div class="absolute inset-0 pointer-events-none"

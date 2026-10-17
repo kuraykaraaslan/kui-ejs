@@ -97,7 +97,7 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
 
   <!-- Collapse toggle (desktop only) -->
   <div class="hidden lg:flex items-center px-2 py-2 border-b border-border shrink-0 <%= _collapsed ? 'justify-center' : 'justify-end' %>">
-    <button type="button" onclick="toggleAppSidebar('<%= _id %>')"
+    <button type="button" onclick="toggleAppSidebar(<%= JSON.stringify(String(_id)) %>)"
       aria-label="<%= _collapsed ? 'Expand sidebar' : 'Collapse sidebar' %>"
       class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus">
       <i class="fa-solid fa-chevron-left<%= _collapsed ? ' rotate-180' : '' %> transition-transform" aria-hidden="true"></i>
@@ -135,7 +135,7 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
     <div data-group-section data-group-key="<%= gKey %>">
       <% if (group.label && !_collapsed) { %>
         <% if (group.collapsible) { %>
-        <button type="button" onclick="toggleSidebarGroup('<%= _id %>','<%= gKey %>')"
+        <button type="button" onclick="toggleSidebarGroup(<%= JSON.stringify(String(_id)) %>,<%= JSON.stringify(String(gKey)) %>)"
           aria-expanded="<%= _expanded ? 'true' : 'false' %>"
           class="w-full flex items-center justify-between px-3 py-1 rounded-md mb-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= hasActive ? 'text-text-primary' : 'text-text-disabled hover:text-text-secondary' %>">
           <span class="text-[10px] font-semibold uppercase tracking-widest"><%= group.label %></span>

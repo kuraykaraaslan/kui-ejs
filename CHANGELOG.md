@@ -50,6 +50,19 @@ All notable changes to this project will be documented here. Format follows [Kee
 - UserMenu: the trigger carried both `px-2` and `px-3`, and `px-3` won, so it was 4px wider on each side than
   kui-react's. It has kui-react's `px-2` now.
 
+### Fixed — server values in inline event handlers and data-* JSON
+
+- `onclick="closeModal('<%= _id %>')"` broke on an apostrophe in the value: the attribute escaping writes `&#39;`,
+  the browser decodes it back to `'`, and the JS string ends early. Handlers now take `<%= JSON.stringify(x) %>`
+  with no quotes around it (87 values in 21 templates: DropdownMenu, Modal, Drawer, AppDrawer, AppShell, AppNav,
+  AppSidebar, ViewToggle, VideoPlayer, ContextMenu, DetailHeader, CommandPalette, the notification partials,
+  CartPreview and the theme navs). RichTextEditor's modal footers, built as HTML strings, now escape the modal id in
+  `closeModal(…)` and in their `id` attributes.
+- FileUploadSection's and FileInput's options and RichTextEditor's mentions and slash items were raw JSON in a
+  single-quoted attribute, so an apostrophe in any value ended the attribute. They are escaped JSON in a
+  double-quoted attribute now. `tests/handler-values.test.ts` covers both; the template scan fails on either
+  pattern.
+
 ### Fixed — server values inside inline scripts
 
 - `'<%= value %>'` inside a script HTML-escaped the value, so an apostrophe arrived as `&#39;` (CountrySelector's

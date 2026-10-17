@@ -176,7 +176,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
           role="menuitem"
           href="<%= item.href %>"
           <% if (item.id) { %>data-item-id="<%= item.id %>"<% } %>
-          <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu('<%= _id %>')"<% } else { %>onclick="closeDropdownMenu('<%= _id %>')"<% } %>
+          <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu(<%= JSON.stringify(String(_id)) %>)"<% } else { %>onclick="closeDropdownMenu(<%= JSON.stringify(String(_id)) %>)"<% } %>
           class="<%= itemCls %>"
         >
           <% if (item.icon) { %><span aria-hidden="true"><%- item.icon %></span><% } %>
@@ -189,7 +189,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
           <% if (isDisabled) { %>disabled<% } %>
           <% if (item.id) { %>data-item-id="<%= item.id %>"<% } %>
           <% if (reasonId) { %>title="<%= item.disabledReason %>" aria-label="<%= item.label %>" aria-describedby="<%= reasonId %>"<% } %>
-          <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu('<%= _id %>')"<% } else { %>onclick="closeDropdownMenu('<%= _id %>')"<% } %>
+          <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu(<%= JSON.stringify(String(_id)) %>)"<% } else { %>onclick="closeDropdownMenu(<%= JSON.stringify(String(_id)) %>)"<% } %>
           class="<%= itemCls %>"
         >
           <% if (item.icon) { %><span aria-hidden="true"><%- item.icon %></span><% } %>
