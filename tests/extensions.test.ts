@@ -247,6 +247,13 @@ describe('UserMenu', () => {
     expect(html).toContain('transition-transform group-aria-expanded:rotate-180" aria-hidden="true"><i class="fa-solid fa-chevron-down"');
   });
 
+  it('the trigger has kui-react ghost sm Button padding with className px-2: px-2 py-1.5, no px-3', async () => {
+    const html = markup(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane' }));
+    const cls = html.match(/<button type="button" aria-label="User menu for Jane" class="([^"]*)"/)![1].split(' ');
+    expect(cls).toEqual(expect.arrayContaining(['px-2', 'py-1.5', 'text-sm', 'gap-2']));
+    expect(cls).not.toContain('px-3');
+  });
+
   it('portal marks the menu for document.body and className reaches the root', async () => {
     const html = markup(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane', portal: true, className: 'ml-auto' }));
     expect(html).toContain('data-dropdown-portal="right"');
