@@ -420,6 +420,16 @@ describe('MapCanvas', () => {
     expect(html).toContain('var onClickName = "pick"');
     expect(await raw('MapView/MapCanvas.ejs', { id: 'mc', fitBoundsPadding: false })).toContain('fitBoundsPadding: null');
   });
+  it('passes the layer visibility through, every layer shown by default', async () => {
+    const def = await raw('MapView/MapCanvas.ejs', { id: 'mc' });
+    expect(def).toContain('showMarkers:      true');
+    expect(def).toContain('showZones:        true');
+    expect(def).toContain('showRoutes:       true');
+    const hidden = await raw('MapView/MapCanvas.ejs', { id: 'mc', showMarkers: false, showZones: false, showRoutes: false });
+    expect(hidden).toContain('showMarkers:      false');
+    expect(hidden).toContain('showZones:        false');
+    expect(hidden).toContain('showRoutes:       false');
+  });
   it('MapView takes tiles + loadingLabel too', async () => {
     const html = await raw('MapView/MapView.ejs', { id: 'mv', loadingLabel: 'Hold on', tiles: { light: { url: 'a', attribution: '' }, dark: { url: 'b', attribution: '' } } });
     expect(html).toContain('Hold on');

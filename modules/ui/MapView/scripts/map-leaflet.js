@@ -5,6 +5,7 @@
 // Public surface — invoke from MapView.ejs:
 //   window.__MapViewLeaflet.init({
 //     id, center, zoom, markers, zones, routes, fitBoundsPadding,
+//     showMarkers, showZones, showRoutes,   // optional, default true
 //   });
 //
 // Behaviour parity with NextJS M1:
@@ -13,6 +14,11 @@
 //     in response to <html class="dark"> changes.
 //   • Fit-to-bounds: zoom to the bounds of the markers and the zone / route
 //     vertices when `fitBoundsPadding` is set.
+//   • Layer visibility: `showMarkers` / `showZones` / `showRoutes` === false leaves that
+//     layer off the map. A hidden layer still counts for fit-to-bounds, so hiding a layer
+//     never moves the view (kui-react MapCanvas / LeafletCanvas parity). The layers are
+//     still built and returned (markerLayers / zoneLayers / routeLayers), so a toggle can
+//     add them later with `layer.addTo(map)`.
 //
 // TODO M2: marker clustering, hover popup auto-open, activeMarkerId.
 // TODO M3: search/geocoder, route polylines from a directions service.
@@ -107,12 +113,19 @@
     var map = L.map(opts.id + '-map').setView(opts.center, opts.zoom);
     setupTileTheme(map, opts.tiles);
 
+    // A hidden layer is built but not added to the map; it still frames the view below.
+    function show(layer, visible) { return visible ? layer.addTo(map) : layer; }
+    var zonesVisible   = opts.showZones !== false;
+    var routesVisible  = opts.showRoutes !== false;
+    var markersVisible = opts.showMarkers !== false;
+
     var zoneLayers = (opts.zones || []).map(function (z) {
       var v = z.variant || 'primary';
       var layer = L.polygon(z.positions, {
         color: COLORS[v], fillColor: FILL[v],
         fillOpacity: z.fillOpacity != null ? z.fillOpacity : 0.25, weight: 2
-      }).addTo(map);
+      });
+      show(layer, zonesVisible);
       if (z.label) layer.bindTooltip('<span style="font-weight:600;font-size:12px;color:' + COLORS[v] + '">' + z.label + '</span>', { sticky: true });
       return layer;
     });
@@ -122,23 +135,27 @@
         color: r.color || COLORS.primary,
         weight: r.weight || 3,
         dashArray: r.dashed ? '8 6' : null
-      }).addTo(map);
+      });
+      show(layer, routesVisible);
       if (r.label) layer.bindTooltip('<span style="font-weight:600;font-size:12px">' + r.label + '</span>', { sticky: true });
       return layer;
     });
 
-    (opts.markers || []).forEach(function (m) {
+    var markerLayers = (opts.markers || []).map(function (m) {
       var color  = COLORS[m.variant || 'primary'];
-      var marker = L.marker(m.position, { icon: createIcon(color) }).addTo(map);
+      var marker = L.marker(m.position, { icon: createIcon(color) });
+      show(marker, markersVisible);
       if (typeof opts.onMarkerClick === 'function' && m.id !== undefined) {
         marker.on('click', function () { opts.onMarkerClick(m.id); });
       }
       if (m.tooltip) marker.bindTooltip(tooltipHtml(m.tooltip));
       else if (m.label) marker.bindTooltip('<span style="font-size:12px;font-weight:600">' + m.label + '</span>');
+      return marker;
     });
 
     // Fit-to-bounds when requested. It frames the zones' and routes' vertices too, not only
     // the markers: a map of zones or routes alone was not framed (kui-react LeafletCanvas parity).
+    // Hidden layers (show* === false) are framed too, so hiding a layer never moves the view.
     var fitPoints = (opts.markers || []).map(function (m) { return m.position; });
     (opts.zones || []).forEach(function (z) { fitPoints = fitPoints.concat(z.positions || []); });
     (opts.routes || []).forEach(function (r) { fitPoints = fitPoints.concat(r.positions || []); });
@@ -149,7 +166,7 @@
       }
     }
 
-    return { map: map, mapEl: mapEl, COLORS: COLORS, zoneLayers: zoneLayers, routeLayers: routeLayers, createIcon: createIcon, tooltipHtml: tooltipHtml };
+    return { map: map, mapEl: mapEl, COLORS: COLORS, markerLayers: markerLayers, zoneLayers: zoneLayers, routeLayers: routeLayers, createIcon: createIcon, tooltipHtml: tooltipHtml };
   }
 
   function init(opts) {

@@ -10,14 +10,19 @@ import vm from 'node:vm';
 const SRC = fs.readFileSync(path.resolve(__dirname, '../modules/ui/MapView/scripts/map-leaflet.js'), 'utf-8');
 
 type LatLng = [number, number];
-type Opts = { markers?: { position: LatLng }[]; zones?: { positions: LatLng[] }[]; routes?: { positions: LatLng[] }[]; fitBoundsPadding?: number };
+type Opts = {
+  markers?: { position: LatLng }[]; zones?: { positions: LatLng[] }[]; routes?: { positions: LatLng[] }[]; fitBoundsPadding?: number;
+  showMarkers?: boolean; showZones?: boolean; showRoutes?: boolean;
+};
 
-function run(opts: Opts) {
+function exec(opts: Opts) {
   const fits: { points: LatLng[]; padding: unknown }[] = [];
-  const layer = () => ({ addTo() { return this; }, bindTooltip() { return this; }, on() { return this; } });
+  // Which kinds of layer were added to the map (tile, polygon, polyline, marker).
+  const drawn: string[] = [];
+  const layer = (kind: string) => () => ({ addTo() { drawn.push(kind); return this; }, bindTooltip() { return this; }, on() { return this; } });
   const L = {
     map: () => ({ setView() { return this; }, removeLayer() {}, fitBounds(b: { points: LatLng[] }, o: { padding: unknown }) { fits.push({ points: b.points, padding: o.padding }); } }),
-    tileLayer: layer, polygon: layer, polyline: layer, marker: layer, divIcon: () => ({}),
+    tileLayer: layer('tile'), polygon: layer('zone'), polyline: layer('route'), marker: layer('marker'), divIcon: () => ({}),
     latLngBounds: (points: LatLng[]) => ({ points, isValid: () => points.length > 0 }),
   };
   const mapEl = { querySelector: () => null };
@@ -29,8 +34,10 @@ function run(opts: Opts) {
   });
   vm.runInContext(SRC, ctx);
   (window.__MapViewLeaflet as { init: (o: unknown) => void }).init({ id: 'm', center: [39, 35], zoom: 5, ...opts });
-  return fits;
+  return { fits, drawn: drawn.filter((k) => k !== 'tile') };
 }
+
+const run = (opts: Opts) => exec(opts).fits;
 
 const ZONE: LatLng[] = [[41, 28], [41, 30], [40, 29]];
 const ROUTE: LatLng[] = [[39.9, 32.8], [38.4, 27.1]];
@@ -52,5 +59,28 @@ describe('MapView fit-to-bounds', () => {
   it('does not fit without a padding, nor with nothing to frame', () => {
     expect(run({ zones: [{ positions: ZONE }] })).toEqual([]);
     expect(run({ fitBoundsPadding: 32 })).toEqual([]);
+  });
+});
+
+// Layer visibility (kui-react MapCanvas showMarkers / showZones / showRoutes parity).
+describe('MapView layer visibility', () => {
+  const ALL = { markers: [{ position: [37, 35.3] as LatLng }], zones: [{ positions: ZONE }], routes: [{ positions: ROUTE }], fitBoundsPadding: 32 };
+
+  it('draws every layer by default', () => {
+    expect(exec(ALL).drawn).toEqual(['zone', 'route', 'marker']);
+  });
+
+  it('leaves a hidden layer off the map', () => {
+    expect(exec({ ...ALL, showMarkers: false }).drawn).toEqual(['zone', 'route']);
+    expect(exec({ ...ALL, showZones: false }).drawn).toEqual(['route', 'marker']);
+    expect(exec({ ...ALL, showRoutes: false }).drawn).toEqual(['zone', 'marker']);
+    expect(exec({ ...ALL, showMarkers: false, showZones: false, showRoutes: false }).drawn).toEqual([]);
+  });
+
+  it('still frames hidden layers, so hiding never moves the view', () => {
+    const shown = run(ALL);
+    const hidden = run({ ...ALL, showMarkers: false, showZones: false, showRoutes: false });
+    expect(hidden).toEqual(shown);
+    expect(hidden).toEqual([{ points: [[37, 35.3], ...ZONE, ...ROUTE], padding: [32, 32] }]);
   });
 });

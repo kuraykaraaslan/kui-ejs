@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2026-10
 
-The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.
+The card-less Leaflet canvas behind MapView: it fills its parent (give the parent a height), takes markers, zones and routes, and accepts a custom tile configuration (`tiles.url` + `tiles.attribution`). `showMarkers` / `showZones` / `showRoutes` (default true) hide a layer without moving the view: a hidden layer still counts for fit-to-bounds. Use it inside a dashboard tile or panel that already has its own frame; use MapView for a standalone map card.
 
 ## Accessibility
 
@@ -59,6 +59,10 @@ Leaflet keyboard navigation (arrows, +/-) stays on; the loading label is announc
 // Locals:
 //   id                 — DOM id base (auto-generated when omitted)
 //   markers, zones, routes — same shapes as MapView
+//   showMarkers, showZones, showRoutes
+//                      — layer visibility (default true). A hidden layer is not
+//                        drawn but still counts for fit-to-bounds, so hiding a
+//                        layer never moves the view.
 //   center, zoom       — view start (default Ankara, 6)
 //   tiles              — { url, attribution } for both themes, or { light, dark }.
 //                        Default CARTO Voyager / Dark Matter.
@@ -77,6 +81,9 @@ var _zoom      = typeof locals.zoom === 'number' ? locals.zoom : 6;
 var _markers   = locals.markers || [];
 var _zones     = locals.zones   || [];
 var _routes    = locals.routes  || [];
+var _showMarkers = locals.showMarkers !== false;
+var _showZones   = locals.showZones   !== false;
+var _showRoutes  = locals.showRoutes  !== false;
 var _tiles     = locals.tiles || null;
 var _fit       = locals.fitBoundsPadding === false ? null : (typeof locals.fitBoundsPadding === 'number' ? locals.fitBoundsPadding : 32);
 var _loading   = locals.loadingLabel || 'Loading map…';
@@ -101,6 +108,9 @@ var _onClick   = typeof locals.onMarkerClick === 'string' ? locals.onMarkerClick
       markers:          <%- JSON.stringify(_markers) %>,
       zones:            <%- JSON.stringify(_zones) %>,
       routes:           <%- JSON.stringify(_routes) %>,
+      showMarkers:      <%- JSON.stringify(_showMarkers) %>,
+      showZones:        <%- JSON.stringify(_showZones) %>,
+      showRoutes:       <%- JSON.stringify(_showRoutes) %>,
       fitBoundsPadding: <%- JSON.stringify(_fit === null ? null : _fit) %>,
       tiles:            <%- JSON.stringify(_tiles) %>,
       onMarkerClick: function (markerId) {
