@@ -148,7 +148,8 @@
         routes:  (opts.routes  || []).map(function (r) { return Object.assign({}, r, { positions: (r.positions || []).map(flip) }); })
       });
       imageBounds = [[0, 0], [image.height, image.width]];
-      map = L.map(opts.id + '-map', { crs: L.CRS.Simple, minZoom: typeof opts.minZoom === 'number' ? opts.minZoom : -5 })
+      // Fractional zoom steps so the picture fills its card (kui-react f67ed92).
+      map = L.map(opts.id + '-map', { crs: L.CRS.Simple, zoomSnap: 0.1, zoomDelta: 0.5, minZoom: typeof opts.minZoom === 'number' ? opts.minZoom : -5 })
         .setView([image.height / 2, image.width / 2], 0);
       if (image.url) L.imageOverlay(image.url, imageBounds).addTo(map);
     } else {

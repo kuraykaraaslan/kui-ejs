@@ -116,7 +116,7 @@ describe('MapView image map', () => {
 
   it('starts on the picture centre at zoom 0, minZoom -5 unless one is given', () => {
     const r = exec({ image: IMAGE });
-    expect(r.created[0]).toEqual({ options: { crs: r.CRS.Simple, minZoom: -5 }, view: [[300, 500], 0] });
+    expect(r.created[0]).toEqual({ options: { crs: r.CRS.Simple, zoomSnap: 0.1, zoomDelta: 0.5, minZoom: -5 }, view: [[300, 500], 0] });
     expect((exec({ image: IMAGE, minZoom: -2 }).created[0].options as { minZoom: number }).minZoom).toBe(-2);
   });
 
