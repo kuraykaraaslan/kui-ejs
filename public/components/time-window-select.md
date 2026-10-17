@@ -71,7 +71,9 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   //   value           — the applied TimeWindowValue, or null
   //   presets         — default ['5m','15m','30m','1h','6h','12h','24h','3d','7d','30d']
   //   intervals       — default ['auto','1m','5m','10m','15m','30m','1h','2h','6h','12h','1d','7d']
-  //   aggregations    — default ['avg','min','max','sum','count','none']
+  //   aggregations    — default ['avg','min','max','sum','count','none']. The select shows, and Update
+  //                     applies, an offered one: the window's own when offered, else avg when offered,
+  //                     else the first offered
   //   calendarPeriods — default all 18 (see TimeWindowPicker); current.* show under Realtime,
   //                     the others under History; [] hides both period options
   //   showInterval (true), showAggregation (true), showTimezone (true)
@@ -81,6 +83,8 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   //                     fallback preset; History: the last 24h up to now, seconds zeroed)
   //   maxBuckets (500) — above this many buckets the panel says the server will coarsen the
   //                     interval (match the server's cap)
+  //   maxSpanMs (366 days) — the longest window a consumer accepts (the dashboard server's); a
+  //                     longer one, or an invalid amount, cannot be applied and the panel says why
   //   idPrefix        — prefix of every id (`<idPrefix>-trigger`, `-from`, ...); auto-generated
   //                     when omitted (kui-react defaults to 'tws', which is not unique per page)
   //   onChange        — NAME of a global function called with the applied TimeWindowValue
@@ -110,6 +114,7 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
     buckets: '≈ {count} buckets',
     bucketsTooMany: '≈ {count} buckets: the server will use a coarser interval',
     open: 'Change time window',
+    tooLong: 'A window can be at most {days} days long',
   };
   var _own = locals.messages || {};
   var _m = Object.assign({}, S.DEFAULT_MESSAGES, SELECT_MESSAGES, _own, { periods: Object.assign({}, S.DEFAULT_MESSAGES.periods, _own.periods || {}) });
@@ -124,6 +129,7 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _showTimezone = locals.showTimezone !== false;
   var _tabs = Array.isArray(locals.tabs) && locals.tabs.length > 0 ? locals.tabs : ['realtime', 'history'];
   var _maxBuckets = typeof locals.maxBuckets === 'number' ? locals.maxBuckets : 500;
+  var _maxSpanMs = typeof locals.maxSpanMs === 'number' ? locals.maxSpanMs : 366 * 86400000;
   var _prefix = locals.idPrefix || ('tws-' + Math.random().toString(36).substr(2, 6));
   var _onChange = typeof locals.onChange === 'string' ? locals.onChange : '';
 
@@ -132,7 +138,14 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _pastPeriods = _calendarPeriods.filter(function (p) { return !L.isCurrent(p); });
 
   // The panel is rendered in the state opening it starts from (kui-react `begin()`).
-  var _v = _value || _fallback;
+  var _raw = _value || _fallback;
+  // A board that does not offer the window's aggregation (or `avg`, the default) shows and applies one it offers.
+  var _agg = _raw.aggregation && _aggregations.indexOf(_raw.aggregation) !== -1 ? _raw.aggregation : _aggregations.indexOf('avg') !== -1 ? undefined : _aggregations[0];
+  var _v = _raw;
+  if (_agg !== _raw.aggregation) {
+    _v = Object.assign({}, _raw);
+    if (_agg === undefined) delete _v.aggregation; else _v.aggregation = _agg;
+  }
   var _d = _v;
   // A window of a kind not offered starts from a default of the offered kind (the client redoes this on open).
   // Only the settings carry over: the old kind's own keys must not ride along (kui-react ea125f6).
@@ -146,7 +159,15 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _tab = _tabs.indexOf(L.tabOf(_v)) !== -1 ? L.tabOf(_v) : _tabs[0];
   var _rtKind = _v.mode === 'calendar' && L.isCurrent(_v.period) ? 'current' : 'last';
   var _hKind = _v.mode === 'calendar' ? 'period' : 'range';
-  var _span = L.windowSpanMs(_d);
+  // What the client's view() says on open (History "last N" is never the opening choice).
+  var _durationMs = L.DURATION.test(_amount + _unit) ? Number(_amount) * L.UNIT_MS[_unit] : null;
+  var _realtimeLast = _tab === 'realtime' && _rtKind === 'last';
+  var _draftSpan = L.windowSpanMs(_d);
+  var _tooLong = _realtimeLast ? _durationMs !== null && _durationMs > _maxSpanMs : _draftSpan !== null && _draftSpan > _maxSpanMs;
+  var _canApply = _realtimeLast
+    ? _durationMs !== null && _durationMs <= _maxSpanMs
+    : !_tooLong && !(_d.mode === 'absolute' && !(Date.parse(_d.to) > Date.parse(_d.from)));
+  var _span = _draftSpan;
   var _step = _d.interval && _d.interval !== 'auto' ? L.intervalMs(_d.interval) : null;
   var _summary = L.summarize(_value, _m);
 
@@ -157,15 +178,16 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
     showInterval: _showInterval, showAggregation: _showAggregation, showTimezone: _showTimezone,
     maxBuckets: _maxBuckets, tabs: _tabs, tab: _tab, rtKind: _rtKind, hKind: _hKind, amount: _amount, unit: _unit,
     bucketCount: _span && _step ? Math.ceil(_span / _step) : null,
+    tooLong: _tooLong, maxSpanDays: Math.floor(_maxSpanMs / 86400000), canApply: _canApply,
     zones: _showTimezone ? S.zoneChoices(_d.timezone) : [],
     durationUnits: S.DURATION_UNITS,
     toZonedInput: L.toZonedInput, isCurrent: L.isCurrent,
     summary: _summary, className: locals.className || '',
     config: {
-      id: _prefix, value: _value, presets: _presets, calendarPeriods: _calendarPeriods, tabs: _tabs, maxBuckets: _maxBuckets, onChange: _onChange,
+      id: _prefix, value: _value, presets: _presets, calendarPeriods: _calendarPeriods, tabs: _tabs, aggregations: _aggregations, maxBuckets: _maxBuckets, maxSpanMs: _maxSpanMs, onChange: _onChange,
       messages: {
         label: _m.label, realtime: _m.realtime, history: _m.history, last: _m.last, soFar: _m.soFar, periods: _m.periods,
-        fromIn: _m.fromIn, toIn: _m.toIn, browserZone: _m.browserZone, buckets: _m.buckets, bucketsTooMany: _m.bucketsTooMany, open: _m.open,
+        fromIn: _m.fromIn, toIn: _m.toIn, browserZone: _m.browserZone, buckets: _m.buckets, bucketsTooMany: _m.bucketsTooMany, open: _m.open, tooLong: _m.tooLong,
       },
     },
   };

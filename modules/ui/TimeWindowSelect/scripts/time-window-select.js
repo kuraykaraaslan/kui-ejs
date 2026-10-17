@@ -42,7 +42,7 @@
     var trigger = document.getElementById(cfg.id + '-trigger');
     if (!root || !trigger) return;
     var m = cfg.messages || {};
-    var st = L.createTimeWindowDraft({ value: cfg.value || null, presets: cfg.presets || [], calendarPeriods: cfg.calendarPeriods || [], tabs: cfg.tabs });
+    var st = L.createTimeWindowDraft({ value: cfg.value || null, presets: cfg.presets || [], calendarPeriods: cfg.calendarPeriods || [], tabs: cfg.tabs, aggregations: cfg.aggregations, maxSpanMs: cfg.maxSpanMs });
     var maxBuckets = typeof cfg.maxBuckets === 'number' ? cfg.maxBuckets : 500;
 
     function q(sel) { return group.querySelector(sel); }
@@ -67,6 +67,7 @@
     var aggSel = q('[data-kui-tws-aggregation]');
     var intervalSel = q('[data-kui-tws-interval]');
     var tzSel = q('[data-kui-tws-timezone]');
+    var tooLong = q('[data-kui-tws-too-long]');
     var buckets = q('[data-kui-tws-buckets]');
     var cancelBtn = q('[data-kui-tws-cancel]');
     var updateBtn = q('[data-kui-tws-update]');
@@ -117,6 +118,10 @@
       if (aggSel) aggSel.value = v.aggregation;
       if (intervalSel) intervalSel.value = v.interval;
       if (tzSel) { if (v.timezone) ensureOption(tzSel, v.timezone); tzSel.value = v.timezone; }
+      if (tooLong) {
+        tooLong.hidden = !v.tooLong;
+        tooLong.textContent = v.tooLong ? String(m.tooLong).replace('{days}', String(v.maxSpanDays)) : '';
+      }
       if (buckets) {
         buckets.hidden = v.bucketCount === null;
         var warn = v.bucketCount !== null && v.bucketCount > maxBuckets;

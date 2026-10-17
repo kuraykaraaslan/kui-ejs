@@ -163,7 +163,7 @@ describe('TimeWindowSelect draft (the client state)', () => {
   it('Realtime: any last N, and the current period with "so far"', () => {
     const d = draft({ mode: 'relative', last: '24h' });
     d.setRealtimeDuration('', 'h');
-    expect(d.view().canApply).toBe(true);
+    expect(d.view().canApply).toBe(false); // "Last" needs a valid amount (kui-react ac977b0)
     d.setRealtimeDuration('45', 'h');
     d.setRealtimeDuration('45', 'm');
     expect(d.apply()).toEqual({ mode: 'relative', last: '45m' });
@@ -298,12 +298,75 @@ describe('TimeWindowSelect: what a board lets viewers change', () => {
   });
 });
 
+describe('TimeWindowSelect: review 2026-10-17 (kui-react ac977b0)', () => {
+  it('back to Realtime from History resets to the "Last" choice, and what is shown is what Update stores', () => {
+    const d = draft({ mode: 'calendar', period: 'current.day' });
+    expect(d.view().rtKind).toBe('current');
+    d.switchTab('history');
+    d.switchTab('realtime');
+    expect(d.view()).toMatchObject({ rtKind: 'last', activePreset: '24h', amount: '24', unit: 'h' });
+    expect(d.apply()).toEqual({ mode: 'relative', last: '24h' });
+  });
+
+  it('a board without avg shows and applies an aggregation it offers', async () => {
+    const d = draft({ mode: 'relative', last: '24h' }, { aggregations: ['max', 'sum'] });
+    expect(d.view().aggregation).toBe('max');
+    expect(d.apply()).toEqual({ mode: 'relative', last: '24h', aggregation: 'max' });
+    // the window's own when offered; an unoffered one falls back to avg when avg is offered
+    expect(draft({ mode: 'relative', last: '24h', aggregation: 'sum' }, { aggregations: ['max', 'sum'] }).apply()).toEqual({ mode: 'relative', last: '24h', aggregation: 'sum' });
+    expect(draft({ mode: 'relative', last: '24h', aggregation: 'min' }, { aggregations: ['avg', 'max'] }).apply()).toEqual({ mode: 'relative', last: '24h' });
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '24h' }, aggregations: ['max', 'sum'] });
+    expect(html).toContain('<option value="max" selected>Aggregate: max</option>');
+    expect(html).toContain('&#34;aggregations&#34;:[&#34;max&#34;,&#34;sum&#34;]');
+  });
+
+  it('a window longer than the consumer accepts cannot be applied, and says why', async () => {
+    const d = draft({ mode: 'relative', last: '24h' });
+    expect(d.view()).toMatchObject({ tooLong: false, canApply: true });
+    d.setRealtimeDuration('400', 'h');
+    d.setRealtimeDuration('400', 'd');
+    expect(d.view()).toMatchObject({ tooLong: true, maxSpanDays: 366, canApply: false });
+    expect(d.apply()).toBeNull();
+    d.switchTab('history');
+    d.selectHistoryLast();
+    expect(d.view()).toMatchObject({ tooLong: true, canApply: false });
+    d.selectRange(); // a fixed range over the cap
+    d.setFrom('2025-01-01T00:00');
+    expect(d.view()).toMatchObject({ tooLong: true, canApply: false });
+    // maxSpanMs moves the cap
+    const wide = draft({ mode: 'relative', last: '400d' }, { maxSpanMs: 500 * 86_400_000 });
+    expect(wide.view()).toMatchObject({ tooLong: false, canApply: true });
+
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '400d' } });
+    expect(html).toContain('<p class="text-xs text-error" role="alert" data-kui-tws-too-long>A window can be at most 366 days long</p>');
+    expect(html).toMatch(/data-kui-tws-update disabled>Update<\/button>/);
+    expect(html).toContain('&#34;maxSpanMs&#34;:31622400000');
+    expect(html).toContain('&#34;tooLong&#34;:&#34;A window can be at most {days} days long&#34;');
+    const ok = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '24h' } });
+    expect(ok).toContain('<p class="text-xs text-error" role="alert" data-kui-tws-too-long hidden></p>');
+    expect(ok).toMatch(/data-kui-tws-update>Update<\/button>/);
+    const range = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'absolute', from: '2025-01-01T00:00:00.000Z', to: '2026-10-17T00:00:00.000Z' }, maxSpanMs: 30 * 86_400_000 });
+    expect(range).toContain('role="alert" data-kui-tws-too-long>A window can be at most 30 days long</p>');
+    expect(range).toMatch(/data-kui-tws-update disabled>Update<\/button>/);
+  });
+
+  it('an invalid realtime amount disables Update instead of applying the old window', () => {
+    const d = draft({ mode: 'relative', last: '24h' });
+    d.setRealtimeDuration('0', 'h');
+    expect(d.view().canApply).toBe(false);
+    expect(d.apply()).toBeNull();
+  });
+});
+
 describe('TimeWindowSelect helpers', () => {
   it('zoned datetime-local values round-trip, across a DST change', () => {
     expect(L.toZonedInput('2026-10-16T00:00:00.000Z', 'Europe/Istanbul')).toBe('2026-10-16T03:00');
     expect(L.fromZonedInput('2026-10-16T03:00', 'Europe/Istanbul')).toBe('2026-10-16T00:00:00.000Z');
     expect(L.fromZonedInput('2026-11-01T12:00', 'America/New_York')).toBe('2026-11-01T17:00:00.000Z');
     expect(L.fromZonedInput('2026-10-31T12:00', 'America/New_York')).toBe('2026-10-31T16:00:00.000Z');
+    // A time in a DST gap moves forward in every zone (kui-react ac977b0).
+    expect(L.fromZonedInput('2026-03-08T02:30', 'America/New_York')).toBe('2026-03-08T07:30:00.000Z');
+    expect(L.fromZonedInput('2026-03-29T02:30', 'Europe/Berlin')).toBe('2026-03-29T01:30:00.000Z');
   });
   it('spans and the summary', () => {
     expect(L.windowSpanMs({ mode: 'relative', last: '3d' })).toBe(3 * 86_400_000);

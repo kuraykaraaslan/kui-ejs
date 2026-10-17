@@ -46,7 +46,10 @@
       return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(t / 1000) * 1000;
     }
     var first = guess - offset(guess);
-    return new Date(guess - offset(first)).toISOString();
+    var second = guess - offset(first);
+    // In a DST gap the wall time does not exist and the two readings disagree: the later one is the first real instant,
+    // in every zone (kui-react ac977b0: New York moved back, Berlin forward).
+    return new Date(second === first ? second : Math.max(first, second)).toISOString();
   }
 
   /** The span a window covers, in ms (a calendar period approximately), or null when it cannot be told. */
@@ -111,7 +114,9 @@
   /**
    * The component's state and handlers without a DOM. `opts`:
    *   value, presets, calendarPeriods, now (() => ms),
-   *   tabs (['realtime', 'history'] by default; which kinds of window may be picked)
+   *   tabs (['realtime', 'history'] by default; which kinds of window may be picked),
+   *   aggregations (['avg', 'min', 'max', 'sum', 'count', 'none'] by default; the ones offered),
+   *   maxSpanMs (366 days by default; the longest window a consumer accepts, a longer one cannot be applied)
    * Every handler mutates the state; `view()` returns what to paint; `apply()` returns the
    * value Update stores (or null when it cannot be applied).
    */
@@ -123,6 +128,8 @@
     var currentPeriods = calendarPeriods.filter(isCurrent);
     var pastPeriods = calendarPeriods.filter(function (p) { return !isCurrent(p); });
     var allowed = Array.isArray(opts.tabs) && opts.tabs.length > 0 ? opts.tabs : ['realtime', 'history'];
+    var aggregations = Array.isArray(opts.aggregations) ? opts.aggregations : ['avg', 'min', 'max', 'sum', 'count', 'none'];
+    var maxSpanMs = typeof opts.maxSpanMs === 'number' ? opts.maxSpanMs : 366 * 86400000;
     function startTab(v) { return allowed.indexOf(tabOf(v)) !== -1 ? tabOf(v) : allowed[0]; }
 
     var s = {
@@ -137,7 +144,12 @@
 
     function extras() { return { interval: s.draft.interval, aggregation: s.draft.aggregation, timezone: s.draft.timezone }; }
     function put(next) { s.draft = clean(assign(next, extras())); }
-    function durationValid() { return DURATION.test(s.amount + s.unit); }
+    /** The aggregation shown and applied: the window's own when offered, else `avg` when offered, else the first one offered. */
+    function aggregationFor(a) {
+      return a && aggregations.indexOf(a) !== -1 ? a : aggregations.indexOf('avg') !== -1 ? undefined : aggregations[0];
+    }
+    function durationMs() { return DURATION.test(s.amount + s.unit) ? Number(s.amount) * UNIT_MS[s.unit] : null; }
+    function durationValid() { var ms = durationMs(); return ms !== null && ms <= maxSpanMs; }
     function lastDay() {
       var to = new Date(now()); to.setSeconds(0, 0);
       return { mode: 'absolute', from: new Date(to.getTime() - 86400000).toISOString(), to: to.toISOString() };
@@ -145,10 +157,16 @@
     function isDraftCurrent() { return s.draft.mode === 'calendar' && isCurrent(s.draft.period); }
     function isDraftPast() { return s.draft.mode === 'calendar' && !isCurrent(s.draft.period); }
     function historyLast() { return s.tab === 'history' && s.hKind === 'last'; }
+    function realtimeLast() { return s.tab === 'realtime' && s.rtKind === 'last'; }
+    function tooLong() {
+      if (historyLast() || realtimeLast()) { var ms = durationMs(); return ms !== null && ms > maxSpanMs; }
+      var span = windowSpanMs(s.draft);
+      return span !== null && span > maxSpanMs;
+    }
     function canApply() {
-      return historyLast()
+      return historyLast() || realtimeLast()
         ? durationValid()
-        : !(s.draft.mode === 'absolute' && !(Date.parse(s.draft.to) > Date.parse(s.draft.from)));
+        : !tooLong() && !(s.draft.mode === 'absolute' && !(Date.parse(s.draft.to) > Date.parse(s.draft.from)));
     }
 
     var api = {
@@ -158,7 +176,10 @@
       pastPeriods: pastPeriods,
       /** Opening the panel: the draft starts again from the applied value. */
       begin: function () {
-        var v = s.value || fallback;
+        var raw = s.value || fallback;
+        // A board that does not offer the window's aggregation (or `avg`, the default) shows and applies one it offers.
+        var agg = aggregationFor(raw.aggregation);
+        var v = agg === raw.aggregation ? raw : clean(assign(raw, { aggregation: agg }));
         s.draft = v;
         s.tab = startTab(v);
         // A window of a kind this board does not offer opens on the kind it does, starting from a default of that kind.
@@ -173,7 +194,14 @@
       setValue: function (v) { s.value = v || null; },
       switchTab: function (next) {
         s.tab = next;
-        if (next === 'realtime' && tabOf(s.draft) !== 'realtime') put({ mode: 'relative', last: fallback.last });
+        if (next === 'realtime' && tabOf(s.draft) !== 'realtime') {
+          // Back to the "Last" choice on the default preset, with the inputs showing it (kui-react ac977b0: the current
+          // period stayed ticked while Update stored the preset).
+          var d = DURATION.exec(fallback.last);
+          s.rtKind = 'last';
+          if (d) { s.amount = d[1]; s.unit = d[2]; }
+          put({ mode: 'relative', last: fallback.last });
+        }
         if (next === 'history' && tabOf(s.draft) !== 'history') {
           put(lastDay());
           s.hKind = 'range';
@@ -261,10 +289,12 @@
           showRange: d.mode === 'absolute' && s.hKind === 'range',
           from: d.mode === 'absolute' ? toZonedInput(d.from, d.timezone) : '',
           to: d.mode === 'absolute' ? toZonedInput(d.to, d.timezone) : '',
-          aggregation: d.aggregation != null ? d.aggregation : 'avg',
+          aggregation: d.aggregation != null ? d.aggregation : (aggregations.indexOf('avg') !== -1 ? 'avg' : aggregations[0]),
           interval: d.interval != null ? d.interval : 'auto',
           timezone: d.timezone != null ? d.timezone : '',
           bucketCount: span && step ? Math.ceil(span / step) : null,
+          tooLong: tooLong(),
+          maxSpanDays: Math.floor(maxSpanMs / 86400000),
           canApply: canApply(),
         };
       },

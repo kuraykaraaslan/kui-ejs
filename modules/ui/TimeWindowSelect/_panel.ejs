@@ -24,7 +24,7 @@
   // kui-react: with more than one allowed kind both tabs show; with one, only that kind's panel (no tab list).
   var many = C.tabs.length > 1;
   var kinds = many ? ['realtime', 'history'] : [C.tabs[0]];
-  var canApply = !(d.mode === 'absolute' && !(Date.parse(d.to) > Date.parse(d.from)));
+  var canApply = C.canApply;
 %>
 <div class="space-y-3" aria-label="<%= m.label %>" role="group" data-kui-tws data-kui-tws-config="<%= JSON.stringify(C.config) %>">
   <% if (many) { %>
@@ -127,7 +127,7 @@
   </div>
   <% } %>
 
-  <% if (C.showAggregation || C.showInterval || C.showTimezone) { var agg = d.aggregation != null ? d.aggregation : 'avg'; var iv = d.interval != null ? d.interval : 'auto'; var tz = d.timezone != null ? d.timezone : ''; var bc = C.bucketCount; %>
+  <% if (C.showAggregation || C.showInterval || C.showTimezone) { var agg = d.aggregation != null ? d.aggregation : (C.aggregations.indexOf('avg') !== -1 ? 'avg' : C.aggregations[0]); var iv = d.interval != null ? d.interval : 'auto'; var tz = d.timezone != null ? d.timezone : ''; var bc = C.bucketCount; %>
   <div class="space-y-2 border-t border-border pt-3">
     <div class="flex flex-wrap items-center gap-2">
       <% if (C.showAggregation) { %>
@@ -153,6 +153,7 @@
       </select>
       <% } %>
     </div>
+    <p class="text-xs text-error" role="alert" data-kui-tws-too-long<%= C.tooLong ? '' : ' hidden' %>><%= C.tooLong ? m.tooLong.replace('{days}', String(C.maxSpanDays)) : '' %></p>
     <p class="text-xs <%= bc !== null && bc > C.maxBuckets ? 'text-warning' : 'text-text-secondary' %>" role="status" data-kui-tws-buckets<%= bc === null ? ' hidden' : '' %>><%= bc === null ? '' : (bc > C.maxBuckets ? m.bucketsTooMany : m.buckets).replace('{count}', String(bc)) %></p>
   </div>
   <% } %>
