@@ -127,7 +127,7 @@
 </div>
 
 <script>(function(){
-  var root = document.getElementById('<%= _uid %>');
+  var root = document.getElementById(<%- include('../../ui/_script-json', { value: String(_uid) }) %>);
   if (!root || root.dataset.aktcInit === '1') return;
   root.dataset.aktcInit = '1';
 

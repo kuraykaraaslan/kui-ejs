@@ -71,7 +71,7 @@
 </div>
 
 <script>(function(){
-  var root = document.getElementById('<%= _ssid %>');
+  var root = document.getElementById(<%- include('../../ui/_script-json', { value: String(_ssid) }) %>);
   if (!root || root.dataset.ssInit === '1') return;
   root.dataset.ssInit = '1';
 

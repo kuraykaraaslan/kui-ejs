@@ -9,7 +9,7 @@
 %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../_script-json', { value: String(_id) }) %>);
   if (!root || root.dataset.treeKbInit === '1') return;
   root.dataset.treeKbInit = '1';
 

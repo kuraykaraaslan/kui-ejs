@@ -62,11 +62,11 @@
 <% if (_hasEdit && typeof _onEdit !== 'string') { %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _shellId %>');
+  var root = document.getElementById(<%- include('../ui/_script-json', { value: String(_shellId) }) %>);
   if (!root) return;
   var btn = root.querySelector('[data-stepshell-edit] button');
   if (btn) btn.addEventListener('click', function () {
-    root.dispatchEvent(new CustomEvent('stepshell:edit', { bubbles: true, detail: { number: <%= _number %> } }));
+    root.dispatchEvent(new CustomEvent('stepshell:edit', { bubbles: true, detail: { number: <%- include('../ui/_script-json', { value: Number(_number) }) %> } }));
   });
 })();
 </script>

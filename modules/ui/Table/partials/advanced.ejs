@@ -116,10 +116,10 @@
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../_script-json', { value: String(_id) }) %>);
   if (!root) return;
-  var selectable = <%= _selectable ? 'true' : 'false' %>;
-  var totalRows  = <%= _rows.length %>;
+  var selectable = <%- include('../../_script-json', { value: !!_selectable }) %>;
+  var totalRows  = <%- include('../../_script-json', { value: Number(_rows.length) }) %>;
 
   // Expand/collapse
   root.querySelectorAll('[data-adt-expand]').forEach(function (btn) {

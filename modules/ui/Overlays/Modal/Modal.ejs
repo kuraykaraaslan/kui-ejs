@@ -63,7 +63,7 @@
 
 <script>
 (function () {
-  var modalId = '<%= _id %>';
+  var modalId = <%- include('../../_script-json', { value: String(_id) }) %>;
 
   function openModal(id) {
     var el = document.getElementById(id);

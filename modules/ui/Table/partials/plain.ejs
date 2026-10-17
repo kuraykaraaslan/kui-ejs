@@ -94,15 +94,15 @@
 <% if (_hasSortable) { %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../_script-json', { value: String(_id) }) %>);
   if (!root) return;
   var body = root.querySelector('[data-tbl-body]');
   if (!body) return;
   var rowEls = Array.prototype.slice.call(body.querySelectorAll('[data-tbl-row]'));
 
   var state = {
-    sortKey: <%- JSON.stringify(_defaultSortKey || '') %>,
-    sortDir: <%- JSON.stringify(_defaultSortDir || null) %>
+    sortKey: <%- include('../../_script-json', { value: _defaultSortKey || '' }) %>,
+    sortDir: <%- include('../../_script-json', { value: _defaultSortDir || null }) %>
   };
 
   function setIcon(th, dir) {

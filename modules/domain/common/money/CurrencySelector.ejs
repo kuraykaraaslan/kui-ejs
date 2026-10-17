@@ -32,11 +32,11 @@
 
 <script>
 (function () {
-  var rootId   = '<%= _rootId %>';
-  var portalId = '<%= _portalId %>';
-  var initial  = <%- JSON.stringify(_value) %>;
-  var disabled = <%- JSON.stringify(_disabled) %>;
-  var supplied = <%- JSON.stringify(_currencies) %>;
+  var rootId   = <%- include('../../../ui/_script-json', { value: String(_rootId) }) %>;
+  var portalId = <%- include('../../../ui/_script-json', { value: String(_portalId) }) %>;
+  var initial  = <%- include('../../../ui/_script-json', { value: _value }) %>;
+  var disabled = <%- include('../../../ui/_script-json', { value: _disabled }) %>;
+  var supplied = <%- include('../../../ui/_script-json', { value: _currencies }) %>;
 
   var root = document.getElementById(rootId);
   if (!root || root.dataset.csInit === '1') return;
@@ -46,7 +46,7 @@
   if (!btn) return;
   btn.setAttribute('aria-haspopup', 'listbox');
   btn.setAttribute('aria-expanded', 'false');
-  btn.id = '<%= _btnId %>';
+  btn.id = <%- include('../../../ui/_script-json', { value: String(_btnId) }) %>;
 
   // Build option list. If caller supplies a flat list, use it as currency codes only.
   var options = (Array.isArray(supplied) && supplied.length)

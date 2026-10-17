@@ -58,7 +58,7 @@
 
   <!-- Structured Data -->
   <script type="application/ld+json">
-  <%- JSON.stringify({
+  <%- include('../../modules/ui/_script-json', { value: {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -82,7 +82,7 @@
         "creator": { "@type": "Person", "name": site.author }
       }
     ]
-  }) %>
+  } }) %>
   </script>
 
   <% if (site.googleTag) { %>
@@ -92,7 +92,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', '<%= site.googleTag %>');
+    gtag('config', <%- include('../../modules/ui/_script-json', { value: String(site.googleTag) }) %>);
   </script>
   <% } %>
 

@@ -245,6 +245,8 @@ Paths are relative to the current view file.
 - `<%= value %>` — HTML-escaped output (always prefer this for user-facing data)
 - `<%- html %>` — raw unescaped output (only for trusted EJS includes / pre-built HTML)
 - `<% code %>` — logic, no output
+- A conditional attribute is `<% if (cond) { %>name="<%= value %>"<% } %>`, never `<%= cond ? 'name="value"' : '' %>` (that escapes the quotes: `name=&#34;value&#34;`).
+- A value inside an inline `<script>` goes through `<%- include('<path to>/modules/ui/_script-json', { value: x }) %>` (script-safe JSON), never `'<%= x %>'` (HTML-escaped: `it's` arrives as `it&#39;s`) or a bare `<%- JSON.stringify(x) %>` (a `</script>` in the value ends the block). `tests/conditional-attributes.test.ts` and `tests/script-values.test.ts` enforce both.
 
 ### Layout override per view
 

@@ -185,7 +185,7 @@
 
 <script>
   (function () {
-    var dialog = document.getElementById('<%= _id %>');
+    var dialog = document.getElementById(<%- include('../ui/_script-json', { value: String(_id) }) %>);
     if (!dialog) return;
 
     function close() {

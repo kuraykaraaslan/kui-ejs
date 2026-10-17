@@ -10,7 +10,7 @@
 %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../_script-json', { value: String(_id) }) %>);
   if (!root || root.dataset.treeInit === '1') return;
   root.dataset.treeInit = '1';
 

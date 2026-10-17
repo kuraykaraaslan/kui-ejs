@@ -80,7 +80,7 @@
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _flowId %>');
+  var root = document.getElementById(<%- include('../ui/_script-json', { value: String(_flowId) }) %>);
   if (!root) return;
   function fire(name) {
     root.dispatchEvent(new CustomEvent(name, { bubbles: true }));

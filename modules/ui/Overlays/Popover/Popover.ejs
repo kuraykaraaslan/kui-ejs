@@ -80,7 +80,7 @@
   window.closePopover  = window.closePopover  || closePopover;
   window.togglePopover = window.togglePopover || togglePopover;
 
-  var popoverId = '<%= _id %>';
+  var popoverId = <%- include('../../_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(popoverId);
   if (!root) return;
   var controlled = root.hasAttribute('data-popover-controlled');

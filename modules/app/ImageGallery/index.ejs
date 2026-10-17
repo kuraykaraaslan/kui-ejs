@@ -18,15 +18,15 @@
 
 <script>
 (function () {
-  var G_ID    = '<%= _id %>';
-  var COLS    = <%= _columns %>;
-  var ASPECT  = '<%= _aspClass %>';
-  var REORDER = <%= _reorderable ? 'true' : 'false' %>;
-  var LIGHTBOX= <%= _lightbox    ? 'true' : 'false' %>;
-  var CAPTIONS= <%= _showCaptions ? 'true' : 'false' %>;
+  var G_ID    = <%- include('../../ui/_script-json', { value: String(_id) }) %>;
+  var COLS    = <%- include('../../ui/_script-json', { value: Number(_columns) }) %>;
+  var ASPECT  = <%- include('../../ui/_script-json', { value: String(_aspClass) }) %>;
+  var REORDER = <%- include('../../ui/_script-json', { value: !!_reorderable }) %>;
+  var LIGHTBOX= <%- include('../../ui/_script-json', { value: !!_lightbox }) %>;
+  var CAPTIONS= <%- include('../../ui/_script-json', { value: !!_showCaptions }) %>;
 
   /* ── Image state (mutable) ──────────────────────────────────────────── */
-  var images = <%- JSON.stringify(_images) %>;
+  var images = <%- include('../../ui/_script-json', { value: _images }) %>;
 
   /* Inline all behaviour scripts inside this IIFE so they share lexical scope. */
   <%- include('./grid-renderer.js') %>

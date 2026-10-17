@@ -70,7 +70,7 @@ var panelTranslate = _open
 
 <script>
 (function () {
-  var drawerId = '<%= _id %>';
+  var drawerId = <%- include('../../_script-json', { value: String(_id) }) %>;
 
   function openDrawer(id) {
     var el       = document.getElementById(id);

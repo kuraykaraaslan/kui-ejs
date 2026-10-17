@@ -128,9 +128,9 @@
     <%- include('scripts/color-state.js') %>
   }
 
-  var id = <%- JSON.stringify(_id) %>;
-  var onChangeFn = <%- JSON.stringify(_onChangeFn) %>;
-  var defaultFormat = <%- JSON.stringify(_defaultFormat) %>;
+  var id = <%- include('../_script-json', { value: _id }) %>;
+  var onChangeFn = <%- include('../_script-json', { value: _onChangeFn }) %>;
+  var defaultFormat = <%- include('../_script-json', { value: _defaultFormat }) %>;
   if (window.__kuiColorPickerInit && window.__kuiColorPickerInit[id]) return;
   window.__kuiColorPickerInit = window.__kuiColorPickerInit || {};
   window.__kuiColorPickerInit[id] = true;

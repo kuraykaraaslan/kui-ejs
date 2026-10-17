@@ -11,15 +11,15 @@
 %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../_script-json', { value: String(_id) }) %>);
   if (!root) return;
 
-  var COLS         = <%- JSON.stringify(_columns.map(function (c) { return { key: c.key, sortable: !!c.sortable, hasRender: !!c.render, filter: c.filter ? { kind: c.filter.kind || 'text', options: c.filter.options || [] } : null }; })) %>;
-  var ROWS_DATA    = <%- JSON.stringify(_rowsData) %>;
-  var TOTAL_ROWS   = <%= _rowsCount %>;
-  var EMPTY_MSG    = <%- JSON.stringify(_emptyMessage) %>;
-  var COL_COUNT    = <%= _colCount %>;
-  var IS_STATIC    = <%= _isStatic ? 'true' : 'false' %>;
+  var COLS         = <%- include('../../_script-json', { value: _columns.map(function (c) { return { key: c.key, sortable: !!c.sortable, hasRender: !!c.render, filter: c.filter ? { kind: c.filter.kind || 'text', options: c.filter.options || [] } : null }; }) }) %>;
+  var ROWS_DATA    = <%- include('../../_script-json', { value: _rowsData }) %>;
+  var TOTAL_ROWS   = <%- include('../../_script-json', { value: Number(_rowsCount) }) %>;
+  var EMPTY_MSG    = <%- include('../../_script-json', { value: _emptyMessage }) %>;
+  var COL_COUNT    = <%- include('../../_script-json', { value: Number(_colCount) }) %>;
+  var IS_STATIC    = <%- include('../../_script-json', { value: !!_isStatic }) %>;
 
   var searchEl     = root.querySelector('[data-dt-search]');
   var pageSizeEl   = root.querySelector('[data-dt-pagesize]');
@@ -31,7 +31,7 @@
   var state = {
     search:   '',
     page:     1,
-    pageSize: <%= _pageSize %>,
+    pageSize: <%- include('../../_script-json', { value: Number(_pageSize) }) %>,
     sort:     [], // multi-column: [{ key, dir }, ...]
     filters:  {}
   };
@@ -273,7 +273,7 @@
   function buildFilterPopover(triggerBtn) {
     var key = triggerBtn.getAttribute('data-dt-filter-trigger');
     var kind = triggerBtn.getAttribute('data-dt-filter-kind') || 'text';
-    var existing = document.getElementById('<%= _id %>-filter-' + key);
+    var existing = document.getElementById(<%- include('../../_script-json', { value: _id + '-filter-' }) %> + key);
     if (existing) {
       existing.parentNode.removeChild(existing);
       triggerBtn.setAttribute('aria-expanded', 'false');
@@ -284,7 +284,7 @@
     root.querySelectorAll('[data-dt-filter-trigger]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
 
     var pop = document.createElement('div');
-    pop.id = '<%= _id %>-filter-' + key;
+    pop.id = <%- include('../../_script-json', { value: _id + '-filter-' }) %> + key;
     pop.setAttribute('data-dt-filter-pop', '');
     pop.setAttribute('role', 'dialog');
     pop.className = 'absolute top-full left-0 mt-1 z-[70] min-w-[12rem] rounded-lg border border-border bg-surface-raised shadow-xl p-3';

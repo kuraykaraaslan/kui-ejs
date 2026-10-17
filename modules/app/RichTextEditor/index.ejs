@@ -126,10 +126,10 @@ if (!window.__KuiRteLoaded) {
   function go() {
     if (!window.__KuiRte || !window.__KuiRte.boot) return setTimeout(go, 30);
     window.__KuiRte.boot({
-      id: <%- JSON.stringify(_id) %>,
-      initialHtml: <%- JSON.stringify(_value) %>,
-      readOnly: <%= _readOnly ? 'true' : 'false' %>,
-      placeholder: <%- JSON.stringify(_placeholder) %>,
+      id: <%- include('../../ui/_script-json', { value: _id }) %>,
+      initialHtml: <%- include('../../ui/_script-json', { value: _value }) %>,
+      readOnly: <%- include('../../ui/_script-json', { value: !!_readOnly }) %>,
+      placeholder: <%- include('../../ui/_script-json', { value: _placeholder }) %>,
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);

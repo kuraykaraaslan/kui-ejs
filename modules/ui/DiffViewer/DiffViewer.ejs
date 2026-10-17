@@ -155,7 +155,7 @@
     <%- include('scripts/scroll-sync.js') %>
   }
 
-  var id = <%- JSON.stringify(_id) %>;
+  var id = <%- include('../_script-json', { value: _id }) %>;
   if (window.__kuiDiffInit && window.__kuiDiffInit[id]) return;
   window.__kuiDiffInit = window.__kuiDiffInit || {};
   window.__kuiDiffInit[id] = true;

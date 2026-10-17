@@ -85,11 +85,11 @@ var _cssHeight = (typeof _height === 'number') ? (_height + 'px') : _height;
       id:               '<%- _id %>',
       center:           [<%- _center[0] %>, <%- _center[1] %>],
       zoom:             <%- _zoom %>,
-      markers:          <%- JSON.stringify(_markers) %>,
-      zones:            <%- JSON.stringify(_zones) %>,
-      routes:           <%- JSON.stringify(_routes) %>,
+      markers:          <%- include('../_script-json', { value: _markers }) %>,
+      zones:            <%- include('../_script-json', { value: _zones }) %>,
+      routes:           <%- include('../_script-json', { value: _routes }) %>,
       fitBoundsPadding: <%- _fitBoundsPadding != null ? _fitBoundsPadding : 'undefined' %>,
-      tiles:            <%- JSON.stringify(_tiles) %>,
+      tiles:            <%- include('../_script-json', { value: _tiles }) %>,
       onReady: function (ctx) { window.__MapViewMarkers.attach({ id: '<%- _id %>', ctx: ctx }); }
     };
     if (document.readyState === 'loading') {

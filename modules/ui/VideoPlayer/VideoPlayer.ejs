@@ -135,12 +135,12 @@ var _ctx = {
 <script>
 (function () {
   var config = {
-    id:         '<%= _id %>',
-    autoHide:   <%- JSON.stringify(_autoHideControls) %>,
-    enableCast: <%- JSON.stringify(_enableCast) %>,
-    castTitle:  <%- JSON.stringify(_title) %>,
-    castPoster: <%- JSON.stringify(_poster) %>,
-    castFirstSrc: <%- JSON.stringify(_sources[0] || '') %>
+    id:         <%- include('../_script-json', { value: String(_id) }) %>,
+    autoHide:   <%- include('../_script-json', { value: _autoHideControls }) %>,
+    enableCast: <%- include('../_script-json', { value: _enableCast }) %>,
+    castTitle:  <%- include('../_script-json', { value: _title }) %>,
+    castPoster: <%- include('../_script-json', { value: _poster }) %>,
+    castFirstSrc: <%- include('../_script-json', { value: _sources[0] || '' }) %>
   };
   function start() {
     if (window.__vpInit) { window.__vpInit(config); return; }
