@@ -135,7 +135,11 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _v = _value || _fallback;
   var _d = _v;
   // A window of a kind not offered starts from a default of the offered kind (the client redoes this on open).
-  if (_tabs.indexOf(L.tabOf(_v)) === -1) _d = Object.assign({}, _v, _tabs[0] === 'realtime' ? _fallback : L.lastDay(Date.now()));
+  // Only the settings carry over: the old kind's own keys must not ride along (kui-react ea125f6).
+  if (_tabs.indexOf(L.tabOf(_v)) === -1) {
+    _d = Object.assign({}, _tabs[0] === 'realtime' ? _fallback : L.lastDay(Date.now()));
+    ['interval', 'aggregation', 'timezone'].forEach(function (k) { if (_v[k] !== undefined) _d[k] = _v[k]; });
+  }
   var _dur = _v.mode === 'relative' ? L.DURATION.exec(_v.last) : null;
   var _amount = _dur ? _dur[1] : '1';
   var _unit = _dur ? _dur[2] : 'h';

@@ -162,7 +162,8 @@
         s.draft = v;
         s.tab = startTab(v);
         // A window of a kind this board does not offer opens on the kind it does, starting from a default of that kind.
-        if (allowed.indexOf(tabOf(v)) === -1) s.draft = assign(v, allowed[0] === 'realtime' ? fallback : lastDay());
+        // Only the settings carry over: the old kind's own keys must not ride along (kui-react ea125f6).
+        if (allowed.indexOf(tabOf(v)) === -1) s.draft = clean(assign(allowed[0] === 'realtime' ? fallback : lastDay(), { interval: v.interval, aggregation: v.aggregation, timezone: v.timezone }));
         s.rtKind = v.mode === 'calendar' && isCurrent(v.period) ? 'current' : 'last';
         s.hKind = v.mode === 'calendar' ? 'period' : 'range';
         var d = v.mode === 'relative' ? DURATION.exec(v.last) : null;

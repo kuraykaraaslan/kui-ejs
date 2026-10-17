@@ -269,13 +269,14 @@ describe('TimeWindowSelect: what a board lets viewers change', () => {
 
     const d = draft({ mode: 'relative', last: '24h', aggregation: 'max' }, { tabs: ['history'] });
     expect(d.view()).toMatchObject({ tab: 'history', hKind: 'range', showRange: true });
-    expect(d.apply()).toMatchObject({ mode: 'absolute', aggregation: 'max', from: '2026-10-16T10:07:00.000Z', to: new Date(NOW - (NOW % 60_000)).toISOString() });
+    // Exactly an absolute window: the relative value's `last` must not ride along (kui-react ea125f6).
+    expect(d.apply()).toEqual({ mode: 'absolute', aggregation: 'max', from: '2026-10-16T10:07:00.000Z', to: new Date(NOW - (NOW % 60_000)).toISOString() });
   });
 
   it('a History window on a Realtime-only board starts from the fallback preset', async () => {
     const d = draft({ mode: 'calendar', period: 'previous.month' }, { tabs: ['realtime'] });
     expect(d.view()).toMatchObject({ tab: 'realtime', rtKind: 'last', activePreset: '24h' });
-    expect(d.state.draft).toMatchObject({ mode: 'relative', last: '24h' });
+    expect(d.state.draft).toEqual({ mode: 'relative', last: '24h' });
     const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'calendar', period: 'previous.month' }, tabs: ['realtime'] });
     expect(html).toMatch(/role="radio" aria-checked="true" class="[^"]*" data-kui-tws-preset="24h"/);
   });
