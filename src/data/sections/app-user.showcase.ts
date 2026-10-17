@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const globalSearchSource = fs.readFileSync(path.join(process.cwd(), 'modules/app/GlobalSearch.ejs'), 'utf-8');
 const commandBarSource   = fs.readFileSync(path.join(process.cwd(), 'modules/app/CommandPalette/CommandPalette.ejs'), 'utf-8');
@@ -91,12 +92,12 @@ export function buildAppUserData(): ShowcaseItem[] {
       title: 'AppCommandBar',
       category: 'App',
       abbr: 'Cb',
-      description: 'Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.',
+      description: 'Keyboard-first command palette. Opens with ⌘K. Lists the items it gets plus every command registered at runtime with window.__KuiCmdStore.register / registerMany; commands carry group, order and hidden. Sample commands only with demo.',
       filePath: 'modules/app/CommandPalette/CommandPalette.ejs',
       sourceCode: commandBarSource,
       variants: [
         {
-          title: 'Varsayılan komutlar (açık panel)',
+          title: 'Sample commands (demo, open panel)',
           previewHtml: `<div class="p-4 w-full max-w-lg" style="padding-bottom:340px">
   <div class="relative mx-auto w-full max-w-lg rounded-xl border border-border bg-surface-raised shadow-2xl overflow-hidden">
     <div class="flex items-center gap-3 px-4 py-3 border-b border-border">
@@ -121,7 +122,7 @@ export function buildAppUserData(): ShowcaseItem[] {
     </div>
   </div>
 </div>`,
-          code: `<%- include('modules/app/AppCommandBar') %>`,
+          code: `<%- include('modules/app/AppCommandBar', { demo: true }) %>`,
           layout: 'stack',
         },
         {
@@ -183,6 +184,39 @@ export function buildAppUserData(): ShowcaseItem[] {
     { icon: 'fa-solid fa-rocket',              label: 'Release & Tag v1.4.0',     shortcut: 'R T', category: 'Workflows',   keywords: ['rls'] },
   ]
 }) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Registered commands: group, order, hidden',
+          previewHtml: `<div class="flex items-center justify-center p-6">${renderPartial('modules/app/AppCommandBar.ejs', {
+            id: 'cmd-bar-registered-demo',
+            items: [
+              { id: 'go-home', label: 'Go to dashboard', group: 'Navigation', order: 0, icon: 'fa-solid fa-house' },
+              { id: 'new-lead', label: 'New lead', group: 'Create', order: 10, icon: 'fa-solid fa-plus' },
+              { id: 'new-contact', label: 'New contact', group: 'Create', order: 11, icon: 'fa-solid fa-plus' },
+              { id: 'secret', label: 'Hidden tool', group: 'Admin', hidden: true },
+            ],
+          })}<script>(function(){
+  if (!window.__KuiCmdStore) return;
+  window.__KuiCmdStore.registerMany([
+    { id: 'tel-log', label: 'Open call log', group: 'Telephony', order: 31, icon: 'fa-solid fa-phone' },
+    { id: 'tel-call', label: 'Call a contact', group: 'Telephony', order: 30, icon: 'fa-solid fa-phone', keywords: ['dial'] },
+    { id: 'tel-hidden', label: 'Hidden command', group: 'Telephony', hidden: true }
+  ]);
+})();</script></div>`,
+          code: `<%- include('modules/app/AppCommandBar', {
+  items: [
+    { id: 'go-home', label: 'Go to dashboard', group: 'Navigation', order: 0 },
+    { id: 'new-lead', label: 'New lead', group: 'Create', order: 10 },
+  ]
+}) %>
+<script>
+  // Any module adds commands at runtime; every palette lists them when it opens.
+  var dispose = window.__KuiCmdStore.registerMany([
+    { id: 'tel-call', label: 'Call a contact', group: 'Telephony', order: 30, hidden: !canCall, onClick: startCall },
+    { id: 'tel-log', label: 'Open call log', group: 'Telephony', order: 31, href: '/calls' },
+  ]);
+</script>`,
           layout: 'stack',
         },
       ],

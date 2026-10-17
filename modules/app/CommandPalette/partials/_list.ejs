@@ -4,7 +4,7 @@
   <% categories.forEach(function(cat) {
     var catItems = _allItems.filter(function(i) { return i.category === cat; });
   %>
-  <div class="cmd-category" data-category="<%= cat %>">
+  <div class="cmd-category" data-category="<%= cat %>" data-rank="<%= (locals._ranks && _ranks[cat]) || 0 %>">
     <div class="flex items-center gap-2 mb-1 px-4 pt-2">
       <span class="<%= _badgeNeutralSm %>"><%= cat %></span>
     </div>

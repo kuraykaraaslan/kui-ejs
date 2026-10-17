@@ -326,3 +326,37 @@ describe('DataTable rowActions', () => {
     expect(empty).toContain('colspan="2"');
   });
 });
+
+describe('CommandPalette', () => {
+  const options = (html: string) => [...markup(html).matchAll(/data-original-label="([^"]*)"/g)].map((m) => m[1]);
+
+  it('lists no sample commands by default', async () => {
+    expect(options(await render('modules/app/AppCommandBar.ejs'))).toEqual([]);
+  });
+
+  it('demo fills in the sample commands; items win over demo', async () => {
+    expect(options(await render('modules/app/AppCommandBar.ejs', { demo: true }))).toHaveLength(12);
+    expect(options(await render('modules/app/AppCommandBar.ejs', { demo: true, items: [{ label: 'Only me', group: 'Mine' }] })))
+      .toEqual(['Only me']);
+  });
+
+  it('orders groups and commands by order and drops hidden commands', async () => {
+    const html = await render('modules/app/AppCommandBar.ejs', {
+      items: [
+        { id: 'logs', label: 'Open logs', group: 'Admin', order: 50 },
+        { id: 'new-lead', label: 'New lead', group: 'Create', order: 20 },
+        { id: 'new-contact', label: 'New contact', group: 'Create', order: 10 },
+        { id: 'secret', label: 'Secret tool', group: 'Admin', hidden: true },
+        { id: 'home', label: 'Go home', category: 'Navigation', order: 0 },
+      ],
+    });
+    expect(options(html)).toEqual(['Go home', 'New contact', 'New lead', 'Open logs']);
+    expect(html).toContain('data-cmd-id="new-lead"');
+  });
+
+  it('ships the runtime registry (registerMany) and its rendering', async () => {
+    const html = await render('modules/app/AppCommandBar.ejs');
+    expect(html).toContain('registerMany');
+    expect(html).toContain('syncRegistered');
+  });
+});
