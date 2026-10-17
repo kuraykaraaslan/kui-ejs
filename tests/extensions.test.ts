@@ -92,6 +92,14 @@ describe('TabGroup', () => {
     expect(html).toMatch(/aria-selected="true"\s+aria-controls="[^"]+-panel-pinned"/);
   });
 
+  it('a row of tabs wider than its box scrolls inside the tab list: tabs keep one line and do not shrink', async () => {
+    const html = markup(await render('modules/ui/TabGroup.ejs', { tabs: [{ id: 'a', label: 'A', content: 'a' }, { id: 'b', label: 'B', content: 'b' }] }));
+    expect(html).toMatch(/role="tablist"[^>]*class="[^"]*\boverflow-x-auto\b[^"]*\boverflow-y-hidden\b/);
+    const tabs = [...html.matchAll(/<button[^>]*role="tab"[\s\S]*?class="([^"]*)"/g)].map((m) => m[1]);
+    expect(tabs).toHaveLength(2);
+    for (const cls of tabs) expect(cls).toMatch(/\bshrink-0\b[\s\S]*\bwhitespace-nowrap\b/);
+  });
+
   it('an unknown activeTab falls back to the first tab', async () => {
     const html = await render('modules/ui/TabGroup.ejs', { activeTab: 'gone', tabs: [{ id: 'a', label: 'A', content: 'a' }] });
     expect(html).toMatch(/aria-selected="true"\s+aria-controls="[^"]+-panel-a"/);

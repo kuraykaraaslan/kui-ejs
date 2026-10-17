@@ -39,8 +39,9 @@
     }
   });
 %>
-<div id="<%= _id %>" class="w-full" data-tg-root data-tg-lazy="<%= _lazy ? '1' : '0' %>">
-  <div role="tablist" aria-label="<%= _label %>" class="flex border-b border-border pb-3">
+<div id="<%= _id %>" class="w-full min-w-0" data-tg-root data-tg-lazy="<%= _lazy ? '1' : '0' %>">
+  <%# A row wider than its box (many tabs, a phone) scrolls sideways inside the tab list instead of the page. %>
+  <div role="tablist" aria-label="<%= _label %>" class="flex overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-border pb-3">
     <% _tabs.forEach(function (tab, ti) { %>
     <button
       type="button"
@@ -53,7 +54,7 @@
       data-tg-tab="<%= tab.id %>"
       data-tg-index="<%= ti %>"
       <% if (tab.disabled) { %>data-tg-disabled="1"<% } %>
-      class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= tab.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none border-transparent text-text-secondary' : (tab.id === _activeTab ? _activeCls : _inactiveCls) %>"
+      class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap px-4 py-2.5 text-sm font-medium border-b-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus <%= tab.disabled ? 'opacity-40 cursor-not-allowed pointer-events-none border-transparent text-text-secondary' : (tab.id === _activeTab ? _activeCls : _inactiveCls) %>"
     >
       <% if (tab.icon) { %><span aria-hidden="true" class="shrink-0"><%- tab.icon %></span><% } %>
       <%= tab.label %>

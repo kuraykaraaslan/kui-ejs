@@ -4,6 +4,12 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Changed — TabGroup's tab list scrolls sideways (parity with kui-react)
+
+- `TabGroup`: a row of tabs wider than its box (many tabs, a phone) scrolls sideways inside the tab list
+  (`overflow-x-auto`, tabs `shrink-0 whitespace-nowrap`) instead of widening the page; the focus ring is drawn inset
+  so the scroll box does not clip it. Keyboard and ARIA are unchanged.
+
 ### Added — extension surfaces (parity with kui-react, next-boilerplate phase 37)
 
 - `modules/ui/UnavailableContribution.ejs`: the placeholder admins and editors see where a contributed piece of
