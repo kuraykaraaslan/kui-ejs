@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const sourceCode = fs.readFileSync(path.join(process.cwd(), 'modules/ui/DropdownMenu.ejs'), 'utf-8');
 
@@ -62,7 +63,7 @@ export function buildDropdownMenuData(): ShowcaseItem[] {
       title: 'DropdownMenu',
       category: 'Organism',
       abbr: 'Dm',
-      description: 'Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation.',
+      description: 'Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation. Items take an optional id, href, group, order, hidden and disabledReason so other modules can contribute entries; portal escapes clipping parents.',
       filePath: 'modules/ui/DropdownMenu.ejs',
       sourceCode,
       variants: [
@@ -135,6 +136,32 @@ export function buildDropdownMenuData(): ShowcaseItem[] {
     { label: 'Settings', icon: '...' },
     { type: 'separator' },
     { label: 'Sign out', icon: '...', danger: true }
+  ]
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Contributed items: group, order, hidden, href, disabledReason',
+          previewHtml: stage(renderPartial('modules/ui/DropdownMenu.ejs', {
+            id: 'dm-contributed',
+            trigger: trigger('Contact'),
+            items: [
+              { id: 'delete', label: 'Delete', group: 'danger', order: 1000, danger: true },
+              { id: 'edit', label: 'Edit', group: 'record', order: 10 },
+              { id: 'call', label: 'Call', group: 'contact', order: 20, href: '#call' },
+              { id: 'sign', label: 'Send for signature', group: 'contact', order: 30, disabled: true, disabledReason: 'Add an email address first' },
+              { id: 'campaign', label: 'Add to campaign', group: 'contact', order: 40, hidden: true },
+            ],
+          })),
+          code: `<%# Items sort by group (ranked by their lowest order) and order; a separator splits groups. %>
+<%- include('modules/ui/DropdownMenu', {
+  trigger: '<button type="button" class="…">Contact</button>',
+  items: [
+    { id: 'edit', label: 'Edit', group: 'record', order: 10 },
+    { id: 'call', label: 'Call', group: 'contact', order: 20, href: '/calls/new' },
+    { id: 'sign', label: 'Send for signature', group: 'contact', order: 30, disabled: true, disabledReason: 'Add an email address first' },
+    { id: 'campaign', label: 'Add to campaign', group: 'contact', order: 40, hidden: !canMarket },
+    { id: 'delete', label: 'Delete', group: 'danger', order: 1000, danger: true },
   ]
 }) %>`,
           layout: 'stack',

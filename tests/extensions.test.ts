@@ -142,3 +142,88 @@ describe('TabGroup', () => {
     })).rejects.toThrow('boom');
   });
 });
+
+describe('DropdownMenu contributed items', () => {
+  it('hidden items are left out without stray separators', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', {
+      items: [{ label: 'Edit' }, { type: 'separator' }, { label: 'Call', hidden: true }, { type: 'separator' }, { label: 'Delete', danger: true }],
+    });
+    expect(menuEntries(html)).toEqual(['Edit', '-', 'Delete']);
+  });
+
+  it('orders by group (lowest order first) and order, with a separator between groups', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', {
+      items: [
+        { id: 'sign-out', label: 'Sign out', group: 'session', order: 1000 },
+        { id: 'profile', label: 'Profile', group: 'account', order: 100 },
+        { type: 'separator' },
+        { id: 'dnd', label: 'Do not disturb', group: 'status', order: 50 },
+        { id: 'settings', label: 'Settings', group: 'account', order: 200 },
+      ],
+    });
+    expect(menuEntries(html)).toEqual(['Do not disturb', '-', 'Profile', 'Settings', '-', 'Sign out']);
+  });
+
+  it('a list without group or order keeps its order and separators', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', { items: [{ label: 'B' }, { type: 'separator' }, { label: 'A' }] });
+    expect(menuEntries(html)).toEqual(['B', '-', 'A']);
+  });
+
+  it('href renders a link with data-item-id; a disabled href item stays a disabled button', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', {
+      items: [{ id: 'docs', label: 'Docs', href: '/docs' }, { label: 'Off', href: '/off', disabled: true }],
+    });
+    expect(html).toMatch(/<a\s+role="menuitem"\s+href="\/docs"\s+data-item-id="docs"/);
+    expect(html).not.toContain('href="/off"');
+    expect(html).toMatch(/<button\s+role="menuitem"\s+type="button"\s+disabled/);
+  });
+
+  it('disabledReason shows under a disabled item and describes it', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', {
+      id: 'dm',
+      items: [{ label: 'Archive', disabled: true, disabledReason: 'Only owners can archive' }],
+    });
+    expect(html).toContain('title="Only owners can archive" aria-label="Archive" aria-describedby="dm-reason-0"');
+    expect(html).toContain('<span id="dm-reason-0" class="text-xs text-text-secondary">Only owners can archive</span>');
+  });
+
+  it('portal marks the menu for document.body placement', async () => {
+    const html = await render('modules/ui/DropdownMenu.ejs', { portal: true, align: 'right', items: [{ label: 'A' }] });
+    expect(markup(html)).toContain('data-dropdown-portal="right"');
+  });
+});
+
+describe('UserMenu', () => {
+  const entries = async (locals: Record<string, unknown>) =>
+    menuEntries(await render('modules/domain/common/user/UserMenu.ejs', { id: 'um', name: 'Jane', ...locals }));
+
+  it('shows Profile, Settings, a separator and Sign out by default', async () => {
+    expect(await entries({})).toEqual(['Profile', 'Settings', '-', 'Sign out']);
+  });
+
+  it('extraItems merge with the built-in items, placed by group and order', async () => {
+    expect(await entries({
+      extraItems: [
+        { id: 'prefs', label: 'Preferences' },
+        { id: 'dnd', label: 'Do not disturb', group: 'status', order: 10 },
+        { id: 'stop', label: 'Stop impersonating', group: 'session', order: 900 },
+      ],
+    })).toEqual(['Do not disturb', '-', 'Profile', 'Settings', 'Preferences', '-', 'Stop impersonating', 'Sign out']);
+  });
+
+  it('items replace the built-in items unless mergeItems is set', async () => {
+    expect(await entries({ items: [{ label: 'Mine' }, { type: 'separator' }, { label: 'Leave' }] })).toEqual(['Mine', '-', 'Leave']);
+    expect(await entries({ mergeItems: true, items: [{ id: 'billing', label: 'Billing' }] }))
+      .toEqual(['Profile', 'Settings', 'Billing', '-', 'Sign out']);
+  });
+
+  it('an item with a built-in id replaces it in place; hrefs and labels are configurable', async () => {
+    const html = await render('modules/domain/common/user/UserMenu.ejs', {
+      id: 'um', name: 'Jane', settingsHref: '/settings', labels: { signOut: 'Abmelden' },
+      extraItems: [{ id: 'profile', label: 'My account', href: '/me' }],
+    });
+    expect(menuEntries(html)).toEqual(['My account', 'Settings', '-', 'Abmelden']);
+    expect(html).toContain('href="/me"');
+    expect(html).toContain('href="/settings"');
+  });
+});

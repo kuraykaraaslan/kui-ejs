@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const userAvatarSource      = fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/user/UserAvatar.ejs'), 'utf-8');
 const userMenuSource        = fs.readFileSync(path.join(process.cwd(), 'modules/domain/common/user/UserMenu.ejs'), 'utf-8');
@@ -121,7 +122,7 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
       title: 'UserMenu',
       category: 'Domain',
       abbr: 'Um',
-      description: 'Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.',
+      description: 'Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.',
       filePath: 'modules/domain/common/user/UserMenu.ejs',
       sourceCode: userMenuSource,
       variants: [
@@ -164,6 +165,37 @@ export function buildDomainCommonUserData(): ShowcaseItem[] {
   name:  'Alice Johnson',
   email: 'alice@example.com',
   align: 'right'
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Contributed items (merged)',
+          previewHtml: `<div class="p-4 flex justify-end" style="min-height:320px">${renderPartial('modules/domain/common/user/UserMenu.ejs', {
+            id: 'user-menu-contributed',
+            name: 'Alice Johnson',
+            email: 'alice@example.com',
+            role: 'ADMIN',
+            profileHref: '#profile',
+            extraItems: [
+              { id: 'dnd', label: 'Do not disturb', group: 'status', order: 10 },
+              { id: 'preferences', label: 'Preferences' },
+              { id: 'switch-tenant', label: 'Switch workspace', group: 'workspace', order: 600 },
+              { id: 'stop-impersonating', label: 'Stop impersonating', group: 'session', order: 900, hidden: true },
+            ],
+          })}</div>`,
+          code: `<%# extraItems merge with Profile / Settings / Sign out instead of replacing them.
+    No group: joins the account items. No order: after them, before sign out (order 1000). %>
+<%- include('modules/domain/common/user/UserMenu', {
+  name: user.name,
+  email: user.email,
+  profileHref: '/me',
+  onSignOut: 'signOut()',
+  extraItems: [
+    { id: 'dnd', label: 'Do not disturb', group: 'status', order: 10 },
+    { id: 'preferences', label: 'Preferences', href: '/me/preferences' },
+    { id: 'switch-tenant', label: 'Switch workspace', group: 'workspace', order: 600 },
+    { id: 'stop-impersonating', label: 'Stop impersonating', group: 'session', order: 900, hidden: !impersonating },
+  ]
 }) %>`,
           layout: 'stack',
         },
