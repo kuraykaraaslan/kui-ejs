@@ -68,7 +68,7 @@ Tri-state theme selector (light / dark / system). Persists the choice to localSt
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../ui/_script-json', { value: String(_id) }) %>);
   if (!root) return;
 
   var label   = root.querySelector('[data-theme-label]');
@@ -98,7 +98,7 @@ Tri-state theme selector (light / dark / system). Persists the choice to localSt
 
   // Expose a setter that the DropdownMenu items can invoke via inline onClick.
   window.__themeSwitcher_set = window.__themeSwitcher_set || function (id, theme) {
-    if (id !== '<%= _id %>') return;
+    if (id !== <%- include('../ui/_script-json', { value: String(_id) }) %>) return;
     apply(theme);
   };
 

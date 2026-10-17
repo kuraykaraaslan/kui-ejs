@@ -162,18 +162,12 @@ Accessible tab navigation following the role="tablist" / role="tab" / role="tabp
 </div>
 
 <%
-  /* Inline-script-safe JSON for TAB_CONTENTS: escape sequences that would
-     otherwise terminate <script> early or be invalid inside a JS string literal. */
-  var _tabContentsJson = JSON
-    .stringify(_tabs.filter(_tabLazy).map(function (t) { return { id: t.id, content: _contents[t.id] }; }))
-    .replace(/<\/(script|style)/gi, '<\\/$1')
-    .replace(/<!--/g, '<\\!--')
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029');
+  /* TAB_CONTENTS goes into the script through _script-json (script-safe JSON). */
+  var _tabContents = _tabs.filter(_tabLazy).map(function (t) { return { id: t.id, content: _contents[t.id] }; });
 %>
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('./_script-json', { value: String(_id) }) %>);
   if (!root) return;
   var lazy = root.getAttribute('data-tg-lazy') === '1';
   var activated = new Set();
@@ -181,7 +175,7 @@ Accessible tab navigation following the role="tablist" / role="tab" / role="tabp
   var inactiveCls = ['border-transparent', 'text-text-secondary', 'hover:text-text-primary', 'hover:border-border'];
   var activeCls   = ['border-primary', 'text-primary'];
 
-  var TAB_CONTENTS = <%- _tabContentsJson %>;
+  var TAB_CONTENTS = <%- include('./_script-json', { value: _tabContents }) %>;
 
   // Pre-mark currently active panel.
   root.querySelectorAll('[role="tab"]').forEach(function (t) {

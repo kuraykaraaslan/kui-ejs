@@ -199,7 +199,7 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
 
 <script>
 (function () {
-  var rootId = '<%= _id %>';
+  var rootId = <%- include('./_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(rootId);
   if (!root) return;
 
@@ -251,7 +251,7 @@ Numeric slider input, distinct from Slider (a carousel). Single mode renders one
 
     root.__rangeslider = {
       setPending: function (on) {
-        single.disabled = <%= _disabled ? 'true' : 'false' %> || !!on;
+        single.disabled = <%- include('./_script-json', { value: !!_disabled }) %> || !!on;
         if (on) single.setAttribute('aria-busy', 'true'); else single.removeAttribute('aria-busy');
       },
       setValue: function (v) { single.value = String(v); paint(Number(single.value)); },

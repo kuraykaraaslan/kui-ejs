@@ -124,11 +124,11 @@ For non-star scales (e.g. NPS, percentages) use ContentScoreBar or a custom indi
   </span>
   <script>
     (function(){
-      var root = document.getElementById('<%= _rid %>');
+      var root = document.getElementById(<%- include('./_script-json', { value: String(_rid) }) %>);
       if (!root) return;
       var buttons = root.querySelectorAll('button[data-star]');
       var current = parseFloat(root.getAttribute('data-value')) || 0;
-      var sizeCls = '<%= sizeClasses %>';
+      var sizeCls = <%- include('./_script-json', { value: String(sizeClasses) }) %>;
 
       function paint(displayValue, isHover) {
         buttons.forEach(function(btn){

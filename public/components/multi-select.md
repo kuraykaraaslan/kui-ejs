@@ -229,7 +229,7 @@ Chip-based multi-select popover with searchable filter, keyboard navigation, and
 
 <script>
 (function () {
-  var rootId = '<%= _id %>-root';
+  var rootId = <%- include('../_script-json', { value: _id + '-root' }) %>;
   var root = document.getElementById(rootId);
   if (!root || root.dataset.msInit === '1') return;
   root.dataset.msInit = '1';

@@ -133,7 +133,7 @@ Free-text input that creates chips. Add tags with Enter or comma, double-click t
 
 <script>
 (function () {
-  var rootId = '<%= _id %>-root';
+  var rootId = <%- include('./_script-json', { value: _id + '-root' }) %>;
   var root = document.getElementById(rootId);
   if (!root || root.dataset.tiInit === '1') return;
   root.dataset.tiInit = '1';
@@ -141,7 +141,7 @@ Free-text input that creates chips. Add tags with Enter or comma, double-click t
   var shell  = root.querySelector('[data-taginput-shell]');
   var chips  = root.querySelector('[data-taginput-chips]');
   var input  = root.querySelector('[data-taginput-input]');
-  var placeholderText = <%- JSON.stringify(_placeholder) %>;
+  var placeholderText = <%- include('./_script-json', { value: _placeholder }) %>;
   if (!shell || !chips) return;
 
   var tags = Array.prototype.slice.call(chips.querySelectorAll('[data-taginput-chip]')).map(function (el) { return el.dataset.value; });

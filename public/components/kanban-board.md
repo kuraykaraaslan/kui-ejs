@@ -131,9 +131,9 @@ Each column is role="region" with aria-label; the inner list is role="list"; car
 
 <script>
 (function () {
-  var KB_ID  = '<%= _id %>';
+  var KB_ID  = <%- include('../../ui/_script-json', { value: String(_id) }) %>;
   var MIME   = 'application/x-kanban-card';
-  var cards  = <%- JSON.stringify(_cards) %>;
+  var cards  = <%- include('../../ui/_script-json', { value: _cards }) %>;
   var snapshot = null;
   var dropTarget = null; // { columnId, index }
   var draggingId = null;

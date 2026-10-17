@@ -211,7 +211,7 @@ Modal navigation panel that slides in from the page edge: trigger button, backdr
 <script>
 (function () {
   var FOCUSABLE = 'button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])';
-  var drawerId = '<%= _id %>';
+  var drawerId = <%- include('../ui/_script-json', { value: String(_id) }) %>;
 
   function openDrawer(id) {
     var el    = document.getElementById(id);

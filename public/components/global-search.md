@@ -116,10 +116,10 @@ Command-palette-style global search field. Supports a categorised result list, k
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../ui/_script-json', { value: String(_id) }) %>);
   if (!root) return;
-  var input = document.getElementById('<%= _id %>-input');
-  var panel = document.getElementById('<%= _id %>-results');
+  var input = document.getElementById(<%- include('../ui/_script-json', { value: _id + '-input' }) %>);
+  var panel = document.getElementById(<%- include('../ui/_script-json', { value: _id + '-results' }) %>);
   if (!input || !panel) return;
 
   var highlighted = -1;

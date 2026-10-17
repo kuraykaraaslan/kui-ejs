@@ -188,7 +188,7 @@ Card for a single API key — reveal/hide, copy-to-clipboard, env badge, last-us
 </div>
 
 <script>(function(){
-  var root = document.getElementById('<%= _uid %>');
+  var root = document.getElementById(<%- include('../../ui/_script-json', { value: String(_uid) }) %>);
   if (!root || root.dataset.aktcInit === '1') return;
   root.dataset.aktcInit = '1';
 

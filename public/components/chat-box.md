@@ -180,7 +180,7 @@ Floating chat widget that anchors to the bottom-right of the screen. Includes a 
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>');
+  var root = document.getElementById(<%- include('../../../ui/_script-json', { value: String(_id) }) %>);
   if (!root || root.dataset.chatboxInit === '1') return;
   root.dataset.chatboxInit = '1';
 
@@ -198,8 +198,8 @@ Floating chat widget that anchors to the bottom-right of the screen. Includes a 
   var minBtn   = root.querySelector('[data-chatbox-minimise]');
   var closeBtn = root.querySelector('[data-chatbox-close]');
 
-  var open      = <%= _open ? 'true' : 'false' %>;
-  var minimised = <%= _minimised ? 'true' : 'false' %>;
+  var open      = <%- include('../../../ui/_script-json', { value: !!_open }) %>;
+  var minimised = <%- include('../../../ui/_script-json', { value: !!_minimised }) %>;
   var loading   = false;
   var unread    = 0;
 

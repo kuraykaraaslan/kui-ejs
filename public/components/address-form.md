@@ -112,7 +112,7 @@ Full address form with full name, phone, address lines, city, state/district, po
 
 <script>
 (function () {
-  var form = document.getElementById('<%= _formId %>');
+  var form = document.getElementById(<%- include('../../../ui/_script-json', { value: String(_formId) }) %>);
   if (!form || form.__kuiAddressBound) return;
   form.__kuiAddressBound = true;
 

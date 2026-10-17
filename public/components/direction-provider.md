@@ -43,8 +43,8 @@ Wrapper div that sets dir="rtl"/"ltr" based on the language code. RTL languages:
 <script>
 (function () {
   if (typeof document === 'undefined') return;
-  document.documentElement.setAttribute('dir',  '<%= _dir %>');
-  document.documentElement.setAttribute('lang', '<%= _lang %>');
+  document.documentElement.setAttribute('dir',  <%- include('../../../ui/_script-json', { value: String(_dir) }) %>);
+  document.documentElement.setAttribute('lang', <%- include('../../../ui/_script-json', { value: String(_lang) }) %>);
 })();
 </script>
 <% } %>

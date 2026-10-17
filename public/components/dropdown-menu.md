@@ -261,7 +261,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
   window.closeDropdownMenu  = window.closeDropdownMenu  || closeDropdownMenu;
   window.toggleDropdownMenu = window.toggleDropdownMenu || toggleDropdownMenu;
 
-  var dropdownId = '<%= _id %>';
+  var dropdownId = <%- include('./_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(dropdownId);
   if (!root) return;
 

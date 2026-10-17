@@ -114,8 +114,8 @@ Short hint shown on hover and focus. Accessible via role="tooltip" + aria-descri
 
 <script>
 (function () {
-  var wrapper = document.getElementById('<%= _id %>-wrapper');
-  var tip     = document.getElementById('<%= _id %>');
+  var wrapper = document.getElementById(<%- include('./_script-json', { value: _id + '-wrapper' }) %>);
+  var tip     = document.getElementById(<%- include('./_script-json', { value: String(_id) }) %>);
   if (!wrapper || !tip) return;
 
   var delay = parseInt(wrapper.getAttribute('data-tooltip-delay'), 10) || 0;

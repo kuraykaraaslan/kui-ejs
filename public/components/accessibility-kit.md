@@ -139,7 +139,7 @@ A11y helpers bundle that exposes the SkipLink, LiveRegion (Announcer) and Toolti
 
 <script>
 (function () {
-  var liveId = '<%= _liveId %>';
+  var liveId = <%- include('../ui/_script-json', { value: String(_liveId) }) %>;
   function announce(msg, politeness) {
     var el = document.getElementById(liveId);
     if (!el) return;

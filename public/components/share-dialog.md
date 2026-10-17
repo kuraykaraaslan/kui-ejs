@@ -255,7 +255,7 @@ Share modal: copyable link, email invitation with permission picker, and a list 
 
 <script>
   (function () {
-    var dialog = document.getElementById('<%= _id %>');
+    var dialog = document.getElementById(<%- include('../ui/_script-json', { value: String(_id) }) %>);
     if (!dialog) return;
 
     function close() {

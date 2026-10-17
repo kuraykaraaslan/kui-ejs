@@ -192,7 +192,7 @@ Searchable autocomplete single-select with keyboard navigation, described option
 
 <script>
 (function () {
-  var rootId = '<%= _id %>';
+  var rootId = <%- include('../_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(rootId);
   if (!root || root.dataset.cbInit === '1') return;
   root.dataset.cbInit = '1';

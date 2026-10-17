@@ -173,7 +173,7 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
 
 <script>
 (function () {
-  var root = document.querySelector('[data-toggle-root="<%= _id %>"]');
+  var root = document.querySelector(<%- include('./_script-json', { value: '[data-toggle-root="' + _id + '"]' }) %>);
   if (!root || root.__toggleBound) return;
   root.__toggleBound = true;
 
@@ -182,7 +182,7 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
   var thumb = root.querySelector('[data-toggle-thumb]');
   if (!input || !track || !thumb) return;
 
-  var ON_CLASS = '<%= sm.on %>';
+  var ON_CLASS = <%- include('./_script-json', { value: String(sm.on) }) %>;
   var TRACK_ON_CLASSES  = ['bg-primary'];
   var TRACK_OFF_CLASSES = ['bg-surface-sunken', 'border', 'border-border'];
 
@@ -203,8 +203,8 @@ role="switch" toggle/switch with three sizes, description slot, and disabled sup
     }
   }
 
-  var DIS = <%= _dis ? 'true' : 'false' %>;
-  var MISMATCH = '<%= MISMATCH_CLASSES %>'.split(' ');
+  var DIS = <%- include('./_script-json', { value: !!_dis }) %>;
+  var MISMATCH = <%- include('./_script-json', { value: String(MISMATCH_CLASSES) }) %>.split(' ');
   var SPINNER = 'absolute inset-0 m-auto h-[70%] w-[70%] animate-spin rounded-full border border-primary border-t-transparent motion-reduce:animate-none';
 
   input.addEventListener('change', function () {

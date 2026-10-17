@@ -178,7 +178,7 @@ Country dropdown built from countries-list. Shows flag + full name + ISO2 code. 
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _id %>-wrap');
+  var root = document.getElementById(<%- include('../../../ui/_script-json', { value: _id + '-wrap' }) %>);
   if (!root || root.dataset.csInit === '1') return;
   root.dataset.csInit = '1';
 
@@ -190,7 +190,7 @@ Country dropdown built from countries-list. Shows flag + full name + ISO2 code. 
   var hiddenInput  = root.querySelector('[data-cs-value]');
   var currentLabel = root.querySelector('[data-cs-current-label]');
   var currentFlag  = root.querySelector('[data-cs-current-flag]');
-  var placeholder  = '<%= _placeholder.replace(/'/g, "\\'") %>';
+  var placeholder  = <%- include('../../../ui/_script-json', { value: String(_placeholder) }) %>;
 
   function positionPanel() {
     if (!trigger || !panel) return;

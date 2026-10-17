@@ -106,7 +106,7 @@ Collapsible panel group for progressively disclosing content. Server-renders the
 
 <script>
 (function () {
-  var rootId = '<%= _id %>';
+  var rootId = <%- include('./_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(rootId);
   if (!root) return;
 

@@ -93,7 +93,7 @@ Current password + new password + confirm fields with match validation and serve
 
 <script>
 (function () {
-  var form = document.getElementById('<%= _formId %>');
+  var form = document.getElementById(<%- include('../../../ui/_script-json', { value: String(_formId) }) %>);
   if (!form || form.__kuiChangePwBound) return;
   form.__kuiChangePwBound = true;
 

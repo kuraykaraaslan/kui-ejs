@@ -78,7 +78,7 @@ Dark-themed panel showing code samples in multiple languages with tab switching 
 </div>
 
 <script>(function(){
-  var root = document.getElementById('<%= _csid %>');
+  var root = document.getElementById(<%- include('../../ui/_script-json', { value: String(_csid) }) %>);
   if (!root || root.dataset.cspInit === '1') return;
   root.dataset.cspInit = '1';
 

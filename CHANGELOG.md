@@ -50,6 +50,17 @@ All notable changes to this project will be documented here. Format follows [Kee
 - UserMenu: the trigger carried both `px-2` and `px-3`, and `px-3` won, so it was 4px wider on each side than
   kui-react's. It has kui-react's `px-2` now.
 
+### Fixed — server values inside inline scripts
+
+- `'<%= value %>'` inside a script HTML-escaped the value, so an apostrophe arrived as `&#39;` (CountrySelector's
+  placeholder, ids, class lists, DirectionProvider's language, the gtag id), and a bare `<%- JSON.stringify() %>`
+  let a value holding `</script>` end the block (RichTextEditor's initial HTML and placeholder, TagInput's
+  placeholder, table rows, map, chart and currency data, the JSON-LD blocks). Every such value now goes through
+  the new `modules/ui/_script-json.ejs`: `JSON.stringify` with `<` as `\u003c` and U+2028 / U+2029 escaped. 129
+  sites in 56 templates, plus TabGroup's lazy panel contents (which had its own escaping).
+  `tests/script-values.test.ts` covers the helper and the text values, scans every template for both patterns
+  and parses every inline script on every showcase and theme page.
+
 ### Changed — CommandPalette lists no sample commands by default
 
 - Pass `demo: true` (or your own `items`) to get the twelve sample commands. With no commands at all the

@@ -121,22 +121,22 @@ var _onClick   = typeof locals.onMarkerClick === 'string' ? locals.onMarkerClick
 <script>
   <%- include('./scripts/map-leaflet.js') %>
   (function () {
-    var onClickName = <%- JSON.stringify(_onClick) %>;
+    var onClickName = <%- include('../_script-json', { value: _onClick }) %>;
     var opts = {
-      id:               <%- JSON.stringify(_id) %>,
-      center:           <%- JSON.stringify(_center) %>,
-      zoom:             <%- JSON.stringify(_zoom) %>,
-      markers:          <%- JSON.stringify(_markers) %>,
-      zones:            <%- JSON.stringify(_zones) %>,
-      routes:           <%- JSON.stringify(_routes) %>,
-      showMarkers:      <%- JSON.stringify(_showMarkers) %>,
-      showZones:        <%- JSON.stringify(_showZones) %>,
-      showRoutes:       <%- JSON.stringify(_showRoutes) %>,
-      fitBoundsPadding: <%- JSON.stringify(_fit === null ? null : _fit) %>,
-      tiles:            <%- JSON.stringify(_tiles) %>,
-      image:            <%- JSON.stringify(_image) %>,
+      id:               <%- include('../_script-json', { value: _id }) %>,
+      center:           <%- include('../_script-json', { value: _center }) %>,
+      zoom:             <%- include('../_script-json', { value: _zoom }) %>,
+      markers:          <%- include('../_script-json', { value: _markers }) %>,
+      zones:            <%- include('../_script-json', { value: _zones }) %>,
+      routes:           <%- include('../_script-json', { value: _routes }) %>,
+      showMarkers:      <%- include('../_script-json', { value: _showMarkers }) %>,
+      showZones:        <%- include('../_script-json', { value: _showZones }) %>,
+      showRoutes:       <%- include('../_script-json', { value: _showRoutes }) %>,
+      fitBoundsPadding: <%- include('../_script-json', { value: _fit === null ? null : _fit }) %>,
+      tiles:            <%- include('../_script-json', { value: _tiles }) %>,
+      image:            <%- include('../_script-json', { value: _image }) %>,
       onMarkerClick: function (markerId) {
-        var el = document.getElementById(<%- JSON.stringify(_id + '-map') %>);
+        var el = document.getElementById(<%- include('../_script-json', { value: _id + '-map' }) %>);
         if (el) el.dispatchEvent(new CustomEvent('kui:map-marker-click', { bubbles: true, detail: { id: markerId } }));
         if (onClickName && typeof window[onClickName] === 'function') window[onClickName](markerId);
       }

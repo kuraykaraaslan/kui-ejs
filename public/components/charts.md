@@ -223,12 +223,12 @@ if (_preset && PRESETS[_preset]) {
 </div>
 <script>
 (function () {
-  var canvas = document.getElementById('<%= _chartId %>');
+  var canvas = document.getElementById(<%- include('../../../ui/_script-json', { value: String(_chartId) }) %>);
   if (!canvas || !window.Chart) return;
   new Chart(canvas, {
     type: '<%- _type %>',
-    data: <%- JSON.stringify(_data) %>,
-    options: <%- JSON.stringify(_options) %>
+    data: <%- include('../../../ui/_script-json', { value: _data }) %>,
+    options: <%- include('../../../ui/_script-json', { value: _options }) %>
   });
 })();
 </script>

@@ -178,7 +178,7 @@ document.getElementById('my-popconfirm').addEventListener('popconfirm:confirm', 
   window.closePopconfirm  = window.closePopconfirm  || closePopconfirm;
   window.togglePopconfirm = window.togglePopconfirm || togglePopconfirm;
 
-  var popconfirmId = '<%= _id %>';
+  var popconfirmId = <%- include('./_script-json', { value: String(_id) }) %>;
   var root = document.getElementById(popconfirmId);
   if (!root) return;
 

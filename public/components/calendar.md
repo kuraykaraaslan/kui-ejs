@@ -584,7 +584,7 @@ if (!window.__KuiCalendarLoaded) {
 (function () {
   function go() {
     if (!window.__KuiCalendar || !window.__KuiCalendar.boot) return setTimeout(go, 30);
-    window.__KuiCalendar.boot(<%- JSON.stringify(_id) %>);
+    window.__KuiCalendar.boot(<%- include('../../ui/_script-json', { value: _id }) %>);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
   else go();

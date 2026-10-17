@@ -185,7 +185,7 @@ Engine-agnostic code editor primitive. M1 ships a lightweight CodeMirror-style f
   }
   <% } %>
 
-  var id = <%- JSON.stringify(_id) %>;
+  var id = <%- include('../_script-json', { value: _id }) %>;
   if (window.__kuiCodeEditorInit && window.__kuiCodeEditorInit[id]) return;
   window.__kuiCodeEditorInit = window.__kuiCodeEditorInit || {};
   window.__kuiCodeEditorInit[id] = true;

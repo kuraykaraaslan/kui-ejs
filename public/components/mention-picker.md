@@ -136,7 +136,7 @@
 
 <script>
   (function () {
-    var picker = document.getElementById('<%= _id %>');
+    var picker = document.getElementById(<%- include('../ui/_script-json', { value: String(_id) }) %>);
     if (!picker) return;
     var items = Array.prototype.slice.call(picker.querySelectorAll('[data-mention-item]'));
     var active = 0;

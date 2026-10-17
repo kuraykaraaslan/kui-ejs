@@ -230,8 +230,8 @@ Presets, Last, Calendar and Custom form one radiogroup; the inputs, the period s
 <script>
 (function () {
   var roots = document.querySelectorAll('[data-kui-timewindow]');
-  var ACTIVE = <%- JSON.stringify(ACTIVE.split(' ')) %>;
-  var INACTIVE = <%- JSON.stringify(INACTIVE.split(' ')) %>;
+  var ACTIVE = <%- include('./_script-json', { value: ACTIVE.split(' ') }) %>;
+  var INACTIVE = <%- include('./_script-json', { value: INACTIVE.split(' ') }) %>;
   var DURATION = /^([1-9]\d{0,5})([mhd])$/;
 
   function toInput(iso) { return String(iso).slice(0, 16); }

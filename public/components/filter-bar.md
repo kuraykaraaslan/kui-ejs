@@ -126,7 +126,7 @@ Select, multiselect, daterange and text-based filter panel. Supports URL-based f
 
 <script>
 (function () {
-  var root = document.getElementById('<%= _filterId %>');
+  var root = document.getElementById(<%- include('../ui/_script-json', { value: String(_filterId) }) %>);
   if (!root) return;
   function fire(name) {
     root.dispatchEvent(new CustomEvent(name, { bubbles: true }));

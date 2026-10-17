@@ -116,7 +116,7 @@ Full credit card entry form with live card visual preview. Auto-detects brand, f
 
 <script>
 (function () {
-  var formId = '<%= _formId %>';
+  var formId = <%- include('../../../ui/_script-json', { value: String(_formId) }) %>;
   var form = document.getElementById(formId);
   if (!form || form.dataset.ccInit === '1') return;
   form.dataset.ccInit = '1';

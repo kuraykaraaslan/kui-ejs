@@ -244,7 +244,7 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
     input.addEventListener('keydown',function(e){
       if(e.key==='Escape'){input.value='';filter('');}
     });
-  })('<%= _id %>');
+  })(<%- include('../ui/_script-json', { value: String(_id) }) %>);
   window.toggleAppSidebar=window.toggleAppSidebar||toggleAppSidebar;
   window.toggleSidebarGroup=window.toggleSidebarGroup||toggleSidebarGroup;
 })();

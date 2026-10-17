@@ -197,7 +197,7 @@ Avatar + name + role trigger (the role line only when the user has one; the emai
 
 <script>
 (function () {
-  var host = document.querySelector('[data-user-menu-host][data-id="<%= _id %>"]');
+  var host = document.querySelector(<%- include('../../../ui/_script-json', { value: '[data-user-menu-host][data-id="' + _id + '"]' }) %>);
   if (!host || host.dataset.umInit === '1') return;
   host.dataset.umInit = '1';
 
