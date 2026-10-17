@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.
+Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML. The active item, link or button, is marked aria-current="page"; collapsed, the nav reserves no scrollbar gutter, so the icons stay centered.
 
 ## Design tokens consumed
 
@@ -154,9 +154,9 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
         %>
         <div data-nav-item data-search-title="<%= (item.label||'').toLowerCase() %>">
         <% if (item.href) { %>
-        <a href="<%= item.href %>" <%= isActive ? 'aria-current="page"' : '' %> <%= (_collapsed && item.label) ? 'title="'+item.label+'"' : '' %> class="<%= cls %>">
+        <a href="<%= item.href %>"<% if (isActive) { %> aria-current="page"<% } %><% if (_collapsed && item.label) { %> title="<%= item.label %>"<% } %> class="<%= cls %>">
         <% } else { %>
-        <button type="button" <%= isActive ? 'aria-current="page"' : '' %> <%= (_collapsed && item.label) ? 'title="'+item.label+'"' : '' %> class="<%= cls %>">
+        <button type="button"<% if (isActive) { %> aria-current="page"<% } %><% if (_collapsed && item.label) { %> title="<%= item.label %>"<% } %> class="<%= cls %>">
         <% } %>
           <% if (item.icon) { %><span class="shrink-0 w-5 text-center text-[15px] leading-none" aria-hidden="true"><%- item.icon %></span><% } %>
           <% if (!_collapsed) { %><span class="flex-1 truncate"><%= item.label %></span><% } %>

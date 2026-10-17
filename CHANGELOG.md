@@ -29,6 +29,19 @@ All notable changes to this project will be documented here. Format follows [Kee
 - CommandPalette: commands take `group` (`category` stays), `order`, `hidden`; `window.__KuiCmdStore.registerMany`
   and every palette now lists the commands registered at runtime when it opens.
 
+### Added — UserMenu portal, className and a turning chevron (parity with kui-react)
+
+- UserMenu: `portal` moves the open menu to `document.body` (DropdownMenu `portal`), so a sticky or clipping
+  top bar cannot cut it off; `className` goes to the DropdownMenu root. The trigger is a Tailwind `group`, so the
+  chevron turns over while the menu is open (`group-aria-expanded:rotate-180`). Without a name the email stands
+  in, as in kui-react. These came from next-boilerplate's UserMenu fork, which now uses kui-react's.
+
+### Fixed — AppSidebar
+
+- An active item rendered `aria-current=&#34;page&#34;` and a collapsed one `title=&#34;…&#34;` (the attribute
+  strings went through escaped output), so neither attribute had its intended value. Both are now real
+  attributes, the title escaped.
+
 ### Changed — CommandPalette lists no sample commands by default
 
 - Pass `demo: true` (or your own `items`) to get the twelve sample commands. With no commands at all the

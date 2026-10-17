@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-10-17T11:18:11.941Z",
+  "generatedAt": "2026-10-17T13:43:36.243Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -1779,7 +1779,7 @@
       "category": "App",
       "filePath": "modules/app/AppSidebar.ejs",
       "abbr": "Sb",
-      "description": "Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.",
+      "description": "Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML. The active item, link or button, is marked aria-current=\"page\"; collapsed, the nav reserves no scrollbar gutter, so the icons stay centered.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2777,7 +2777,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserMenu.ejs",
       "abbr": "Um",
-      "description": "Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.",
+      "description": "Avatar + name + role trigger (the role line only when the user has one; the email stands in for a missing name); the chevron turns over while the menu is open. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order; a hidden item with a built-in id leaves that item out. portal moves the open menu to document.body so a sticky or clipping top bar cannot cut it off; className goes to the root. Closes on outside click and Escape.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2790,7 +2790,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "price-display",

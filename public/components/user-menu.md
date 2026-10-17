@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.
+Avatar + name + role trigger (the role line only when the user has one; the email stands in for a missing name); the chevron turns over while the menu is open. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order; a hidden item with a built-in id leaves that item out. portal moves the open menu to document.body so a sticky or clipping top bar cannot cut it off; className goes to the root. Closes on outside click and Escape.
 
 ## Design tokens consumed
 
@@ -67,18 +67,42 @@ Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out item
 }) %>
 ```
 
+### Session user, no Settings, in a portal
+
+```ejs
+<%# A session user (name + email, no role): the trigger shows the name alone.
+    A hidden item with a built-in id leaves Settings out; portal opens the menu in
+    document.body so a sticky top bar cannot clip it. %>
+<%- include('modules/domain/common/user/UserMenu', {
+  name: user.name,
+  email: user.email,
+  profileHref: '/me',
+  signOutHref: '/logout',
+  mergeItems: true,
+  items: [{ id: 'settings', label: 'Settings', hidden: true }],
+  portal: true
+}) %>
+```
+
 ## Full EJS source
 
 ```ejs
 <%
   var _id          = locals.id          || 'user-menu-' + Math.random().toString(36).substr(2, 9);
-  var _name        = locals.name        || (locals.user && locals.user.name) || 'User';
   var _email       = locals.email       || (locals.user && locals.user.email) || '';
+  // Without a name the email stands in (parity with kui-react UserMenu).
+  var _name        = locals.name        || (locals.user && locals.user.name) || _email || 'User';
   var _role        = locals.role        || (locals.user && locals.user.role)  || '';
   var _src         = locals.src         || (locals.user && locals.user.profilePicture) || null;
   var _align       = locals.align       || 'right';
   var _onlyAvatar  = !!locals.onlyAvatar;
   var _labels      = locals.labels || {};
+  // portal: the open menu moves to document.body (DropdownMenu portal), so a sticky or
+  // clipping top bar cannot cut it off. className goes to the DropdownMenu root.
+  // Parity with kui-react UserMenu `portal` / `className`. The trigger is a Tailwind `group`
+  // and DropdownMenu sets aria-expanded on it, so the chevron turns over while the menu is open.
+  var _portal      = !!locals.portal;
+  var _className   = locals.className || '';
 
   // Built-in items (parity with kui-react UserMenu): ids profile / settings / sign-out, in
   // groups account (100, 200) and session (1000). hrefs and onClick JS strings are optional.
@@ -138,19 +162,21 @@ Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out item
 
 <div data-user-menu-host data-id="<%= _id %>" data-align="<%= _align %>">
   <%- include('../../../ui/DropdownMenu', {
-    id:     _id,
-    align:  _align,
+    id:        _id,
+    align:     _align,
+    portal:    _portal,
+    className: _className,
     trigger:
       '<button type="button"' +
       ' aria-label="User menu for ' + _name + '"' +
-      ' class="inline-flex items-center justify-center gap-2 px-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed bg-transparent text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">' +
+      ' class="group inline-flex items-center justify-center gap-2 px-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed bg-transparent text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">' +
         '<span data-user-menu-avatar-slot></span>' +
         (_onlyAvatar ? '' :
           '<div class="hidden sm:block text-left min-w-0">' +
             '<p class="text-sm font-medium text-text-primary truncate max-w-[8rem]">' + _name + '</p>' +
             (_role ? '<p class="text-xs text-text-secondary truncate">' + _role + '</p>' : '') +
           '</div>') +
-        '<span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled hidden sm:inline-flex" aria-hidden="true">' +
+        '<span class="w-3 h-3 inline-flex items-center justify-center text-text-disabled hidden sm:inline-flex transition-transform group-aria-expanded:rotate-180" aria-hidden="true">' +
           '<i class="fa-solid fa-chevron-down" style="font-size:12px"></i>' +
         '</span>' +
       '</button>',
