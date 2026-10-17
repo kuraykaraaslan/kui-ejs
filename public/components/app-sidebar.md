@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter and a footer slot can host a user block or any content.
+Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.
 
 ## Design tokens consumed
 
@@ -63,6 +63,18 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
 }) %>
 ```
 
+### Header + node badges
+
+```ejs
+<%- include('modules/app/AppSidebar', {
+  navGroups: [{ label: 'Main', items: [
+    { id: 'analytics', label: 'Analytics', badge: 3 },              // a count
+    { id: 'team', label: 'Team', badge: '<span class="…">Beta</span>' }, // any badge HTML
+  ] }],
+  headerContent: function (ctx) { return workspaceSwitcherHtml(ctx.collapsed); }  // above the nav groups
+}) %>
+```
+
 ## Full EJS source
 
 ```ejs
@@ -73,6 +85,11 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
   var _groups     = locals.navGroups || (locals.navItems ? [{ items: locals.navItems }] : []);
   var _searchable = locals.searchable !== false;
   var _searchId   = _id + '-search';
+  // headerContent: HTML (or a function of { collapsed } returning HTML) above the nav groups,
+  // below the collapse toggle; parity with kui-react AppSidebar `header`.
+  var _header     = typeof locals.headerContent === 'function'
+    ? locals.headerContent({ collapsed: _collapsed })
+    : locals.headerContent;
 %>
 <div id="<%= _id %>"
   data-collapsed="<%= _collapsed %>"
@@ -86,6 +103,12 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
       <i class="fa-solid fa-chevron-left<%= _collapsed ? ' rotate-180' : '' %> transition-transform" aria-hidden="true"></i>
     </button>
   </div>
+
+  <% if (_header) { %>
+  <div class="shrink-0 border-b border-border px-2 py-2<%= _collapsed ? ' flex justify-center' : '' %>">
+    <%- _header %>
+  </div>
+  <% } %>
 
   <% if (_searchable) { %>
   <div class="<%= _collapsed ? 'hidden' : '' %> px-3 py-2 border-b border-border shrink-0" id="<%= _searchId %>-wrap">
@@ -137,9 +160,13 @@ Collapsible side navigation. Accepts navGroups or navItems with a built-in colla
         <% } %>
           <% if (item.icon) { %><span class="shrink-0 w-5 text-center text-[15px] leading-none" aria-hidden="true"><%- item.icon %></span><% } %>
           <% if (!_collapsed) { %><span class="flex-1 truncate"><%= item.label %></span><% } %>
-          <% if (!_collapsed && item.badge != null && Number(item.badge) > 0) { %>
+          <% var _badgeIsCount = typeof item.badge === 'number' || (typeof item.badge === 'string' && item.badge.trim() !== '' && !isNaN(Number(item.badge))); %>
+          <% if (!_collapsed && _badgeIsCount && Number(item.badge) > 0) { %>
           <%# Badge variant="primary" size="sm" %>
           <span class="inline-flex items-center gap-1 rounded-full font-medium bg-primary-subtle text-primary px-1.5 py-0 text-[10px]"><%= item.badge %></span>
+          <% } else if (!_collapsed && !_badgeIsCount && item.badge) { %>
+          <%# Any badge HTML (a status Badge, a dot); parity with kui-react node badges %>
+          <span class="shrink-0"><%- item.badge %></span>
           <% } %>
         <% if (item.href) { %></a><% } else { %></button><% } %>
         </div>

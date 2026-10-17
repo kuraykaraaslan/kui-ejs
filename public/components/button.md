@@ -12,6 +12,7 @@ Core interactive element. Supports 5 visual styles (variants) and 5 sizes. disab
 ## Used by
 
 - `control-tile`
+- `unavailable-contribution`
 
 ## Design tokens consumed
 

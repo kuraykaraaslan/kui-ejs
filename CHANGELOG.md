@@ -4,6 +4,42 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Added — extension surfaces (parity with kui-react, next-boilerplate phase 37)
+
+- `modules/ui/UnavailableContribution.ejs`: the placeholder admins and editors see where a contributed piece of
+  UI cannot be shown. Reasons `disabled`, `unentitled`, `blocked`, `retired`, `banned`, `quarantined`, `failed`,
+  `missing`, `no-access` with the same icons, tones and English texts as kui-react; sizes `inline`, `card`, `tab`,
+  `node`; optional `title`, `label`, `detail` (`null` hides it), `icon`, `tone`, `action` (`label` + `href` or an
+  `onClick` JS string), `framed`. kui-react's `ContributionBoundary` has no EJS counterpart (server render): a
+  host catches a failing contribution and renders this partial.
+- TabGroup: tabs take `order` and a per-tab `lazy`; `isolate` (group or per tab) renders a function `content`
+  inside try/catch, and a throwing tab shows `renderError({ tab, error })` or a "failed" placeholder with Retry
+  (a reload) and is reported to `onTabError(tabId, error)`. An unknown `activeTab` falls back to the first tab.
+- DropdownMenu items take `id`, `href` (a link), `order`, `group`, `hidden`, `disabledReason`; hidden items are
+  left out and, when any item sets `group` or `order`, items are laid out by group with separators between
+  groups. `portal` moves the open menu to `document.body` with fixed positioning.
+- UserMenu: `items` (replaces the built-in items), `extraItems` and `mergeItems` (merge with Profile, Settings,
+  Sign out by group and order), `labels`, `onProfile` / `onSettings` / `onSignOut`.
+- AppTopBar: `start` and `end` regions taking HTML or ordered `{ id, node, order, hidden }` items.
+- AppSidebar: `headerContent` above the nav groups (HTML or a function of `{ collapsed }`); a non-numeric `badge`
+  renders as given.
+- DataTable (`static` / `paginated`): `rowActions` with per-row `href`, `onClick`, `hidden`, `disabled`,
+  `disabledReason` (values or functions of the row), `destructive`, `group`, `order`, in a trailing column of
+  portalled menus; `rowActionsLabel`, `actionsColumnLabel`.
+- CommandPalette: commands take `group` (`category` stays), `order`, `hidden`; `window.__KuiCmdStore.registerMany`
+  and every palette now lists the commands registered at runtime when it opens.
+
+### Changed — CommandPalette lists no sample commands by default
+
+- Pass `demo: true` (or your own `items`) to get the twelve sample commands. With no commands at all the
+  palette shows its empty state.
+
+### Fixed — CommandPalette
+
+- An item without `href` rendered `type=&#34;button&#34;` (the attribute string went through escaped output).
+- ⌘K, Escape and suggestion clicks also matched the palette's own `-list` / `-empty` elements, so ⌘K could show
+  the empty state over results.
+
 ### Added — TimeWindowSelect (parity with kui-react)
 
 - `modules/ui/TimeWindowSelect.ejs`: a time window behind one button. The button names the window

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.
+Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.
 
 ## Design tokens consumed
 
@@ -48,6 +48,25 @@ Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out item
 }) %>
 ```
 
+### Contributed items (merged)
+
+```ejs
+<%# extraItems merge with Profile / Settings / Sign out instead of replacing them.
+    No group: joins the account items. No order: after them, before sign out (order 1000). %>
+<%- include('modules/domain/common/user/UserMenu', {
+  name: user.name,
+  email: user.email,
+  profileHref: '/me',
+  onSignOut: 'signOut()',
+  extraItems: [
+    { id: 'dnd', label: 'Do not disturb', group: 'status', order: 10 },
+    { id: 'preferences', label: 'Preferences', href: '/me/preferences' },
+    { id: 'switch-tenant', label: 'Switch workspace', group: 'workspace', order: 600 },
+    { id: 'stop-impersonating', label: 'Stop impersonating', group: 'session', order: 900, hidden: !impersonating },
+  ]
+}) %>
+```
+
 ## Full EJS source
 
 ```ejs
@@ -59,9 +78,43 @@ Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out item
   var _src         = locals.src         || (locals.user && locals.user.profilePicture) || null;
   var _align       = locals.align       || 'right';
   var _onlyAvatar  = !!locals.onlyAvatar;
-  var _profileHref  = locals.profileHref  || '#';
-  var _settingsHref = locals.settingsHref || '#';
-  var _signOutHref  = locals.signOutHref  || '#';
+  var _labels      = locals.labels || {};
+
+  // Built-in items (parity with kui-react UserMenu): ids profile / settings / sign-out, in
+  // groups account (100, 200) and session (1000). hrefs and onClick JS strings are optional.
+  var _builtIn = [
+    { type: 'item', id: 'profile',  group: 'account', order: 100,  label: _labels.profile  || 'Profile',  href: locals.profileHref,  onClick: locals.onProfile,  icon: '<i class="fa-solid fa-user w-3.5 h-3.5" aria-hidden="true"></i>' },
+    { type: 'item', id: 'settings', group: 'account', order: 200,  label: _labels.settings || 'Settings', href: locals.settingsHref, onClick: locals.onSettings, icon: '<i class="fa-solid fa-gear w-3.5 h-3.5" aria-hidden="true"></i>' },
+    { type: 'item', id: 'sign-out', group: 'session', order: 1000, label: _labels.signOut  || 'Sign out', href: locals.signOutHref,  onClick: locals.onSignOut,  icon: '<i class="fa-solid fa-arrow-right-from-bracket w-3.5 h-3.5" aria-hidden="true"></i>', danger: true }
+  ];
+  // Adds contributed items; one whose id matches a base item replaces it in place.
+  var _merge = function (base, extra) {
+    var byId = {};
+    extra.forEach(function (it) { if (it.id) byId[it.id] = it; });
+    var replaced = {};
+    var out = base.map(function (it) {
+      if (it.id && byId[it.id]) { replaced[it.id] = true; return byId[it.id]; }
+      return it;
+    });
+    extra.forEach(function (it) { if (!it.id || !replaced[it.id]) out.push(it); });
+    return out;
+  };
+  // Contributed items without a group join `account`; without an order they land at 500
+  // (after the account items, before sign out). One replacing a built-in keeps its place.
+  var _placed = function (list) {
+    return list.map(function (it) {
+      if (it.type === 'separator') return it;
+      var slot = _builtIn.filter(function (b) { return b.id === it.id; })[0];
+      return Object.assign({}, it, {
+        group: it.group !== undefined ? it.group : (slot ? slot.group : 'account'),
+        order: it.order !== undefined ? it.order : (slot ? slot.order : 500)
+      });
+    });
+  };
+  var _extra = locals.extraItems || [];
+  var _menuItems = (locals.items && !locals.mergeItems)
+    ? (_extra.length ? _merge(locals.items, _extra) : locals.items)
+    : _merge(_builtIn, _placed((locals.items || []).concat(_extra)));
 
   // Build trigger as Button atom output (rendered via captureInclude).
   // We do this via a string by inlining the same Button atom output we'd render.
@@ -106,12 +159,7 @@ Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out item
         '<p class="text-sm font-semibold text-text-primary truncate">' + _name + '</p>' +
         (_email ? '<p class="text-xs text-text-secondary truncate">' + _email + '</p>' : '') +
       '</div>',
-    items: [
-      { type: 'item', label: 'Profile',  icon: '<i class="fa-solid fa-user w-3.5 h-3.5" aria-hidden="true"></i>',  onClick: "window.location.href='" + _profileHref  + "'" },
-      { type: 'item', label: 'Settings', icon: '<i class="fa-solid fa-gear w-3.5 h-3.5" aria-hidden="true"></i>', onClick: "window.location.href='" + _settingsHref + "'" },
-      { type: 'separator' },
-      { type: 'item', label: 'Sign out', icon: '<i class="fa-solid fa-arrow-right-from-bracket w-3.5 h-3.5" aria-hidden="true"></i>', danger: true, onClick: "window.location.href='" + _signOutHref + "'" }
-    ]
+    items: _menuItems
   }) %>
 
   <%# Hidden Avatar — we mount it into the trigger slot via the script below. %>

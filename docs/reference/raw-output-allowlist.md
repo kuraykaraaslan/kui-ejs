@@ -32,7 +32,7 @@ describes the CI enforcement script that keeps the list up to date.
 
 ## Raw Output Sites (non-include)
 
-These 58 sites use `<%- %>` without `include()`. Each entry shows the file,
+These 66 sites use `<%- %>` without `include()`. Each entry shows the file,
 line number, the expression rendered raw, and its justification.
 
 ### `modules/app/`
@@ -49,9 +49,13 @@ line number, the expression rendered raw, and its justification.
 | `modules/app/AppShell.ejs` | 18 | `locals.sidebarContent` | slot / composition | Sidebar HTML built by the calling template; never user input. |
 | `modules/app/AppShell.ejs` | 33 | `locals.topbarContent` | slot / composition | Topbar HTML built by the calling template; never user input. |
 | `modules/app/AppShell.ejs` | 37 | `locals.children \|\| ''` | slot / composition | Page body HTML built by the calling template; never user input. |
-| `modules/app/AppSidebar.ejs` | 62 | `locals.footerContent` | slot / composition | Sidebar footer HTML built by the calling template; never user input. |
-| `modules/app/AppTopBar.ejs` | 3 | `locals.logoContent` | slot / composition | Logo HTML built by the calling template; never user input. |
-| `modules/app/AppTopBar.ejs` | 5 | `locals.children \|\| ''` | slot / composition | Topbar child HTML built by the calling template; never user input. |
+| `modules/app/AppSidebar.ejs` | 29 | `_header` | slot / composition | Sidebar header HTML (`headerContent`, or what its function returns) built by the calling template; never user input. |
+| `modules/app/AppSidebar.ejs` | 89 | `item.badge` | developer-controlled | Non-numeric badge HTML (a status `Badge`, a dot) defined by the host's nav data; counts are rendered escaped. Never user-supplied. |
+| `modules/app/AppSidebar.ejs` | 101 | `locals.footerContent` | slot / composition | Sidebar footer HTML built by the calling template; never user input. |
+| `modules/app/AppTopBar.ejs` | 21 | `locals.logoContent` | slot / composition | Logo HTML built by the calling template; never user input. |
+| `modules/app/AppTopBar.ejs` | 23 | `_start` | slot / composition | `start` region: HTML, or the `node` HTML of its ordered items, built by the calling template or contributing modules' templates; never user input. |
+| `modules/app/AppTopBar.ejs` | 24 | `locals.children \|\| ''` | slot / composition | Topbar child HTML built by the calling template; never user input. |
+| `modules/app/AppTopBar.ejs` | 25 | `_end` | slot / composition | `end` region, same as `start`. |
 | `modules/app/DetailHeader.ejs` | 25 | `locals.badgeContent` | slot / composition | Badge HTML built by the calling template; never user input. |
 | `modules/app/DetailHeader.ejs` | 30 | `locals.actionsContent` | slot / composition | Action-button HTML built by the calling template; never user input. |
 | `modules/app/Form.ejs` | 19 | `locals.children \|\| ''` | slot / composition | Form-field HTML built by the calling template; never user input. |
@@ -96,8 +100,10 @@ line number, the expression rendered raw, and its justification.
 | `modules/ui/Modal.ejs` | 52 | `locals.children` | slot / composition | Modal body HTML built by the calling template; never user input. |
 | `modules/ui/Modal.ejs` | 55 | `locals.footer` | slot / composition | Modal footer HTML built by the calling template; never user input. |
 | `modules/ui/ScrollArea.ejs` | 14 | `locals.children` | slot / composition | Scrollable-area body HTML built by the calling template; never user input. |
-| `modules/ui/TabGroup.ejs` | 23 | `tab.badge` | developer-controlled | Badge HTML (typically a `<span>` with a count) defined in a TypeScript data file; never user-supplied. |
-| `modules/ui/TabGroup.ejs` | 37 | `tab.content \|\| ''` | developer-controlled | Tab panel HTML defined in a TypeScript data file; never user-supplied. |
+| `modules/ui/TabGroup.ejs` | 60 | `tab.badge` | developer-controlled | Badge HTML (typically a `<span>` with a count) defined in a TypeScript data file; never user-supplied. |
+| `modules/ui/TabGroup.ejs` | 81 | `_contents[tab.id]` | developer-controlled | Tab panel HTML: `tab.content`, what its render function returns, or (isolated and throwing) `renderError`'s HTML or the UnavailableContribution partial. Never user-supplied. |
+| `modules/ui/UnavailableContribution.ejs` | 75, 82, 94 | `_glyph` | developer-controlled | The reason's Font Awesome `<i>` built from a fixed map, or the host's `icon` HTML; never user-supplied. |
+| `modules/ui/UnavailableContribution.ejs` | 78, 90, 98 | `actionHtml(…)` | pre-escaped | The action button / link built in the partial: label, href and onClick are HTML-escaped there; only the host's `action.icon` HTML is passed through. |
 
 ### `views/layouts/`
 

@@ -7,7 +7,7 @@
 - **status:** beta
 - **since:** 2025-04
 
-Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.
+Keyboard-first command palette. Opens with ⌘K. Lists the items it gets plus every command registered at runtime with window.__KuiCmdStore.register / registerMany; commands carry group, order and hidden. Sample commands only with demo.
 
 ## Design tokens consumed
 
@@ -26,10 +26,10 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
 
 ## Variants
 
-### Varsayılan komutlar (açık panel)
+### Sample commands (demo, open panel)
 
 ```ejs
-<%- include('modules/app/AppCommandBar') %>
+<%- include('modules/app/AppCommandBar', { demo: true }) %>
 ```
 
 ### Özel items + trigger butonu
@@ -63,6 +63,24 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
 }) %>
 ```
 
+### Registered commands: group, order, hidden
+
+```ejs
+<%- include('modules/app/AppCommandBar', {
+  items: [
+    { id: 'go-home', label: 'Go to dashboard', group: 'Navigation', order: 0 },
+    { id: 'new-lead', label: 'New lead', group: 'Create', order: 10 },
+  ]
+}) %>
+<script>
+  // Any module adds commands at runtime; every palette lists them when it opens.
+  var dispose = window.__KuiCmdStore.registerMany([
+    { id: 'tel-call', label: 'Call a contact', group: 'Telephony', order: 30, hidden: !canCall, onClick: startCall },
+    { id: 'tel-log', label: 'Open call log', group: 'Telephony', order: 31, href: '/calls' },
+  ]);
+</script>
+```
+
 ## Full EJS source
 
 ```ejs
@@ -83,10 +101,13 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
   // TODO M2..M6 inline.
 
   var _id          = locals.id       || 'cmd-bar-' + Math.random().toString(36).substr(2, 9);
-  var _items       = locals.items    || [];
   var _placeholder = locals.placeholder || 'Type a command or search…';
+  // demo: list the sample commands below when `items` is not given. Off by default (parity
+  // with kui-react): a real host lists only the commands it passes or registers at runtime
+  // (window.__KuiCmdStore.register / registerMany).
+  var _demo        = !!locals.demo;
 
-  // Defaults: 5 Navigation + 4 Actions + 3 Recent = 12 items.
+  // Sample commands: 5 Navigation + 4 Actions + 3 Recent = 12 items.
   // NOTE: Recent items use `faClock` (fa-clock), NOT fa-clock-rotate-left.
   var defaultItems = [
     { icon: 'fa-solid fa-house',        label: 'Go to Dashboard',  shortcut: 'G D', category: 'Navigation', href: '#' },
@@ -103,12 +124,27 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
     { icon: 'fa-solid fa-clock',        label: 'Design Review',                     category: 'Recent' }
   ];
 
-  var _allItems = _items.length ? _items : defaultItems;
-
-  var categories = [];
-  _allItems.forEach(function(item) {
-    if (categories.indexOf(item.category) === -1) categories.push(item.category);
+  // Commands take group (category is the legacy name), order and hidden. Groups rank by their
+  // lowest order and commands sort by order inside them (like CSS order: missing is 0, ties
+  // keep array order); hidden commands are left out.
+  var groupOf = function (item) { return item.group || item.category || 'Commands'; };
+  var ord = function (item) { return (typeof item.order === 'number' && isFinite(item.order)) ? item.order : 0; };
+  var _source = locals.items ? locals.items : (_demo ? defaultItems : []);
+  var _groups = [];
+  _source.filter(function (item) { return item && !item.hidden; }).forEach(function (item, i) {
+    var key = groupOf(item);
+    var g = _groups.filter(function (x) { return x.name === key; })[0];
+    if (!g) { g = { name: key, first: i, rank: ord(item), entries: [] }; _groups.push(g); }
+    g.rank = Math.min(g.rank, ord(item));
+    g.entries.push({ item: Object.assign({}, item, { category: key }), i: i });
   });
+  _groups.sort(function (a, b) { return a.rank - b.rank || a.first - b.first; });
+  _groups.forEach(function (g) { g.entries.sort(function (x, y) { return ord(x.item) - ord(y.item) || x.i - y.i; }); });
+  var categories = _groups.map(function (g) { return g.name; });
+  var _allItems = [];
+  _groups.forEach(function (g) { g.entries.forEach(function (e) { _allItems.push(e.item); }); });
+  var _ranks = {};
+  _groups.forEach(function (g) { _ranks[g.name] = g.rank; });
 
   var _badgeNeutralSm = 'inline-flex items-center gap-1 rounded-full font-medium bg-surface-sunken text-text-secondary px-1.5 py-0 text-[10px]';
 %>
@@ -168,7 +204,7 @@ Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom co
         </div>
       </div>
 
-      <%- include('./partials/_list', { _id: _id, _allItems: _allItems, categories: categories, _badgeNeutralSm: _badgeNeutralSm }) %>
+      <%- include('./partials/_list', { _id: _id, _allItems: _allItems, categories: categories, _ranks: _ranks, _badgeNeutralSm: _badgeNeutralSm }) %>
 
       <%- include('./partials/_footer') %>
     </div>

@@ -3,7 +3,7 @@
   "name": "kui-ejs",
   "version": "0.1.0",
   "registryVersion": "1.0.0",
-  "generatedAt": "2026-10-17T10:00:23.367Z",
+  "generatedAt": "2026-10-17T11:18:11.941Z",
   "description": "Machine-readable catalog of every EJS partial, theme, design token, and convention in the kui-ejs library. Consume this from an AI assistant to know what exists, where it lives, and how to use it.",
   "layers": {
     "ui": "modules/ui/ — Primitive EJS partials (atoms + molecules). Stateless presentational HTML; no business logic. Included via <%- include('modules/ui/<Name>', { ...locals }) %>.",
@@ -214,7 +214,8 @@
         "--text-primary"
       ],
       "usedBy": [
-        "control-tile"
+        "control-tile",
+        "unavailable-contribution"
       ],
       "variantCount": 13
     },
@@ -272,7 +273,8 @@
         "--warning-subtle"
       ],
       "usedBy": [
-        "kanban-board"
+        "kanban-board",
+        "unavailable-contribution"
       ],
       "variantCount": 9
     },
@@ -1274,7 +1276,7 @@
       "category": "Organism",
       "filePath": "modules/ui/TabGroup.ejs",
       "abbr": "Tb",
-      "description": "Accessible tab navigation following the role=\"tablist\" / role=\"tab\" / role=\"tabpanel\" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs.",
+      "description": "Accessible tab navigation following the role=\"tablist\" / role=\"tab\" / role=\"tabpanel\" ARIA pattern. Arrow-key navigation; tabIndex=-1 on inactive tabs. Tabs take order and a per-tab lazy; isolate renders function contents inside try/catch so one failing contributed tab shows a placeholder instead of taking the page down.",
       "status": "stable",
       "since": "2025-02",
       "designTokens": [
@@ -1285,7 +1287,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "breadcrumb",
@@ -1380,11 +1382,11 @@
       "category": "Organism",
       "filePath": "modules/ui/Table/partials/paginated.ejs",
       "abbr": "DT",
-      "description": "Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.",
+      "description": "Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector. rowActions adds a per-row actions menu (id, label, onClick or href, hidden, disabled, disabledReason, destructive, group, order).",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
-      "variantCount": 4
+      "variantCount": 5
     },
     {
       "id": "map-view",
@@ -1550,6 +1552,47 @@
         "--text-primary",
         "--text-secondary"
       ],
+      "usedBy": [
+        "unavailable-contribution"
+      ],
+      "variantCount": 4
+    },
+    {
+      "id": "unavailable-contribution",
+      "name": "UnavailableContribution",
+      "layer": "ui",
+      "category": "Organism",
+      "filePath": "modules/ui/UnavailableContribution.ejs",
+      "abbr": "Uc",
+      "description": "Placeholder for a contribution that cannot be shown, for admins and editors (end users see nothing). Nine reasons (disabled, unentitled, blocked, retired, banned, quarantined, failed, missing, no-access), each with a default icon, tone and short text; four sizes (inline, card, tab, node); optional title, detail and action. Texts are overridable for i18n.",
+      "status": "stable",
+      "since": "2026-10",
+      "composes": [
+        "badge",
+        "button",
+        "empty-state"
+      ],
+      "designTokens": [
+        "--border",
+        "--border-focus",
+        "--error",
+        "--error-fg",
+        "--error-subtle",
+        "--info",
+        "--info-fg",
+        "--info-subtle",
+        "--primary",
+        "--primary-subtle",
+        "--secondary",
+        "--surface-overlay",
+        "--surface-raised",
+        "--surface-sunken",
+        "--text-primary",
+        "--text-secondary",
+        "--warning",
+        "--warning-fg",
+        "--warning-subtle"
+      ],
       "variantCount": 4
     },
     {
@@ -1577,7 +1620,7 @@
       "category": "Organism",
       "filePath": "modules/ui/DropdownMenu.ejs",
       "abbr": "Dm",
-      "description": "Accessible dropdown using role=\"menu\" + role=\"menuitem\". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation.",
+      "description": "Accessible dropdown using role=\"menu\" + role=\"menuitem\". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation. Items take an optional id, href, group, order, hidden and disabledReason so other modules can contribute entries; portal escapes clipping parents.",
       "status": "stable",
       "since": "2026-05",
       "designTokens": [
@@ -1585,11 +1628,13 @@
         "--error",
         "--error-subtle",
         "--primary",
+        "--secondary",
         "--surface-overlay",
         "--surface-raised",
-        "--text-primary"
+        "--text-primary",
+        "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "popover",
@@ -1734,7 +1779,7 @@
       "category": "App",
       "filePath": "modules/app/AppSidebar.ejs",
       "abbr": "Sb",
-      "description": "Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter and a footer slot can host a user block or any content.",
+      "description": "Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -1749,7 +1794,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "app-top-bar",
@@ -1758,11 +1803,11 @@
       "category": "App",
       "filePath": "modules/app/AppTopBar.ejs",
       "abbr": "At",
-      "description": "Top bar wrapper passed into AppShell's header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row.",
+      "description": "Top bar wrapper passed into AppShell's header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row. Named regions start (after the logo) and end (pushed to the far end) take HTML or ordered { id, node, order, hidden } items, for controls other modules contribute.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [],
-      "variantCount": 2
+      "variantCount": 3
     },
     {
       "id": "app-nav",
@@ -1835,7 +1880,7 @@
       "category": "App",
       "filePath": "modules/app/CommandPalette/CommandPalette.ejs",
       "abbr": "Cb",
-      "description": "Keyboard-first command palette. Opens with ⌘K; an items prop accepts custom commands while a default navigation/actions/recent set is included.",
+      "description": "Keyboard-first command palette. Opens with ⌘K. Lists the items it gets plus every command registered at runtime with window.__KuiCmdStore.register / registerMany; commands carry group, order and hidden. Sample commands only with demo.",
       "status": "beta",
       "since": "2025-04",
       "designTokens": [
@@ -1852,7 +1897,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 3
+      "variantCount": 4
     },
     {
       "id": "form",
@@ -2732,7 +2777,7 @@
       "category": "Domain",
       "filePath": "modules/domain/common/user/UserMenu.ejs",
       "abbr": "Um",
-      "description": "Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items. Closes on outside click.",
+      "description": "Avatar + name + role trigger. Dropdown with Profile, Settings, and Sign out items (hrefs, onClick handlers and labels configurable). extraItems (or items + mergeItems) merge contributed items with the defaults, placed by group and order. Closes on outside click.",
       "status": "stable",
       "since": "2025-03",
       "designTokens": [
@@ -2745,7 +2790,7 @@
         "--text-primary",
         "--text-secondary"
       ],
-      "variantCount": 2
+      "variantCount": 3
     },
     {
       "id": "price-display",

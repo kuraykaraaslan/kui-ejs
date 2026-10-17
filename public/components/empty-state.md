@@ -9,6 +9,10 @@
 
 Empty-state message shown when there is no data. Supports icon, title, description, and action slots.
 
+## Used by
+
+- `unavailable-contribution`
+
 ## Design tokens consumed
 
 - `--primary`

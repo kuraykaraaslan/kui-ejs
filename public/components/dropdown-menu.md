@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2026-05
 
-Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation.
+Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and outside click. Supports left/right alignment, icons, separators, danger and disabled items, and arrow-key navigation. Items take an optional id, href, group, order, hidden and disabledReason so other modules can contribute entries; portal escapes clipping parents.
 
 ## Design tokens consumed
 
@@ -15,9 +15,11 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
 - `--error`
 - `--error-subtle`
 - `--primary`
+- `--secondary`
 - `--surface-overlay`
 - `--surface-raised`
 - `--text-primary`
+- `--text-secondary`
 
 ## Variants
 
@@ -68,18 +70,72 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
 }) %>
 ```
 
+### Contributed items: group, order, hidden, href, disabledReason
+
+```ejs
+<%# Items sort by group (ranked by their lowest order) and order; a separator splits groups. %>
+<%- include('modules/ui/DropdownMenu', {
+  trigger: '<button type="button" class="…">Contact</button>',
+  items: [
+    { id: 'edit', label: 'Edit', group: 'record', order: 10 },
+    { id: 'call', label: 'Call', group: 'contact', order: 20, href: '/calls/new' },
+    { id: 'sign', label: 'Send for signature', group: 'contact', order: 30, disabled: true, disabledReason: 'Add an email address first' },
+    { id: 'campaign', label: 'Add to campaign', group: 'contact', order: 40, hidden: !canMarket },
+    { id: 'delete', label: 'Delete', group: 'danger', order: 1000, danger: true },
+  ]
+}) %>
+```
+
 ## Full EJS source
 
 ```ejs
 <%
   var _id        = locals.id        || 'dropdown-' + Math.random().toString(36).substr(2, 9);
   var _align     = locals.align     || 'left';
-  var _items     = locals.items     || [];
   var _trigger   = locals.trigger   || '';
   var _header    = locals.header    || '';
   var _className = locals.className || '';
+  // portal: the open menu moves to document.body with fixed positioning, so a clipping
+  // parent (a table's overflow wrapper) cannot cut it off.
+  var _portal    = !!locals.portal;
 
   var alignClass = _align === 'right' ? 'right-0' : 'left-0';
+
+  // Items take optional id, href, order, group, hidden and disabledReason (parity with
+  // kui-react arrangeMenuItems). Hidden items are left out; when any item sets group or
+  // order, items are laid out by group (ranked by their lowest order, like CSS order:
+  // missing is 0, ties keep array order) with a separator between groups.
+  var _items = (function (items) {
+    var isEntry = function (it) { return it.type !== 'separator'; };
+    var ord = function (it) { return (typeof it.order === 'number' && isFinite(it.order)) ? it.order : 0; };
+    var visible = items.filter(function (it) { return !it.hidden; });
+    var grouped = visible.some(function (it) { return isEntry(it) && (it.group !== undefined || it.order !== undefined); });
+    if (!grouped) {
+      if (visible.length === items.length) return visible;
+      var tidy = [];
+      visible.forEach(function (it) {
+        if (!isEntry(it) && (tidy.length === 0 || !isEntry(tidy[tidy.length - 1]))) return;
+        tidy.push(it);
+      });
+      while (tidy.length && !isEntry(tidy[tidy.length - 1])) tidy.pop();
+      return tidy;
+    }
+    var buckets = [];
+    visible.filter(isEntry).forEach(function (it, i) {
+      var b = buckets.filter(function (x) { return x.key === it.group; })[0];
+      if (!b) { b = { key: it.group, first: i, rank: ord(it), items: [] }; buckets.push(b); }
+      b.rank = Math.min(b.rank, ord(it));
+      b.items.push({ it: it, i: i });
+    });
+    buckets.sort(function (a, b) { return a.rank - b.rank || a.first - b.first; });
+    var out = [];
+    buckets.forEach(function (b, bi) {
+      if (bi > 0) out.push({ type: 'separator' });
+      b.items.sort(function (x, y) { return ord(x.it) - ord(y.it) || x.i - y.i; });
+      b.items.forEach(function (x) { out.push(x.it); });
+    });
+    return out;
+  })(locals.items || []);
 %>
 <%- include('./Overlays/shared/focus-trap.js') %>
 <div
@@ -94,6 +150,7 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
     role="menu"
     aria-labelledby="<%= _id %>-trigger"
     hidden
+    <% if (_portal) { %>data-dropdown-portal="<%= _align %>"<% } %>
     class="absolute z-[60] mt-1 min-w-[10rem] rounded-lg border border-border bg-surface-raised shadow-lg py-1 <%= alignClass %>"
   >
     <% if (_header) { %>
@@ -111,17 +168,41 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
              ? 'text-error hover:bg-error-subtle'
              : 'text-text-primary hover:bg-surface-overlay';
            var disClass = isDisabled ? ' opacity-50 cursor-not-allowed' : '';
+           var reasonId = isDisabled && item.disabledReason ? _id + '-reason-' + i : '';
+           var itemCls = 'flex w-full items-center gap-2 px-3 py-2 text-sm text-left transition-colors focus-visible:outline-none focus-visible:bg-surface-overlay ' + stateClass + disClass;
       %>
+        <% if (item.href && !isDisabled) { %>
+        <a
+          role="menuitem"
+          href="<%= item.href %>"
+          <% if (item.id) { %>data-item-id="<%= item.id %>"<% } %>
+          <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu('<%= _id %>')"<% } else { %>onclick="closeDropdownMenu('<%= _id %>')"<% } %>
+          class="<%= itemCls %>"
+        >
+          <% if (item.icon) { %><span aria-hidden="true"><%- item.icon %></span><% } %>
+          <%= item.label %>
+        </a>
+        <% } else { %>
         <button
           role="menuitem"
           type="button"
           <% if (isDisabled) { %>disabled<% } %>
+          <% if (item.id) { %>data-item-id="<%= item.id %>"<% } %>
+          <% if (reasonId) { %>title="<%= item.disabledReason %>" aria-label="<%= item.label %>" aria-describedby="<%= reasonId %>"<% } %>
           <% if (item.onClick) { %>onclick="<%= item.onClick %>; closeDropdownMenu('<%= _id %>')"<% } else { %>onclick="closeDropdownMenu('<%= _id %>')"<% } %>
-          class="flex w-full items-center gap-2 px-3 py-2 text-sm text-left transition-colors focus-visible:outline-none focus-visible:bg-surface-overlay <%= stateClass %><%= disClass %>"
+          class="<%= itemCls %>"
         >
           <% if (item.icon) { %><span aria-hidden="true"><%- item.icon %></span><% } %>
+          <% if (reasonId) { %>
+          <span class="flex min-w-0 flex-col">
+            <span><%= item.label %></span>
+            <span id="<%= reasonId %>" class="text-xs text-text-secondary"><%= item.disabledReason %></span>
+          </span>
+          <% } else { %>
           <%= item.label %>
+          <% } %>
         </button>
+        <% } %>
       <% } %>
     <% }); %>
   </div>
@@ -137,9 +218,26 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
     };
   }
 
+  // A portalled menu lives in document.body, fixed under its trigger while open.
+  function placePortal(id) {
+    var e = getEls(id);
+    if (!e.root || !e.menu) return;
+    var align = e.menu.getAttribute('data-dropdown-portal');
+    if (!align) return;
+    if (e.menu.parentNode !== document.body) document.body.appendChild(e.menu);
+    var r = e.root.getBoundingClientRect();
+    e.menu.classList.remove('absolute', 'mt-1', 'left-0', 'right-0');
+    e.menu.classList.add('fixed');
+    e.menu.style.top = (r.bottom + 4) + 'px';
+    if (align === 'right') { e.menu.style.right = (document.documentElement.clientWidth - r.right) + 'px'; e.menu.style.left = ''; }
+    else { e.menu.style.left = r.left + 'px'; e.menu.style.right = ''; }
+  }
+  window.__placeDropdownPortal = window.__placeDropdownPortal || placePortal;
+
   function openDropdownMenu(id) {
     var e = getEls(id);
     if (!e.root || !e.menu || !e.trigger) return;
+    window.__placeDropdownPortal(id);
     e.menu.hidden = false;
     e.trigger.setAttribute('aria-expanded', 'true');
     if (window.__overlayFocusTrap) window.__overlayFocusTrap.activate(id, e.menu);
@@ -184,8 +282,15 @@ Accessible dropdown using role="menu" + role="menuitem". Closes on Escape and ou
   document.addEventListener('mousedown', function (ev) {
     var menu = document.getElementById(dropdownId + '-menu');
     if (!menu || menu.hidden) return;
-    if (!root.contains(ev.target)) closeDropdownMenu(dropdownId);
+    if (!root.contains(ev.target) && !menu.contains(ev.target)) closeDropdownMenu(dropdownId);
   });
+
+  var portalMenu = document.getElementById(dropdownId + '-menu');
+  if (portalMenu && portalMenu.hasAttribute('data-dropdown-portal')) {
+    var replace = function () { if (!portalMenu.hidden) window.__placeDropdownPortal(dropdownId); };
+    window.addEventListener('resize', replace);
+    window.addEventListener('scroll', replace, true);
+  }
 
   document.addEventListener('keydown', function (ev) {
     var menu = document.getElementById(dropdownId + '-menu');

@@ -7,7 +7,7 @@
 - **status:** stable
 - **since:** 2025-03
 
-Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.
+Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector. rowActions adds a per-row actions menu (id, label, onClick or href, hidden, disabled, disabledReason, destructive, group, order).
 
 ## Variants
 
@@ -97,6 +97,25 @@ Table + SearchBar + Pagination in a single component. Client-side search and pag
   pageSize: 20,
   qs: qs,
   emptyMessage: 'No users found.'
+}) %>
+```
+
+### Row actions (rowActions)
+
+```ejs
+<%# A trailing column with one menu per row. Every per-row field takes a function of the row. %>
+<%- include('modules/ui/DataTable', {
+  rows: companies,
+  columns: columns,
+  rowActionsLabel: function (row) { return 'Actions for ' + row.name; },
+  rowActions: [
+    { id: 'open', label: 'Open', href: function (row) { return '/companies/' + row.id; } },
+    { id: 'call', label: 'Call', group: 'contact', order: 10, onClick: function (row) { return "callCompany('" + row.id + "')"; } },
+    { id: 'sign', label: 'Send for signature', group: 'contact', order: 20,
+      disabled: function (row) { return !row.email; }, disabledReason: 'Add an email address first' },
+    { id: 'restore', label: 'Restore', hidden: function (row) { return row.status !== 'Archived'; } },
+    { id: 'delete', label: 'Delete', group: 'danger', order: 1000, destructive: true },
+  ]
 }) %>
 ```
 
