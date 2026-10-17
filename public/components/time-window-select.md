@@ -75,6 +75,10 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   //   calendarPeriods — default all 18 (see TimeWindowPicker); current.* show under Realtime,
   //                     the others under History; [] hides both period options
   //   showInterval (true), showAggregation (true), showTimezone (true)
+  //   tabs            — which kinds of window may be picked, default ['realtime', 'history']. With
+  //                     one, the panel shows only that kind and no tab list; a value of a kind not
+  //                     offered opens on the offered kind, starting from its default (Realtime: the
+  //                     fallback preset; History: the last 24h up to now, seconds zeroed)
   //   maxBuckets (500) — above this many buckets the panel says the server will coarsen the
   //                     interval (match the server's cap)
   //   idPrefix        — prefix of every id (`<idPrefix>-trigger`, `-from`, ...); auto-generated
@@ -118,6 +122,7 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _showInterval = locals.showInterval !== false;
   var _showAggregation = locals.showAggregation !== false;
   var _showTimezone = locals.showTimezone !== false;
+  var _tabs = Array.isArray(locals.tabs) && locals.tabs.length > 0 ? locals.tabs : ['realtime', 'history'];
   var _maxBuckets = typeof locals.maxBuckets === 'number' ? locals.maxBuckets : 500;
   var _prefix = locals.idPrefix || ('tws-' + Math.random().toString(36).substr(2, 6));
   var _onChange = typeof locals.onChange === 'string' ? locals.onChange : '';
@@ -127,13 +132,16 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
   var _pastPeriods = _calendarPeriods.filter(function (p) { return !L.isCurrent(p); });
 
   // The panel is rendered in the state opening it starts from (kui-react `begin()`).
-  var _d = _value || _fallback;
-  var _dur = _d.mode === 'relative' ? L.DURATION.exec(_d.last) : null;
+  var _v = _value || _fallback;
+  var _d = _v;
+  // A window of a kind not offered starts from a default of the offered kind (the client redoes this on open).
+  if (_tabs.indexOf(L.tabOf(_v)) === -1) _d = Object.assign({}, _v, _tabs[0] === 'realtime' ? _fallback : L.lastDay(Date.now()));
+  var _dur = _v.mode === 'relative' ? L.DURATION.exec(_v.last) : null;
   var _amount = _dur ? _dur[1] : '1';
   var _unit = _dur ? _dur[2] : 'h';
-  var _tab = L.tabOf(_d);
-  var _rtKind = _d.mode === 'calendar' && L.isCurrent(_d.period) ? 'current' : 'last';
-  var _hKind = _d.mode === 'calendar' ? 'period' : 'range';
+  var _tab = _tabs.indexOf(L.tabOf(_v)) !== -1 ? L.tabOf(_v) : _tabs[0];
+  var _rtKind = _v.mode === 'calendar' && L.isCurrent(_v.period) ? 'current' : 'last';
+  var _hKind = _v.mode === 'calendar' ? 'period' : 'range';
   var _span = L.windowSpanMs(_d);
   var _step = _d.interval && _d.interval !== 'auto' ? L.intervalMs(_d.interval) : null;
   var _summary = L.summarize(_value, _m);
@@ -143,14 +151,14 @@ The trigger has aria-haspopup="dialog" and aria-expanded; Realtime / History are
     presets: _presets, intervals: _intervals, aggregations: _aggregations,
     currentPeriods: _currentPeriods, pastPeriods: _pastPeriods,
     showInterval: _showInterval, showAggregation: _showAggregation, showTimezone: _showTimezone,
-    maxBuckets: _maxBuckets, tab: _tab, rtKind: _rtKind, hKind: _hKind, amount: _amount, unit: _unit,
+    maxBuckets: _maxBuckets, tabs: _tabs, tab: _tab, rtKind: _rtKind, hKind: _hKind, amount: _amount, unit: _unit,
     bucketCount: _span && _step ? Math.ceil(_span / _step) : null,
     zones: _showTimezone ? S.zoneChoices(_d.timezone) : [],
     durationUnits: S.DURATION_UNITS,
     toZonedInput: L.toZonedInput, isCurrent: L.isCurrent,
     summary: _summary, className: locals.className || '',
     config: {
-      id: _prefix, value: _value, presets: _presets, calendarPeriods: _calendarPeriods, maxBuckets: _maxBuckets, onChange: _onChange,
+      id: _prefix, value: _value, presets: _presets, calendarPeriods: _calendarPeriods, tabs: _tabs, maxBuckets: _maxBuckets, onChange: _onChange,
       messages: {
         label: _m.label, realtime: _m.realtime, history: _m.history, last: _m.last, soFar: _m.soFar, periods: _m.periods,
         fromIn: _m.fromIn, toIn: _m.toIn, browserZone: _m.browserZone, buckets: _m.buckets, bucketsTooMany: _m.bucketsTooMany, open: _m.open,

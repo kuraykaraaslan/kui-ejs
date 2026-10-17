@@ -21,18 +21,23 @@
   var zoneName = d.timezone != null ? d.timezone : m.browserZone;
   var activePreset = C.rtKind === 'last' && d.mode === 'relative' ? d.last : null;
   var units = m.durationUnits || {};
-  var tabs = ['realtime', 'history'];
+  // kui-react: with more than one allowed kind both tabs show; with one, only that kind's panel (no tab list).
+  var many = C.tabs.length > 1;
+  var kinds = many ? ['realtime', 'history'] : [C.tabs[0]];
   var canApply = !(d.mode === 'absolute' && !(Date.parse(d.to) > Date.parse(d.from)));
 %>
 <div class="space-y-3" aria-label="<%= m.label %>" role="group" data-kui-tws data-kui-tws-config="<%= JSON.stringify(C.config) %>">
+  <% if (many) { %>
   <div role="tablist" aria-label="<%= m.label %>" class="flex gap-1 rounded-lg bg-surface-sunken p-1">
-    <% tabs.forEach(function (t) { var on = C.tab === t; %>
+    <% kinds.forEach(function (t) { var on = C.tab === t; %>
     <button id="<%= P %>-tab-<%= t %>" type="button" role="tab" aria-selected="<%= on ? 'true' : 'false' %>" aria-controls="<%= P %>-panel-<%= t %>" tabindex="<%= on ? '0' : '-1' %>"
       class="<%= TAB %> <%= on ? TAB_ON : TAB_OFF %>" data-kui-tws-tab="<%= t %>"><%= t === 'realtime' ? m.realtime : m.history %></button>
     <% }); %>
   </div>
+  <% } %>
 
-  <div id="<%= P %>-panel-realtime" role="tabpanel" aria-labelledby="<%= P %>-tab-realtime" class="space-y-3" data-kui-tws-panel="realtime"<%= C.tab === 'realtime' ? '' : ' hidden' %>>
+  <% if (kinds.indexOf('realtime') !== -1) { %>
+  <div id="<%= P %>-panel-realtime"<% if (many) { %> role="tabpanel" aria-labelledby="<%= P %>-tab-realtime"<% } %> class="space-y-3" data-kui-tws-panel="realtime"<%= C.tab === 'realtime' ? '' : ' hidden' %>>
     <div class="<%= OPTION %> <%= C.rtKind === 'last' ? 'border-primary' : 'border-border' %>" data-kui-tws-option="rt-last">
       <label class="flex items-center gap-2 text-sm font-medium text-text-primary">
         <input type="radio" name="<%= P %>-rt" class="focus-visible:ring-2 focus-visible:ring-border-focus" data-kui-tws-radio="rt-last"<%= C.rtKind === 'last' ? ' checked' : '' %>>
@@ -72,8 +77,10 @@
     </div>
     <% } %>
   </div>
+  <% } %>
 
-  <div id="<%= P %>-panel-history" role="tabpanel" aria-labelledby="<%= P %>-tab-history" class="space-y-3" data-kui-tws-panel="history"<%= C.tab === 'history' ? '' : ' hidden' %>>
+  <% if (kinds.indexOf('history') !== -1) { %>
+  <div id="<%= P %>-panel-history"<% if (many) { %> role="tabpanel" aria-labelledby="<%= P %>-tab-history"<% } %> class="space-y-3" data-kui-tws-panel="history"<%= C.tab === 'history' ? '' : ' hidden' %>>
     <div class="<%= OPTION %> <%= C.hKind === 'last' ? 'border-primary' : 'border-border' %>" data-kui-tws-option="h-last">
       <label class="flex items-center gap-2 text-sm font-medium text-text-primary">
         <input type="radio" name="<%= P %>-h" class="focus-visible:ring-2 focus-visible:ring-border-focus" data-kui-tws-radio="h-last"<%= C.hKind === 'last' ? ' checked' : '' %>>
@@ -118,6 +125,7 @@
     </div>
     <% } %>
   </div>
+  <% } %>
 
   <% if (C.showAggregation || C.showInterval || C.showTimezone) { var agg = d.aggregation != null ? d.aggregation : 'avg'; var iv = d.interval != null ? d.interval : 'auto'; var tz = d.timezone != null ? d.timezone : ''; var bc = C.bucketCount; %>
   <div class="space-y-2 border-t border-border pt-3">

@@ -245,6 +245,58 @@ describe('TimeWindowSelect draft (the client state)', () => {
   });
 });
 
+describe('TimeWindowSelect: what a board lets viewers change', () => {
+  it('with one kind of window there is no tab list, only that kind', async () => {
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '24h' }, tabs: ['realtime'] });
+    expect(html).not.toContain('role="tablist"');
+    expect(html).not.toContain('role="tab"');
+    expect(html).toMatch(/<div id="tws-panel-realtime" class="space-y-3" data-kui-tws-panel="realtime">/);
+    expect(html).not.toContain('role="tabpanel"');
+    expect(html).toContain('data-kui-tws-radio="rt-current"');
+    expect(html).not.toContain('data-kui-tws-panel="history"');
+    expect(html).not.toContain('data-kui-tws-radio="h-range"');
+    expect(html).toContain('&#34;tabs&#34;:[&#34;realtime&#34;]');
+  });
+
+  it('a window of a kind the board does not offer opens on the kind it does', async () => {
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '24h', aggregation: 'max' }, tabs: ['history'] });
+    expect(html).not.toContain('role="tablist"');
+    expect(html).toMatch(/<div id="tws-panel-history" class="space-y-3" data-kui-tws-panel="history">/);
+    expect(html).not.toContain('data-kui-tws-panel="realtime"');
+    expect(html).toMatch(/data-kui-tws-radio="h-range" checked>/);
+    expect(html).toMatch(/data-kui-tws-range>/); // the range inputs show
+    expect(html).toContain('<span class="truncate" data-kui-tws-summary>Realtime · Last 24h · max</span>'); // the applied value is untouched
+
+    const d = draft({ mode: 'relative', last: '24h', aggregation: 'max' }, { tabs: ['history'] });
+    expect(d.view()).toMatchObject({ tab: 'history', hKind: 'range', showRange: true });
+    expect(d.apply()).toMatchObject({ mode: 'absolute', aggregation: 'max', from: '2026-10-16T10:07:00.000Z', to: new Date(NOW - (NOW % 60_000)).toISOString() });
+  });
+
+  it('a History window on a Realtime-only board starts from the fallback preset', async () => {
+    const d = draft({ mode: 'calendar', period: 'previous.month' }, { tabs: ['realtime'] });
+    expect(d.view()).toMatchObject({ tab: 'realtime', rtKind: 'last', activePreset: '24h' });
+    expect(d.state.draft).toMatchObject({ mode: 'relative', last: '24h' });
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'calendar', period: 'previous.month' }, tabs: ['realtime'] });
+    expect(html).toMatch(/role="radio" aria-checked="true" class="[^"]*" data-kui-tws-preset="24h"/);
+  });
+
+  it('both kinds by default and when tabs is empty', async () => {
+    for (const tabs of [undefined, []]) {
+      const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: null, tabs });
+      expect(html).toContain('role="tablist"');
+      expect(html).toMatch(/id="tws-panel-history" role="tabpanel" aria-labelledby="tws-tab-history"/);
+      expect(draft(null, { tabs }).state.tab).toBe('realtime');
+    }
+  });
+
+  it('hidden controls and a narrowed aggregation list', async () => {
+    const html = await render('TimeWindowSelect.ejs', { idPrefix: 'tws', value: { mode: 'relative', last: '24h' }, showInterval: false, showTimezone: false, aggregations: ['avg', 'max'] });
+    expect(html).not.toContain('aria-label="Interval"');
+    expect(html).not.toContain('aria-label="Time zone"');
+    expect([...html.matchAll(/>(Aggregate: [^<]+)</g)].map((x) => x[1])).toEqual(['Aggregate: avg', 'Aggregate: max']);
+  });
+});
+
 describe('TimeWindowSelect helpers', () => {
   it('zoned datetime-local values round-trip, across a DST change', () => {
     expect(L.toZonedInput('2026-10-16T00:00:00.000Z', 'Europe/Istanbul')).toBe('2026-10-16T03:00');

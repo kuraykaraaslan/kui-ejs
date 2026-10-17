@@ -110,7 +110,8 @@
 
   /**
    * The component's state and handlers without a DOM. `opts`:
-   *   value, presets, calendarPeriods, now (() => ms)
+   *   value, presets, calendarPeriods, now (() => ms),
+   *   tabs (['realtime', 'history'] by default; which kinds of window may be picked)
    * Every handler mutates the state; `view()` returns what to paint; `apply()` returns the
    * value Update stores (or null when it cannot be applied).
    */
@@ -121,11 +122,13 @@
     var fallback = { mode: 'relative', last: presets.indexOf('24h') !== -1 ? '24h' : presets[0] };
     var currentPeriods = calendarPeriods.filter(isCurrent);
     var pastPeriods = calendarPeriods.filter(function (p) { return !isCurrent(p); });
+    var allowed = Array.isArray(opts.tabs) && opts.tabs.length > 0 ? opts.tabs : ['realtime', 'history'];
+    function startTab(v) { return allowed.indexOf(tabOf(v)) !== -1 ? tabOf(v) : allowed[0]; }
 
     var s = {
       value: opts.value || null,
       draft: opts.value || fallback,
-      tab: tabOf(opts.value || null),
+      tab: startTab(opts.value || null),
       rtKind: 'last',
       hKind: 'range',
       amount: '1',
@@ -150,13 +153,16 @@
 
     var api = {
       state: s,
+      tabs: allowed,
       currentPeriods: currentPeriods,
       pastPeriods: pastPeriods,
       /** Opening the panel: the draft starts again from the applied value. */
       begin: function () {
         var v = s.value || fallback;
         s.draft = v;
-        s.tab = tabOf(v);
+        s.tab = startTab(v);
+        // A window of a kind this board does not offer opens on the kind it does, starting from a default of that kind.
+        if (allowed.indexOf(tabOf(v)) === -1) s.draft = assign(v, allowed[0] === 'realtime' ? fallback : lastDay());
         s.rtKind = v.mode === 'calendar' && isCurrent(v.period) ? 'current' : 'last';
         s.hKind = v.mode === 'calendar' ? 'period' : 'range';
         var d = v.mode === 'relative' ? DURATION.exec(v.last) : null;

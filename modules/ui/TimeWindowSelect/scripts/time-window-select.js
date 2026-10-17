@@ -42,7 +42,7 @@
     var trigger = document.getElementById(cfg.id + '-trigger');
     if (!root || !trigger) return;
     var m = cfg.messages || {};
-    var st = L.createTimeWindowDraft({ value: cfg.value || null, presets: cfg.presets || [], calendarPeriods: cfg.calendarPeriods || [] });
+    var st = L.createTimeWindowDraft({ value: cfg.value || null, presets: cfg.presets || [], calendarPeriods: cfg.calendarPeriods || [], tabs: cfg.tabs });
     var maxBuckets = typeof cfg.maxBuckets === 'number' ? cfg.maxBuckets : 500;
 
     function q(sel) { return group.querySelector(sel); }

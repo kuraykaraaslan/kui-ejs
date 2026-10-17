@@ -42,6 +42,11 @@
   L.tabOf = function (w) {
     return !w || w.mode === 'relative' || (w.mode === 'calendar' && L.isCurrent(w.period)) ? 'realtime' : 'history';
   };
+  // The History default: the last 24 hours ending at `now` (ms), seconds zeroed.
+  L.lastDay = function (now) {
+    var to = new Date(now); to.setSeconds(0, 0);
+    return { mode: 'absolute', from: new Date(to.getTime() - 86400000).toISOString(), to: to.toISOString() };
+  };
   L.summarize = function (w, m) {
     if (!w) return m.label;
     var tab = L.tabOf(w) === 'realtime' ? m.realtime : m.history;
