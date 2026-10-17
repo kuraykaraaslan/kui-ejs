@@ -10,6 +10,7 @@ import { buildStatCardData }            from './ui-organism-stat-card.showcase';
 import { buildTabButtonData }           from './ui-organism-tab-button.showcase';
 import { buildViewToggleData }          from './ui-organism-view-toggle.showcase';
 import { buildEmptyStateData }          from './ui-organism-empty-state.showcase';
+import { buildUnavailableContributionData } from './ui-organism-unavailable-contribution.showcase';
 import { buildTooltipData }             from './ui-organism-tooltip.showcase';
 import { buildDropdownMenuData }        from './ui-organism-dropdown-menu.showcase';
 import { buildPopoverData }             from './ui-organism-popover.showcase';
@@ -32,6 +33,7 @@ export function buildOrganismsData(): ShowcaseItem[] {
     ...buildTabButtonData(),
     ...buildViewToggleData(),
     ...buildEmptyStateData(),
+    ...buildUnavailableContributionData(),
     ...buildTooltipData(),
     ...buildDropdownMenuData(),
     ...buildPopoverData(),
