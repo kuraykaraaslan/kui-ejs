@@ -51,7 +51,7 @@
     <button
       type="button"
       aria-label="Page <%= item %>"
-      <%= item === _page ? 'aria-current="page"' : '' %>
+      <% if (item === _page) { %>aria-current="page"<% } %>
       class="rounded-md font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus text-center <%= s.page %> <%= item === _page ? 'bg-primary text-primary-fg border-primary' : 'border-border text-text-secondary hover:bg-surface-overlay hover:text-text-primary' %>"
     ><%= item %></button>
     <% } %>

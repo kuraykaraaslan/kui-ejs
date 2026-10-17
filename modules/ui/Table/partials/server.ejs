@@ -67,7 +67,7 @@
             <% _rows.forEach(function(row) { %>
             <% var _href = _getRowHref ? _getRowHref(row) : null; %>
             <tr class="hover:bg-surface-overlay transition-colors<%= _href ? ' cursor-pointer' : '' %>"
-                <%= _href ? 'onclick="location.href=\'' + String(_href).replace(/'/g, "\\'") + '\'"' : '' %>>
+                <% if (_href) { %>onclick="location.href=<%= JSON.stringify(String(_href)) %>"<% } %>>
               <% _columns.forEach(function(col) { %>
               <td class="px-6 py-4 text-text-primary<%= col.align ? ' ' + (_alignClass[col.align] || '') : '' %><%= col.tdClass ? ' ' + col.tdClass : '' %>">
                 <% if (col.render) { %>

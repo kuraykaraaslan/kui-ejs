@@ -21,7 +21,7 @@
   <nav class="hidden md:flex items-center gap-0.5 flex-1" aria-label="Main navigation">
     <% _navItems.forEach(function(item) { %>
     <a href="<%= item.href || '#' %>"
-       <%= item.active ? 'aria-current="page"' : '' %>
+       <% if (item.active) { %>aria-current="page"<% } %>
        class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors <%= item.active ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>">
       <%= item.label %>
     </a>

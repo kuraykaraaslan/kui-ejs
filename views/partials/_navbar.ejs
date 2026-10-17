@@ -29,7 +29,7 @@
             class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors
                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus
                    <%= active ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-            <%= active ? 'aria-current="page"' : '' %>
+            <% if (active) { %>aria-current="page"<% } %>
           ><%= item.label %></a>
         <% }) %>
       </nav>
@@ -61,7 +61,7 @@
         class="block px-3 py-2 rounded-md text-sm font-medium transition-colors
                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus
                <%= active ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-        <%= active ? 'aria-current="page"' : '' %>
+        <% if (active) { %>aria-current="page"<% } %>
       ><%= item.label %></a>
     <% }) %>
   </div>

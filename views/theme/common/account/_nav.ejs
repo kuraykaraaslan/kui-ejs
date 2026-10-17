@@ -38,7 +38,7 @@
         <li>
           <a href="<%= item.href %>"
             class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors <%= isActive ? 'bg-primary-subtle text-primary' : 'text-text-secondary hover:text-text-primary hover:bg-surface-overlay' %>"
-            <%= isActive ? 'aria-current="page"' : '' %>>
+            <% if (isActive) { %>aria-current="page"<% } %>>
             <i class="<%= item.icon %> w-4 h-4 text-xs shrink-0" aria-hidden="true"></i>
             <%= item.label %>
           </a>
