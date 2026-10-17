@@ -4,6 +4,17 @@ All notable changes to this project will be documented here. Format follows [Kee
 
 ## [Unreleased]
 
+### Added — TimeWindowPicker calendar periods, custom durations and time zone (parity with kui-react)
+
+- `calendarPeriods` (default none; `true` = all 18) adds a **Calendar** segment with a period select
+  (`current.*` / `previous.*` × hour, day, week, isoWeek, month, quarter, halfYear, year, plus
+  `dayBeforeYesterday`, `thisDayLastWeek`) and a **So far** checkbox, disabled for a past period. The value
+  gains `{ mode: 'calendar', period, soFar? }`.
+- `allowDuration` adds a **Last** segment: an amount and a minutes / hours / days unit, emitting `<n>m|h|d`.
+- `showTimezone` adds a zone select (`Zone: default` first, then every IANA zone, UTC first).
+- New `messages` keys: `calendar`, `calendarPeriod`, `soFar`, `duration`, `durationAmount`, `durationUnit`,
+  `durationUnits`, `timezone`, `timezoneDefault`, `periods`. All opt-in; existing markup is unchanged.
+
 ### Changed — Chart parity with kui-react's chart settings surface
 
 - Value axes widen to round bounds with readable steps (`niceStep`, `niceTicks`, `resolveDomain`); `yTickCount`.

@@ -7,14 +7,14 @@
 - **status:** stable
 - **since:** 2026-10
 
-Relative presets ("1h", "7d"), an absolute UTC range and the interval / aggregation that go with a window. The value is a structural `TimeWindowValue` (ISO strings, UTC); every change dispatches a `kui:timewindow-change` DOM event (detail = the next value) and calls the global function named by `onChange`. Every label is overridable through `messages`. Inline dashboard / telemetry sibling of DateRangePicker.
+Relative presets ("1h", "7d"), an optional custom "last N minutes / hours / days", calendar periods ("today", "previous month", optionally "so far"), an absolute UTC range, and the interval / aggregation / time zone that go with a window. The value is a structural `TimeWindowValue` (ISO strings, UTC); every change dispatches a `kui:timewindow-change` DOM event (detail = the next value) and calls the global function named by `onChange`. Every label, period names included, is overridable through `messages`. Inline dashboard / telemetry sibling of DateRangePicker.
 
 ## Accessibility
 
 - WCAG: AA
 - ARIA patterns: radiogroup, group
 
-Presets form a radiogroup; the date inputs and the selects carry accessible names from `messages`.
+Presets, Last, Calendar and Custom form one radiogroup; the inputs, the period select, the so-far checkbox (disabled for a past period) and the selects carry accessible names from `messages`.
 
 ## Design tokens consumed
 
@@ -36,6 +36,16 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
 </script>
 ```
 
+### Calendar periods, custom duration and time zone
+
+```ejs
+<%- include('modules/ui/TimeWindowPicker', {
+  value: { mode: 'calendar', period: 'current.day', soFar: true },
+  calendarPeriods: true, // all 18 periods; or a list such as ['current.day', 'previous.month']
+  allowDuration: true, showTimezone: true,
+}) %>
+```
+
 ### Presets only
 
 ```ejs
@@ -50,14 +60,16 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
 
 ```ejs
 <%
-  // TimeWindowPicker — relative presets ("1h", "7d"), an absolute UTC range, and the
-  // interval / aggregation that go with a window. The inline dashboard / telemetry
-  // sibling of the day-granularity DateRangePicker (no presets, no times there).
-  // Mirror of kui-react modules/ui/TimeWindowPicker.tsx.
+  // TimeWindowPicker — relative presets ("1h", "7d"), an optional custom "last N minutes /
+  // hours / days", calendar periods ("today", "previous month", optionally "so far"), an
+  // absolute UTC range, and the interval / aggregation / time zone that go with a window.
+  // The inline dashboard / telemetry sibling of the day-granularity DateRangePicker (no
+  // presets, no times there). Mirror of kui-react modules/ui/TimeWindowPicker.tsx.
   //
   // The value is a TimeWindowValue (ISO strings, UTC):
   //   { mode: 'relative', last: '1h', interval?, aggregation?, timezone? }
   //   { mode: 'absolute', from: ISO, to: ISO, interval?, aggregation?, timezone? }
+  //   { mode: 'calendar', period: 'current.day', soFar?, interval?, aggregation?, timezone? }
   //
   // Locals:
   //   value         — initial TimeWindowValue, or null (no preset active)
@@ -65,6 +77,12 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
   //   intervals     — default ['auto','1m','5m','1h','1d']
   //   aggregations  — default ['avg','min','max','sum','count','none']
   //   allowAbsolute (true), showInterval (true), showAggregation (true)
+  //   allowDuration (false) — a custom "Last <n> minutes / hours / days" (`<n>m|h|d`)
+  //   calendarPeriods ([]) — the calendar periods to offer; empty = no Calendar option.
+  //                   All 18: current.* / previous.* x hour, day, week, isoWeek, month,
+  //                   quarter, halfYear, year, then dayBeforeYesterday, thisDayLastWeek
+  //                   (pass `true` as a shorthand for all of them)
+  //   showTimezone (false) — an explicit time zone; no zone = the consumer's default
   //   idPrefix      — prefix of the From / To input ids (auto-generated when omitted;
   //                   kui-react defaults to 'tw', which is not unique per page)
   //   onChange      — NAME of a global function called with the next TimeWindowValue
@@ -85,7 +103,44 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
     intervalValue: 'Interval: {value}',
     aggregation: 'Aggregation',
     aggregationValue: 'Aggregate: {value}',
+    calendar: 'Calendar',
+    calendarPeriod: 'Calendar period',
+    soFar: 'So far',
+    duration: 'Last',
+    durationAmount: 'Amount',
+    durationUnit: 'Unit',
+    durationUnits: { m: 'minutes', h: 'hours', d: 'days' },
+    timezone: 'Time zone',
+    timezoneDefault: 'Zone: default',
+    periods: {
+      'current.hour': 'This hour', 'current.day': 'Today', 'current.week': 'This week', 'current.isoWeek': 'This week (Mon)',
+      'current.month': 'This month', 'current.quarter': 'This quarter', 'current.halfYear': 'This half year', 'current.year': 'This year',
+      'previous.hour': 'Previous hour', 'previous.day': 'Yesterday', 'previous.week': 'Previous week', 'previous.isoWeek': 'Previous week (Mon)',
+      'previous.month': 'Previous month', 'previous.quarter': 'Previous quarter', 'previous.halfYear': 'Previous half year', 'previous.year': 'Previous year',
+      dayBeforeYesterday: 'Day before yesterday', thisDayLastWeek: 'This day last week',
+    },
   };
+  var DEFAULT_CALENDAR_PERIODS = [
+    'current.hour', 'current.day', 'current.week', 'current.isoWeek', 'current.month', 'current.quarter', 'current.halfYear', 'current.year',
+    'previous.hour', 'previous.day', 'previous.week', 'previous.isoWeek', 'previous.month', 'previous.quarter', 'previous.halfYear', 'previous.year',
+    'dayBeforeYesterday', 'thisDayLastWeek',
+  ];
+  // `<n>m`, `<n>h` or `<n>d`: what a custom duration is written as.
+  var DURATION = /^([1-9]\d{0,5})([mhd])$/;
+  var DURATION_UNITS = ['m', 'h', 'd'];
+  // A short list for a runtime that cannot enumerate zones.
+  var FALLBACK_ZONES = [
+    'UTC', 'Europe/London', 'Europe/Berlin', 'Europe/Istanbul', 'Europe/Moscow', 'Africa/Cairo', 'Asia/Dubai', 'Asia/Kolkata',
+    'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland', 'America/Sao_Paulo', 'America/New_York',
+    'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+  ];
+  // Every IANA zone the runtime knows (UTC first), or the short list; the current value is always among them.
+  function zoneChoices(current) {
+    var all = [];
+    try { all = (typeof Intl.supportedValuesOf === 'function' && Intl.supportedValuesOf('timeZone')) || []; } catch (e) { all = []; }
+    var list = all.length > 0 ? ['UTC'].concat(all.filter(function (z) { return z !== 'UTC'; })) : FALLBACK_ZONES;
+    return current && list.indexOf(current) === -1 ? list.concat([current]) : list;
+  }
   var _m = Object.assign({}, DEFAULT_MESSAGES, locals.messages || {});
   var _value = locals.value || null;
   var _presets = Array.isArray(locals.presets) ? locals.presets : ['15m', '1h', '6h', '24h', '7d', '30d', '90d', '365d'];
@@ -95,7 +150,28 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
   var _showInterval = locals.showInterval === false ? false : true;
   var _showAggregation = locals.showAggregation === false ? false : true;
   var _prefix = locals.idPrefix || ('tw-' + Math.random().toString(36).substr(2, 6));
-  var _absolute = !!_value && _value.mode === 'absolute';
+  var _allowDuration = locals.allowDuration === true;
+  var _calendarPeriods = locals.calendarPeriods === true ? DEFAULT_CALENDAR_PERIODS : (Array.isArray(locals.calendarPeriods) ? locals.calendarPeriods : []);
+  var _showTimezone = locals.showTimezone === true;
+  function periodName(p) {
+    var own = _m.periods || {};
+    return own[p] != null ? own[p] : (DEFAULT_MESSAGES.periods[p] != null ? DEFAULT_MESSAGES.periods[p] : p);
+  }
+  function isCurrent(p) { return String(p).indexOf('current.') === 0; }
+  // Which segment is active: 'preset' | 'duration' | 'calendar' | 'absolute' (kui-react panelOf).
+  var _panel = !_value ? 'preset'
+    : _value.mode === 'absolute' ? 'absolute'
+      : _value.mode === 'calendar' ? 'calendar'
+        : _presets.indexOf(_value.last) !== -1 ? 'preset' : 'duration';
+  var _absolute = _panel === 'absolute';
+  var _calendar = _panel === 'calendar' && !!_value && _value.mode === 'calendar';
+  var _dur = _value && _value.mode === 'relative' ? DURATION.exec(_value.last) : null;
+  var _amount = _dur ? _dur[1] : '';
+  var _unit = _dur ? _dur[2] : 'h';
+  var _periodOptions = _calendar && _calendarPeriods.indexOf(_value.period) === -1 ? _calendarPeriods.concat([_value.period]) : _calendarPeriods;
+  var _periodNames = {};
+  _calendarPeriods.forEach(function (p) { _periodNames[p] = periodName(p); });
+  Object.keys(DEFAULT_MESSAGES.periods).concat(Object.keys(_m.periods || {})).forEach(function (p) { _periodNames[p] = periodName(p); });
   var _onChange = typeof locals.onChange === 'string' ? locals.onChange : '';
 
   var FIELD = 'h-8 rounded-md border border-border bg-surface-base px-2 text-sm text-text-primary outline-none focus-visible:ring-2 focus-visible:ring-border-focus';
@@ -108,23 +184,56 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
 %>
 <div
   data-kui-timewindow
-  data-kui-timewindow-config="<%= JSON.stringify({ value: _value, presets: _presets, onChange: _onChange, defaultLast: _presets.indexOf('24h') !== -1 ? '24h' : _presets[0] }) %>"
+  data-kui-timewindow-config="<%= JSON.stringify({ value: _value, presets: _presets, onChange: _onChange, defaultLast: _presets.indexOf('24h') !== -1 ? '24h' : _presets[0], calendarPeriods: _calendarPeriods, periodNames: _periodNames }) %>"
   class="flex flex-wrap items-center gap-2<%= locals.className ? ' ' + locals.className : '' %>"
   role="group"
   aria-label="<%= _m.label %>"
 >
   <div class="inline-flex overflow-hidden rounded-md border border-border" role="radiogroup" aria-label="<%= _m.presets %>">
     <% _presets.forEach(function (p) {
-      var active = !!_value && _value.mode === 'relative' && _value.last === p && !_absolute;
+      var active = _panel === 'preset' && !!_value && _value.mode === 'relative' && _value.last === p;
     %>
     <button type="button" role="radio" aria-checked="<%= active ? 'true' : 'false' %>" data-kui-timewindow-preset="<%= p %>"
       class="<%= BTN %> <%= active ? ACTIVE : INACTIVE %>"><%= p %></button>
     <% }); %>
+    <% if (_allowDuration) { %>
+    <button type="button" role="radio" aria-checked="<%= _panel === 'duration' ? 'true' : 'false' %>" data-kui-timewindow-duration
+      class="<%= BTN %> <%= _panel === 'duration' ? ACTIVE : INACTIVE %>"><%= _m.duration %></button>
+    <% } %>
+    <% if (_calendarPeriods.length > 0) { %>
+    <button type="button" role="radio" aria-checked="<%= _panel === 'calendar' ? 'true' : 'false' %>" data-kui-timewindow-calendar
+      class="<%= BTN %> <%= _panel === 'calendar' ? ACTIVE : INACTIVE %>"><%= _m.calendar %></button>
+    <% } %>
     <% if (_allowAbsolute) { %>
     <button type="button" role="radio" aria-checked="<%= _absolute ? 'true' : 'false' %>" data-kui-timewindow-custom
       class="<%= BTN %> <%= _absolute ? ACTIVE : INACTIVE %>"><%= _m.custom %></button>
     <% } %>
   </div>
+
+  <% if (_allowDuration) { %>
+  <div class="flex items-center gap-1.5" data-kui-timewindow-duration-panel<%= _panel === 'duration' ? '' : ' hidden' %>>
+    <input id="<%= _prefix %>-amount" type="number" inputmode="numeric" min="1" aria-label="<%= _m.durationAmount %>" class="<%= FIELD %> w-20" data-kui-timewindow-amount value="<%= _amount %>">
+    <select id="<%= _prefix %>-unit" aria-label="<%= _m.durationUnit %>" class="<%= FIELD %>" data-kui-timewindow-unit>
+      <% DURATION_UNITS.forEach(function (u) { var names = _m.durationUnits || {}; %>
+      <option value="<%= u %>"<%= u === _unit ? ' selected' : '' %>><%= names[u] != null ? names[u] : u %></option>
+      <% }); %>
+    </select>
+  </div>
+  <% } %>
+
+  <% if (_calendarPeriods.length > 0) { %>
+  <div class="flex items-center gap-2" data-kui-timewindow-calendar-panel<%= _calendar ? '' : ' hidden' %>>
+    <select id="<%= _prefix %>-period" aria-label="<%= _m.calendarPeriod %>" class="<%= FIELD %>" data-kui-timewindow-period>
+      <% _periodOptions.forEach(function (p) { %>
+      <option value="<%= p %>"<%= _calendar && p === _value.period ? ' selected' : '' %>><%= periodName(p) %></option>
+      <% }); %>
+    </select>
+    <label class="flex items-center gap-1.5 text-xs <%= !_calendar || isCurrent(_value.period) ? 'text-text-secondary' : 'text-text-disabled' %>" data-kui-timewindow-so-far-label>
+      <input id="<%= _prefix %>-so-far" type="checkbox" class="rounded border-border focus-visible:ring-2 focus-visible:ring-border-focus" data-kui-timewindow-so-far<%= _calendar && _value.soFar === true ? ' checked' : '' %><%= _calendar && !isCurrent(_value.period) ? ' disabled' : '' %>>
+      <%= _m.soFar %>
+    </label>
+  </div>
+  <% } %>
 
   <% if (_allowAbsolute) { %>
   <div class="flex items-center gap-1.5" data-kui-timewindow-range<%= _absolute ? '' : ' hidden' %>>
@@ -143,6 +252,14 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
     <% }); %>
   </select>
   <% } %>
+  <% if (_showTimezone) { var _tz = (_value && _value.timezone) || ''; %>
+  <select aria-label="<%= _m.timezone %>" class="<%= FIELD %>" data-kui-timewindow-timezone>
+    <option value=""<%= _tz === '' ? ' selected' : '' %>><%= _m.timezoneDefault %></option>
+    <% zoneChoices(_tz).forEach(function (z) { %>
+    <option value="<%= z %>"<%= z === _tz ? ' selected' : '' %>><%= z %></option>
+    <% }); %>
+  </select>
+  <% } %>
   <% if (_showAggregation) { %>
   <select aria-label="<%= _m.aggregation %>" class="<%= FIELD %>" data-kui-timewindow-aggregation>
     <% _aggregations.forEach(function (a) { %>
@@ -156,41 +273,93 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
   var roots = document.querySelectorAll('[data-kui-timewindow]');
   var ACTIVE = <%- JSON.stringify(ACTIVE.split(' ')) %>;
   var INACTIVE = <%- JSON.stringify(INACTIVE.split(' ')) %>;
+  var DURATION = /^([1-9]\d{0,5})([mhd])$/;
 
   function toInput(iso) { return String(iso).slice(0, 16); }
   function fromInput(v) { return new Date(v + ':00.000Z').toISOString(); }
+  function isCurrent(p) { return String(p).indexOf('current.') === 0; }
 
   function mount(root) {
     if (root.__timeWindow) return;
     var cfg;
     try { cfg = JSON.parse(root.getAttribute('data-kui-timewindow-config') || '{}'); } catch (e) { cfg = {}; }
+    var presetList = cfg.presets || [];
+    var calendarPeriods = cfg.calendarPeriods || [];
+    var periodNames = cfg.periodNames || {};
     var value = cfg.value || null;
-    var absolute = !!value && value.mode === 'absolute';
+    function panelOf(v) {
+      return !v ? 'preset'
+        : v.mode === 'absolute' ? 'absolute'
+          : v.mode === 'calendar' ? 'calendar'
+            : presetList.indexOf(v.last) !== -1 ? 'preset' : 'duration';
+    }
+    var panel = panelOf(value);
     var presets = root.querySelectorAll('[data-kui-timewindow-preset]');
+    var durationBtn = root.querySelector('[data-kui-timewindow-duration]');
+    var calendarBtn = root.querySelector('[data-kui-timewindow-calendar]');
     var custom = root.querySelector('[data-kui-timewindow-custom]');
+    var durationPanel = root.querySelector('[data-kui-timewindow-duration-panel]');
+    var amountInput = root.querySelector('[data-kui-timewindow-amount]');
+    var unitSel = root.querySelector('[data-kui-timewindow-unit]');
+    var calendarPanel = root.querySelector('[data-kui-timewindow-calendar-panel]');
+    var periodSel = root.querySelector('[data-kui-timewindow-period]');
+    var soFarLabel = root.querySelector('[data-kui-timewindow-so-far-label]');
+    var soFarBox = root.querySelector('[data-kui-timewindow-so-far]');
     var range = root.querySelector('[data-kui-timewindow-range]');
     var from = root.querySelector('[data-kui-timewindow-from]');
     var to = root.querySelector('[data-kui-timewindow-to]');
     var intervalSel = root.querySelector('[data-kui-timewindow-interval]');
+    var tzSel = root.querySelector('[data-kui-timewindow-timezone]');
     var aggSel = root.querySelector('[data-kui-timewindow-aggregation]');
+    var dur = value && value.mode === 'relative' ? DURATION.exec(value.last) : null;
+    var amount = dur ? dur[1] : '';
+    var unit = dur ? dur[2] : 'h';
 
     function paintBtn(btn, on) {
       btn.setAttribute('aria-checked', on ? 'true' : 'false');
       (on ? INACTIVE : ACTIVE).forEach(function (c) { btn.classList.remove(c); });
       (on ? ACTIVE : INACTIVE).forEach(function (c) { btn.classList.add(c); });
     }
+    // A value the server did not render an option for (setValue) still shows.
+    function ensureOption(sel, val, text) {
+      for (var i = 0; i < sel.options.length; i++) if (sel.options[i].value === val) return;
+      var o = document.createElement('option'); o.value = val; o.textContent = text; sel.appendChild(o);
+    }
     function paint() {
       for (var i = 0; i < presets.length; i++) {
         var last = presets[i].getAttribute('data-kui-timewindow-preset');
-        paintBtn(presets[i], !!value && value.mode === 'relative' && value.last === last && !absolute);
+        paintBtn(presets[i], panel === 'preset' && !!value && value.mode === 'relative' && value.last === last);
       }
-      if (custom) paintBtn(custom, absolute);
-      if (range) range.hidden = !(absolute && value && value.mode === 'absolute');
-      if (absolute && value && value.mode === 'absolute' && from && to) {
+      if (durationBtn) paintBtn(durationBtn, panel === 'duration');
+      if (calendarBtn) paintBtn(calendarBtn, panel === 'calendar');
+      if (custom) paintBtn(custom, panel === 'absolute');
+      if (durationPanel) durationPanel.hidden = panel !== 'duration';
+      if (amountInput && amountInput.value !== amount) amountInput.value = amount;
+      if (unitSel) unitSel.value = unit;
+      var cal = panel === 'calendar' && !!value && value.mode === 'calendar';
+      if (calendarPanel) calendarPanel.hidden = !cal;
+      if (cal && periodSel) {
+        ensureOption(periodSel, value.period, periodNames[value.period] != null ? periodNames[value.period] : value.period);
+        periodSel.value = value.period;
+        var current = isCurrent(value.period);
+        if (soFarBox) { soFarBox.checked = value.soFar === true; soFarBox.disabled = !current; }
+        if (soFarLabel) {
+          soFarLabel.classList.remove(current ? 'text-text-disabled' : 'text-text-secondary');
+          soFarLabel.classList.add(current ? 'text-text-secondary' : 'text-text-disabled');
+        }
+      }
+      var abs = panel === 'absolute' && !!value && value.mode === 'absolute';
+      if (range) range.hidden = !abs;
+      if (abs && from && to) {
         from.value = toInput(value.from); from.max = toInput(value.to);
         to.value = toInput(value.to); to.min = toInput(value.from);
       }
       if (intervalSel) intervalSel.value = (value && value.interval) || 'auto';
+      if (tzSel) {
+        var tz = (value && value.timezone) || '';
+        if (tz) ensureOption(tzSel, tz, tz);
+        tzSel.value = tz;
+      }
       if (aggSel) aggSel.value = (value && value.aggregation) || 'avg';
     }
     function emit(next) {
@@ -208,15 +377,52 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
       Object.keys(patch).forEach(function (k) { if (patch[k] !== undefined) out[k] = patch[k]; });
       return out;
     }
+    function without(base, key) {
+      var out = merge(base, {});
+      delete out[key];
+      return out;
+    }
+    function fallback() { return { mode: 'relative', last: cfg.defaultLast }; }
+    function emitDuration(n, u) {
+      if (DURATION.test(n + u)) emit(merge({ mode: 'relative', last: n + u }, extras()));
+      else paint();
+    }
 
     for (var i = 0; i < presets.length; i++) {
       presets[i].addEventListener('click', function (e) {
-        absolute = false;
+        panel = 'preset';
         emit(merge({ mode: 'relative', last: e.currentTarget.getAttribute('data-kui-timewindow-preset') }, extras()));
       });
     }
+    if (durationBtn) durationBtn.addEventListener('click', function () {
+      panel = 'duration';
+      if (amount) emitDuration(amount, unit); else paint();
+    });
+    if (amountInput) amountInput.addEventListener('input', function () {
+      amount = amountInput.value;
+      emitDuration(amount, unit);
+    });
+    if (unitSel) unitSel.addEventListener('change', function () {
+      unit = unitSel.value;
+      emitDuration(amount, unit);
+    });
+    if (calendarBtn) calendarBtn.addEventListener('click', function () {
+      panel = 'calendar';
+      if (!value || value.mode !== 'calendar') emit(merge({ mode: 'calendar', period: calendarPeriods[0] }, extras()));
+      else paint();
+    });
+    if (periodSel) periodSel.addEventListener('change', function () {
+      if (!value || value.mode !== 'calendar') return;
+      var period = periodSel.value;
+      var next = merge(value, { period: period });
+      emit(isCurrent(period) ? next : without(next, 'soFar'));
+    });
+    if (soFarBox) soFarBox.addEventListener('change', function () {
+      if (!value || value.mode !== 'calendar') return;
+      emit(soFarBox.checked ? merge(value, { soFar: true }) : without(value, 'soFar'));
+    });
     if (custom) custom.addEventListener('click', function () {
-      absolute = true;
+      panel = 'absolute';
       if (!value || value.mode !== 'absolute') {
         var end = new Date(); end.setMinutes(0, 0, 0);
         emit(merge({ mode: 'absolute', from: new Date(end.getTime() - 24 * 3600000).toISOString(), to: end.toISOString() }, extras()));
@@ -231,15 +437,24 @@ Presets form a radiogroup; the date inputs and the selects carry accessible name
       if (to.value && value && value.mode === 'absolute') emit(merge(value, { to: fromInput(to.value) }));
     });
     function setExtra(patch) {
-      var base = value || { mode: 'relative', last: cfg.defaultLast };
-      emit(merge(base, patch));
+      emit(merge(value || fallback(), patch));
     }
     if (intervalSel) intervalSel.addEventListener('change', function () { setExtra({ interval: intervalSel.value }); });
     if (aggSel) aggSel.addEventListener('change', function () { setExtra({ aggregation: aggSel.value }); });
+    if (tzSel) tzSel.addEventListener('change', function () {
+      var rest = without(value || fallback(), 'timezone');
+      emit(tzSel.value ? merge(rest, { timezone: tzSel.value }) : rest);
+    });
 
     root.__timeWindow = {
       getValue: function () { return value; },
-      setValue: function (v) { value = v || null; absolute = !!value && value.mode === 'absolute'; paint(); },
+      setValue: function (v) {
+        value = v || null;
+        panel = panelOf(value);
+        var d = value && value.mode === 'relative' ? DURATION.exec(value.last) : null;
+        if (d) { amount = d[1]; unit = d[2]; }
+        paint();
+      },
     };
   }
   for (var r = 0; r < roots.length; r++) mount(roots[r]);

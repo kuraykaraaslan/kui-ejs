@@ -24,7 +24,7 @@ export function buildTimeWindowPickerData(): ShowcaseItem[] {
       category: 'Molecule',
       abbr: 'Tw',
       description:
-        'Relative presets ("1h", "7d"), an absolute UTC range and the interval / aggregation that go with a window. The value is a structural `TimeWindowValue` (ISO strings, UTC); every change dispatches a `kui:timewindow-change` DOM event (detail = the next value) and calls the global function named by `onChange`. Every label is overridable through `messages`. Inline dashboard / telemetry sibling of DateRangePicker.',
+        'Relative presets ("1h", "7d"), an optional custom "last N minutes / hours / days", calendar periods ("today", "previous month", optionally "so far"), an absolute UTC range, and the interval / aggregation / time zone that go with a window. The value is a structural `TimeWindowValue` (ISO strings, UTC); every change dispatches a `kui:timewindow-change` DOM event (detail = the next value) and calls the global function named by `onChange`. Every label, period names included, is overridable through `messages`. Inline dashboard / telemetry sibling of DateRangePicker.',
       filePath: 'modules/ui/TimeWindowPicker.ejs',
       sourceCode: pickerSource,
       since: '2026-10',
@@ -33,7 +33,7 @@ export function buildTimeWindowPickerData(): ShowcaseItem[] {
       a11y: {
         wcagLevel: 'AA',
         ariaPatterns: ['radiogroup', 'group'],
-        notes: 'Presets form a radiogroup; the date inputs and the selects carry accessible names from `messages`.',
+        notes: 'Presets, Last, Calendar and Custom form one radiogroup; the inputs, the period select, the so-far checkbox (disabled for a past period) and the selects carry accessible names from `messages`.',
       },
       variants: [
         {
@@ -44,6 +44,19 @@ export function buildTimeWindowPickerData(): ShowcaseItem[] {
 <script>
   document.addEventListener('kui:timewindow-change', (e) => console.log(e.detail));
 </script>`,
+        },
+        {
+          title: 'Calendar periods, custom duration and time zone',
+          layout: 'stack' as const,
+          previewHtml: demo('tw-full-wrap', {
+            idPrefix: 'tw-full', value: { mode: 'calendar', period: 'current.day', soFar: true },
+            calendarPeriods: true, allowDuration: true, showTimezone: true,
+          }),
+          code: `<%- include('modules/ui/TimeWindowPicker', {
+  value: { mode: 'calendar', period: 'current.day', soFar: true },
+  calendarPeriods: true, // all 18 periods; or a list such as ['current.day', 'previous.month']
+  allowDuration: true, showTimezone: true,
+}) %>`,
         },
         {
           title: 'Presets only',
