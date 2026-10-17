@@ -28,7 +28,7 @@
 <div
   class="w-full space-y-2<%= locals.className ? ' ' + locals.className : '' %>"
   data-fi-root="<%= _id %>"
-  data-fi-options='<%- JSON.stringify(_opts) %>'
+  data-fi-options="<%= JSON.stringify(_opts) %>"
 >
   <% if (locals.label) { %>
     <label for="<%= _id %>" class="block text-sm font-medium text-text-primary">

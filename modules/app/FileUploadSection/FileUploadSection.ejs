@@ -43,7 +43,7 @@
 %>
 <section
   data-fus-root="<%= _id %>"
-  data-fus-options='<%- JSON.stringify(_opts) %>'
+  data-fus-options="<%= JSON.stringify(_opts) %>"
   class="space-y-3<%= locals.className ? ' ' + locals.className : '' %>"
   aria-label="<%= locals.title || 'File upload' %>"
 >

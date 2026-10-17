@@ -18,7 +18,7 @@
       id="<%= _id %>-tab-<%= tab.id %>"
       aria-selected="<%= isActive ? 'true' : 'false' %>"
       data-tab-id="<%= tab.id %>"
-      onclick="activateNotifFilterTab('<%= _id %>', '<%= tab.id %>')"
+      onclick="activateNotifFilterTab(<%= JSON.stringify(String(_id)) %>, <%= JSON.stringify(String(tab.id)) %>)"
       class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary text-primary-fg' : 'bg-surface-overlay text-text-secondary hover:text-text-primary hover:bg-surface-sunken' %>"
     >
       <%= tab.label %>

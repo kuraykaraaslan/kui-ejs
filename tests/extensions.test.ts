@@ -334,7 +334,7 @@ describe('AppSidebar header and badges', () => {
     }));
     expect(html).toContain('<a href="/qa" title="Q&amp;A" class=');
     expect(html).toContain('<button type="button" title="Inbox" class=');
-    expect(html).not.toContain('&#34;');
+    expect(html).not.toMatch(/(title|aria-current)=&#34;/);
   });
 });
 

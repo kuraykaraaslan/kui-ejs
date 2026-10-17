@@ -16,11 +16,11 @@
 
 <%# Trigger — fallback matches <Button variant="outline" size="sm" iconLeft={faBars}> %>
 <% if (locals.triggerContent) { %>
-<div role="none" onclick="openDrawer('<%= _id %>')"><%- locals.triggerContent %></div>
+<div role="none" onclick="openDrawer(<%= JSON.stringify(String(_id)) %>)"><%- locals.triggerContent %></div>
 <% } else { %>
 <button
   type="button"
-  onclick="openDrawer('<%= _id %>')"
+  onclick="openDrawer(<%= JSON.stringify(String(_id)) %>)"
   class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed border border-border text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm"
 >
   <span aria-hidden="true" class="shrink-0"><i class="fa-solid fa-bars" style="width:0.875rem;height:0.875rem"></i></span>
@@ -40,7 +40,7 @@
     id="<%= _id %>-backdrop"
     class="absolute inset-0 bg-black/50"
     aria-hidden="true"
-    onclick="closeDrawer('<%= _id %>')"
+    onclick="closeDrawer(<%= JSON.stringify(String(_id)) %>)"
   ></div>
 
   <div
@@ -53,7 +53,7 @@
       <button
         type="button"
         aria-label="Close drawer"
-        onclick="closeDrawer('<%= _id %>')"
+        onclick="closeDrawer(<%= JSON.stringify(String(_id)) %>)"
         class="text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
       >
         <i class="fa-solid fa-xmark" style="width:1rem;height:1rem" aria-hidden="true"></i>
@@ -77,14 +77,14 @@
           autocomplete="off"
           data-testid="searchbar-<%= _id %>-search"
           placeholder="Search navigation…"
-          oninput="filterAppDrawer('<%= _id %>', this.value); (function(inp){var btn=document.getElementById('<%= _id %>-search-clear'); if(btn) btn.classList.toggle('hidden', !inp.value);})(this)"
+          oninput="filterAppDrawer(<%= JSON.stringify(String(_id)) %>, this.value); (function(inp){var btn=document.getElementById(<%= JSON.stringify(_id + '-search-clear') %>); if(btn) btn.classList.toggle('hidden', !inp.value);})(this)"
           class="block w-full rounded-md border border-border bg-surface-base px-3 py-2 pl-8 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus transition-colors"
         />
         <button
           id="<%= _id %>-search-clear"
           type="button"
           aria-label="Clear search"
-          onclick="(function(){var i=document.getElementById('<%= _id %>-search'); if(!i) return; i.value=''; filterAppDrawer('<%= _id %>',''); var b=document.getElementById('<%= _id %>-search-clear'); if(b) b.classList.add('hidden'); i.focus();})()"
+          onclick="(function(){var i=document.getElementById(<%= JSON.stringify(_id + '-search') %>); if(!i) return; i.value=''; filterAppDrawer(<%= JSON.stringify(String(_id)) %>,''); var b=document.getElementById(<%= JSON.stringify(_id + '-search-clear') %>); if(b) b.classList.add('hidden'); i.focus();})()"
           class="hidden absolute right-2 text-text-disabled hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded"
         >
           <i class="fa-solid fa-xmark" style="width:0.75rem;height:0.75rem" aria-hidden="true"></i>
@@ -107,7 +107,7 @@
               data-item-label="<%= (item.label || '').toLowerCase() %>"
               data-item-id="<%= item.id || '' %>"
               <% if (isActive) { %>aria-current="page"<% } %>
-              onclick="appDrawerSelect('<%= _id %>', '<%= item.id || '' %>')"
+              onclick="appDrawerSelect(<%= JSON.stringify(String(_id)) %>, <%= JSON.stringify(String(item.id || '')) %>)"
               class="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus <%= isActive ? 'bg-primary-subtle text-primary font-semibold' : 'text-text-primary hover:bg-surface-overlay' %>"
             >
               <span class="flex items-center gap-2">

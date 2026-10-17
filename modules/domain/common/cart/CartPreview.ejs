@@ -15,7 +15,7 @@
 
   <!-- toggle header -->
   <button type="button"
-    onclick="toggleCartPreview('<%= _id %>')"
+    onclick="toggleCartPreview(<%= JSON.stringify(String(_id)) %>)"
     aria-expanded="<%= _defaultOpen ? 'true' : 'false' %>"
     class="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-border-focus">
     <div class="flex items-center gap-2 min-w-0">

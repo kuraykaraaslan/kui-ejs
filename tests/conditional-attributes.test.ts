@@ -3,7 +3,8 @@
 // `aria-current=&#34;page&#34;`: an unquoted value of `"page"` (quotes included), not `page`.
 // The repo's convention is `<% if (cond) { %>name="value"<% } %>`, with any dynamic value inside
 // it through `<%= %>`. Each fixed partial is rendered here, and the last block scans every
-// template so the pattern cannot come back.
+// template so the pattern cannot come back, together with two relatives: a server value quoted
+// inside an on*= handler's JS, and raw output in a single-quoted attribute (tests/handler-values.test.ts).
 import { describe, it, expect } from 'vitest';
 import ejs from 'ejs';
 import fs from 'node:fs';
@@ -39,7 +40,7 @@ describe('modules/app/AppNav.ejs', () => {
     }));
     expect(tagWith(html, 'href="/home"')).toContain('aria-current="page"');
     expect(tagWith(html, 'href="/docs"')).not.toContain('aria-current');
-    expect(html).not.toContain('&#34;');
+    expect(html).not.toContain('aria-current=&#34;');
   });
 });
 
@@ -141,6 +142,40 @@ describe('no template writes an attribute or markup through escaped output', () 
   // `name=&#34;` / `&lt;tag`. Plain values (classes, URLs, `?status=` query parts) are fine.
   const ATTR_OR_TAG = /[a-zA-Z_:-]=\\?["']|<\/?[a-zA-Z]/;
   const offenders: string[] = [];
+  // A server value inside a JS string of an on*= handler ('<%= id %>') breaks on an apostrophe:
+  // &#39; decodes back to ' and ends the string. It goes in as <%= JSON.stringify(id) %>, unquoted.
+  const handlerOffenders: string[] = [];
+  // Raw JSON in a single-quoted attribute (data-x='<%- JSON.stringify(o) %>') breaks on an apostrophe
+  // in any value. It goes in double-quoted and escaped: data-x="<%= JSON.stringify(o) %>".
+  const rawAttrOffenders: string[] = [];
+  const at = (file: string, src: string, index: number) => `${path.relative(ROOT, file)}:${src.slice(0, index).split('\n').length}`;
+
+  /** Server output tags sitting inside a JS string literal of an on*= attribute value. */
+  function scanHandlers(file: string, src: string) {
+    for (const m of src.matchAll(/\son[a-z]+\s*=\s*(["'])/g)) {
+      const before = src.slice(0, m.index);
+      if (before.lastIndexOf('<%') > before.lastIndexOf('%>')) continue; // inside a scriptlet
+      const quote = m[1];
+      let i = m.index! + m[0].length;
+      let js: string | null = null;
+      while (i < src.length) {
+        if (src.startsWith('<%', i)) {
+          const end = src.indexOf('%>', i) + 2;
+          if (js && /^<%[=-]/.test(src.slice(i, i + 3))) handlerOffenders.push(at(file, src, i));
+          i = end;
+          continue;
+        }
+        const c = src[i];
+        if (js) {
+          if (c === '\\') { i += 2; continue; }
+          if (c === js) js = null;
+        } else if (c === quote) break;
+        else if (c === "'" || c === '`' || (c === '"' && quote === "'")) js = c;
+        i++;
+      }
+    }
+  }
+
   const walk = (dir: string) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const file = path.join(dir, entry.name);
@@ -149,17 +184,25 @@ describe('no template writes an attribute or markup through escaped output', () 
         const src = fs.readFileSync(file, 'utf8');
         for (const m of src.matchAll(/<%=([\s\S]*?)%>/g)) {
           const literals = m[1].match(/'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"/g) || [];
-          if (literals.some((l) => ATTR_OR_TAG.test(l.slice(1, -1)))) {
-            offenders.push(`${path.relative(ROOT, file)}:${src.slice(0, m.index).split('\n').length}`);
-          }
+          if (literals.some((l) => ATTR_OR_TAG.test(l.slice(1, -1)))) offenders.push(at(file, src, m.index!));
         }
+        if (src.includes('<%')) scanHandlers(file, src);
+        for (const m of src.matchAll(/[\w:-]+='<%-/g)) rawAttrOffenders.push(at(file, src, m.index!));
       }
     }
   };
   walk(path.join(ROOT, 'modules'));
   walk(path.join(ROOT, 'views'));
 
-  it('finds none in modules/ and views/', () => {
+  it('finds no escaped attribute or tag in modules/ and views/', () => {
     expect(offenders).toEqual([]);
+  });
+
+  it('finds no server value quoted inside an on*= handler', () => {
+    expect(handlerOffenders).toEqual([]);
+  });
+
+  it('finds no raw output in a single-quoted attribute', () => {
+    expect(rawAttrOffenders).toEqual([]);
   });
 });

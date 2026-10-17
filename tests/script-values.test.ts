@@ -116,7 +116,7 @@ describe('no template writes a value into a script another way', () => {
   });
 });
 
-describe('every inline script on every showcase and theme page', () => {
+describe('every inline script and handler on every showcase and theme page', () => {
   const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'public/registry/components.json'), 'utf8'));
   const routes: string[] = [
     ...registry.components.map((c: { id: string }) => `/${c.id}`),
@@ -138,6 +138,24 @@ describe('every inline script on every showcase and theme page', () => {
         } catch (e) {
           broken.push(`${route}: ${(e as Error).message}`);
         }
+      }
+    }
+    expect(checked).toBeGreaterThan(500);
+    expect(broken).toEqual([]);
+  }, 120_000);
+
+  it('and every on*= handler, decoded as a browser does, parses as JavaScript', async () => {
+    const decode = (s: string) =>
+      s.replace(/&(#34|#39|quot|amp|lt|gt);/g, (_m, e: string) => ({ '#34': '"', '#39': "'", quot: '"', amp: '&', lt: '<', gt: '>' })[e]!);
+    const broken: string[] = [];
+    let checked = 0;
+    for (const route of routes) {
+      const res = await request(app).get(route);
+      const html = res.text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+      for (const m of html.matchAll(/\son[a-z]+=(?:"([^"]*)"|'([^']*)')/g)) {
+        checked++;
+        const code = decode(m[1] ?? m[2]);
+        try { new vm.Script(`(function (event) {\n${code}\n})`); } catch (e) { broken.push(`${route}: ${(e as Error).message} :: ${code.slice(0, 80)}`); }
       }
     }
     expect(checked).toBeGreaterThan(500);

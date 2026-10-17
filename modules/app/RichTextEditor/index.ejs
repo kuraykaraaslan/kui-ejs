@@ -62,8 +62,8 @@
     <% if (_autosaveKey) { %>data-autosave-key="<%= _autosaveKey %>"<% } %>
     <% if (_sanitizeOnPaste) { %>data-sanitize="1"<% } %>
     <% if (_imageUploadFn) { %>data-image-upload-fn="<%= _imageUploadFn %>"<% } %>
-    <% if (_mentions) { %>data-mentions='<%- JSON.stringify(_mentions) %>'<% } %>
-    <% if (_slashItems) { %>data-slash='<%- JSON.stringify(_slashItems) %>'<% } %>
+    <% if (_mentions) { %>data-mentions="<%= JSON.stringify(_mentions) %>"<% } %>
+    <% if (_slashItems) { %>data-slash="<%= JSON.stringify(_slashItems) %>"<% } %>
     <% if (_describedBy) { %>aria-describedby="<%= _describedBy %>"<% } %>
     aria-invalid="<%= _error ? 'true' : 'false' %>"
     class="rounded-md border <%= _error ? 'border-error' : 'border-border' %> bg-surface-base overflow-hidden focus-within:ring-2 focus-within:ring-border-focus<%= _readOnly ? ' bg-surface-sunken' : '' %>"

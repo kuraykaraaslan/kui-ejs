@@ -47,12 +47,18 @@ function wrap(html: string): string {
   return `<div class="w-full max-w-2xl">${html}</div>`;
 }
 
+/** A JS string literal for an on*= attribute: JSON, then HTML-escaped (the browser decodes it back). */
+function jsArg(value: string): string {
+  return JSON.stringify(value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function actionsHtml(id: string): string {
+  const rte = `window.KuiRte.get(${jsArg(id)})`;
   return `<div class="flex flex-wrap gap-2 mt-2">
-    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="window.KuiRte.get('${id}').focus()">Focus</button>
-    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="window.KuiRte.get('${id}').clear()">Clear</button>
-    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="window.KuiRte.get('${id}').insertHTML('<p><strong>Inserted</strong> via API.</p>')">Insert HTML</button>
-    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="alert(window.KuiRte.get('${id}').getText())">Read plain text</button>
+    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="${rte}.focus()">Focus</button>
+    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="${rte}.clear()">Clear</button>
+    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="${rte}.insertHTML('<p><strong>Inserted</strong> via API.</p>')">Insert HTML</button>
+    <button type="button" class="px-3 py-1.5 text-sm rounded-md border border-border hover:bg-surface-overlay" onclick="alert(${rte}.getText())">Read plain text</button>
   </div>`;
 }
 

@@ -41,7 +41,7 @@
         role="menuitem"
         tabindex="-1"
         <% if (_isDisabled) { %>disabled aria-disabled="true"<% } %>
-        <% if (!_isDisabled && item.onClick) { %>onclick="(function(){ <%= item.onClick %> })(); closeContextMenu('<%= _id %>')"<% } else if (!_isDisabled) { %>onclick="closeContextMenu('<%= _id %>')"<% } %>
+        <% if (!_isDisabled && item.onClick) { %>onclick="(function(){ <%= item.onClick %> })(); closeContextMenu(<%= JSON.stringify(String(_id)) %>)"<% } else if (!_isDisabled) { %>onclick="closeContextMenu(<%= JSON.stringify(String(_id)) %>)"<% } %>
         class="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-left transition-colors select-none focus-visible:outline-none <%= _colorClass %><%= _isDisabled ? ' opacity-40 cursor-not-allowed pointer-events-none' : '' %>"
       >
         <% if (item.icon) { %>

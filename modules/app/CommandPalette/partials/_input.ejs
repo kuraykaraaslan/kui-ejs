@@ -13,7 +13,7 @@
     placeholder="<%= _placeholder %>"
     autocomplete="off"
     class="block w-full rounded-md border border-border bg-surface-base pl-9 pr-3 py-2 text-sm text-text-primary placeholder:text-text-disabled focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:border-border-focus transition-colors"
-    oninput="cmdBarFilter('<%= _id %>', this.value)"
-    onkeydown="cmdBarKeyNav(event, '<%= _id %>')"
+    oninput="cmdBarFilter(<%= JSON.stringify(String(_id)) %>, this.value)"
+    onkeydown="cmdBarKeyNav(event, <%= JSON.stringify(String(_id)) %>)"
   />
 </div>

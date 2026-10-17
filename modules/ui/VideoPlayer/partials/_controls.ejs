@@ -12,9 +12,9 @@
     role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
     tabindex="0"
     class="relative h-1.5 rounded-full bg-white/20 cursor-pointer group hover:h-2 transition-all"
-    onclick="window.__vp['<%= _id %>'].seek(event)"
-    onmousemove="window.__vp['<%= _id %>'].seekHover(event)"
-    onmouseleave="window.__vp['<%= _id %>'].seekLeave()">
+    onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].seek(event)"
+    onmousemove="window.__vp[<%= JSON.stringify(String(_id)) %>].seekHover(event)"
+    onmouseleave="window.__vp[<%= JSON.stringify(String(_id)) %>].seekLeave()">
     <div id="<%= _id %>-buffered"   class="absolute inset-y-0 left-0 rounded-full bg-white/25" style="width:0%"></div>
     <div id="<%= _id %>-played"     class="absolute inset-y-0 left-0 rounded-full bg-primary transition-all" style="width:0%"></div>
     <div id="<%= _id %>-seek-hover" class="absolute inset-y-0 left-0 rounded-full bg-white/15" style="width:0%"></div>
@@ -30,29 +30,29 @@
   <div class="flex items-center gap-1">
 
     <button type="button" aria-label="Rewind 10 seconds"
-      onclick="window.__vp['<%= _id %>'].seekBy(-10)"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].seekBy(-10)"
       class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
       <i class="fa-solid fa-rotate-left text-sm" aria-hidden="true"></i>
     </button>
 
     <button type="button" id="<%= _id %>-play-btn" aria-label="Play"
-      onclick="window.__vp['<%= _id %>'].togglePlay()"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].togglePlay()"
       class="w-9 h-9 flex items-center justify-center text-white hover:text-primary transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
       <i id="<%= _id %>-play-icon" class="fa-solid fa-play text-base" aria-hidden="true"></i>
     </button>
 
     <button type="button" aria-label="Forward 10 seconds"
-      onclick="window.__vp['<%= _id %>'].seekBy(10)"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].seekBy(10)"
       class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
       <i class="fa-solid fa-rotate-right text-sm" aria-hidden="true"></i>
     </button>
 
     <%/* Volume */%>
     <div class="flex items-center gap-1.5"
-      onmouseenter="window.__vp['<%= _id %>'].showVolume(true)"
-      onmouseleave="window.__vp['<%= _id %>'].showVolume(false)">
+      onmouseenter="window.__vp[<%= JSON.stringify(String(_id)) %>].showVolume(true)"
+      onmouseleave="window.__vp[<%= JSON.stringify(String(_id)) %>].showVolume(false)">
       <button type="button" aria-label="Mute"
-        onclick="window.__vp['<%= _id %>'].toggleMute()"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].toggleMute()"
         class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
         <i id="<%= _id %>-vol-icon" class="fa-solid fa-volume-high text-sm" aria-hidden="true"></i>
       </button>
@@ -60,7 +60,7 @@
         <input id="<%= _id %>-vol-input" type="range" min="0" max="1" step="0.05" value="1"
           aria-label="Volume"
           class="w-20 h-1 cursor-pointer accent-primary"
-          oninput="window.__vp['<%= _id %>'].setVolume(this.value)">
+          oninput="window.__vp[<%= JSON.stringify(String(_id)) %>].setVolume(this.value)">
       </div>
     </div>
 
@@ -71,7 +71,7 @@
 
     <%/* Settings */%>
     <button type="button" id="<%= _id %>-gear-btn" aria-label="Settings" aria-expanded="false"
-      onclick="window.__vp['<%= _id %>'].toggleSettings()"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].toggleSettings()"
       class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
       <i id="<%= _id %>-gear-icon" class="fa-solid fa-gear text-sm transition-transform duration-300" aria-hidden="true"></i>
     </button>
@@ -79,7 +79,7 @@
     <%/* Cast */%>
     <% if (ctx.enableCast) { %>
     <button type="button" id="<%= _id %>-cast-btn" aria-label="Cast to device" aria-pressed="false"
-      onclick="window.__vp['<%= _id %>'].toggleCast()"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].toggleCast()"
       class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white hidden">
       <i id="<%= _id %>-cast-icon" class="fa-brands fa-chromecast text-sm" aria-hidden="true"></i>
     </button>
@@ -87,7 +87,7 @@
 
     <%/* Fullscreen */%>
     <button type="button" id="<%= _id %>-fs-btn" aria-label="Enter fullscreen"
-      onclick="window.__vp['<%= _id %>'].toggleFullscreen()"
+      onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].toggleFullscreen()"
       class="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition-colors rounded focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white">
       <i id="<%= _id %>-fs-icon" class="fa-solid fa-expand text-sm" aria-hidden="true"></i>
     </button>

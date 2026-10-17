@@ -27,7 +27,7 @@
     aria-label="Notifications<%= unreadCount > 0 ? ', ' + unreadCount + ' unread' : '' %>"
     aria-haspopup="dialog"
     aria-expanded="false"
-    onclick="toggleNotifMenu('<%= _id %>')"
+    onclick="toggleNotifMenu(<%= JSON.stringify(String(_id)) %>)"
     class="relative flex items-center justify-center w-8 h-8 rounded-md text-text-secondary hover:bg-surface-overlay hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
   >
     <i class="fa-solid fa-bell w-4 h-4" aria-hidden="true"></i>
@@ -83,7 +83,7 @@
           <button
             type="button"
             data-notif-id="<%= item.id %>"
-            <% if (item.onClick) { %>onclick="(<%= item.onClick %>)(); closeNotifMenu('<%= _id %>');"<% } else { %>onclick="closeNotifMenu('<%= _id %>')"<% } %>
+            <% if (item.onClick) { %>onclick="(<%= item.onClick %>)(); closeNotifMenu(<%= JSON.stringify(String(_id)) %>);"<% } else { %>onclick="closeNotifMenu(<%= JSON.stringify(String(_id)) %>)"<% } %>
             class="w-full flex items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-overlay focus-visible:outline-none focus-visible:bg-surface-overlay<%= btnExtra %>"
           >
             <span class="mt-1.5 shrink-0 w-2 h-2 rounded-full <%= dotCls %>" aria-hidden="true"></span>
@@ -107,7 +107,7 @@
         <% } else { %>
           <button
             type="button"
-            onclick="(<%= _onViewAll %>)(); closeNotifMenu('<%= _id %>');"
+            onclick="(<%= _onViewAll %>)(); closeNotifMenu(<%= JSON.stringify(String(_id)) %>);"
             class="w-full py-2.5 text-xs text-primary font-medium hover:bg-surface-overlay transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
           >View all notifications</button>
         <% } %>

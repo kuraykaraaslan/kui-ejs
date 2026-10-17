@@ -50,7 +50,7 @@
       <div class="rounded-xl border border-border bg-surface-raised p-4 transition-colors space-y-3"
         id="order-<%= order.paymentId %>">
         <button type="button"
-          onclick="toggleOrder('<%= order.paymentId %>')"
+          onclick="toggleOrder(<%= JSON.stringify(String(order.paymentId)) %>)"
           class="w-full text-left flex items-center justify-between gap-3 flex-wrap focus-visible:outline-none">
           <div class="space-y-0.5">
             <p class="text-xs text-text-secondary font-mono"><%= order.paymentId %></p>

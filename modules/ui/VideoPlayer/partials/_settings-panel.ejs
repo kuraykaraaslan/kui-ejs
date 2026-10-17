@@ -24,7 +24,7 @@
 
       <% if (_hasQualities) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].showView('quality')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('quality')"
         class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors group">
         <span class="text-white/85 text-sm">Kalite</span>
         <div class="flex items-center gap-1.5 text-white/45 text-xs group-hover:text-white/65 transition-colors">
@@ -35,7 +35,7 @@
       <% } %>
 
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].showView('speed')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('speed')"
         class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors group">
         <span class="text-white/85 text-sm">Oynatma Hızı</span>
         <div class="flex items-center gap-1.5 text-white/45 text-xs group-hover:text-white/65 transition-colors">
@@ -46,7 +46,7 @@
 
       <% if (_hasSubs) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].showView('subtitles')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('subtitles')"
         class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors group">
         <span class="text-white/85 text-sm">Altyazı</span>
         <div class="flex items-center gap-1.5 text-white/45 text-xs group-hover:text-white/65 transition-colors">
@@ -55,7 +55,7 @@
         </div>
       </button>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].showView('subtitle-size')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('subtitle-size')"
         class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors group">
         <span class="text-white/85 text-sm">Altyazı Boyutu</span>
         <div class="flex items-center gap-1.5 text-white/45 text-xs group-hover:text-white/65 transition-colors">
@@ -67,7 +67,7 @@
 
       <% if (_hasAudio) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].showView('language')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('language')"
         class="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/10 transition-colors group">
         <span class="text-white/85 text-sm">Ses Dili</span>
         <div class="flex items-center gap-1.5 text-white/45 text-xs group-hover:text-white/65 transition-colors">
@@ -83,7 +83,7 @@
   <%/* Quality sub-view */%>
   <% if (_hasQualities) { %>
   <div id="<%= _id %>-view-quality" class="hidden">
-    <button type="button" onclick="window.__vp['<%= _id %>'].showView('main')"
+    <button type="button" onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('main')"
       class="w-full flex items-center gap-2.5 px-3 py-2.5 border-b border-white/10 hover:bg-white/5 transition-colors">
       <i class="fa-solid fa-chevron-left text-white/50 text-xs" aria-hidden="true"></i>
       <span class="text-white text-sm font-semibold">Kalite</span>
@@ -91,7 +91,7 @@
     <div class="py-1">
       <% _qualities.forEach(function(q) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setQuality('<%= q.value %>', '<%= q.label %>')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setQuality(<%= JSON.stringify(String(q.value)) %>, <%= JSON.stringify(String(q.label)) %>)"
         data-vp-quality="<%= q.value %>"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span><%= q.label %></span>
@@ -105,7 +105,7 @@
 
   <%/* Speed sub-view */%>
   <div id="<%= _id %>-view-speed" class="hidden">
-    <button type="button" onclick="window.__vp['<%= _id %>'].showView('main')"
+    <button type="button" onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('main')"
       class="w-full flex items-center gap-2.5 px-3 py-2.5 border-b border-white/10 hover:bg-white/5 transition-colors">
       <i class="fa-solid fa-chevron-left text-white/50 text-xs" aria-hidden="true"></i>
       <span class="text-white text-sm font-semibold">Oynatma Hızı</span>
@@ -113,7 +113,7 @@
     <div class="py-1">
       <% _speeds.forEach(function(s) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setSpeed(<%= s %>)"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setSpeed(<%= s %>)"
         data-vp-speed="<%= s %>"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span><%= s === 1 ? '1× (Normal)' : s + '×' %></span>
@@ -127,14 +127,14 @@
   <%/* Subtitles sub-view */%>
   <% if (_hasSubs) { %>
   <div id="<%= _id %>-view-subtitles" class="hidden">
-    <button type="button" onclick="window.__vp['<%= _id %>'].showView('main')"
+    <button type="button" onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('main')"
       class="w-full flex items-center gap-2.5 px-3 py-2.5 border-b border-white/10 hover:bg-white/5 transition-colors">
       <i class="fa-solid fa-chevron-left text-white/50 text-xs" aria-hidden="true"></i>
       <span class="text-white text-sm font-semibold">Altyazı</span>
     </button>
     <div class="py-1">
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setSubtitle(null, 'Kapalı')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setSubtitle(null, 'Kapalı')"
         data-vp-sub="null"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span>Kapalı</span>
@@ -142,7 +142,7 @@
       </button>
       <% _subtitles.forEach(function(sub, i) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setSubtitle(<%= i %>, '<%= sub.label %>')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setSubtitle(<%= i %>, <%= JSON.stringify(String(sub.label)) %>)"
         data-vp-sub="<%= i %>"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span><%= sub.label %></span>
@@ -154,7 +154,7 @@
 
   <%/* Subtitle size sub-view */%>
   <div id="<%= _id %>-view-subtitle-size" class="hidden">
-    <button type="button" onclick="window.__vp['<%= _id %>'].showView('main')"
+    <button type="button" onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('main')"
       class="w-full flex items-center gap-2.5 px-3 py-2.5 border-b border-white/10 hover:bg-white/5 transition-colors">
       <i class="fa-solid fa-chevron-left text-white/50 text-xs" aria-hidden="true"></i>
       <span class="text-white text-sm font-semibold">Altyazı Boyutu</span>
@@ -168,7 +168,7 @@
          ];
          _fontSizes.forEach(function(fs) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setSubtitleSize('<%= fs.key %>', '<%= fs.label %>', '<%= fs.size %>')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setSubtitleSize(<%= JSON.stringify(String(fs.key)) %>, <%= JSON.stringify(String(fs.label)) %>, <%= JSON.stringify(String(fs.size)) %>)"
         data-vp-sub-size="<%= fs.key %>"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span class="flex flex-col items-start gap-0.5">
@@ -186,7 +186,7 @@
   <%/* Language sub-view */%>
   <% if (_hasAudio) { %>
   <div id="<%= _id %>-view-language" class="hidden">
-    <button type="button" onclick="window.__vp['<%= _id %>'].showView('main')"
+    <button type="button" onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].showView('main')"
       class="w-full flex items-center gap-2.5 px-3 py-2.5 border-b border-white/10 hover:bg-white/5 transition-colors">
       <i class="fa-solid fa-chevron-left text-white/50 text-xs" aria-hidden="true"></i>
       <span class="text-white text-sm font-semibold">Ses Dili</span>
@@ -194,7 +194,7 @@
     <div class="py-1">
       <% _audioTracks.forEach(function(track, i) { %>
       <button type="button"
-        onclick="window.__vp['<%= _id %>'].setAudioTrack(<%= i %>, '<%= track.label %>')"
+        onclick="window.__vp[<%= JSON.stringify(String(_id)) %>].setAudioTrack(<%= i %>, <%= JSON.stringify(String(track.label)) %>)"
         data-vp-audio="<%= i %>"
         class="w-full flex items-center justify-between px-4 py-2 text-sm transition-colors hover:bg-white/10 text-white/80">
         <span class="flex flex-col items-start gap-0.5">
