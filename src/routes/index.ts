@@ -35,8 +35,11 @@ router.get('/:slug', (req, res) => {
   const selectedId = req.params.slug;
   const selected = SHOWCASE_DATA_MAP[selectedId] ?? null;
 
-  const variantLayout = (['side', 'stack', 'grid'] as const).includes(req.query.layout as any)
-    ? (req.query.layout as 'side' | 'stack' | 'grid')
+  // 'variant' (not in the layout switcher): one column, each variant in the layout it declares
+  // (`layout: 'stack'`, else side by side). The visual regression suite uses it, so a variant
+  // that needs the full width is screenshotted the way its author laid it out.
+  const variantLayout = (['side', 'stack', 'grid', 'variant'] as const).includes(req.query.layout as any)
+    ? (req.query.layout as 'side' | 'stack' | 'grid' | 'variant')
     : 'side';
 
   const navGroups = NAV_GROUPS.map((group) => ({

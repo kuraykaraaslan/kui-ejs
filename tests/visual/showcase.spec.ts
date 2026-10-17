@@ -6,6 +6,7 @@
 // One page load per component (not per variant) screenshotting every
 // `[data-variant-block][data-variant-index]` container on it — ~207 page
 // loads covering every variant, instead of one page load per variant.
+// Pages load with ?layout=variant, so every variant uses the layout it declares.
 //
 // `video`, `canvas`, external-`img`, and `.leaflet-container` (MapView)
 // elements are masked out — carried over from kui-react's equivalent spec,
@@ -71,6 +72,18 @@ const DETERMINISTIC_FONTS = `
   }
 `;
 
+// The showcase page scrolls inside <main> (an h-screen shell with overflow hidden), so a variant
+// taller than that scroller was captured only as far as the scroller showed it: the rest came out
+// white, and the sticky top bar could sit over the variant's title. For the screenshots the page
+// grows to its content and the top bar stays in the flow, so every variant is captured whole.
+// Widths do not change (headless Chromium draws no scrollbars).
+const WHOLE_PAGE = `
+  body { overflow: visible !important; }
+  .h-screen { height: auto !important; min-height: 100vh; overflow: visible !important; }
+  #main-content { overflow: visible !important; }
+  header.sticky { position: static !important; }
+`;
+
 // axe-core scan runs after the screenshot assertions on the same page load —
 // per $KUIREACT_ROOT/docs/phases/02-testing.md section 2.4. Four rule
 // categories are ratcheted (not force-fixed) rather than blocking every
@@ -116,14 +129,20 @@ test.describe('showcase component variants', () => {
 
   for (const component of components) {
     test(component.id, async ({ page }) => {
-      await page.addInitScript((css) => {
+      await page.addInitScript(([fonts, whole]) => {
         document.addEventListener('DOMContentLoaded', () => {
           const style = document.createElement('style');
-          style.textContent = css;
+          style.textContent = fonts;
           document.head.appendChild(style);
+          const shell = document.createElement('style');
+          shell.id = 'visual-whole-page';
+          shell.textContent = whole;
+          document.head.appendChild(shell);
         });
-      }, DETERMINISTIC_FONTS);
-      await page.goto(`/${component.id}`);
+      }, [DETERMINISTIC_FONTS, WHOLE_PAGE]);
+      // ?layout=variant: each variant in the layout it declares, so a `layout: 'stack'` variant (a wide
+      // table, a toolbar) is screenshotted full width instead of squeezed beside its code panel.
+      await page.goto(`/${component.id}?layout=variant`);
       await page.evaluate(() => document.fonts.ready);
 
       const variantCount = component.variantCount ?? 0;
@@ -135,6 +154,9 @@ test.describe('showcase component variants', () => {
         });
       }
 
+      // axe runs on the page as users get it (scrolling inside <main>), so its counts stay comparable
+      // with the ratcheted baselines: content the scroller hides is not checked for contrast.
+      await page.evaluate(() => document.getElementById('visual-whole-page')?.remove());
       const results = await new AxeBuilder({ page }).analyze();
       const bad = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
 

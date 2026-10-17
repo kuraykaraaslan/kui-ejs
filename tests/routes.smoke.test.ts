@@ -93,6 +93,24 @@ describe('showcase component slugs', () => {
   });
 });
 
+describe('showcase variant layouts', () => {
+  // toggle declares layout: 'stack' on its last variant (8) only.
+  const stacks = async (query: string) => {
+    const res = await request(app).get(`/toggle${query}`);
+    expect(res.status).toBe(200);
+    return [...res.text.matchAll(/data-stack="([01])"/g)].map((m) => m[1]);
+  };
+
+  it('side (the default) and stack override every variant', async () => {
+    expect(new Set(await stacks(''))).toEqual(new Set(['0']));
+    expect(new Set(await stacks('?layout=stack'))).toEqual(new Set(['1']));
+  });
+
+  it('?layout=variant (the visual suite) uses each variant\'s own layout', async () => {
+    expect(await stacks('?layout=variant')).toEqual(['0', '0', '0', '0', '0', '0', '0', '0', '1']);
+  });
+});
+
 describe('common theme email sub-routes', () => {
   it('found at least 25 email routes to test (regression guard on the scan itself)', () => {
     expect(emailRoutes.length).toBeGreaterThanOrEqual(25);

@@ -1,6 +1,6 @@
 <%
   // Effective layout: global 'side' or 'stack' overrides per-variant.layout.
-  // In 'grid' global mode, per-variant.layout still decides direction.
+  // In 'grid' and 'variant' global modes, per-variant.layout still decides direction.
   var _global = locals.variantLayout || 'side';
   var _isStack = (_global === 'side' || _global === 'stack')
     ? _global === 'stack'
