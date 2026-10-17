@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const appShellSource   = fs.readFileSync(path.join(process.cwd(), 'modules/app/AppShell.ejs'), 'utf-8');
 const appSidebarSource = fs.readFileSync(path.join(process.cwd(), 'modules/app/AppSidebar.ejs'), 'utf-8');
@@ -131,7 +132,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppSidebar',
       category: 'App',
       abbr: 'Sb',
-      description: 'Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter and a footer slot can host a user block or any content.',
+      description: 'Collapsible side navigation. Accepts navGroups or navItems with a built-in collapse toggle. The searchable prop adds an inline filter; a headerContent slot (above the nav groups) and a footer slot can host a workspace switcher, a user block or any content. Item badges take a count or any badge HTML.',
       filePath: 'modules/app/AppSidebar.ejs',
       sourceCode: appSidebarSource,
       variants: [
@@ -224,6 +225,33 @@ export function buildAppShellData(): ShowcaseItem[] {
 }) %>`,
           layout: 'stack',
         },
+        {
+          title: 'Header + node badges',
+          previewHtml: `<div class="flex justify-center py-4"><div class="border border-border rounded-xl overflow-hidden bg-surface-raised flex" style="height:320px">${renderPartial('modules/app/AppSidebar.ejs', {
+            id: 'sb-header-demo',
+            activeId: 'dashboard',
+            searchable: false,
+            headerContent: ({ collapsed }: { collapsed: boolean }) => (collapsed
+              ? '<span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary text-xs font-semibold">AC</span>'
+              : '<div class="flex items-center gap-2 px-1"><span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary text-xs font-semibold">AC</span><span class="text-xs font-semibold text-text-primary truncate">Acme Corp</span></div>'),
+            navGroups: [{
+              label: 'Main',
+              items: [
+                { id: 'dashboard', label: 'Dashboard', icon: '<i class="fa-solid fa-house"></i>' },
+                { id: 'analytics', label: 'Analytics', icon: '<i class="fa-solid fa-chart-bar"></i>', badge: 3 },
+                { id: 'team', label: 'Team', icon: '<i class="fa-solid fa-users"></i>', badge: '<span class="inline-flex items-center gap-1 rounded-full font-medium bg-warning-subtle text-warning-fg px-1.5 py-0 text-[10px]"><span class="h-1.5 w-1.5 rounded-full shrink-0 bg-warning" aria-hidden="true"></span>Beta</span>' },
+              ],
+            }],
+          })}</div></div>`,
+          code: `<%- include('modules/app/AppSidebar', {
+  navGroups: [{ label: 'Main', items: [
+    { id: 'analytics', label: 'Analytics', badge: 3 },              // a count
+    { id: 'team', label: 'Team', badge: '<span class="…">Beta</span>' }, // any badge HTML
+  ] }],
+  headerContent: function (ctx) { return workspaceSwitcherHtml(ctx.collapsed); }  // above the nav groups
+}) %>`,
+          layout: 'stack',
+        },
       ],
     },
 
@@ -233,7 +261,7 @@ export function buildAppShellData(): ShowcaseItem[] {
       title: 'AppTopBar',
       category: 'App',
       abbr: 'At',
-      description: 'Top bar wrapper passed into AppShell\'s header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row.',
+      description: 'Top bar wrapper passed into AppShell\'s header slot. The logo slot anchors the left side while children (GlobalSearch, UserMenu, Button, etc.) are arranged in a flex row. Named regions start (after the logo) and end (pushed to the far end) take HTML or ordered { id, node, order, hidden } items, for controls other modules contribute.',
       filePath: 'modules/app/AppTopBar.ejs',
       sourceCode: appTopBarSource,
       variants: [
@@ -279,6 +307,30 @@ export function buildAppShellData(): ShowcaseItem[] {
     <%- include('modules/ui/Button', { children: 'New', iconLeft: '<i class="fa-solid fa-plus"></i>' }) %>
     <%- include('modules/domain/common/user/UserMenu', { name: user.name }) %>
   \`
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Regions: start + ordered end items',
+          previewHtml: `<div class="border border-border rounded-xl overflow-hidden"><div class="flex items-center h-14 px-4 bg-surface-raised">${renderPartial('modules/app/AppTopBar.ejs', {
+            logoContent: '<span class="font-black text-primary text-lg">Acme</span>',
+            start: '<span class="inline-flex items-center gap-1 rounded-full font-medium bg-surface-sunken text-text-secondary px-1.5 py-0 text-[10px]">Production</span>',
+            end: [
+              { id: 'user', order: 100, node: '<span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-subtle text-primary text-xs font-semibold">JD</span>' },
+              { id: 'notifications', order: 10, node: '<button type="button" aria-label="Notifications" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-transparent text-text-primary hover:bg-surface-overlay p-1.5 text-sm"><i class="fa-solid fa-bell" aria-hidden="true"></i></button>' },
+              { id: 'help', node: '<button type="button" class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus bg-transparent text-text-primary hover:bg-surface-overlay px-3 py-1.5 text-sm">Help</button>' },
+              { id: 'calls', order: 20, hidden: true, node: '<button type="button">Calls</button>' },
+            ],
+          })}</div></div>`,
+          code: `<%# Contributed controls arrive as ordered items; hidden ones are left out. %>
+<%- include('modules/app/AppTopBar', {
+  logoContent: logoHtml,
+  start: environmentBadgeHtml,
+  end: [
+    { id: 'notifications', order: 10, node: bellHtml },
+    { id: 'calls', order: 20, node: presenceHtml, hidden: !telephonyEnabled },
+    { id: 'user', order: 100, node: userMenuHtml },
+  ]
 }) %>`,
           layout: 'stack',
         },

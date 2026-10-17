@@ -227,3 +227,56 @@ describe('UserMenu', () => {
     expect(html).toContain('href="/settings"');
   });
 });
+
+describe('AppTopBar regions', () => {
+  it('renders as before without regions', async () => {
+    const html = await render('modules/app/AppTopBar.ejs', { logoContent: 'Logo', children: '<span>child</span>' });
+    expect(html).not.toContain('data-region');
+  });
+
+  it('orders region items, leaves hidden ones out and pushes end to the far end', async () => {
+    const html = await render('modules/app/AppTopBar.ejs', {
+      start: '<b>switcher</b>',
+      end: [
+        { id: 'user', node: 'user', order: 100 },
+        { id: 'bell', node: 'bell', order: 10 },
+        { id: 'lang', node: 'lang' },
+        { id: 'phone', node: 'phone', hidden: true },
+      ],
+    });
+    expect(html).toContain('<div data-region="start" class="flex items-center gap-2"><b>switcher</b></div>');
+    expect(html).toContain('<div data-region="end" class="flex items-center gap-2 ml-auto shrink-0">langbelluser</div>');
+  });
+
+  it('a region whose items are all hidden renders nothing', async () => {
+    const html = await render('modules/app/AppTopBar.ejs', { end: [{ id: 'x', node: 'x', hidden: true }] });
+    expect(html).not.toContain('data-region');
+  });
+});
+
+describe('AppSidebar header and badges', () => {
+  it('renders headerContent above the nav, from a string or a function of { collapsed }', async () => {
+    const html = markup(await render('modules/app/AppSidebar.ejs', {
+      collapsed: true,
+      headerContent: ({ collapsed }: { collapsed: boolean }) => (collapsed ? '<i>narrow</i>' : '<b>wide</b>'),
+      navItems: [{ id: 'a', label: 'A' }],
+    }));
+    expect(html).toContain('<div class="shrink-0 border-b border-border px-2 py-2 flex justify-center">');
+    expect(html.indexOf('<i>narrow</i>')).toBeGreaterThan(-1);
+    expect(html.indexOf('<i>narrow</i>')).toBeLessThan(html.indexOf('<nav'));
+  });
+
+  it('shows a count above 0, hides 0 and renders badge HTML as given', async () => {
+    const html = markup(await render('modules/app/AppSidebar.ejs', {
+      searchable: false,
+      navItems: [
+        { id: 'a', label: 'Inbox', badge: 3 },
+        { id: 'z', label: 'Zero', badge: 0 },
+        { id: 't', label: 'Team', badge: '<span class="dot">Beta</span>' },
+      ],
+    }));
+    expect(count(html, /text-\[10px\]">3</g)).toBe(1);
+    expect(html).not.toMatch(/text-\[10px\]">0</);
+    expect(html).toContain('<span class="shrink-0"><span class="dot">Beta</span></span>');
+  });
+});
