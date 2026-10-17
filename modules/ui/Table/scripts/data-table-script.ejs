@@ -7,6 +7,7 @@
   var _pageSize     = Number(locals.pageSize) || 10;
   var _hasAnyFilter = !!locals.hasAnyFilter;
   var _isStatic     = !!locals.isStatic;
+  var _colCount     = Number(locals.colCount) || _columns.length;
 %>
 <script>
 (function () {
@@ -17,7 +18,7 @@
   var ROWS_DATA    = <%- JSON.stringify(_rowsData) %>;
   var TOTAL_ROWS   = <%= _rowsCount %>;
   var EMPTY_MSG    = <%- JSON.stringify(_emptyMessage) %>;
-  var COL_COUNT    = <%= _columns.length %>;
+  var COL_COUNT    = <%= _colCount %>;
   var IS_STATIC    = <%= _isStatic ? 'true' : 'false' %>;
 
   var searchEl     = root.querySelector('[data-dt-search]');

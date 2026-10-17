@@ -35,6 +35,33 @@
     return obj;
   });
 
+  // rowActions (parity with kui-react DataTable): descriptors { id, label, icon (HTML),
+  // onClick (JS string), href, hidden, disabled, disabledReason, destructive, group, order }
+  // shown as a menu in a trailing column. Every per-row field may be a function of the row.
+  var _rowActions = Array.isArray(locals.rowActions) && locals.rowActions.length ? locals.rowActions : null;
+  var _per = function (v, row) { return typeof v === 'function' ? v(row) : v; };
+  var _rowActionItems = function (row) {
+    return _rowActions.map(function (a) {
+      return {
+        type: 'item', id: a.id, label: a.label, icon: a.icon,
+        href: _per(a.href, row), onClick: _per(a.onClick, row),
+        hidden: _per(a.hidden, row), disabled: _per(a.disabled, row),
+        disabledReason: _per(a.disabledReason, row),
+        danger: !!a.destructive, order: a.order, group: a.group
+      };
+    });
+  };
+  var _rowActionsLabel = function (row) {
+    return typeof locals.rowActionsLabel === 'function' ? locals.rowActionsLabel(row) : (locals.rowActionsLabel || 'Row actions');
+  };
+  var _actionsColumnLabel = locals.actionsColumnLabel || 'Actions';
+  var _colCount = _columns.length + (_rowActions ? 1 : 0);
+  var _ellipsisBtn = function (label) {
+    return '<button type="button" aria-label="' + String(label).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;') + '"'
+      + ' class="inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed bg-transparent text-text-primary hover:bg-surface-overlay p-1.5 text-sm">'
+      + '<i class="fa-solid fa-ellipsis-vertical" style="font-size:0.875rem" aria-hidden="true"></i></button>';
+  };
+
   var _hasAnyFilter = false;
   for (var _ci = 0; _ci < _columns.length; _ci++) {
     if (_columns[_ci].filter) { _hasAnyFilter = true; break; }
@@ -109,24 +136,27 @@
             </span>
           </th>
           <% }); %>
+          <% if (_rowActions) { %>
+          <th scope="col" class="w-12 px-2 py-3"><span class="sr-only"><%= _actionsColumnLabel %></span></th>
+          <% } %>
         </tr>
       </thead>
       <tbody class="divide-y divide-border bg-surface-base" data-dt-body>
         <% if (_state === 'loading') { %>
         <tr data-dt-state-row>
-          <td colspan="<%= _columns.length %>" class="px-4 py-10 text-center text-sm text-text-secondary">
+          <td colspan="<%= _colCount %>" class="px-4 py-10 text-center text-sm text-text-secondary">
             <%= _loadingMessage %>
           </td>
         </tr>
         <% } else if (_state === 'error') { %>
         <tr data-dt-state-row>
-          <td colspan="<%= _columns.length %>" class="px-4 py-10 text-center text-sm text-error-fg bg-error-subtle">
+          <td colspan="<%= _colCount %>" class="px-4 py-10 text-center text-sm text-error-fg bg-error-subtle">
             <%= _errorMessage %>
           </td>
         </tr>
         <% } else if (_rows.length === 0) { %>
         <tr data-dt-empty>
-          <td colspan="<%= _columns.length %>" class="px-4 py-10 text-center text-sm text-text-secondary">
+          <td colspan="<%= _colCount %>" class="px-4 py-10 text-center text-sm text-text-secondary">
             <%= _emptyMessage %>
           </td>
         </tr>
@@ -142,6 +172,16 @@
               <% } %>
             </td>
             <% }); %>
+            <% if (_rowActions) {
+                 var _items = _rowActionItems(row);
+                 var _anyVisible = _items.some(function (it) { return !it.hidden; });
+            %>
+            <td class="w-12 px-2 py-2 text-right" data-part="row-actions" onclick="event.stopPropagation()">
+              <% if (_anyVisible) { %>
+              <%- include('../../DropdownMenu', { id: _id + '-actions-' + ri, portal: true, align: 'right', items: _items, trigger: _ellipsisBtn(_rowActionsLabel(row)) }) %>
+              <% } %>
+            </td>
+            <% } %>
           </tr>
           <% }); %>
         <% } %>
@@ -163,6 +203,7 @@
   rowsData: _rowsData,
   rowsCount: _rows.length,
   emptyMessage: _emptyMessage,
+  colCount: _colCount,
   pageSize: _pageSize,
   hasAnyFilter: _hasAnyFilter,
   isStatic: _isStatic

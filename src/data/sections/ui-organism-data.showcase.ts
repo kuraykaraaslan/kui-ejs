@@ -1,6 +1,7 @@
 import type { ShowcaseItem } from '../../types';
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderPartial } from '../render-partial';
 
 const tableSource     = fs.readFileSync(path.join(process.cwd(), 'modules/ui/Table.ejs'), 'utf-8');
 const dataTableSource = fs.readFileSync(path.join(process.cwd(), 'modules/ui/DataTable.ejs'), 'utf-8');
@@ -203,7 +204,7 @@ export function buildOrganismDataData(): ShowcaseItem[] {
       title: 'DataTable',
       category: 'Organism',
       abbr: 'DT',
-      description: 'Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector.',
+      description: 'Table + SearchBar + Pagination in a single component. Client-side search and pagination with filtered result counter and rows-per-page selector. rowActions adds a per-row actions menu (id, label, onClick or href, hidden, disabled, disabledReason, destructive, group, order).',
       filePath: 'modules/ui/Table/partials/paginated.ejs',
       sourceCode: dataTableSource,
       variants: [
@@ -323,6 +324,52 @@ export function buildOrganismDataData(): ShowcaseItem[] {
   pageSize: 20,
   qs: qs,
   emptyMessage: 'No users found.'
+}) %>`,
+          layout: 'stack',
+        },
+        {
+          title: 'Row actions (rowActions)',
+          previewHtml: wrapFull(renderPartial('modules/ui/DataTable.ejs', {
+            id: 'dt-row-actions',
+            mode: 'static',
+            searchable: false,
+            caption: 'Companies',
+            columns: [
+              { key: 'name', header: 'Company' },
+              { key: 'email', header: 'Email', render: (r: Record<string, string>) => r.email || '—' },
+              { key: 'status', header: 'Status' },
+            ],
+            rows: [
+              { id: 'c1', name: 'Northwind Traders', email: 'buy@northwind.example', status: 'Active' },
+              { id: 'c2', name: 'Contoso Ltd', email: '', status: 'Active' },
+              { id: 'c3', name: 'Fabrikam', email: 'info@fabrikam.example', status: 'Archived' },
+            ],
+            rowActionsLabel: (r: Record<string, string>) => `Actions for ${r.name}`,
+            rowActions: [
+              { id: 'open', label: 'Open', href: (r: Record<string, string>) => `#company-${r.id}` },
+              { id: 'call', label: 'Call', group: 'contact', order: 10 },
+              {
+                id: 'sign', label: 'Send for signature', group: 'contact', order: 20,
+                disabled: (r: Record<string, string>) => !r.email,
+                disabledReason: (r: Record<string, string>) => (r.email ? undefined : 'Add an email address first'),
+              },
+              { id: 'restore', label: 'Restore', hidden: (r: Record<string, string>) => r.status !== 'Archived' },
+              { id: 'delete', label: 'Delete', group: 'danger', order: 1000, destructive: true },
+            ],
+          })),
+          code: `<%# A trailing column with one menu per row. Every per-row field takes a function of the row. %>
+<%- include('modules/ui/DataTable', {
+  rows: companies,
+  columns: columns,
+  rowActionsLabel: function (row) { return 'Actions for ' + row.name; },
+  rowActions: [
+    { id: 'open', label: 'Open', href: function (row) { return '/companies/' + row.id; } },
+    { id: 'call', label: 'Call', group: 'contact', order: 10, onClick: function (row) { return "callCompany('" + row.id + "')"; } },
+    { id: 'sign', label: 'Send for signature', group: 'contact', order: 20,
+      disabled: function (row) { return !row.email; }, disabledReason: 'Add an email address first' },
+    { id: 'restore', label: 'Restore', hidden: function (row) { return row.status !== 'Archived'; } },
+    { id: 'delete', label: 'Delete', group: 'danger', order: 1000, destructive: true },
+  ]
 }) %>`,
           layout: 'stack',
         },

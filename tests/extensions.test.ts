@@ -280,3 +280,49 @@ describe('AppSidebar header and badges', () => {
     expect(html).toContain('<span class="shrink-0"><span class="dot">Beta</span></span>');
   });
 });
+
+describe('DataTable rowActions', () => {
+  const rows = [
+    { id: '1', name: 'Acme', status: 'active', email: 'a@x.test' },
+    { id: '2', name: 'Globex', status: 'archived', email: '' },
+  ];
+  const columns = [{ key: 'name', header: 'Name' }];
+
+  it('without rowActions the table has no actions column (unchanged)', async () => {
+    const html = markup(await render('modules/ui/DataTable.ejs', { mode: 'static', searchable: false, columns, rows }));
+    expect(html).not.toContain('data-part="row-actions"');
+    expect(count(html, /scope="col"/g)).toBe(1);
+  });
+
+  it('adds a trailing column with a portalled menu per row, resolving per-row fields', async () => {
+    const html = await render('modules/ui/DataTable.ejs', {
+      id: 'dt', mode: 'static', searchable: false, columns, rows,
+      rowActionsLabel: (r: { name: string }) => `Actions for ${r.name}`,
+      rowActions: [
+        { id: 'open', label: 'Open', href: (r: { id: string }) => `/c/${r.id}` },
+        { id: 'restore', label: 'Restore', hidden: (r: { status: string }) => r.status !== 'archived' },
+        { id: 'sign', label: 'Sign', disabled: (r: { email: string }) => !r.email, disabledReason: 'Add an email address first' },
+        { id: 'delete', label: 'Delete', destructive: true, group: 'danger', order: 100 },
+      ],
+    });
+    expect(count(html, /data-part="row-actions"/g)).toBe(2);
+    expect(html).toContain('<span class="sr-only">Actions</span>');
+    expect(html).toContain('aria-label="Actions for Acme"');
+    expect(html).toContain('href="/c/2"');
+    expect(count(html, /data-item-id="restore"/g)).toBe(1);
+    expect(html).toContain('data-dropdown-portal="right"');
+    expect(html).toContain('text-error hover:bg-error-subtle');
+    expect(html).toMatch(/COL_COUNT\s*=\s*2/);
+  });
+
+  it('a row whose actions are all hidden gets an empty cell; the empty state spans the column', async () => {
+    const html = markup(await render('modules/ui/DataTable.ejs', {
+      mode: 'static', searchable: false, columns, rows,
+      rowActions: [{ id: 'restore', label: 'Restore', hidden: (r: { status: string }) => r.status !== 'archived' }],
+    }));
+    expect(count(html, /data-part="row-actions"/g)).toBe(2);
+    expect(count(html, /aria-label="Row actions"/g)).toBe(1);
+    const empty = await render('modules/ui/DataTable.ejs', { mode: 'static', columns, rows: [], rowActions: [{ id: 'x', label: 'X' }] });
+    expect(empty).toContain('colspan="2"');
+  });
+});
